@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Org Chart — Next-Gen Frontend · 12-Month Build</title>
+<title>Org Chart — Next-Gen Frontend · 12-Month Build · Agent Analysis</title>
 <style>
   :root {
     --ct-blue:    #1A56DB;
@@ -19,6 +19,17 @@
     --phase3:     #F05252;
     --phase-gtm:  #FF8A4C;
     --phase-exec: #9CA3AF;
+    /* Agent coverage */
+    --ag-low:     #0EA5E9;
+    --ag-mid:     #7C3AED;
+    --ag-high:    #D97706;
+    --ag-full:    #DC2626;
+    --ag-bg:      #EFF6FF;
+    --ag-border:  #BFDBFE;
+    --ag-text:    #1D4ED8;
+    --agent-card: #F5F3FF;
+    --agent-bdr:  #C4B5FD;
+    --agent-text: #4338CA;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -32,329 +43,359 @@
   }
 
   /* ── Header ── */
-  .header {
-    max-width: 1100px;
-    margin: 0 auto 40px;
+  .header { max-width: 1200px; margin: 0 auto 32px; }
+  .header h1 { font-size: 22px; font-weight: 700; color: var(--ct-dark); margin-bottom: 4px; }
+  .header p { font-size: 13px; color: var(--ct-muted); }
+
+  /* ── Analysis banner ── */
+  .analysis-banner {
+    max-width: 1200px;
+    margin: 0 auto 32px;
+    background: linear-gradient(135deg, #1E1B4B 0%, #312E81 100%);
+    border-radius: 12px;
+    padding: 18px 24px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
   }
-  .header h1 {
-    font-size: 22px;
-    font-weight: 700;
-    color: var(--ct-dark);
-    margin-bottom: 4px;
-  }
-  .header p {
-    font-size: 13px;
-    color: var(--ct-muted);
-  }
+  .ab-stat { color: #fff; }
+  .ab-stat .ab-num { font-size: 28px; font-weight: 800; line-height: 1; }
+  .ab-stat .ab-num.strike { text-decoration: line-through; color: #A5B4FC; font-size: 22px; }
+  .ab-stat .ab-arrow { color: #A5B4FC; margin: 0 6px; }
+  .ab-stat .ab-after { font-size: 28px; font-weight: 800; color: #C4B5FD; }
+  .ab-stat .ab-label { font-size: 11px; color: #A5B4FC; margin-top: 4px; }
+  .ab-divider { width: 1px; background: rgba(255,255,255,.15); align-self: stretch; }
 
   /* ── Legend ── */
   .legend {
-    max-width: 1100px;
-    margin: 0 auto 40px;
+    max-width: 1200px;
+    margin: 0 auto 32px;
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 8px;
     align-items: center;
   }
+  .legend-section { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .legend-divider { width: 1px; height: 20px; background: var(--ct-border); margin: 0 4px; }
   .legend-label {
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--ct-muted);
-    text-transform: uppercase;
-    letter-spacing: .05em;
-    margin-right: 4px;
+    font-size: 10px; font-weight: 700; color: var(--ct-muted);
+    text-transform: uppercase; letter-spacing: .05em;
   }
   .legend-item {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 12px;
-    color: var(--ct-mid);
+    display: flex; align-items: center; gap: 5px;
+    font-size: 11px; color: var(--ct-mid);
     background: var(--ct-white);
     border: 1px solid var(--ct-border);
-    border-radius: 20px;
-    padding: 4px 12px;
+    border-radius: 20px; padding: 3px 10px;
   }
-  .legend-dot {
-    width: 10px; height: 10px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
+  .legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
 
   /* ── Chart wrapper ── */
-  .chart {
-    max-width: 1100px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-  }
+  .chart { max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; }
 
   /* ── Row ── */
   .row {
-    display: flex;
-    justify-content: center;
-    gap: 12px;
-    position: relative;
-    padding: 0 0 0;
+    display: flex; justify-content: center;
+    gap: 10px; position: relative;
   }
 
-  /* ── Connector lines (CSS only) ── */
-  .connector-down {
-    width: 2px;
-    height: 28px;
-    background: var(--ct-border);
-    margin: 0 auto;
+  /* ── Connectors ── */
+  .connector-down { width: 2px; height: 24px; background: var(--ct-border); margin: 0 auto; }
+
+  /* ── Section label ── */
+  .section-label {
+    text-align: center; font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .08em;
+    color: var(--ct-muted); margin: 24px 0 10px;
   }
-  .connector-h {
-    height: 2px;
-    background: var(--ct-border);
-    flex: 1;
-    align-self: center;
+  .section-label span {
+    display: inline-block; padding: 3px 12px;
+    background: var(--ct-border); border-radius: 20px;
   }
-  .connector-row {
-    display: flex;
-    justify-content: center;
-    gap: 0;
-    padding: 0;
-    margin: 0;
+  .section-label.agent-section-label span {
+    background: linear-gradient(90deg, #EDE9FE, #DBEAFE);
+    color: var(--agent-text);
+    border: 1px solid var(--agent-bdr);
   }
 
-  /* ── Node ── */
+  /* ══ HUMAN ROLE NODE ══ */
   .node {
     background: var(--ct-white);
     border: 1.5px solid var(--ct-border);
     border-radius: 10px;
-    padding: 12px 14px;
-    cursor: pointer;
+    padding: 10px 12px 32px;
+    cursor: default;
     position: relative;
-    transition: box-shadow .15s, border-color .15s;
-    min-width: 155px;
-    max-width: 200px;
+    transition: box-shadow .15s;
+    min-width: 148px;
+    max-width: 188px;
     text-align: center;
   }
-  .node:hover {
-    box-shadow: 0 4px 16px rgba(0,0,0,.10);
-  }
+  .node:hover { box-shadow: 0 4px 16px rgba(0,0,0,.10); }
 
   .node .phase-bar {
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 4px;
-    border-radius: 10px 10px 0 0;
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 4px; border-radius: 10px 10px 0 0;
+  }
+  .node .role {
+    font-size: 11.5px; font-weight: 700; color: var(--ct-dark);
+    margin-top: 6px; line-height: 1.3;
+  }
+  .node .name-tag { font-size: 11px; font-weight: 600; color: var(--ct-blue); margin-top: 3px; }
+  .node .owns { font-size: 9.5px; color: var(--ct-muted); margin-top: 4px; line-height: 1.5; }
+  .node .hire-badge {
+    display: inline-block; margin-top: 6px;
+    font-size: 9px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .05em; padding: 2px 7px; border-radius: 20px;
+    background: var(--ct-bg); border: 1px solid var(--ct-border); color: var(--ct-muted);
   }
 
-  .node .role {
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--ct-dark);
-    margin-top: 6px;
-    line-height: 1.3;
+  /* ── Agent coverage strip (bottom of each human node) ── */
+  .agent-strip {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 26px; border-top: 1px solid var(--ct-border);
+    border-radius: 0 0 9px 9px;
+    display: flex; align-items: center; justify-content: center;
+    gap: 4px; font-size: 9px; font-weight: 700;
+    padding: 0 6px;
   }
-  .node .name-tag {
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--ct-blue);
-    margin-top: 3px;
+  .agent-strip .ag-bar-wrap {
+    flex: 1; height: 4px; background: var(--ct-border); border-radius: 2px; overflow: hidden;
   }
-  .node .owns {
-    font-size: 10px;
-    color: var(--ct-muted);
-    margin-top: 5px;
-    line-height: 1.5;
+  .agent-strip .ag-bar { height: 100%; border-radius: 2px; }
+  .agent-strip .ag-label { white-space: nowrap; font-size: 9px; font-weight: 700; flex-shrink: 0; }
+
+  /* Coverage colors */
+  .ag-low  .agent-strip .ag-bar { background: var(--ag-low); }
+  .ag-low  .agent-strip .ag-label { color: var(--ag-low); }
+  .ag-mid  .agent-strip .ag-bar { background: var(--ag-mid); }
+  .ag-mid  .agent-strip .ag-label { color: var(--ag-mid); }
+  .ag-high .agent-strip .ag-bar { background: var(--ag-high); }
+  .ag-high .agent-strip .ag-label { color: var(--ag-high); }
+  .ag-full .agent-strip .ag-bar { background: var(--ag-full); }
+  .ag-full .agent-strip .ag-label { color: var(--ag-full); }
+
+  /* ── ELIMINATED node ── */
+  .node.eliminated {
+    background: repeating-linear-gradient(
+      -45deg, #FAFAFA, #FAFAFA 6px, #F3F4F6 6px, #F3F4F6 12px
+    );
+    opacity: .75;
   }
-  .node .hire-badge {
-    display: inline-block;
-    margin-top: 8px;
-    font-size: 9px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: .06em;
-    padding: 2px 8px;
-    border-radius: 20px;
-    background: var(--ct-bg);
-    border: 1px solid var(--ct-border);
-    color: var(--ct-muted);
+  .node.eliminated .role { text-decoration: line-through; color: var(--ct-muted); }
+  .node.eliminated .owns { text-decoration: line-through; }
+  .elim-badge {
+    display: inline-block; margin-top: 5px;
+    font-size: 9px; font-weight: 800; text-transform: uppercase;
+    padding: 2px 8px; border-radius: 20px;
+    background: #FEE2E2; color: #B91C1C; border: 1px solid #FECACA;
+  }
+
+  /* ── SHARED/FRACTIONAL node ── */
+  .node.fractional { border-style: dashed; border-color: var(--ag-high); }
+  .fractional-badge {
+    display: inline-block; margin-top: 5px;
+    font-size: 9px; font-weight: 800; text-transform: uppercase;
+    padding: 2px 8px; border-radius: 20px;
+    background: #FFFBEB; color: #B45309; border: 1px solid #FDE68A;
   }
 
   /* Phase colours */
-  .p-exec  .phase-bar { background: var(--phase-exec); }
-  .p-exec  .hire-badge { border-color: var(--phase-exec); color: var(--phase-exec); }
+  .p-exec .phase-bar  { background: var(--phase-exec); }
+  .p-exec .hire-badge { border-color: var(--phase-exec); color: var(--phase-exec); }
+  .p0 .phase-bar      { background: var(--phase0); }
+  .p0 .hire-badge     { border-color: var(--phase0); color: var(--phase0); }
+  .p1 .phase-bar      { background: var(--phase1); }
+  .p1 .hire-badge     { border-color: var(--phase1); color: var(--phase1); }
+  .p2 .phase-bar      { background: var(--phase2); }
+  .p2 .hire-badge     { border-color: var(--phase2); color: var(--phase2); }
+  .p3 .phase-bar      { background: var(--phase3); }
+  .p3 .hire-badge     { border-color: var(--phase3); color: var(--phase3); }
+  .p-gtm .phase-bar   { background: var(--phase-gtm); }
+  .p-gtm .hire-badge  { border-color: var(--phase-gtm); color: var(--phase-gtm); }
 
-  .p0 .phase-bar { background: var(--phase0); }
-  .p0 .hire-badge { border-color: var(--phase0); color: var(--phase0); }
-
-  .p1 .phase-bar { background: var(--phase1); }
-  .p1 .hire-badge { border-color: var(--phase1); color: var(--phase1); }
-
-  .p2 .phase-bar { background: var(--phase2); }
-  .p2 .hire-badge { border-color: var(--phase2); color: var(--phase2); }
-
-  .p3 .phase-bar { background: var(--phase3); }
-  .p3 .hire-badge { border-color: var(--phase3); color: var(--phase3); }
-
-  .p-gtm .phase-bar { background: var(--phase-gtm); }
-  .p-gtm .hire-badge { border-color: var(--phase-gtm); color: var(--phase-gtm); }
-
-  /* ── Exec row: muted style ── */
-  .node.exec-node {
-    border-style: dashed;
-    opacity: .8;
-  }
+  /* Exec / Head styles */
+  .node.exec-node { border-style: dashed; opacity: .8; }
   .node.exec-node .role { font-weight: 600; color: var(--ct-mid); }
-
-  /* ── Head node: larger ── */
-  .node.head-node {
-    min-width: 175px;
-    border-color: var(--ct-blue);
-    border-width: 2px;
-  }
+  .node.head-node { min-width: 170px; border-color: var(--ct-blue); border-width: 2px; }
   .node.head-node .role { font-size: 13px; font-weight: 800; }
-
-  /* ── Section label ── */
-  .section-label {
-    text-align: center;
-    font-size: 10px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: .08em;
-    color: var(--ct-muted);
-    margin: 28px 0 12px;
-  }
-  .section-label span {
-    display: inline-block;
-    padding: 3px 12px;
-    background: var(--ct-border);
-    border-radius: 20px;
-  }
-
-  /* ── Branch lines (SVG) ── */
-  svg.lines {
-    display: block;
-    overflow: visible;
-    pointer-events: none;
-  }
 
   /* ── Tooltip ── */
   .tooltip {
-    display: none;
-    position: absolute;
-    bottom: calc(100% + 8px);
-    left: 50%;
-    transform: translateX(-50%);
-    background: var(--ct-dark);
-    color: #fff;
-    font-size: 11px;
-    line-height: 1.55;
-    padding: 10px 14px;
-    border-radius: 8px;
-    white-space: nowrap;
-    z-index: 100;
-    box-shadow: 0 4px 16px rgba(0,0,0,.25);
-    pointer-events: none;
-    min-width: 200px;
-    text-align: left;
+    display: none; position: absolute;
+    bottom: calc(100% + 10px); left: 50%; transform: translateX(-50%);
+    background: var(--ct-dark); color: #fff;
+    font-size: 10.5px; line-height: 1.6;
+    padding: 10px 14px; border-radius: 8px;
+    white-space: nowrap; z-index: 200;
+    box-shadow: 0 4px 20px rgba(0,0,0,.3);
+    pointer-events: none; min-width: 200px; text-align: left;
   }
   .node:hover .tooltip { display: block; }
   .tooltip::after {
-    content: '';
-    position: absolute;
-    top: 100%; left: 50%;
-    transform: translateX(-50%);
-    border: 5px solid transparent;
-    border-top-color: var(--ct-dark);
+    content: ''; position: absolute;
+    top: 100%; left: 50%; transform: translateX(-50%);
+    border: 5px solid transparent; border-top-color: var(--ct-dark);
   }
-  .tooltip b { display: block; margin-bottom: 4px; font-size: 12px; }
+  .tooltip b { display: block; margin-bottom: 4px; font-size: 11.5px; border-bottom: 1px solid rgba(255,255,255,.15); padding-bottom: 4px; }
+  .tooltip .tl-agent { color: #A5B4FC; margin-top: 6px; font-size: 10px; border-top: 1px solid rgba(255,255,255,.1); padding-top: 5px; }
 
-  /* ── Timeline strip ── */
+  /* ══ AGENT NODE ══ */
+  .agent-node {
+    background: var(--agent-card);
+    border: 1.5px solid var(--agent-bdr);
+    border-radius: 10px;
+    padding: 12px 12px 14px;
+    position: relative;
+    min-width: 165px;
+    max-width: 205px;
+    text-align: center;
+    cursor: default;
+    transition: box-shadow .15s;
+  }
+  .agent-node:hover { box-shadow: 0 4px 16px rgba(99,102,241,.2); }
+  .agent-node .an-bar {
+    position: absolute; top: 0; left: 0; right: 0; height: 4px;
+    border-radius: 10px 10px 0 0;
+    background: linear-gradient(90deg, #6366F1, #8B5CF6);
+  }
+  .agent-node .an-icon { font-size: 22px; margin-top: 6px; display: block; }
+  .agent-node .an-name { font-size: 12px; font-weight: 800; color: var(--agent-text); margin-top: 4px; line-height: 1.3; }
+  .agent-node .an-tool { font-size: 9.5px; color: #6366F1; margin-top: 2px; }
+  .agent-node .an-covers { font-size: 9.5px; color: var(--ct-muted); margin-top: 6px; line-height: 1.55; text-align: left; }
+  .agent-node .an-covers b { color: var(--ct-mid); font-size: 9px; text-transform: uppercase; letter-spacing: .05em; display: block; margin-top: 4px; margin-bottom: 1px; }
+  .agent-node .an-badge {
+    display: inline-block; margin-top: 8px;
+    font-size: 9px; font-weight: 700; padding: 2px 8px;
+    border-radius: 20px;
+    background: #EEF2FF; border: 1px solid var(--agent-bdr); color: var(--agent-text);
+  }
+  .agent-node .an-net {
+    display: inline-block; margin-top: 4px; margin-left: 4px;
+    font-size: 9px; font-weight: 700; padding: 2px 8px;
+    border-radius: 20px;
+    background: #ECFDF5; border: 1px solid #A7F3D0; color: #065F46;
+  }
+
+  /* Agent → human connecting annotation */
+  .agent-augments {
+    font-size: 9px; margin-top: 5px; color: #818CF8;
+    display: flex; flex-wrap: wrap; gap: 3px; justify-content: center;
+  }
+  .aug-pill {
+    padding: 1px 6px; border-radius: 10px;
+    background: #EEF2FF; border: 1px solid #C7D2FE;
+    color: #4338CA; font-size: 8.5px; font-weight: 600;
+  }
+  .aug-pill.eliminated { background: #FEE2E2; border-color: #FECACA; color: #B91C1C; text-decoration: line-through; }
+
+  /* ── Timeline ── */
   .timeline {
-    max-width: 1100px;
-    margin: 48px auto 0;
-    border: 1px solid var(--ct-border);
-    border-radius: 12px;
-    background: var(--ct-white);
-    padding: 20px 24px;
+    max-width: 1200px; margin: 44px auto 0;
+    border: 1px solid var(--ct-border); border-radius: 12px;
+    background: var(--ct-white); padding: 20px 24px;
   }
   .timeline h3 {
-    font-size: 12px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: .07em;
-    color: var(--ct-muted);
-    margin-bottom: 16px;
+    font-size: 12px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .07em; color: var(--ct-muted); margin-bottom: 16px;
   }
-  .tl-grid {
-    display: grid;
-    grid-template-columns: 90px repeat(12, 1fr);
-    gap: 2px;
-    font-size: 10px;
-  }
+  .tl-grid { display: grid; grid-template-columns: 105px repeat(12, 1fr); gap: 2px; font-size: 10px; }
   .tl-header { font-weight: 700; text-align: center; color: var(--ct-muted); padding: 4px 2px; }
-  .tl-label { font-weight: 600; color: var(--ct-mid); display: flex; align-items: center; font-size: 10px; }
-  .tl-cell {
-    border-radius: 3px;
-    height: 22px;
-  }
+  .tl-label { font-weight: 600; color: var(--ct-mid); display: flex; align-items: center; font-size: 9.5px; }
+  .tl-label.agent-row { color: var(--agent-text); font-style: italic; }
+  .tl-cell { border-radius: 3px; height: 22px; }
   .tl-cell.active { opacity: 1; }
   .tl-cell.inactive { background: var(--ct-bg); border: 1px solid var(--ct-border); }
+  .tl-cell.agent-active {
+    background: repeating-linear-gradient(45deg, #818CF8, #818CF8 3px, #C7D2FE 3px, #C7D2FE 6px);
+    opacity: 1;
+  }
+  .tl-cell.eliminated-cell {
+    background: repeating-linear-gradient(-45deg, #fff, #fff 4px, #F3F4F6 4px, #F3F4F6 8px);
+    border: 1px dashed #D1D5DB;
+  }
 
-  /* ── Headcount summary ── */
+  /* ── Summary ── */
   .summary {
-    max-width: 1100px;
-    margin: 20px auto 0;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 12px;
+    max-width: 1200px; margin: 16px auto 0;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px;
   }
-  .summary-card {
-    background: var(--ct-white);
-    border: 1px solid var(--ct-border);
-    border-radius: 10px;
-    padding: 14px 16px;
-  }
-  .summary-card .sc-num {
-    font-size: 26px;
-    font-weight: 800;
-    line-height: 1;
-    color: var(--ct-dark);
-  }
-  .summary-card .sc-label {
-    font-size: 11px;
-    color: var(--ct-muted);
-    margin-top: 4px;
-  }
-  .summary-card .sc-bar {
-    height: 3px;
-    border-radius: 2px;
-    margin-top: 10px;
-  }
+  .summary-card { background: var(--ct-white); border: 1px solid var(--ct-border); border-radius: 10px; padding: 14px 16px; }
+  .summary-card.agent-card { background: var(--agent-card); border-color: var(--agent-bdr); }
+  .sc-num { font-size: 26px; font-weight: 800; line-height: 1; color: var(--ct-dark); }
+  .sc-num.saving { color: #059669; }
+  .sc-label { font-size: 11px; color: var(--ct-muted); margin-top: 4px; }
+  .sc-bar { height: 3px; border-radius: 2px; margin-top: 10px; }
 </style>
 </head>
 <body>
 
+<!-- ── Header ── -->
 <div class="header">
-  <h1>Org Chart — Next-Gen Frontend · 12-Month Build</h1>
-  <p>commercetools · Leandro Palazzo · May 2026 · 14 FTEs across product, engineering, design &amp; GTM</p>
+  <h1>Org Chart — Next-Gen Frontend · 12-Month Build · Agent Analysis</h1>
+  <p>commercetools · Leandro Palazzo · May 2026 · Agent coverage analysis across all 14 roles</p>
 </div>
 
-<!-- Legend -->
+<!-- ── Analysis banner ── -->
+<div class="analysis-banner">
+  <div class="ab-stat">
+    <div style="display:flex;align-items:baseline;gap:6px">
+      <span class="ab-num strike">14</span>
+      <span class="ab-arrow">→</span>
+      <span class="ab-after">12</span>
+    </div>
+    <div class="ab-label">Committed FTEs<br>UX Researcher eliminated · DevOps shared</div>
+  </div>
+  <div class="ab-divider"></div>
+  <div class="ab-stat">
+    <div class="ab-num" style="color:#C4B5FD">5</div>
+    <div class="ab-label">AI agents running 24/7<br>Coding · Infra · Data · Research · Content</div>
+  </div>
+  <div class="ab-divider"></div>
+  <div class="ab-stat">
+    <div class="ab-num" style="color:#6EE7B7">1</div>
+    <div class="ab-label">Role fully eliminated<br>UX Researcher — the product IS the research tool</div>
+  </div>
+  <div class="ab-divider"></div>
+  <div class="ab-stat">
+    <div class="ab-num" style="color:#FCD34D">3</div>
+    <div class="ab-label">Hires delayed 1–2 months<br>DevOps shared · PMM –2mo · Data Eng –1mo</div>
+  </div>
+  <div class="ab-divider"></div>
+  <div class="ab-stat">
+    <div class="ab-num" style="color:#FCA5A5">0</div>
+    <div class="ab-label">Executive or relationship roles<br>replaceable — authority &amp; trust are human</div>
+  </div>
+</div>
+
+<!-- ── Legend ── -->
 <div class="legend">
   <span class="legend-label">Hire phase</span>
-  <div class="legend-item"><div class="legend-dot" style="background:var(--phase-exec)"></div> Executive sponsors (dotted)</div>
-  <div class="legend-item"><div class="legend-dot" style="background:var(--phase0)"></div> Month 0–2 · P0 foundation</div>
-  <div class="legend-item"><div class="legend-dot" style="background:var(--phase1)"></div> Month 2–4 · P0/P1 delivery</div>
-  <div class="legend-item"><div class="legend-dot" style="background:var(--phase2)"></div> Month 4–6 · P1/P2 expansion</div>
-  <div class="legend-item"><div class="legend-dot" style="background:var(--phase3)"></div> Month 6–9 · P3 AI Engine</div>
-  <div class="legend-item"><div class="legend-dot" style="background:var(--phase-gtm)"></div> Month 4–8 · GTM &amp; partnerships</div>
+  <div class="legend-section">
+    <div class="legend-item"><div class="legend-dot" style="background:var(--phase-exec)"></div> Exec sponsor</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--phase0)"></div> M0–2 · P0</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--phase1)"></div> M2–4 · P0/P1</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--phase2)"></div> M4–6 · P2</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--phase3)"></div> M6–9 · P3</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--phase-gtm)"></div> M4–8 · GTM</div>
+  </div>
+  <div class="legend-divider"></div>
+  <span class="legend-label">Agent coverage</span>
+  <div class="legend-section">
+    <div class="legend-item"><div class="legend-dot" style="background:var(--ag-low)"></div> 10–30% Augmented</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--ag-mid)"></div> 30–55% Significant</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--ag-high)"></div> 55–70% Heavy → shared</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--ag-full)"></div> 70%+ → Eliminated</div>
+    <div class="legend-item"><div class="legend-dot" style="background:linear-gradient(90deg,#6366F1,#8B5CF6)"></div> AI Agent node</div>
+  </div>
 </div>
 
+<div class="chart">
 
 <!-- ══════════════════════════════════════════
      EXECUTIVE SPONSORS
 ══════════════════════════════════════════ -->
-<div class="chart">
-
-  <div class="section-label"><span>Executive Sponsors — Dotted Line Accountability</span></div>
+  <div class="section-label"><span>Executive Sponsors — Dotted Line · 0% Agent Coverage · Authority Cannot Be Delegated</span></div>
 
   <div class="row">
 
@@ -363,7 +404,7 @@
       <div class="role">CPO</div>
       <div class="owns">MLP scope authority<br>Headcount sign-off<br>Pricing model owner</div>
       <span class="hire-badge">Existing</span>
-      <div class="tooltip"><b>CPO</b>Final call on P0/P1 scope<br>Approves headcount by Day 14<br>Owns Tenant Intelligence Score policy<br>Sets AI Engine pricing model by Day 45</div>
+      <div class="tooltip"><b>CPO — 0% Agent Coverage</b>Final call on P0/P1 scope — no agent can hold this authority<br>Approves headcount by Day 14<br>Owns Tenant Intelligence Score policy<br>Sets AI Engine pricing model by Day 45<br><span class="tl-agent">Why not agents: commercial authority + org accountability</span></div>
     </div>
 
     <div class="node exec-node p-exec">
@@ -371,7 +412,7 @@
       <div class="role">CTO</div>
       <div class="owns">Eng headcount authority<br>Architecture gate<br>CI/CD + infra budget</div>
       <span class="hire-badge">Existing</span>
-      <div class="tooltip"><b>CTO</b>Approves eng team headcount<br>Architecture decisions already locked<br>Owns Vercel + Neon + ClickHouse budget<br>SOC 2 audit program owner</div>
+      <div class="tooltip"><b>CTO — 0% Agent Coverage</b>Architecture decisions already locked — guards against re-opening<br>Approves eng team headcount<br>Owns Vercel + Neon + ClickHouse budget<br><span class="tl-agent">Why not agents: budget authority + architecture accountability</span></div>
     </div>
 
     <div class="node exec-node p-exec">
@@ -379,7 +420,7 @@
       <div class="role">CRO</div>
       <div class="owns">SI partner terms<br>Design partner access<br>12-month ARR target</div>
       <span class="hire-badge">Existing</span>
-      <div class="tooltip"><b>CRO</b>SI partner commercial structure by Day 21<br>Opens enterprise account access for design partners<br>Owns $1M ARR target at Month 12<br>SI co-sell program terms</div>
+      <div class="tooltip"><b>CRO — 0% Agent Coverage</b>SI partner commercial structure requires negotiation authority<br>Opens enterprise account doors for design partners<br>Owns $1M ARR target at Month 12<br><span class="tl-agent">Why not agents: commercial trust + account relationships</span></div>
     </div>
 
     <div class="node exec-node p-exec">
@@ -387,12 +428,11 @@
       <div class="role">CMO</div>
       <div class="owns">External narrative<br>Analyst briefings<br>Public beta launch</div>
       <span class="hire-badge">Existing</span>
-      <div class="tooltip"><b>CMO</b>Owns "Next-Gen Frontend" external story<br>Analyst briefing schedule<br>Public beta announcement timing<br>Coordinates with Leandro on GTM narrative</div>
+      <div class="tooltip"><b>CMO — 0% Agent Coverage</b>Analyst relationships (Gartner, Forrester) are human<br>External narrative credibility depends on the person, not a model<br><span class="tl-agent">Why not agents: brand authority + analyst trust</span></div>
     </div>
 
   </div>
 
-  <!-- ── down connector ── -->
   <div class="connector-down" style="margin-top:4px"></div>
 
 <!-- ══════════════════════════════════════════
@@ -401,13 +441,17 @@
   <div class="section-label"><span>Head of Product — Next-Gen Frontend</span></div>
 
   <div class="row">
-    <div class="node head-node p0">
+    <div class="node head-node p0 ag-low">
       <div class="phase-bar"></div>
       <div class="role">Head of Product<br>Next-Gen Frontend</div>
       <div class="name-tag">Leandro Palazzo</div>
       <div class="owns">Roadmap · Epics 1–8<br>Design partner program<br>SI partner strategy<br>$1M ARR at Month 12</div>
       <span class="hire-badge">Day 1</span>
-      <div class="tooltip"><b>Leandro Palazzo — Head of Product</b>Owns all 8 epics + 80 stories<br>Recruits and runs design partner program<br>P0 MLP scope locked Day 28<br>Sprint cadence, backlog ownership<br>Bridges CPO/CTO to delivery team</div>
+      <div class="agent-strip">
+        <div class="ag-bar-wrap"><div class="ag-bar" style="width:10%"></div></div>
+        <span class="ag-label">10% · Research + Content</span>
+      </div>
+      <div class="tooltip"><b>Leandro — 10% Agent Coverage</b>Human terrain navigation is irreplaceable<br>Design partner trust-building is human-speed<br>Strategy + organizational politics need judgment<br><span class="tl-agent">Agents assist: competitive research drafts, backlog formatting, meeting summaries</span></div>
     </div>
   </div>
 
@@ -416,71 +460,100 @@
 <!-- ══════════════════════════════════════════
      ENGINEERING
 ══════════════════════════════════════════ -->
-  <div class="section-label"><span>Engineering</span></div>
+  <div class="section-label"><span>Engineering · Coding Agent active across all ICs</span></div>
 
-  <div class="row" style="align-items:flex-start; gap:10px">
+  <div class="row" style="align-items:flex-start; gap:8px; flex-wrap:wrap">
 
     <!-- Engineering Lead -->
-    <div class="node p0">
+    <div class="node p0 ag-low">
       <div class="phase-bar"></div>
       <div class="role">Engineering Lead<br>(Staff / Principal)</div>
       <div class="owns">Technical execution<br>Sprint Zero + cadence<br>Architecture guardrail<br>All Epics delivery</div>
       <span class="hire-badge">Month 1</span>
-      <div class="tooltip"><b>Engineering Lead</b>Reports to CTO · embedded with Leandro<br>Owns Sprint Zero completion by Day 56<br>Manages 6 ICs across all epics<br>Hard blocks surface to CPO/CTO in writing<br>Protects architecture decisions already locked</div>
+      <div class="agent-strip">
+        <div class="ag-bar-wrap"><div class="ag-bar" style="width:20%"></div></div>
+        <span class="ag-label">20% · Coding Agent</span>
+      </div>
+      <div class="tooltip"><b>Engineering Lead — 20% Agent Coverage</b>People management + sprint facilitation: human<br>Architecture gatekeeping against re-opens: human<br>Manages 6 ICs — trust + unblocking is human<br><span class="tl-agent">Agents assist: automated PR review summaries, CI failure triage, standup digests</span></div>
     </div>
 
     <!-- Frontend Eng 1 -->
-    <div class="node p0">
+    <div class="node p0 ag-mid">
       <div class="phase-bar"></div>
-      <div class="role">Sr Frontend Engineer<br>Platform Foundation</div>
+      <div class="role">Sr Frontend Eng<br>Platform Foundation</div>
       <div class="owns">Epic 1: MC scaffold<br>ApplicationShell v27<br>CASL RBAC<br>Feature flags (FlopFlip)</div>
       <span class="hire-badge">Month 1–2</span>
-      <div class="tooltip"><b>Senior Frontend Engineer — Platform</b>RSC / Next.js App Router depth required<br>Owns Epic 1: MC Custom Application scaffold<br>ApplicationShell v27 auth (mcAccessToken)<br>CASL 6.x RBAC + FlopFlip flags<br>Definition of Done: design partner connected + RBAC live</div>
+      <div class="agent-strip">
+        <div class="ag-bar-wrap"><div class="ag-bar" style="width:40%"></div></div>
+        <span class="ag-label">40% · Coding Agent</span>
+      </div>
+      <div class="tooltip"><b>Sr FE Eng 1 (Platform) — 40% Agent Coverage</b>Coding Agent scaffolds: MC App boilerplate, FlopFlip wiring, CASL setup<br>Human owns: auth security review, RBAC edge cases, multi-tenant isolation<br>Effective output: ≈1.7× a senior engineer<br><span class="tl-agent">Agents cover: scaffold, boilerplate, test generation, PR descriptions</span></div>
     </div>
 
     <!-- Frontend Eng 2 -->
-    <div class="node p0">
+    <div class="node p0 ag-mid">
       <div class="phase-bar"></div>
-      <div class="role">Sr Frontend Engineer<br>Canvas &amp; Editor</div>
+      <div class="role">Sr Frontend Eng<br>Canvas &amp; Editor</div>
       <div class="owns">Epic 2: Component library<br>Epic 3: StorefrontCanvas<br>ContextBar / B2X<br>Liveblocks collab</div>
       <span class="hire-badge">Month 1–2</span>
-      <div class="tooltip"><b>Senior Frontend Engineer — Canvas</b>RSC-first; client components only where needed<br>Owns Epics 2 + 3: component library + canvas<br>Green / Red Zone executor.ts chokepoint<br>Liveblocks 3.18 real-time collaboration<br>ContextBar B2X switching (ADR-001)</div>
+      <div class="agent-strip">
+        <div class="ag-bar-wrap"><div class="ag-bar" style="width:35%"></div></div>
+        <span class="ag-label">35% · Coding Agent</span>
+      </div>
+      <div class="tooltip"><b>Sr FE Eng 2 (Canvas) — 35% Agent Coverage</b>Coding Agent handles: component boilerplate, Liveblocks integration scaffolding<br>Human owns: drag-drop interaction design, executor.ts Red Zone logic, RSC re-render edge cases<br>ContextBar ADR-001 implementation needs human judgment<br><span class="tl-agent">Agents cover: component stubs, slot contract scaffolding, unit tests</span></div>
     </div>
 
     <!-- Frontend Eng 3 -->
-    <div class="node p2">
+    <div class="node p2 ag-mid">
       <div class="phase-bar"></div>
-      <div class="role">Sr Frontend Engineer<br>AI Integration</div>
+      <div class="role">Sr Frontend Eng<br>AI Integration</div>
       <div class="owns">Epic 4: AI site builder<br>Epic 8: AI Exp Engine<br>OpenRouter / Claude<br>GitHub PR generation</div>
       <span class="hire-badge">Month 3–4</span>
-      <div class="tooltip"><b>Senior Frontend Engineer — AI</b>Joins at P2 ramp (Month 3–4)<br>Owns Epic 4: AI site builder + migrator (≥90% quality gate)<br>Epic 8: AI Experience Engine, ConfidenceCard<br>OpenRouter (anthropic/claude-3.5-sonnet)<br>GitHub PR auto-generation from recommendations</div>
+      <div class="agent-strip">
+        <div class="ag-bar-wrap"><div class="ag-bar" style="width:50%"></div></div>
+        <span class="ag-label">50% · Coding Agent</span>
+      </div>
+      <div class="tooltip"><b>Sr FE Eng 3 (AI) — 50% Agent Coverage</b>Coding Agent generates: OpenRouter client boilerplate, streaming UI, PR template scaffolding<br>Human owns: prompt engineering for ≥90% quality gate, ConfidenceCard UX, failure taxonomy logic<br>Note: an AI engineer whose work is most automatable by AI<br><span class="tl-agent">Agents cover: SDK wiring, streaming response UI, test fixtures, API client code</span></div>
     </div>
 
     <!-- Backend Eng -->
-    <div class="node p0">
+    <div class="node p0 ag-mid">
       <div class="phase-bar"></div>
       <div class="role">Backend Engineer<br>Platform &amp; API</div>
       <div class="owns">Epic 1: Neon multi-tenancy<br>Epic 6: SSO/SCIM/DPA<br>Inngest async jobs<br>commercetools API layer</div>
       <span class="hire-badge">Month 1–2</span>
-      <div class="tooltip"><b>Backend Engineer</b>Neon PostgreSQL 18.3 — multi-tenant schema + RLS<br>Branch-per-PR workflow (Vercel preview + Neon branch)<br>Inngest 4.2.6 async job processing<br>Epic 6: SAML 2.0/OIDC SSO, SCIM 2.0, EU data residency<br>commercetools API budgeting + circuit breaker</div>
+      <div class="agent-strip">
+        <div class="ag-bar-wrap"><div class="ag-bar" style="width:35%"></div></div>
+        <span class="ag-label">35% · Coding Agent</span>
+      </div>
+      <div class="tooltip"><b>Backend Engineer — 35% Agent Coverage</b>Coding Agent handles: Neon migration scaffolding, Inngest job templates, API endpoint stubs<br>Human owns: RLS multi-tenant security, SAML/SCIM implementation, circuit breaker design<br>Security-critical code needs human review before merge — no exceptions<br><span class="tl-agent">Agents cover: CRUD endpoints, migration files, job handlers, API client boilerplate</span></div>
     </div>
 
     <!-- Data Engineer -->
-    <div class="node p1">
+    <div class="node p1 ag-high">
       <div class="phase-bar"></div>
       <div class="role">Data Engineer<br>Behavioral &amp; AI</div>
       <div class="owns">Epic 5: ClickHouse<br>Event taxonomy v1<br>Tenant Intelligence Score<br>Epic 8: CLV models</div>
       <span class="hire-badge">Month 2–3</span>
-      <div class="tooltip"><b>Data Engineer</b>ClickHouse Cloud: 100K events/sec, &lt;500ms query latency<br>Event SDK instrumentation on StorefrontCanvas<br>Consent layer (GDPR, HMAC-SHA256 user_hash)<br>Tenant Intelligence Score algorithm<br>CLV correlation models for Epic 8 Horizon 2 outcomes<br>Hard target: events flowing within 14 days of connection</div>
+      <div class="agent-strip">
+        <div class="ag-bar-wrap"><div class="ag-bar" style="width:55%"></div></div>
+        <span class="ag-label">55% · Data Agent</span>
+      </div>
+      <div class="tooltip"><b>Data Engineer — 55% Agent Coverage</b>Data Agent handles: ClickHouse pipeline scaffolding, SQL query generation, event taxonomy from PRD docs<br>Human owns: CLV correlation model design, statistical significance framework, Horizon 2 outcome logic<br>→ Hire delayed 1 month vs. original plan — Data Agent bridges the gap<br><span class="tl-agent">Agents cover: pipeline DAGs, ClickHouse DDL, ingestion handlers, routine queries</span></div>
     </div>
 
     <!-- DevOps -->
-    <div class="node p1">
+    <div class="node p1 ag-high fractional">
       <div class="phase-bar"></div>
       <div class="role">DevOps / Platform Eng</div>
       <div class="owns">Vercel preview deploys<br>CI/CD pipeline<br>SOC 2 compliance (Vanta)<br>Monitoring + SLAs</div>
       <span class="hire-badge">Month 2–3</span>
-      <div class="tooltip"><b>DevOps / Platform Engineer</b>Vercel: PR preview deployments + ISR on-demand revalidation<br>Neon branch auto-provision + auto-destroy on merge<br>Lighthouse regression gating in CI (Core Web Vitals)<br>SOC 2 Type II via Vanta/Drata — target report Month 12<br>99.9% editor / 99.95% storefront availability SLA<br>PCI DSS SAQ-A boundary enforcement in CI</div>
+      <span class="fractional-badge">→ Shared / Fractional</span>
+      <div class="agent-strip">
+        <div class="ag-bar-wrap"><div class="ag-bar" style="width:65%"></div></div>
+        <span class="ag-label">65% · Infra Agent</span>
+      </div>
+      <div class="tooltip"><b>DevOps / Platform Eng — 65% Coverage → SHARED/FRACTIONAL</b>Infra Agent handles: Vercel + GitHub Actions config, Neon branch scripts, Vanta SOC 2 evidence (70%+ automated), monitoring alert templates<br>Human owns: security hardening decisions, incident response judgment, PCI boundary enforcement<br>→ Don't hire a dedicated DevOps FTE. Borrow 30% of a platform engineer from another team.<br><span class="tl-agent">Agents cover: IaC templates, CI/CD config, SOC 2 evidence, Lighthouse CI, branch automation</span></div>
     </div>
 
   </div>
@@ -492,20 +565,30 @@
 
   <div class="row">
 
-    <div class="node p0">
+    <div class="node p0 ag-low">
       <div class="phase-bar"></div>
       <div class="role">Senior Product Designer</div>
       <div class="owns">Canvas UX end-to-end<br>AI creation flow<br>Commerce Intelligence Drawer<br>All operator journeys</div>
       <span class="hire-badge">Month 1–2</span>
-      <div class="tooltip"><b>Senior Product Designer</b>Owns canvas UX end-to-end — sole designer on core team<br>AI creation flow (describe → draft → refine → publish)<br>Commerce Intelligence Drawer (Create + Optimize modes)<br>Operator journeys: Sofia, Mateus, Camille, Marcus, Diego<br>WCAG 2.1 AA on all platform-provided components<br>Sprint design 1 week ahead of engineering</div>
+      <div class="agent-strip">
+        <div class="ag-bar-wrap"><div class="ag-bar" style="width:25%"></div></div>
+        <span class="ag-label">25% · Design + Coding</span>
+      </div>
+      <div class="tooltip"><b>Senior Product Designer — 25% Agent Coverage</b>Human owns: UX judgment, accessibility decisions, operator journey design, taste<br>Agents assist: v0 for component layout explorations, Figma AI for variant generation, WCAG check automation<br>Sofia/Mateus/Camille journey decisions cannot be delegated to a model<br><span class="tl-agent">Agents cover: component layout variants, icon sets, accessibility scan, redline docs</span></div>
     </div>
 
-    <div class="node p2">
-      <div class="phase-bar"></div>
+    <!-- UX Researcher — ELIMINATED -->
+    <div class="node p2 ag-full eliminated">
+      <div class="phase-bar" style="background:var(--ag-full)"></div>
       <div class="role">UX Researcher<br>(contract / shared)</div>
       <div class="owns">Design partner usability<br>Beta session feedback<br>AI quality benchmarking</div>
-      <span class="hire-badge">Month 4–6</span>
-      <div class="tooltip"><b>UX Researcher — Contract or Shared</b>Joins at P1/P2 boundary when beta cohort grows<br>Time-tracked first-publish sessions (target: ≤60 min median)<br>Red team: operators attempt to break Red Zone governance<br>AI quality: regeneration rate + edit depth pre-publish benchmarks<br>Can be shared from commercetools research function</div>
+      <span class="hire-badge" style="border-color:var(--ag-full);color:var(--ag-full)">Month 4–6</span>
+      <span class="elim-badge">→ Research Agent</span>
+      <div class="agent-strip" style="background:#FEF2F2">
+        <div class="ag-bar-wrap"><div class="ag-bar" style="width:85%;background:var(--ag-full)"></div></div>
+        <span class="ag-label" style="color:var(--ag-full)">85% · DO NOT HIRE</span>
+      </div>
+      <div class="tooltip"><b>UX Researcher — 85% Coverage → ELIMINATED</b>The product being built IS the research tool:<br>· ACI heatmaps = usability data already instrumented<br>· ClickHouse session data = time-tracked publish sessions<br>· LLM summarizes design partner feedback automatically<br>· Automated Red Zone red-teaming via CI penetration tests<br>· AI quality benchmarking = built-in regeneration rate metric<br>→ Do not hire this role. Research Agent covers all outputs.<br><span class="tl-agent">Research Agent covers everything this role would produce</span></div>
     </div>
 
   </div>
@@ -513,40 +596,172 @@
 <!-- ══════════════════════════════════════════
      GTM & PARTNERSHIPS
 ══════════════════════════════════════════ -->
-  <div class="section-label"><span>GTM &amp; Partnerships</span></div>
+  <div class="section-label"><span>GTM &amp; Partnerships · Relationship roles are irreplaceable · Content + Ops automatable</span></div>
 
   <div class="row">
 
-    <div class="node p1">
+    <div class="node p1 ag-low">
       <div class="phase-bar"></div>
       <div class="role">Solutions Engineer<br>(embedded)</div>
       <div class="owns">Design partner liaison<br>Onboarding + impl. support<br>SI developer portal<br>Green/Red Zone docs</div>
       <span class="hire-badge">Month 2–3</span>
-      <div class="tooltip"><b>Solutions Engineer — embedded from SE org</b>Embedded from commercetools SE function — not a new hire<br>Design partner primary contact (weekly calls + office hours)<br>Owns Green/Red Zone SI developer portal documentation<br>ComponentSlot contracts v1 review with SI partners<br>Chairs design partner sessions from Month 2 onward<br>Migration support for pilot customers</div>
+      <div class="agent-strip">
+        <div class="ag-bar-wrap"><div class="ag-bar" style="width:30%"></div></div>
+        <span class="ag-label">30% · Docs Agent</span>
+      </div>
+      <div class="tooltip"><b>Solutions Engineer — 30% Agent Coverage</b>Human owns: weekly design partner calls, trust-building, SI relationship navigation<br>Docs Agent handles: SI developer portal documentation, ComponentSlot contract specs, migration guides, onboarding playbooks<br>The Slack office-hours bot for common Q&amp;A reduces live support load<br><span class="tl-agent">Agents cover: developer portal docs, integration guides, FAQ bot, migration checklist generation</span></div>
     </div>
 
-    <div class="node p-gtm">
+    <div class="node p-gtm ag-mid">
       <div class="phase-bar"></div>
       <div class="role">Product Marketing<br>Manager (PMM)</div>
       <div class="owns">GTM narrative<br>Public beta launch<br>Analyst briefings<br>Competitive positioning</div>
       <span class="hire-badge">Month 4–5</span>
-      <div class="tooltip"><b>Product Marketing Manager</b>Joins before P1 (editor + component library) ships<br>Owns "Next-Gen Frontend" external narrative with CMO<br>Displacement story: ContentSquare, Amplitude, Optimizely<br>Public beta announcement (target: Month 5–6)<br>Analyst briefing prep (Gartner, Forrester)<br>SI enablement materials + certification program</div>
+      <div class="agent-strip">
+        <div class="ag-bar-wrap"><div class="ag-bar" style="width:40%"></div></div>
+        <span class="ag-label">40% · Content Agent</span>
+      </div>
+      <div class="tooltip"><b>PMM — 40% Agent Coverage</b>Human owns: Gartner/Forrester analyst relationships, strategic narrative judgment, customer interviews<br>Content Agent handles: competitive landscape analysis, launch blog posts, one-pagers, SI enablement decks, certification content<br>→ Hire delayed 1–2 months vs. original plan. Content Agent covers pre-launch work.<br><span class="tl-agent">Agents cover: competitive analysis, launch copy, enablement materials, first-draft analyst briefs</span></div>
     </div>
 
-    <div class="node p-gtm">
+    <div class="node p-gtm ag-low">
       <div class="phase-bar"></div>
       <div class="role">SI Partner Manager</div>
       <div class="owns">SI program structure<br>Commercial terms<br>Co-sell enablement<br>3 SI co-sells at M12</div>
       <span class="hire-badge">Month 6–7</span>
-      <div class="tooltip"><b>SI Partner Manager</b>Joins before P3 (AI Experience Engine) to prep SI co-sell<br>Owns SI partner program structure — which SIs, what access<br>Green/Red Zone governance: holds boundary against SI commercial lobbying<br>30% implementation revenue share model for co-selling SIs<br>Target: 3 SI co-sells by Month 12<br>SI developer portal, starter component packages, certification</div>
+      <div class="agent-strip">
+        <div class="ag-bar-wrap"><div class="ag-bar" style="width:20%"></div></div>
+        <span class="ag-label">20% · Content Agent</span>
+      </div>
+      <div class="tooltip"><b>SI Partner Manager — 20% Agent Coverage</b>Human owns: SI negotiations, Green/Red Zone governance boundary defense (this is adversarial), co-sell strategy<br>Agents assist: certification program content, SI enablement module drafts, partner portal documentation<br>This role's primary value is holding the governance line against SI commercial lobbying — that requires a human in the room<br><span class="tl-agent">Agents cover: partner portal content, certification materials, co-sell deck templates</span></div>
     </div>
 
-    <div class="node p3">
+    <div class="node p3 ag-low">
       <div class="phase-bar"></div>
       <div class="role">Customer Success<br>Manager</div>
       <div class="owns">Design partner health<br>Onboarding (10 customers)<br>ACI displacement case study<br>Reference customer program</div>
       <span class="hire-badge">Month 6–8</span>
-      <div class="tooltip"><b>Customer Success Manager</b>Joins as design partners move to production + public beta grows<br>Owns design partner health — churn prevention, expansion signals<br>Target: 10 reference customers live by Month 12<br>ACI tool displacement: ≥1 ContentSquare/Amplitude retirement per account<br>Operator NPS &gt;50 program<br>80% licensed operators actively publishing within 60 days</div>
+      <div class="agent-strip">
+        <div class="ag-bar-wrap"><div class="ag-bar" style="width:30%"></div></div>
+        <span class="ag-label">30% · CS Ops Agent</span>
+      </div>
+      <div class="tooltip"><b>Customer Success Manager — 30% Agent Coverage</b>Human owns: account health relationships, renewal conversations, escalation handling, NPS &gt;50 program<br>CS Ops Agent handles: automated health scoring from ClickHouse Tenant Intelligence Score, onboarding sequence automation, QBR deck generation from ACI data<br><span class="tl-agent">Agents cover: health dashboards, automated onboarding emails, QBR data pulls, churn risk alerts</span></div>
+    </div>
+
+  </div>
+
+<!-- ══════════════════════════════════════════
+     AI AGENT LAYER
+══════════════════════════════════════════ -->
+  <div class="section-label agent-section-label"><span>AI Agent Layer — 5 Agents · Always On · Deployed Day 1</span></div>
+
+  <div class="row" style="align-items:flex-start; gap:10px; flex-wrap:wrap">
+
+    <!-- Agent 1: Coding -->
+    <div class="agent-node">
+      <div class="an-bar"></div>
+      <span class="an-icon">💻</span>
+      <div class="an-name">Coding Agent</div>
+      <div class="an-tool">Claude Code · GitHub Copilot Workspace</div>
+      <div class="an-covers">
+        <b>Augments</b>
+        Eng Lead · FE Eng 1, 2, 3 · Backend Eng<br>
+        Scaffolding, boilerplate, PR descriptions, test generation, code review triage
+        <b>Cannot do</b>
+        Security-critical auth/RBAC decisions · executor.ts Red Zone logic · architecture judgment
+      </div>
+      <div class="agent-augments">
+        <span class="aug-pill">Eng Lead 20%</span>
+        <span class="aug-pill">FE1 40%</span>
+        <span class="aug-pill">FE2 35%</span>
+        <span class="aug-pill">FE3 50%</span>
+        <span class="aug-pill">Backend 35%</span>
+      </div>
+      <span class="an-badge">Active Month 1</span>
+      <span class="an-net">Saves ~1.5 FTE equivalent</span>
+    </div>
+
+    <!-- Agent 2: Infra -->
+    <div class="agent-node">
+      <div class="an-bar"></div>
+      <span class="an-icon">🏗️</span>
+      <div class="an-name">Infra Agent</div>
+      <div class="an-tool">Vanta · GitHub Actions · Vercel CLI · Pulumi AI</div>
+      <div class="an-covers">
+        <b>Largely replaces</b>
+        DevOps / Platform Eng FTE<br>
+        CI/CD configs, Neon branch automation, SOC 2 evidence (Vanta), Lighthouse CI gating, monitoring alert templates
+        <b>Cannot do</b>
+        Security hardening decisions · incident judgment · PCI boundary enforcement sign-off
+      </div>
+      <div class="agent-augments">
+        <span class="aug-pill">DevOps 65% → Fractional</span>
+      </div>
+      <span class="an-badge">Active Month 2</span>
+      <span class="an-net">Eliminates dedicated DevOps hire</span>
+    </div>
+
+    <!-- Agent 3: Data -->
+    <div class="agent-node">
+      <div class="an-bar"></div>
+      <span class="an-icon">📊</span>
+      <div class="an-name">Data Agent</div>
+      <div class="an-tool">Claude Code · dbt Cloud AI · ClickHouse native</div>
+      <div class="an-covers">
+        <b>Augments</b>
+        Data Engineer (55% coverage)<br>
+        Pipeline scaffolding, ClickHouse DDL + queries, event taxonomy from docs, ingestion handler code, Inngest job templates
+        <b>Cannot do</b>
+        CLV correlation model design · statistical significance framework · Horizon 2 outcome architecture
+      </div>
+      <div class="agent-augments">
+        <span class="aug-pill">Data Engineer 55%</span>
+      </div>
+      <span class="an-badge">Active Month 2</span>
+      <span class="an-net">Delays hire by 1 month</span>
+    </div>
+
+    <!-- Agent 4: Research -->
+    <div class="agent-node">
+      <div class="an-bar"></div>
+      <span class="an-icon">🔬</span>
+      <div class="an-name">Research Agent</div>
+      <div class="an-tool">ACI native analytics · Claude API · ClickHouse</div>
+      <div class="an-covers">
+        <b>Fully replaces</b>
+        UX Researcher contract role<br>
+        Session heatmap analysis, time-tracked publish benchmarks, AI quality metrics (regen rate + edit depth), design partner feedback synthesis, Red Zone red-team automated via CI
+        <b>Why this works</b>
+        The product being built IS the research tool. ACI collects exactly what a UX researcher would measure.
+      </div>
+      <div class="agent-augments">
+        <span class="aug-pill eliminated">UX Researcher — eliminated</span>
+      </div>
+      <span class="an-badge">Active Month 3</span>
+      <span class="an-net">Eliminates contract hire</span>
+    </div>
+
+    <!-- Agent 5: Content & Docs -->
+    <div class="agent-node">
+      <div class="an-bar"></div>
+      <span class="an-icon">✍️</span>
+      <div class="an-name">Content &amp; Docs Agent</div>
+      <div class="an-tool">Claude API · brand guidelines · product docs</div>
+      <div class="an-covers">
+        <b>Augments</b>
+        PMM · Solutions Eng · SI Partner Mgr · CSM<br>
+        Competitive analysis, launch blog posts, SI developer portal docs, enablement decks, certification content, QBR templates, onboarding sequences
+        <b>Cannot do</b>
+        Analyst relationships · strategic narrative judgment · customer-facing conversations
+      </div>
+      <div class="agent-augments">
+        <span class="aug-pill">PMM 40%</span>
+        <span class="aug-pill">SE Docs 30%</span>
+        <span class="aug-pill">SI Mgr 20%</span>
+        <span class="aug-pill">CSM 30%</span>
+      </div>
+      <span class="an-badge">Active Month 3</span>
+      <span class="an-net">PMM hire delayed 2 months</span>
     </div>
 
   </div>
@@ -558,17 +773,16 @@
      HIRING TIMELINE
 ══════════════════════════════════════════ -->
 <div class="timeline">
-  <h3>Hiring &amp; Ramp Timeline — 12 Months</h3>
+  <h3>Hiring &amp; Agent Deployment Timeline — 12 Months</h3>
   <div class="tl-grid">
 
-    <!-- Header row -->
     <div></div>
     <div class="tl-header">M1</div><div class="tl-header">M2</div><div class="tl-header">M3</div>
     <div class="tl-header">M4</div><div class="tl-header">M5</div><div class="tl-header">M6</div>
     <div class="tl-header">M7</div><div class="tl-header">M8</div><div class="tl-header">M9</div>
     <div class="tl-header">M10</div><div class="tl-header">M11</div><div class="tl-header">M12</div>
 
-    <!-- Epic phase reference row -->
+    <!-- Phase -->
     <div class="tl-label" style="color:var(--ct-muted);font-size:9px">Phase</div>
     <div class="tl-cell" style="background:var(--phase0);opacity:.25;border-radius:3px 0 0 3px"></div>
     <div class="tl-cell" style="background:var(--phase0);opacity:.25"></div>
@@ -614,7 +828,7 @@
     <div class="tl-cell active" style="background:var(--phase0)"></div>
 
     <!-- FE1 -->
-    <div class="tl-label">FE Eng 1 (Platform)</div>
+    <div class="tl-label">FE1 + Coding Agent</div>
     <div class="tl-cell inactive"></div>
     <div class="tl-cell active" style="background:var(--phase0)"></div>
     <div class="tl-cell active" style="background:var(--phase0)"></div>
@@ -629,7 +843,7 @@
     <div class="tl-cell active" style="background:var(--phase0)"></div>
 
     <!-- FE2 -->
-    <div class="tl-label">FE Eng 2 (Canvas)</div>
+    <div class="tl-label">FE2 + Coding Agent</div>
     <div class="tl-cell inactive"></div>
     <div class="tl-cell active" style="background:var(--phase0)"></div>
     <div class="tl-cell active" style="background:var(--phase0)"></div>
@@ -644,7 +858,7 @@
     <div class="tl-cell active" style="background:var(--phase0)"></div>
 
     <!-- Backend Eng -->
-    <div class="tl-label">Backend Eng</div>
+    <div class="tl-label">Backend + Coding Agent</div>
     <div class="tl-cell inactive"></div>
     <div class="tl-cell active" style="background:var(--phase0)"></div>
     <div class="tl-cell active" style="background:var(--phase0)"></div>
@@ -658,11 +872,11 @@
     <div class="tl-cell active" style="background:var(--phase0)"></div>
     <div class="tl-cell active" style="background:var(--phase0)"></div>
 
-    <!-- Data Eng -->
-    <div class="tl-label">Data Engineer</div>
+    <!-- Data Eng (delayed 1mo) -->
+    <div class="tl-label">Data Eng + Data Agent</div>
     <div class="tl-cell inactive"></div>
     <div class="tl-cell inactive"></div>
-    <div class="tl-cell active" style="background:var(--phase1)"></div>
+    <div class="tl-cell inactive"></div>
     <div class="tl-cell active" style="background:var(--phase1)"></div>
     <div class="tl-cell active" style="background:var(--phase1)"></div>
     <div class="tl-cell active" style="background:var(--phase1)"></div>
@@ -673,27 +887,27 @@
     <div class="tl-cell active" style="background:var(--phase1)"></div>
     <div class="tl-cell active" style="background:var(--phase1)"></div>
 
-    <!-- DevOps -->
-    <div class="tl-label">DevOps / Platform</div>
+    <!-- DevOps → fractional + Infra Agent -->
+    <div class="tl-label" style="color:var(--ag-high);font-weight:700">DevOps → Fractional</div>
     <div class="tl-cell inactive"></div>
     <div class="tl-cell inactive"></div>
-    <div class="tl-cell active" style="background:var(--phase1)"></div>
-    <div class="tl-cell active" style="background:var(--phase1)"></div>
-    <div class="tl-cell active" style="background:var(--phase1)"></div>
-    <div class="tl-cell active" style="background:var(--phase1)"></div>
-    <div class="tl-cell active" style="background:var(--phase1)"></div>
-    <div class="tl-cell active" style="background:var(--phase1)"></div>
-    <div class="tl-cell active" style="background:var(--phase1)"></div>
-    <div class="tl-cell active" style="background:var(--phase1)"></div>
-    <div class="tl-cell active" style="background:var(--phase1)"></div>
-    <div class="tl-cell active" style="background:var(--phase1)"></div>
+    <div class="tl-cell agent-active"></div>
+    <div class="tl-cell agent-active"></div>
+    <div class="tl-cell agent-active"></div>
+    <div class="tl-cell agent-active"></div>
+    <div class="tl-cell agent-active"></div>
+    <div class="tl-cell agent-active"></div>
+    <div class="tl-cell agent-active"></div>
+    <div class="tl-cell agent-active"></div>
+    <div class="tl-cell agent-active"></div>
+    <div class="tl-cell agent-active"></div>
 
-    <!-- FE3 AI -->
-    <div class="tl-label">FE Eng 3 (AI)</div>
+    <!-- FE3 AI (delayed 1mo) -->
+    <div class="tl-label">FE3 (AI) + Coding</div>
     <div class="tl-cell inactive"></div>
     <div class="tl-cell inactive"></div>
     <div class="tl-cell inactive"></div>
-    <div class="tl-cell active" style="background:var(--phase2)"></div>
+    <div class="tl-cell inactive"></div>
     <div class="tl-cell active" style="background:var(--phase2)"></div>
     <div class="tl-cell active" style="background:var(--phase2)"></div>
     <div class="tl-cell active" style="background:var(--phase2)"></div>
@@ -718,22 +932,37 @@
     <div class="tl-cell active" style="background:var(--phase0)"></div>
     <div class="tl-cell active" style="background:var(--phase0)"></div>
 
-    <!-- UX Researcher -->
-    <div class="tl-label">UX Researcher</div>
-    <div class="tl-cell inactive"></div>
-    <div class="tl-cell inactive"></div>
-    <div class="tl-cell inactive"></div>
-    <div class="tl-cell inactive"></div>
-    <div class="tl-cell active" style="background:var(--phase2)"></div>
-    <div class="tl-cell active" style="background:var(--phase2)"></div>
-    <div class="tl-cell inactive"></div>
-    <div class="tl-cell inactive"></div>
-    <div class="tl-cell inactive"></div>
-    <div class="tl-cell inactive"></div>
-    <div class="tl-cell inactive"></div>
-    <div class="tl-cell inactive"></div>
+    <!-- UX Researcher → ELIMINATED -->
+    <div class="tl-label" style="color:var(--ag-full);text-decoration:line-through">UX Researcher</div>
+    <div class="tl-cell eliminated-cell"></div>
+    <div class="tl-cell eliminated-cell"></div>
+    <div class="tl-cell eliminated-cell"></div>
+    <div class="tl-cell eliminated-cell"></div>
+    <div class="tl-cell eliminated-cell"></div>
+    <div class="tl-cell eliminated-cell"></div>
+    <div class="tl-cell eliminated-cell"></div>
+    <div class="tl-cell eliminated-cell"></div>
+    <div class="tl-cell eliminated-cell"></div>
+    <div class="tl-cell eliminated-cell"></div>
+    <div class="tl-cell eliminated-cell"></div>
+    <div class="tl-cell eliminated-cell"></div>
 
-    <!-- SE embedded -->
+    <!-- Research Agent replaces it -->
+    <div class="tl-label agent-row">Research Agent ↑</div>
+    <div class="tl-cell inactive"></div>
+    <div class="tl-cell inactive"></div>
+    <div class="tl-cell agent-active"></div>
+    <div class="tl-cell agent-active"></div>
+    <div class="tl-cell agent-active"></div>
+    <div class="tl-cell agent-active"></div>
+    <div class="tl-cell agent-active"></div>
+    <div class="tl-cell agent-active"></div>
+    <div class="tl-cell agent-active"></div>
+    <div class="tl-cell agent-active"></div>
+    <div class="tl-cell agent-active"></div>
+    <div class="tl-cell agent-active"></div>
+
+    <!-- SE -->
     <div class="tl-label">Solutions Eng (emb)</div>
     <div class="tl-cell inactive"></div>
     <div class="tl-cell inactive"></div>
@@ -748,20 +977,35 @@
     <div class="tl-cell active" style="background:var(--phase1)"></div>
     <div class="tl-cell active" style="background:var(--phase1)"></div>
 
-    <!-- PMM -->
-    <div class="tl-label">PMM</div>
+    <!-- PMM (delayed 2mo) -->
+    <div class="tl-label">PMM (delayed 2mo)</div>
     <div class="tl-cell inactive"></div>
     <div class="tl-cell inactive"></div>
     <div class="tl-cell inactive"></div>
     <div class="tl-cell inactive"></div>
+    <div class="tl-cell inactive"></div>
+    <div class="tl-cell inactive"></div>
     <div class="tl-cell active" style="background:var(--phase-gtm)"></div>
     <div class="tl-cell active" style="background:var(--phase-gtm)"></div>
     <div class="tl-cell active" style="background:var(--phase-gtm)"></div>
     <div class="tl-cell active" style="background:var(--phase-gtm)"></div>
     <div class="tl-cell active" style="background:var(--phase-gtm)"></div>
     <div class="tl-cell active" style="background:var(--phase-gtm)"></div>
-    <div class="tl-cell active" style="background:var(--phase-gtm)"></div>
-    <div class="tl-cell active" style="background:var(--phase-gtm)"></div>
+
+    <!-- Content Agent (covers PMM gap) -->
+    <div class="tl-label agent-row">Content Agent ↑</div>
+    <div class="tl-cell inactive"></div>
+    <div class="tl-cell inactive"></div>
+    <div class="tl-cell agent-active"></div>
+    <div class="tl-cell agent-active"></div>
+    <div class="tl-cell agent-active"></div>
+    <div class="tl-cell agent-active"></div>
+    <div class="tl-cell agent-active"></div>
+    <div class="tl-cell agent-active"></div>
+    <div class="tl-cell agent-active"></div>
+    <div class="tl-cell agent-active"></div>
+    <div class="tl-cell agent-active"></div>
+    <div class="tl-cell agent-active"></div>
 
     <!-- SI Partner Mgr -->
     <div class="tl-label">SI Partner Mgr</div>
@@ -793,7 +1037,7 @@
     <div class="tl-cell active" style="background:var(--phase-gtm)"></div>
     <div class="tl-cell active" style="background:var(--phase-gtm)"></div>
 
-    <!-- Milestones row -->
+    <!-- Milestones -->
     <div class="tl-label" style="font-size:9px;color:var(--ct-muted)">Milestone</div>
     <div class="tl-cell" style="font-size:8px;color:var(--ct-blue);font-weight:700;display:flex;align-items:center;justify-content:center">P0 start</div>
     <div class="tl-cell inactive"></div>
@@ -809,6 +1053,14 @@
     <div class="tl-cell" style="font-size:8px;color:var(--phase-gtm);font-weight:700;display:flex;align-items:center;justify-content:center">$1M ARR</div>
 
   </div>
+  <div style="margin-top:12px;font-size:10px;color:var(--ct-muted)">
+    <span style="display:inline-flex;align-items:center;gap:5px;margin-right:16px">
+      <span style="display:inline-block;width:18px;height:8px;background:repeating-linear-gradient(45deg,#818CF8,#818CF8 3px,#C7D2FE 3px,#C7D2FE 6px);border-radius:2px"></span> AI Agent active (striped = agent handling the work, no human FTE required)
+    </span>
+    <span style="display:inline-flex;align-items:center;gap:5px">
+      <span style="display:inline-block;width:18px;height:8px;background:repeating-linear-gradient(-45deg,#fff,#fff 4px,#F3F4F6 4px,#F3F4F6 8px);border:1px dashed #D1D5DB;border-radius:2px"></span> Role eliminated — do not hire
+    </span>
+  </div>
 </div>
 
 
@@ -817,39 +1069,43 @@
 ══════════════════════════════════════════ -->
 <div class="summary">
 
-  <div class="summary-card">
-    <div class="sc-num">14</div>
-    <div class="sc-label">Total dedicated FTEs<br>by Month 8</div>
+  <div class="summary-card" style="border-color:var(--ct-blue)">
+    <div style="display:flex;align-items:baseline;gap:8px">
+      <span class="sc-num" style="text-decoration:line-through;color:var(--ct-muted);font-size:18px">14</span>
+      <span style="color:var(--ct-muted)">→</span>
+      <span class="sc-num" style="color:var(--ct-blue)">12</span>
+    </div>
+    <div class="sc-label">Committed FTEs<br>with agent layer</div>
     <div class="sc-bar" style="background:var(--ct-blue)"></div>
   </div>
 
-  <div class="summary-card">
-    <div class="sc-num">7</div>
-    <div class="sc-label">Engineering ICs<br>+ 1 Eng Lead</div>
-    <div class="sc-bar" style="background:var(--phase0)"></div>
+  <div class="summary-card agent-card">
+    <div class="sc-num" style="color:var(--agent-text)">5</div>
+    <div class="sc-label">AI Agents always on<br>Coding · Infra · Data · Research · Content</div>
+    <div class="sc-bar" style="background:linear-gradient(90deg,#6366F1,#8B5CF6)"></div>
   </div>
 
   <div class="summary-card">
-    <div class="sc-num">2</div>
-    <div class="sc-label">Design<br>(1 FTE + 1 contract)</div>
-    <div class="sc-bar" style="background:var(--phase2)"></div>
+    <div class="sc-num saving">1</div>
+    <div class="sc-label">Role fully eliminated<br>UX Researcher — ACI is the research tool</div>
+    <div class="sc-bar" style="background:var(--ag-full)"></div>
   </div>
 
   <div class="summary-card">
-    <div class="sc-num">4</div>
-    <div class="sc-label">GTM &amp; Partnerships<br>(SE embedded, PMM, SI Mgr, CSM)</div>
-    <div class="sc-bar" style="background:var(--phase-gtm)"></div>
+    <div class="sc-num saving">1</div>
+    <div class="sc-label">Role → shared/fractional<br>DevOps · Infra Agent covers 65%</div>
+    <div class="sc-bar" style="background:var(--ag-high)"></div>
   </div>
 
   <div class="summary-card">
-    <div class="sc-num">5</div>
-    <div class="sc-label">Month 2 team size<br>(Sprint Zero cohort)</div>
-    <div class="sc-bar" style="background:var(--phase1)"></div>
+    <div class="sc-num saving">3</div>
+    <div class="sc-label">Hires delayed 1–2 months<br>Data Eng · FE3 · PMM — agents bridge gap</div>
+    <div class="sc-bar" style="background:var(--ag-mid)"></div>
   </div>
 
   <div class="summary-card">
-    <div class="sc-num">4</div>
-    <div class="sc-label">Executive sponsors<br>CPO · CTO · CRO · CMO</div>
+    <div class="sc-num" style="color:var(--ct-muted)">0</div>
+    <div class="sc-label">Executive or relationship roles<br>replaceable — authority &amp; trust stay human</div>
     <div class="sc-bar" style="background:var(--phase-exec)"></div>
   </div>
 
