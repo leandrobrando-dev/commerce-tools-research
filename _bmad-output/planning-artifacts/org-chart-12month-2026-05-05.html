@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Org Chart — Next-Gen Frontend · 12-Month Build</title>
+<style>
+  :root {
+    --ct-blue:    #1A56DB;
+    --ct-dark:    #111827;
+    --ct-mid:     #374151;
+    --ct-muted:   #6B7280;
+    --ct-border:  #E5E7EB;
+    --ct-bg:      #F9FAFB;
+    --ct-white:   #FFFFFF;
+    --phase0:     #1A56DB;
+    --phase1:     #0E9F6E;
+    --phase2:     #7E3AF2;
+    --phase3:     #F05252;
+    --phase-gtm:  #FF8A4C;
+    --phase-exec: #9CA3AF;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--ct-bg);
+    color: var(--ct-dark);
+    min-height: 100vh;
+    padding: 32px 24px 64px;
+  }
+
+  /* ── Header ── */
+  .header {
+    max-width: 1100px;
+    margin: 0 auto 40px;
+  }
+  .header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--ct-dark);
+    margin-bottom: 4px;
+  }
+  .header p {
+    font-size: 13px;
+    color: var(--ct-muted);
+  }
+
+  /* ── Legend ── */
+  .legend {
+    max-width: 1100px;
+    margin: 0 auto 40px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+  }
+  .legend-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ct-muted);
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    margin-right: 4px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--ct-mid);
+    background: var(--ct-white);
+    border: 1px solid var(--ct-border);
+    border-radius: 20px;
+    padding: 4px 12px;
+  }
+  .legend-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* ── Chart wrapper ── */
+  .chart {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  /* ── Row ── */
+  .row {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    position: relative;
+    padding: 0 0 0;
+  }
+
+  /* ── Connector lines (CSS only) ── */
+  .connector-down {
+    width: 2px;
+    height: 28px;
+    background: var(--ct-border);
+    margin: 0 auto;
+  }
+  .connector-h {
+    height: 2px;
+    background: var(--ct-border);
+    flex: 1;
+    align-self: center;
+  }
+  .connector-row {
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    padding: 0;
+    margin: 0;
+  }
+
+  /* ── Node ── */
+  .node {
+    background: var(--ct-white);
+    border: 1.5px solid var(--ct-border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    cursor: pointer;
+    position: relative;
+    transition: box-shadow .15s, border-color .15s;
+    min-width: 155px;
+    max-width: 200px;
+    text-align: center;
+  }
+  .node:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,.10);
+  }
+
+  .node .phase-bar {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    border-radius: 10px 10px 0 0;
+  }
+
+  .node .role {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--ct-dark);
+    margin-top: 6px;
+    line-height: 1.3;
+  }
+  .node .name-tag {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ct-blue);
+    margin-top: 3px;
+  }
+  .node .owns {
+    font-size: 10px;
+    color: var(--ct-muted);
+    margin-top: 5px;
+    line-height: 1.5;
+  }
+  .node .hire-badge {
+    display: inline-block;
+    margin-top: 8px;
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    padding: 2px 8px;
+    border-radius: 20px;
+    background: var(--ct-bg);
+    border: 1px solid var(--ct-border);
+    color: var(--ct-muted);
+  }
+
+  /* Phase colours */
+  .p-exec  .phase-bar { background: var(--phase-exec); }
+  .p-exec  .hire-badge { border-color: var(--phase-exec); color: var(--phase-exec); }
+
+  .p0 .phase-bar { background: var(--phase0); }
+  .p0 .hire-badge { border-color: var(--phase0); color: var(--phase0); }
+
+  .p1 .phase-bar { background: var(--phase1); }
+  .p1 .hire-badge { border-color: var(--phase1); color: var(--phase1); }
+
+  .p2 .phase-bar { background: var(--phase2); }
+  .p2 .hire-badge { border-color: var(--phase2); color: var(--phase2); }
+
+  .p3 .phase-bar { background: var(--phase3); }
+  .p3 .hire-badge { border-color: var(--phase3); color: var(--phase3); }
+
+  .p-gtm .phase-bar { background: var(--phase-gtm); }
+  .p-gtm .hire-badge { border-color: var(--phase-gtm); color: var(--phase-gtm); }
+
+  /* ── Exec row: muted style ── */
+  .node.exec-node {
+    border-style: dashed;
+    opacity: .8;
+  }
+  .node.exec-node .role { font-weight: 600; color: var(--ct-mid); }
+
+  /* ── Head node: larger ── */
+  .node.head-node {
+    min-width: 175px;
+    border-color: var(--ct-blue);
+    border-width: 2px;
+  }
+  .node.head-node .role { font-size: 13px; font-weight: 800; }
+
+  /* ── Section label ── */
+  .section-label {
+    text-align: center;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--ct-muted);
+    margin: 28px 0 12px;
+  }
+  .section-label span {
+    display: inline-block;
+    padding: 3px 12px;
+    background: var(--ct-border);
+    border-radius: 20px;
+  }
+
+  /* ── Branch lines (SVG) ── */
+  svg.lines {
+    display: block;
+    overflow: visible;
+    pointer-events: none;
+  }
+
+  /* ── Tooltip ── */
+  .tooltip {
+    display: none;
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--ct-dark);
+    color: #fff;
+    font-size: 11px;
+    line-height: 1.55;
+    padding: 10px 14px;
+    border-radius: 8px;
+    white-space: nowrap;
+    z-index: 100;
+    box-shadow: 0 4px 16px rgba(0,0,0,.25);
+    pointer-events: none;
+    min-width: 200px;
+    text-align: left;
+  }
+  .node:hover .tooltip { display: block; }
+  .tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%; left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: var(--ct-dark);
+  }
+  .tooltip b { display: block; margin-bottom: 4px; font-size: 12px; }
+
+  /* ── Timeline strip ── */
+  .timeline {
+    max-width: 1100px;
+    margin: 48px auto 0;
+    border: 1px solid var(--ct-border);
+    border-radius: 12px;
+    background: var(--ct-white);
+    padding: 20px 24px;
+  }
+  .timeline h3 {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .07em;
+    color: var(--ct-muted);
+    margin-bottom: 16px;
+  }
+  .tl-grid {
+    display: grid;
+    grid-template-columns: 90px repeat(12, 1fr);
+    gap: 2px;
+    font-size: 10px;
+  }
+  .tl-header { font-weight: 700; text-align: center; color: var(--ct-muted); padding: 4px 2px; }
+  .tl-label { font-weight: 600; color: var(--ct-mid); display: flex; align-items: center; font-size: 10px; }
+  .tl-cell {
+    border-radius: 3px;
+    height: 22px;
+  }
+  .tl-cell.active { opacity: 1; }
+  .tl-cell.inactive { background: var(--ct-bg); border: 1px solid var(--ct-border); }
+
+  /* ── Headcount summary ── */
+  .summary {
+    max-width: 1100px;
+    margin: 20px auto 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+  }
+  .summary-card {
+    background: var(--ct-white);
+    border: 1px solid var(--ct-border);
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
+  .summary-card .sc-num {
+    font-size: 26px;
+    font-weight: 800;
+    line-height: 1;
+    color: var(--ct-dark);
+  }
+  .summary-card .sc-label {
+    font-size: 11px;
+    color: var(--ct-muted);
+    margin-top: 4px;
+  }
+  .summary-card .sc-bar {
+    height: 3px;
+    border-radius: 2px;
+    margin-top: 10px;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Org Chart — Next-Gen Frontend · 12-Month Build</h1>
+  <p>commercetools · Leandro Palazzo · May 2026 · 14 FTEs across product, engineering, design &amp; GTM</p>
+</div>
+
+<!-- Legend -->
+<div class="legend">
+  <span class="legend-label">Hire phase</span>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--phase-exec)"></div> Executive sponsors (dotted)</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--phase0)"></div> Month 0–2 · P0 foundation</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--phase1)"></div> Month 2–4 · P0/P1 delivery</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--phase2)"></div> Month 4–6 · P1/P2 expansion</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--phase3)"></div> Month 6–9 · P3 AI Engine</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--phase-gtm)"></div> Month 4–8 · GTM &amp; partnerships</div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     EXECUTIVE SPONSORS
+══════════════════════════════════════════ -->
+<div class="chart">
+
+  <div class="section-label"><span>Executive Sponsors — Dotted Line Accountability</span></div>
+
+  <div class="row">
+
+    <div class="node exec-node p-exec">
+      <div class="phase-bar"></div>
+      <div class="role">CPO</div>
+      <div class="owns">MLP scope authority<br>Headcount sign-off<br>Pricing model owner</div>
+      <span class="hire-badge">Existing</span>
+      <div class="tooltip"><b>CPO</b>Final call on P0/P1 scope<br>Approves headcount by Day 14<br>Owns Tenant Intelligence Score policy<br>Sets AI Engine pricing model by Day 45</div>
+    </div>
+
+    <div class="node exec-node p-exec">
+      <div class="phase-bar"></div>
+      <div class="role">CTO</div>
+      <div class="owns">Eng headcount authority<br>Architecture gate<br>CI/CD + infra budget</div>
+      <span class="hire-badge">Existing</span>
+      <div class="tooltip"><b>CTO</b>Approves eng team headcount<br>Architecture decisions already locked<br>Owns Vercel + Neon + ClickHouse budget<br>SOC 2 audit program owner</div>
+    </div>
+
+    <div class="node exec-node p-exec">
+      <div class="phase-bar"></div>
+      <div class="role">CRO</div>
+      <div class="owns">SI partner terms<br>Design partner access<br>12-month ARR target</div>
+      <span class="hire-badge">Existing</span>
+      <div class="tooltip"><b>CRO</b>SI partner commercial structure by Day 21<br>Opens enterprise account access for design partners<br>Owns $1M ARR target at Month 12<br>SI co-sell program terms</div>
+    </div>
+
+    <div class="node exec-node p-exec">
+      <div class="phase-bar"></div>
+      <div class="role">CMO</div>
+      <div class="owns">External narrative<br>Analyst briefings<br>Public beta launch</div>
+      <span class="hire-badge">Existing</span>
+      <div class="tooltip"><b>CMO</b>Owns "Next-Gen Frontend" external story<br>Analyst briefing schedule<br>Public beta announcement timing<br>Coordinates with Leandro on GTM narrative</div>
+    </div>
+
+  </div>
+
+  <!-- ── down connector ── -->
+  <div class="connector-down" style="margin-top:4px"></div>
+
+<!-- ══════════════════════════════════════════
+     HEAD OF PRODUCT
+══════════════════════════════════════════ -->
+  <div class="section-label"><span>Head of Product — Next-Gen Frontend</span></div>
+
+  <div class="row">
+    <div class="node head-node p0">
+      <div class="phase-bar"></div>
+      <div class="role">Head of Product<br>Next-Gen Frontend</div>
+      <div class="name-tag">Leandro Palazzo</div>
+      <div class="owns">Roadmap · Epics 1–8<br>Design partner program<br>SI partner strategy<br>$1M ARR at Month 12</div>
+      <span class="hire-badge">Day 1</span>
+      <div class="tooltip"><b>Leandro Palazzo — Head of Product</b>Owns all 8 epics + 80 stories<br>Recruits and runs design partner program<br>P0 MLP scope locked Day 28<br>Sprint cadence, backlog ownership<br>Bridges CPO/CTO to delivery team</div>
+    </div>
+  </div>
+
+  <div class="connector-down" style="margin-top:4px"></div>
+
+<!-- ══════════════════════════════════════════
+     ENGINEERING
+══════════════════════════════════════════ -->
+  <div class="section-label"><span>Engineering</span></div>
+
+  <div class="row" style="align-items:flex-start; gap:10px">
+
+    <!-- Engineering Lead -->
+    <div class="node p0">
+      <div class="phase-bar"></div>
+      <div class="role">Engineering Lead<br>(Staff / Principal)</div>
+      <div class="owns">Technical execution<br>Sprint Zero + cadence<br>Architecture guardrail<br>All Epics delivery</div>
+      <span class="hire-badge">Month 1</span>
+      <div class="tooltip"><b>Engineering Lead</b>Reports to CTO · embedded with Leandro<br>Owns Sprint Zero completion by Day 56<br>Manages 6 ICs across all epics<br>Hard blocks surface to CPO/CTO in writing<br>Protects architecture decisions already locked</div>
+    </div>
+
+    <!-- Frontend Eng 1 -->
+    <div class="node p0">
+      <div class="phase-bar"></div>
+      <div class="role">Sr Frontend Engineer<br>Platform Foundation</div>
+      <div class="owns">Epic 1: MC scaffold<br>ApplicationShell v27<br>CASL RBAC<br>Feature flags (FlopFlip)</div>
+      <span class="hire-badge">Month 1–2</span>
+      <div class="tooltip"><b>Senior Frontend Engineer — Platform</b>RSC / Next.js App Router depth required<br>Owns Epic 1: MC Custom Application scaffold<br>ApplicationShell v27 auth (mcAccessToken)<br>CASL 6.x RBAC + FlopFlip flags<br>Definition of Done: design partner connected + RBAC live</div>
+    </div>
+
+    <!-- Frontend Eng 2 -->
+    <div class="node p0">
+      <div class="phase-bar"></div>
+      <div class="role">Sr Frontend Engineer<br>Canvas &amp; Editor</div>
+      <div class="owns">Epic 2: Component library<br>Epic 3: StorefrontCanvas<br>ContextBar / B2X<br>Liveblocks collab</div>
+      <span class="hire-badge">Month 1–2</span>
+      <div class="tooltip"><b>Senior Frontend Engineer — Canvas</b>RSC-first; client components only where needed<br>Owns Epics 2 + 3: component library + canvas<br>Green / Red Zone executor.ts chokepoint<br>Liveblocks 3.18 real-time collaboration<br>ContextBar B2X switching (ADR-001)</div>
+    </div>
+
+    <!-- Frontend Eng 3 -->
+    <div class="node p2">
+      <div class="phase-bar"></div>
+      <div class="role">Sr Frontend Engineer<br>AI Integration</div>
+      <div class="owns">Epic 4: AI site builder<br>Epic 8: AI Exp Engine<br>OpenRouter / Claude<br>GitHub PR generation</div>
+      <span class="hire-badge">Month 3–4</span>
+      <div class="tooltip"><b>Senior Frontend Engineer — AI</b>Joins at P2 ramp (Month 3–4)<br>Owns Epic 4: AI site builder + migrator (≥90% quality gate)<br>Epic 8: AI Experience Engine, ConfidenceCard<br>OpenRouter (anthropic/claude-3.5-sonnet)<br>GitHub PR auto-generation from recommendations</div>
+    </div>
+
+    <!-- Backend Eng -->
+    <div class="node p0">
+      <div class="phase-bar"></div>
+      <div class="role">Backend Engineer<br>Platform &amp; API</div>
+      <div class="owns">Epic 1: Neon multi-tenancy<br>Epic 6: SSO/SCIM/DPA<br>Inngest async jobs<br>commercetools API layer</div>
+      <span class="hire-badge">Month 1–2</span>
+      <div class="tooltip"><b>Backend Engineer</b>Neon PostgreSQL 18.3 — multi-tenant schema + RLS<br>Branch-per-PR workflow (Vercel preview + Neon branch)<br>Inngest 4.2.6 async job processing<br>Epic 6: SAML 2.0/OIDC SSO, SCIM 2.0, EU data residency<br>commercetools API budgeting + circuit breaker</div>
+    </div>
+
+    <!-- Data Engineer -->
+    <div class="node p1">
+      <div class="phase-bar"></div>
+      <div class="role">Data Engineer<br>Behavioral &amp; AI</div>
+      <div class="owns">Epic 5: ClickHouse<br>Event taxonomy v1<br>Tenant Intelligence Score<br>Epic 8: CLV models</div>
+      <span class="hire-badge">Month 2–3</span>
+      <div class="tooltip"><b>Data Engineer</b>ClickHouse Cloud: 100K events/sec, &lt;500ms query latency<br>Event SDK instrumentation on StorefrontCanvas<br>Consent layer (GDPR, HMAC-SHA256 user_hash)<br>Tenant Intelligence Score algorithm<br>CLV correlation models for Epic 8 Horizon 2 outcomes<br>Hard target: events flowing within 14 days of connection</div>
+    </div>
+
+    <!-- DevOps -->
+    <div class="node p1">
+      <div class="phase-bar"></div>
+      <div class="role">DevOps / Platform Eng</div>
+      <div class="owns">Vercel preview deploys<br>CI/CD pipeline<br>SOC 2 compliance (Vanta)<br>Monitoring + SLAs</div>
+      <span class="hire-badge">Month 2–3</span>
+      <div class="tooltip"><b>DevOps / Platform Engineer</b>Vercel: PR preview deployments + ISR on-demand revalidation<br>Neon branch auto-provision + auto-destroy on merge<br>Lighthouse regression gating in CI (Core Web Vitals)<br>SOC 2 Type II via Vanta/Drata — target report Month 12<br>99.9% editor / 99.95% storefront availability SLA<br>PCI DSS SAQ-A boundary enforcement in CI</div>
+    </div>
+
+  </div>
+
+<!-- ══════════════════════════════════════════
+     DESIGN
+══════════════════════════════════════════ -->
+  <div class="section-label"><span>Design</span></div>
+
+  <div class="row">
+
+    <div class="node p0">
+      <div class="phase-bar"></div>
+      <div class="role">Senior Product Designer</div>
+      <div class="owns">Canvas UX end-to-end<br>AI creation flow<br>Commerce Intelligence Drawer<br>All operator journeys</div>
+      <span class="hire-badge">Month 1–2</span>
+      <div class="tooltip"><b>Senior Product Designer</b>Owns canvas UX end-to-end — sole designer on core team<br>AI creation flow (describe → draft → refine → publish)<br>Commerce Intelligence Drawer (Create + Optimize modes)<br>Operator journeys: Sofia, Mateus, Camille, Marcus, Diego<br>WCAG 2.1 AA on all platform-provided components<br>Sprint design 1 week ahead of engineering</div>
+    </div>
+
+    <div class="node p2">
+      <div class="phase-bar"></div>
+      <div class="role">UX Researcher<br>(contract / shared)</div>
+      <div class="owns">Design partner usability<br>Beta session feedback<br>AI quality benchmarking</div>
+      <span class="hire-badge">Month 4–6</span>
+      <div class="tooltip"><b>UX Researcher — Contract or Shared</b>Joins at P1/P2 boundary when beta cohort grows<br>Time-tracked first-publish sessions (target: ≤60 min median)<br>Red team: operators attempt to break Red Zone governance<br>AI quality: regeneration rate + edit depth pre-publish benchmarks<br>Can be shared from commercetools research function</div>
+    </div>
+
+  </div>
+
+<!-- ══════════════════════════════════════════
+     GTM & PARTNERSHIPS
+══════════════════════════════════════════ -->
+  <div class="section-label"><span>GTM &amp; Partnerships</span></div>
+
+  <div class="row">
+
+    <div class="node p1">
+      <div class="phase-bar"></div>
+      <div class="role">Solutions Engineer<br>(embedded)</div>
+      <div class="owns">Design partner liaison<br>Onboarding + impl. support<br>SI developer portal<br>Green/Red Zone docs</div>
+      <span class="hire-badge">Month 2–3</span>
+      <div class="tooltip"><b>Solutions Engineer — embedded from SE org</b>Embedded from commercetools SE function — not a new hire<br>Design partner primary contact (weekly calls + office hours)<br>Owns Green/Red Zone SI developer portal documentation<br>ComponentSlot contracts v1 review with SI partners<br>Chairs design partner sessions from Month 2 onward<br>Migration support for pilot customers</div>
+    </div>
+
+    <div class="node p-gtm">
+      <div class="phase-bar"></div>
+      <div class="role">Product Marketing<br>Manager (PMM)</div>
+      <div class="owns">GTM narrative<br>Public beta launch<br>Analyst briefings<br>Competitive positioning</div>
+      <span class="hire-badge">Month 4–5</span>
+      <div class="tooltip"><b>Product Marketing Manager</b>Joins before P1 (editor + component library) ships<br>Owns "Next-Gen Frontend" external narrative with CMO<br>Displacement story: ContentSquare, Amplitude, Optimizely<br>Public beta announcement (target: Month 5–6)<br>Analyst briefing prep (Gartner, Forrester)<br>SI enablement materials + certification program</div>
+    </div>
+
+    <div class="node p-gtm">
+      <div class="phase-bar"></div>
+      <div class="role">SI Partner Manager</div>
+      <div class="owns">SI program structure<br>Commercial terms<br>Co-sell enablement<br>3 SI co-sells at M12</div>
+      <span class="hire-badge">Month 6–7</span>
+      <div class="tooltip"><b>SI Partner Manager</b>Joins before P3 (AI Experience Engine) to prep SI co-sell<br>Owns SI partner program structure — which SIs, what access<br>Green/Red Zone governance: holds boundary against SI commercial lobbying<br>30% implementation revenue share model for co-selling SIs<br>Target: 3 SI co-sells by Month 12<br>SI developer portal, starter component packages, certification</div>
+    </div>
+
+    <div class="node p3">
+      <div class="phase-bar"></div>
+      <div class="role">Customer Success<br>Manager</div>
+      <div class="owns">Design partner health<br>Onboarding (10 customers)<br>ACI displacement case study<br>Reference customer program</div>
+      <span class="hire-badge">Month 6–8</span>
+      <div class="tooltip"><b>Customer Success Manager</b>Joins as design partners move to production + public beta grows<br>Owns design partner health — churn prevention, expansion signals<br>Target: 10 reference customers live by Month 12<br>ACI tool displacement: ≥1 ContentSquare/Amplitude retirement per account<br>Operator NPS &gt;50 program<br>80% licensed operators actively publishing within 60 days</div>
+    </div>
+
+  </div>
+
+</div><!-- /chart -->
+
+
+<!-- ══════════════════════════════════════════
+     HIRING TIMELINE
+══════════════════════════════════════════ -->
+<div class="timeline">
+  <h3>Hiring &amp; Ramp Timeline — 12 Months</h3>
+  <div class="tl-grid">
+
+    <!-- Header row -->
+    <div></div>
+    <div class="tl-header">M1</div><div class="tl-header">M2</div><div class="tl-header">M3</div>
+    <div class="tl-header">M4</div><div class="tl-header">M5</div><div class="tl-header">M6</div>
+    <div class="tl-header">M7</div><div class="tl-header">M8</div><div class="tl-header">M9</div>
+    <div class="tl-header">M10</div><div class="tl-header">M11</div><div class="tl-header">M12</div>
+
+    <!-- Epic phase reference row -->
+    <div class="tl-label" style="color:var(--ct-muted);font-size:9px">Phase</div>
+    <div class="tl-cell" style="background:var(--phase0);opacity:.25;border-radius:3px 0 0 3px"></div>
+    <div class="tl-cell" style="background:var(--phase0);opacity:.25"></div>
+    <div class="tl-cell" style="background:var(--phase0);opacity:.25;border-radius:0 3px 3px 0"></div>
+    <div class="tl-cell" style="background:var(--phase1);opacity:.25;border-radius:3px 0 0 3px"></div>
+    <div class="tl-cell" style="background:var(--phase1);opacity:.25;border-radius:0 3px 3px 0"></div>
+    <div class="tl-cell" style="background:var(--phase2);opacity:.25;border-radius:3px 0 0 3px"></div>
+    <div class="tl-cell" style="background:var(--phase2);opacity:.25;border-radius:0 3px 3px 0"></div>
+    <div class="tl-cell" style="background:var(--phase3);opacity:.25;border-radius:3px 0 0 3px"></div>
+    <div class="tl-cell" style="background:var(--phase3);opacity:.25;border-radius:0 3px 3px 0"></div>
+    <div class="tl-cell" style="background:var(--phase-gtm);opacity:.25;border-radius:3px 0 0 3px"></div>
+    <div class="tl-cell" style="background:var(--phase-gtm);opacity:.25"></div>
+    <div class="tl-cell" style="background:var(--phase-gtm);opacity:.25;border-radius:0 3px 3px 0"></div>
+
+    <!-- Leandro -->
+    <div class="tl-label">Leandro (HoP)</div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+
+    <!-- Eng Lead -->
+    <div class="tl-label">Eng Lead</div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+
+    <!-- FE1 -->
+    <div class="tl-label">FE Eng 1 (Platform)</div>
+    <div class="tl-cell inactive"></div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+
+    <!-- FE2 -->
+    <div class="tl-label">FE Eng 2 (Canvas)</div>
+    <div class="tl-cell inactive"></div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+
+    <!-- Backend Eng -->
+    <div class="tl-label">Backend Eng</div>
+    <div class="tl-cell inactive"></div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+
+    <!-- Data Eng -->
+    <div class="tl-label">Data Engineer</div>
+    <div class="tl-cell inactive"></div>
+    <div class="tl-cell inactive"></div>
+    <div class="tl-cell active" style="background:var(--phase1)"></div>
+    <div class="tl-cell active" style="background:var(--phase1)"></div>
+    <div class="tl-cell active" style="background:var(--phase1)"></div>
+    <div class="tl-cell active" style="background:var(--phase1)"></div>
+    <div class="tl-cell active" style="background:var(--phase1)"></div>
+    <div class="tl-cell active" style="background:var(--phase1)"></div>
+    <div class="tl-cell active" style="background:var(--phase1)"></div>
+    <div class="tl-cell active" style="background:var(--phase1)"></div>
+    <div class="tl-cell active" style="background:var(--phase1)"></div>
+    <div class="tl-cell active" style="background:var(--phase1)"></div>
+
+    <!-- DevOps -->
+    <div class="tl-label">DevOps / Platform</div>
+    <div class="tl-cell inactive"></div>
+    <div class="tl-cell inactive"></div>
+    <div class="tl-cell active" style="background:var(--phase1)"></div>
+    <div class="tl-cell active" style="background:var(--phase1)"></div>
+    <div class="tl-cell active" style="background:var(--phase1)"></div>
+    <div class="tl-cell active" style="background:var(--phase1)"></div>
+    <div class="tl-cell active" style="background:var(--phase1)"></div>
+    <div class="tl-cell active" style="background:var(--phase1)"></div>
+    <div class="tl-cell active" style="background:var(--phase1)"></div>
+    <div class="tl-cell active" style="background:var(--phase1)"></div>
+    <div class="tl-cell active" style="background:var(--phase1)"></div>
+    <div class="tl-cell active" style="background:var(--phase1)"></div>
+
+    <!-- FE3 AI -->
+    <div class="tl-label">FE Eng 3 (AI)</div>
+    <div class="tl-cell inactive"></div>
+    <div class="tl-cell inactive"></div>
+    <div class="tl-cell inactive"></div>
+    <div class="tl-cell active" style="background:var(--phase2)"></div>
+    <div class="tl-cell active" style="background:var(--phase2)"></div>
+    <div class="tl-cell active" style="background:var(--phase2)"></div>
+    <div class="tl-cell active" style="background:var(--phase2)"></div>
+    <div class="tl-cell active" style="background:var(--phase2)"></div>
+    <div class="tl-cell active" style="background:var(--phase2)"></div>
+    <div class="tl-cell active" style="background:var(--phase2)"></div>
+    <div class="tl-cell active" style="background:var(--phase2)"></div>
+    <div class="tl-cell active" style="background:var(--phase2)"></div>
+
+    <!-- Designer -->
+    <div class="tl-label">Sr Product Designer</div>
+    <div class="tl-cell inactive"></div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+    <div class="tl-cell active" style="background:var(--phase0)"></div>
+
+    <!-- UX Researcher -->
+    <div class="tl-label">UX Researcher</div>
+    <div class="tl-cell inactive"></div>
+    <div class="tl-cell inactive"></div>
+    <div class="tl-cell inactive"></div>
+    <div class="tl-cell inactive"></div>
+    <div class="tl-cell active" style="background:var(--phase2)"></div>
+    <div class="tl-cell active" style="background:var(--phase2)"></div>
+    <div class="tl-cell inactive"></div>
+    <div class="tl-cell inactive"></div>
+    <div class="tl-cell inactive"></div>
+    <div class="tl-cell inactive"></div>
+    <div class="tl-cell inactive"></div>
+    <div class="tl-cell inactive"></div>
+
+    <!-- SE embedded -->
+    <div class="tl-label">Solutions Eng (emb)</div>
+    <div class="tl-cell inactive"></div>
+    <div class="tl-cell inactive"></div>
+    <div class="tl-cell active" style="background:var(--phase1)"></div>
+    <div class="tl-cell active" style="background:var(--phase1)"></div>
+    <div class="tl-cell active" style="background:var(--phase1)"></div>
+    <div class="tl-cell active" style="background:var(--phase1)"></div>
+    <div class="tl-cell active" style="background:var(--phase1)"></div>
+    <div class="tl-cell active" style="background:var(--phase1)"></div>
+    <div class="tl-cell active" style="background:var(--phase1)"></div>
+    <div class="tl-cell active" style="background:var(--phase1)"></div>
+    <div class="tl-cell active" style="background:var(--phase1)"></div>
+    <div class="tl-cell active" style="background:var(--phase1)"></div>
+
+    <!-- PMM -->
+    <div class="tl-label">PMM</div>
+    <div class="tl-cell inactive"></div>
+    <div class="tl-cell inactive"></div>
+    <div class="tl-cell inactive"></div>
+    <div class="tl-cell inactive"></div>
+    <div class="tl-cell active" style="background:var(--phase-gtm)"></div>
+    <div class="tl-cell active" style="background:var(--phase-gtm)"></div>
+    <div class="tl-cell active" style="background:var(--phase-gtm)"></div>
+    <div class="tl-cell active" style="background:var(--phase-gtm)"></div>
+    <div class="tl-cell active" style="background:var(--phase-gtm)"></div>
+    <div class="tl-cell active" style="background:var(--phase-gtm)"></div>
+    <div class="tl-cell active" style="background:var(--phase-gtm)"></div>
+    <div class="tl-cell active" style="background:var(--phase-gtm)"></div>
+
+    <!-- SI Partner Mgr -->
+    <div class="tl-label">SI Partner Mgr</div>
+    <div class="tl-cell inactive"></div>
+    <div class="tl-cell inactive"></div>
+    <div class="tl-cell inactive"></div>
+    <div class="tl-cell inactive"></div>
+    <div class="tl-cell inactive"></div>
+    <div class="tl-cell inactive"></div>
+    <div class="tl-cell active" style="background:var(--phase-gtm)"></div>
+    <div class="tl-cell active" style="background:var(--phase-gtm)"></div>
+    <div class="tl-cell active" style="background:var(--phase-gtm)"></div>
+    <div class="tl-cell active" style="background:var(--phase-gtm)"></div>
+    <div class="tl-cell active" style="background:var(--phase-gtm)"></div>
+    <div class="tl-cell active" style="background:var(--phase-gtm)"></div>
+
+    <!-- CSM -->
+    <div class="tl-label">CS Manager</div>
+    <div class="tl-cell inactive"></div>
+    <div class="tl-cell inactive"></div>
+    <div class="tl-cell inactive"></div>
+    <div class="tl-cell inactive"></div>
+    <div class="tl-cell inactive"></div>
+    <div class="tl-cell inactive"></div>
+    <div class="tl-cell inactive"></div>
+    <div class="tl-cell active" style="background:var(--phase-gtm)"></div>
+    <div class="tl-cell active" style="background:var(--phase-gtm)"></div>
+    <div class="tl-cell active" style="background:var(--phase-gtm)"></div>
+    <div class="tl-cell active" style="background:var(--phase-gtm)"></div>
+    <div class="tl-cell active" style="background:var(--phase-gtm)"></div>
+
+    <!-- Milestones row -->
+    <div class="tl-label" style="font-size:9px;color:var(--ct-muted)">Milestone</div>
+    <div class="tl-cell" style="font-size:8px;color:var(--ct-blue);font-weight:700;display:flex;align-items:center;justify-content:center">P0 start</div>
+    <div class="tl-cell inactive"></div>
+    <div class="tl-cell" style="font-size:8px;color:var(--phase0);font-weight:700;display:flex;align-items:center;justify-content:center">Pvt beta</div>
+    <div class="tl-cell inactive"></div>
+    <div class="tl-cell" style="font-size:8px;color:var(--phase1);font-weight:700;display:flex;align-items:center;justify-content:center">Pub beta</div>
+    <div class="tl-cell inactive"></div>
+    <div class="tl-cell" style="font-size:8px;color:var(--phase2);font-weight:700;display:flex;align-items:center;justify-content:center">AI builder</div>
+    <div class="tl-cell inactive"></div>
+    <div class="tl-cell" style="font-size:8px;color:var(--phase3);font-weight:700;display:flex;align-items:center;justify-content:center">AI Engine</div>
+    <div class="tl-cell inactive"></div>
+    <div class="tl-cell inactive"></div>
+    <div class="tl-cell" style="font-size:8px;color:var(--phase-gtm);font-weight:700;display:flex;align-items:center;justify-content:center">$1M ARR</div>
+
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     HEADCOUNT SUMMARY
+══════════════════════════════════════════ -->
+<div class="summary">
+
+  <div class="summary-card">
+    <div class="sc-num">14</div>
+    <div class="sc-label">Total dedicated FTEs<br>by Month 8</div>
+    <div class="sc-bar" style="background:var(--ct-blue)"></div>
+  </div>
+
+  <div class="summary-card">
+    <div class="sc-num">7</div>
+    <div class="sc-label">Engineering ICs<br>+ 1 Eng Lead</div>
+    <div class="sc-bar" style="background:var(--phase0)"></div>
+  </div>
+
+  <div class="summary-card">
+    <div class="sc-num">2</div>
+    <div class="sc-label">Design<br>(1 FTE + 1 contract)</div>
+    <div class="sc-bar" style="background:var(--phase2)"></div>
+  </div>
+
+  <div class="summary-card">
+    <div class="sc-num">4</div>
+    <div class="sc-label">GTM &amp; Partnerships<br>(SE embedded, PMM, SI Mgr, CSM)</div>
+    <div class="sc-bar" style="background:var(--phase-gtm)"></div>
+  </div>
+
+  <div class="summary-card">
+    <div class="sc-num">5</div>
+    <div class="sc-label">Month 2 team size<br>(Sprint Zero cohort)</div>
+    <div class="sc-bar" style="background:var(--phase1)"></div>
+  </div>
+
+  <div class="summary-card">
+    <div class="sc-num">4</div>
+    <div class="sc-label">Executive sponsors<br>CPO · CTO · CRO · CMO</div>
+    <div class="sc-bar" style="background:var(--phase-exec)"></div>
+  </div>
+
+</div>
+
+</body>
+</html>
