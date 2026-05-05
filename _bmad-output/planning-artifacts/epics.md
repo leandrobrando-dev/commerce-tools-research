@@ -7,7 +7,7 @@ inputDocuments:
   - "_bmad-output/planning-artifacts/research/technical-commercetools-frontend-development-research-2026-05-05.md"
   - "_bmad-output/brainstorming/brainstorming-session-2026-05-05-1046.md"
 lastRevision: "2026-05-05"
-revisionRationale: "Revised based on commercetools platform research and competitive advantage brainstorming session. Epic 7 (Migration) dissolved into Epic 4. New Epic 8 (AI Experience Engine) added as compounding moat. Epic 5 refocused as Behavioral Data Infrastructure elevated to foundation layer. Architectural alignment with MC Custom Application model applied throughout."
+revisionRationale: "Revised based on commercetools platform research and competitive advantage brainstorming session. Epic 7 (Migration) dissolved into Epic 4. New Epic 8 (AI Experience Engine) added as compounding moat. Epic 5 refocused as Behavioral Data Infrastructure elevated to foundation layer. Architectural alignment with MC Custom Application model applied throughout. Epic 9 (Physical Retail POS) added as research epic — partnership-accelerated, fiscal compliance delegated to partner vendor."
 ---
 
 # Tutorial - Epic Breakdown
@@ -96,6 +96,21 @@ FR62: The first 10 experiments per tenant are available at no consumption cost t
 FR63: The platform imports historical behavioral event data from GA4, Hotjar, Mixpanel, or Frontastic analytics during onboarding to pre-warm the recommendation engine before native data accumulates
 FR64: Operators can group experiments under a named campaign with a goal metric, timeline, and success threshold; results are reported as campaign-level outcomes
 FR65: The Commerce Intelligence Drawer operates in two modes — Create (AI observes operator edits and offers governed completion) and Optimize (canvas-anchored behavioral recommendations) — switching automatically based on whether the active page has sufficient behavioral data
+
+### New Functional Requirements — Physical Retail POS (Epic 9)
+
+FR66: Store Associates can initiate and complete in-store POS transactions from within the MC Custom Application shell without leaving the Merchant Center environment
+FR67: POS inventory reservations are reflected in live storefront availability within 60 seconds via the CT Inventory API
+FR68: In-store transactions are created as CT Orders in the same Order API pipeline as online orders — unified order state, unified fulfillment
+FR69: Store Associates can search the product catalog from the POS interface using the CT Catalog API with full attribute and pricing context
+FR70: Fiscal receipts are generated in compliance with the jurisdiction's requirements (NF525 France, RTF Italy, GoBD Germany, SAF-T Portugal/Poland) — handled by the partner integration layer, not the platform
+FR71: IT Admins can configure POS locations, register devices, and assign store associate access within the existing CASL RBAC model (no separate identity system)
+FR72: Anonymized in-store POS transaction behavioral signals (product lookup rate, associate-assisted add-to-cart, terminal cart abandonment) are ingested into the ACI ClickHouse pipeline alongside online behavioral events
+FR73: Store Associates can surface AI Experience Engine product recommendations during assisted-selling flows, drawn from the same tenant recommendation model as the online storefront
+FR74: POS promotion slots and upsell sections are operator-configurable as Green Zone components; pricing rules, discounts, and tax calculations remain Red Zone (enforced by CT Pricing API + partner fiscal engine)
+FR75: The platform supports an offline transaction queue for network-resilient POS operations — queued transactions sync automatically when connectivity is restored (handled by partner SDK)
+
+---
 
 ### NonFunctional Requirements
 
@@ -263,6 +278,16 @@ FR62: Epic 8 — First 10 experiments free (moat-first activation)
 FR63: Epic 4 — Historical behavioral data import during onboarding (pre-warm engine)
 FR64: Epic 8 — Campaign workspace with goal metric and timeline
 FR65: Epic 4 + Epic 8 — Commerce Intelligence Drawer (Create + Optimize modes)
+FR66: Epic 9 — POS transaction initiation within MC Custom Application shell
+FR67: Epic 9 — POS inventory reservations reflected in storefront availability within 60s
+FR68: Epic 9 — In-store orders created in CT Order API (unified pipeline)
+FR69: Epic 9 — Product catalog search from POS via CT Catalog API
+FR70: Epic 9 — Fiscal receipt generation via partner integration layer (jurisdiction-specific)
+FR71: Epic 9 — POS location + associate access via existing CASL RBAC
+FR72: Epic 9 — In-store behavioral signals ingested into ACI ClickHouse pipeline
+FR73: Epic 9 — AI Experience Engine recommendations surfaced in assisted-selling flow
+FR74: Epic 9 — POS Green Zone (promotion slots) vs Red Zone (pricing/tax) governance
+FR75: Epic 9 — Offline transaction queue + auto-sync (partner SDK)
 
 ---
 
@@ -351,6 +376,57 @@ The continuous optimization layer that activates once a storefront is live and b
 
 ---
 
+### Epic 9: Physical Retail POS — Partnership-Accelerated
+_(Research epic — evaluate, select, and integrate a composable POS partner that owns fiscal compliance and hardware certification. We build the CT-native integration layer on top.)_
+
+**The Problem:** Enterprise retailers running commercetools online need a unified commerce story across digital and physical channels. Building a POS from scratch — fiscal printer protocols, jurisdiction-specific receipt formats, card terminal PCI certification, offline queue — is 18+ months of non-differentiating infrastructure work. A composable POS partner collapses that timeline to an integration layer.
+
+**The Strategic Fit:** Physical behavioral data (in-store product lookup rate, associate-assisted add-to-cart, terminal abandonment) fed into the ACI pipeline extends the Tenant Intelligence Score beyond the browser. Retailers who connect POS get a unified online + in-store intelligence model that pure-digital competitors cannot replicate. This is moat extension, not feature addition.
+
+**Partner Selection Research — Evaluation Criteria:**
+
+| Criterion | Must Have | Nice to Have |
+|-----------|-----------|--------------|
+| CT Marketplace presence | Existing Connect connector or co-development path | CT partner tier (Gold/Platinum) |
+| Fiscal compliance | NF525 (FR), RTF (IT), GoBD (DE), SAF-T (PT/PL), jurisdiction-aware receipt engine | APAC fiscal scope (JP/AU) |
+| Hardware abstraction | Adyen Terminal API / Stripe Terminal / Verifone normalization, receipt printer SDK | Mobile device (iOS/Android) POS mode |
+| Architecture | Composable SDK — embeddable, not a monolithic SaaS UI | REST/GraphQL-first, headless-compatible |
+| Enterprise | Multi-location, multi-currency, multi-jurisdiction | Global rollout support (EU + APAC + US) |
+| Offline resilience | Local transaction queue, conflict-free sync on reconnect | Edge device sync via CRDT or similar |
+
+**Candidate Vendors for Research Phase:**
+- **Sitoo** — cloud-native POS with an existing commercetools Connect marketplace connector; Scandinavian fiscal compliance strength; headless-first architecture. Highest CT-ecosystem fit.
+- **NewStore** — enterprise mPOS targeting fashion and luxury (strong ICP overlap with CT customer base); unified commerce OMS + POS; existing CT integrations at major brands.
+- **Jumpmind Commerce** — open-architecture Java POS SDK; designed for customization; mid/large retail; fiscal compliance via plugin layer.
+- **Adyen Unified Commerce** — payment terminal (PCI PTS) + fiscal compliance engine + CT integration; strongest fiscal compliance globally; best for high-GMV transactions.
+
+**Research Deliverables (before Epic 9 build begins):**
+1. Structured vendor evaluation scorecard against the criteria above
+2. Proof-of-concept integration with the selected vendor's SDK in a local dev environment
+3. Fiscal compliance coverage map: which jurisdictions are covered out-of-the-box vs. require configuration
+4. CT Custom Object schema design for POS location, register, and session state
+5. ACI behavioral event schema extensions for in-store event types
+6. Architecture decision record (ADR) for partner selection with rationale
+
+**What We Build (the CT-native integration layer):**
+- POS transaction UI embedded within the MC Custom Application shell — store associates stay inside the Merchant Center; no separate POS SaaS login
+- CT Inventory API integration: POS reservations decrement CT stock; live storefront availability reflects in-store reservations within 60 seconds (ISR on-demand revalidation, same pipeline as online publish)
+- CT Order API bridge: in-store transactions land as CT Orders with `channel` dimension set to `pos:{locationId}` — same fulfillment pipeline, same order management, unified reporting
+- CASL RBAC extension: `StoreAssociate` role scoped to `locationId`; IT Admins assign locations via existing Epic 6 admin UI — no new identity system
+- ACI event adapter: partner SDK transaction events normalized to the ClickHouse behavioral event schema (anonymized `user_hash`, `session_id`, `event_type: pos_*`) and ingested alongside online events
+- AI Experience Engine assisted-selling surface: recommendation panel within the POS UI pulling from the same tenant recommendation model as the online storefront — product pairings, upsell slots, and inventory-aware suggestions
+- Green/Red Zone governance extended to POS: operator-configurable promotion slots and upsell section copy (Green Zone); pricing, discounts, and tax calculations enforced by CT Pricing API and the partner fiscal engine (Red Zone — double-sealed)
+
+**What the Partner Provides (explicitly out of scope for this platform):**
+- Fiscal compliance: jurisdiction-specific receipt/invoice format generation, fiscal printer protocol drivers, tax calculation engine, regulatory certification maintenance
+- Hardware certification: PCI PTS-certified card terminals, receipt printer SDK (EPSON/Bixolon/Star), barcode scanner abstraction
+- Offline resilience: local transaction queue, conflict resolution on sync, network-resilient session state
+- Returns and refunds at terminal: fiscal receipt amendment, credit note generation, refund routing
+
+**FRs covered:** FR66, FR67, FR68, FR69, FR70, FR71, FR72, FR73, FR74, FR75
+
+---
+
 ## Revised Priority Sequencing
 
 | Priority | Epic(s) | Rationale |
@@ -361,3 +437,4 @@ The continuous optimization layer that activates once a storefront is live and b
 | **P3 — Moat Activation** | Epic 8 MVP | Manual experiments + Horizon 1 + Unified Drawer Optimize mode + 10 free experiments |
 | **P4 — Compounding Moat** | Epic 8 full | Horizon 2 CLV, auto-hypotheses, PR generation, campaign workspace, progressive rollout |
 | **P5 — Enterprise Scale** | Epic 6 full | SCIM, multi-brand governance hub, usage dashboard with Experience Engine metrics |
+| **P6 — Physical Retail (Research → Build)** | Epic 9 | Partner selection + POC (M1-3 of research track); CT-native integration layer after partner selected; extends ACI moat to in-store behavioral signals |
