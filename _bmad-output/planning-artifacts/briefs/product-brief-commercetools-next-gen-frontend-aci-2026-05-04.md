@@ -1,0 +1,552 @@
+# Product Brief: commercetools Next-Gen Frontend
+**Version:** 2.0
+**Date:** 2026-05-05
+**Author:** Leandro
+**Role Context:** Head of Product – Next-Gen Frontend (commercetools)
+**Status:** Updated — reflects final architecture, Epic priority sequencing, and resolved open questions
+**Source Documents:**
+- `_bmad-output/planning-artifacts/epics.md`
+- `_bmad-output/planning-artifacts/architecture.md`
+- `_bmad-output/planning-artifacts/prd.md`
+- `_bmad-output/planning-artifacts/research/market-ai-native-next-gen-frontend-platform-enterprise-commerce-research-2026-05-03.md`
+- `_bmad-output/planning-artifacts/research/market-autonomous-commerce-intelligence-storefront-research-2026-05-04.md`
+
+---
+
+## Executive Summary
+
+commercetools is the infrastructure layer for enterprise commerce. It has won the backend. It does not have a frontend story. Every commercetools customer must solve frontend independently — and that gap costs them $500K–$2M per implementation, creates perpetual agency dependency, and produces storefronts that business users cannot operate without developer intervention.
+
+The Next-Gen Frontend closes that gap. It ships as a commercetools Connect-packaged Merchant Center Custom Application — accessible through the CT environment operators already have, requiring zero new installation, zero new login, zero new context-switching. It is not a third-party DXP that happens to connect to CT. It is a first-party frontend platform that lives natively inside the Merchant Center shell, governed by the same component security model that CT's backend enforces on its APIs.
+
+The platform has two layers. The core platform — Visual editing, Governed Component Library, AI Site Builder, Behavioral Data Infrastructure, Enterprise Admin — is bundled into the CT subscription. The AI Experience Engine is a consumption-based add-on charged per experiment run, per recommendation applied, per GitHub PR generated, per progressive rollout activated. The first 10 experiments per tenant are free, seeding the moat.
+
+The moat is the Tenant Intelligence Score: a 0–100 composite metric that compounds monthly, cannot be replicated by any tool connecting to CT APIs from outside, and represents the accumulated behavioral intelligence of the tenant's commerce operation. An operator who has run 50 experiments with a score of 78 cannot migrate to a competitor without losing that intelligence. The moat is the model, not the data access.
+
+**Product Vision:** The first commerce storefront that business users own, AI optimizes, and CFOs love — built natively for commercetools.
+
+---
+
+## The Problem
+
+### commercetools Has No First-Party Frontend
+
+Every commercetools customer faces the same gap: CT wins the backend selection, then the project team is told "for frontend, choose your own adventure." The ecosystem response has been a fragmented set of options, none of which are optimal:
+
+| Option | Reality |
+|--------|---------|
+| Build a custom Next.js frontend | $500K–$2M+ to build; $300K+/yr to maintain; developers own every change |
+| Buy a third-party DXP (Uniform, Builder.io) | Backend-agnostic by design — no native B2B pricing, no account catalogs, no commerce context |
+| Stay on legacy Frontend Studio (Frontastic) | 52% of commercetools customers face frontend end-of-life within 2 years |
+
+### The Developer Bottleneck Is Structural
+
+The canonical enterprise commerce frustration is not that business users lack permissions — it's that every change requires a developer. A merchandiser who wants to test a new hero layout opens a Jira ticket, waits for sprint allocation, and gets the change two weeks later. By then, the seasonal moment has passed.
+
+This is not a process problem. It is an architecture problem. Systems that require developer intervention for business-layer changes will always produce this outcome.
+
+### Third-Party DXPs Cannot Solve This
+
+Builder.io, Uniform, and Contentful Composable Commerce are backend-agnostic by design. That is their strength in a multi-vendor context and their structural weakness in a CT-native context. When a platform does not understand your product catalog, your pricing model, your B2B account structure, or your order state machine, its AI recommendations are generic. "Show more social proof" is not an insight. "Your B2B accounts with >$50K LTV convert 34% better when approval workflow steps are surfaced earlier in the cart" is an insight — and it requires commerce context to generate.
+
+The consequences compound:
+
+- **Business users are blocked.** Marketing and merchandising teams cannot publish a page, run a test, or change a component without raising a dev ticket.
+- **AI ambitions remain in pilot.** 88% of enterprises use AI in some form; only 7% have scaled it to production. The missing piece is not AI capability — it is a storefront that can deploy AI to the commerce experience without a developer intermediary.
+- **The analytics stack is a fiscal absurdity.** The average commercetools enterprise pays $350K–$1M+ per year across Amplitude, ContentSquare, FullStory, and Optimizely — four separate tools that see sessions and events but know nothing about the commerce context underneath.
+- **The B2X transition is happening without infrastructure.** 79% of B2B companies now sell D2C. Without a native frontend that renders intelligently across B2B, B2C, and dealer portal contexts, they're paying for multiple separate frontend implementations.
+
+---
+
+## The Opportunity
+
+### Market Size
+
+| Market | 2025 Size | Projected | CAGR |
+|--------|-----------|-----------|------|
+| Global headless commerce | $1.74B | $7.16B (2032) | 22.4% |
+| B2B ecommerce platforms | $9.46B | $23.31B (2032) | 13.7% |
+| Session replay / DXA | $463.7M | $1.7B (2035) | 22.3% |
+| AI in ecommerce | $7.1B | $22.2B (2030) | ~21% |
+| Retail AI (broadest) | $9.3B | $127.2B (2033) | 29.9% |
+
+### Why Now
+
+- **52% of commercetools customers face frontend EOL within 2 years** — the demand signal is urgent and internal to the installed base
+- **The competitive window is 12 months.** Uniform (Gartner MQ Visionary 2025) and Vercel (6M+ developers on v0) are filling the gap with backend-agnostic products that lack native B2B depth.
+- **AI-referred traffic grew 4,700% YoY** (Adobe, 2025). Storefronts not designed for LLM discovery are structurally disadvantaged.
+- **Privacy regulation is a forcing function**: 67% of users block or reject tracking cookies. External analytics tools measure a fraction of actual traffic. First-party, platform-native behavioral data captures 40–50% more.
+
+---
+
+## Delivery Model: MC Custom Application via Connect
+
+### What This Is
+
+The Next-Gen Frontend ships as a commercetools Connect-packaged MC Custom Application. This is not a standalone SaaS product with a separate login. It is not a third-party integration that requires an API key handshake. It lives natively inside the Merchant Center shell, distributed through the CT Connect marketplace, bundled into the CT subscription.
+
+**What this means operationally:**
+
+- **Zero new installation:** The application appears in the operator's existing Merchant Center navigation once provisioned.
+- **Zero new login:** CT IAM handles authentication via `mcAccessToken` HttpOnly cookie through ApplicationShell v27. The operator's existing Merchant Center session is the session.
+- **Zero new context-switching:** Merchandisers, content editors, and business users operate the storefront from the same environment where they manage products, orders, and customers.
+- **Connect marketplace distribution:** Standard CT Connect packaging means the application follows CT's deployment, versioning, and compliance lifecycle.
+
+**Why this matters for enterprise adoption:**
+
+Enterprise IT organizations have a long list of tools that failed to achieve adoption because they required a new login, a new training program, and a new mental model. The Merchant Center is already in muscle memory for CT operators. Placing the frontend editor inside that shell eliminates the "why do we have yet another tool" objection at the IT gate.
+
+**Why this matters for the moat:**
+
+A tool that lives inside CT has native access to the commerce context — product catalog, pricing rules, B2B account structures, order state machine, customer segments — without an API integration layer. That context is what makes behavioral intelligence actionable. An external tool that receives CT events via webhook has commerce data. A native application that runs alongside CT's data layer has commerce intelligence.
+
+---
+
+## Target Customers
+
+### Primary Segments
+
+**Segment 1 — The Legacy-Trapped Enterprise (B2B)**
+Large manufacturer or distributor on commercetools with a slow, dev-maintained custom frontend reaching end-of-life. Wants a storefront that integrates cleanly with ERP, enables business users to move, and presents zero replatforming risk.
+*Verticals: Manufacturing, wholesale distribution, industrial supply*
+
+**Segment 2 — The Digital-Native B2B Scale-up**
+Mid-to-large B2B company using Uniform, Builder.io, or custom Next.js. Pain is fragmentation, high TCO, and no AI-native capabilities. Wants a unified, AI-native storefront purpose-built for commercetools.
+*Verticals: B2B SaaS, tech, modern retail, logistics*
+
+**Segment 3 — The AI-Forward Innovator**
+Forward-leaning strategic account experimenting with generative commerce. Wants a platform-native AI storefront with the Tenant Intelligence Score compounding from Day 1.
+*Verticals: Global retail, tech-led distributors, high-SKU B2B*
+
+**Segment 4 — The Multi-Brand B2C Enterprise**
+Consumer brand managing 10–80+ D2C storefronts from one commercetools backend. Content velocity is blocked by developer dependency.
+*Representative: Breville (80 D2C storefronts from one commercetools backend)*
+
+**Segment 5 — The B2B2C / D2C Hybrid**
+Traditional B2B manufacturer adding D2C or building a B2C-style dealer portal. Maintaining two separate frontends at double the cost. Wants one deployment that serves B2B, B2C, and dealer contexts via the B2X context switching architecture (ADR-001).
+*Representative: Coflex (B2B2C in 90 days), Viewrail (B2B + D2C)*
+
+**Segment 6 — The Unified Commerce Leader**
+Enterprise operating across B2B, B2C, marketplace, and in-store. Bespoke frontends per channel creating fragmented experiences. Wants shared design systems, centralized content management, and channel-specific rendering from one platform.
+
+### Buyer Personas (Within Each Enterprise)
+
+| Persona | Primary Pain | Product Message |
+|---------|-------------|-----------------|
+| Head of Digital / VP Commerce | Slow time-to-market, AI ambition blocked | "Your team ships in hours, not sprints" |
+| CTO / CIO | Frontend maintenance cost, zero new infrastructure | "Native integration, no custom connectors, no new auth stack" |
+| CMO / Head of Marketing | Can't publish without dev tickets | "Marketing owns the storefront. Full stop." |
+| Head of Merchandising | No behavioral insight tied to commerce data | "Your data shows what your buyers do — with full catalog and pricing context" |
+| CFO | $350K–$1M+/yr analytics stack + custom frontend build | "Replace four vendor contracts and a custom dev team with one platform line item" |
+| CRO / Data Science | Manual A/B testing; no CLV-aware measurement | "Two-Horizon experiments: H1 in days, H2 CLV delta in 90 days — simultaneously" |
+
+---
+
+## The Product
+
+### Core Platform Architecture
+
+The platform is built on these foundational technology decisions (all resolved, version-pinned):
+
+| Layer | Technology | Purpose |
+|-------|-----------|---------|
+| Application Shell | `@commercetools-frontend/application-shell` v27 | MC Custom App root wrapper, auth, navigation |
+| Frontend | Next.js App Router, RSC-first, Vercel ISR | Storefront rendering |
+| Database | PostgreSQL 18.3 via Neon, branch-per-PR, RLS | Multi-tenant data with isolation at DB level |
+| Behavioral Events | ClickHouse Cloud (100K events/sec, <500ms) | Tenant Intelligence Score, heatmaps, experiment measurement |
+| Async Jobs | Inngest 4.2.6 | AI completion, experiment runner, progressive rollout, GDPR erasure |
+| Real-time Collab | Liveblocks 3.18 | Multi-user editing, presence per storefront page |
+| AI Completions | OpenRouter (`anthropic/claude-3.5-sonnet`) | Canvas AI and recommendation generation |
+| RBAC | CASL 6.x wired to ApplicationShell oAuthScopes | Role-based access tied to CT identity |
+| Feature Flags | FlopFlip (built into ApplicationShell) | Green/Red Zone governance, incremental rollout |
+
+### Epic Priority Sequencing
+
+| Priority | Epics | Description |
+|----------|-------|-------------|
+| **P0** | Epic 1 + Epic 5 + Epic 6-skeleton | Platform foundation + behavioral data infra + governance skeleton |
+| **P1** | Epic 2 + Epic 3 | Governed component library + storefront editor + publishing |
+| **P2** | Epic 4 | AI site builder + migrator |
+| **P3** | Epic 8 MVP | AI Experience Engine |
+| **P4** | Epic 8 full | AI Experience Engine full |
+| **P5** | Epic 6 full | Complete enterprise admin and governance |
+
+### Green Zone / Red Zone Governance Architecture
+
+The governance architecture is the answer to "is AI-generated storefront safe at enterprise scale?"
+
+**The answer is structural, not procedural.**
+
+**Green Zone — AI Composes Freely:**
+Layout assembly, content arrangement, navigation structure, visual composition — all from pre-approved, pre-secured commerce components. The AI can generate a complete storefront variant, rearrange the component grid, swap hero content, restructure navigation hierarchies, and configure promotional logic without any human gate.
+
+This is safe because the AI is composing from the tenant's approved, version-controlled component library. Every component has been reviewed, tested, and security-cleared. The AI is an assembly engine, not a code generator.
+
+**Red Zone — Platform-Protected:**
+Pricing logic, checkout security, B2B approval workflows, ERP sync, payment processing, authentication. These live inside components; AI assembles them but cannot modify their internals. This is not a permission setting — it is a hard boundary enforced at the code level.
+
+**`executor.ts` — The Single Governance Chokepoint:**
+Every mutation — AI-generated or human-generated — passes through `executor.ts`. This is the single validation path. There is no AI-specific execution path that bypasses validation. There is no admin backdoor. The same validation runs for a merchandiser dragging a component and for the AI assembling a complete page variant.
+
+This is structurally different from code generation tools (Bolt, v0, Lovable). Those generate raw code that must be reviewed before production use. In this platform, the risk surface is the component library — reviewed once, at creation time, then trusted in all subsequent compositions.
+
+### Visual Editing and Publishing (Epic 3)
+
+- **StorefrontCanvas:** Drag-and-drop RSC canvas. Components are RSC-first; client components only where interactivity is required.
+- **ComponentSlot:** Green Zone mounting points, slot contracts enforced by executor.
+- **ContextBar:** B2X/locale switcher — URL `?ctx=b2c|b2b|dealer` + RSC re-render (ADR-001 resolved). One editor switches between B2B and B2C views of the same page with a single click.
+- **PublishAction:** Draft → Staged → Live with full audit log. ISR on-demand revalidation on publish.
+- **Liveblocks 3.18:** Real-time multi-user editing, presence indicators, conflict resolution.
+- **Shareable preview URLs:** Operators share `?ctx=b2b` links in Slack for stakeholder review before publish.
+
+### AI Site Builder and Migrator (Epic 4)
+
+The AI Site Builder generates complete storefront configurations from a merchant's existing site, brand guidelines, or product catalog context. Migration paths supported:
+
+- CT Frontend Studio (Frontastic) deployments
+- Agency-built Next.js storefronts
+- Third-party DXP configurations (Uniform, Builder.io)
+
+Migration output is a governed component library configuration — not raw code. Immediately editable, immediately secure.
+
+**Quality gate:** AI-generated storefronts are accepted at ≥90% component coverage confidence. Below that threshold, the platform surfaces gaps explicitly and routes them to the developer queue via GitHub PR generation.
+
+### B2X Rendering (ADR-001 Resolved)
+
+B2X context switching: URL `?ctx=b2c|b2b|dealer` search parameter with RSC re-render. One deployment. Three commerce models.
+
+A manufacturer operating direct-to-consumer, direct-to-business, and through a dealer network runs one storefront deployment, not three. The AI Experience Engine runs experiments across contexts simultaneously.
+
+---
+
+## Business Model
+
+### Pricing Architecture
+
+| Layer | What It Includes | How It's Priced |
+|-------|-----------------|-----------------|
+| **Core Platform** | Epics 1–6: Foundation, Governed Component Library, Storefront Editor, AI Site Builder/Migrator, Behavioral Data Infra, Enterprise Admin | Bundled into CT subscription |
+| **AI Experience Engine** | Epic 8: ConfidenceCards, Two-Horizon experiments, GitHub PR generation, progressive rollouts, Tenant Intelligence Score | Consumption-based add-on |
+
+### AI Experience Engine Consumption Units
+
+| Activity | Billing Unit |
+|----------|-------------|
+| Experiment run | Per experiment activated |
+| Recommendation applied | Per recommendation accepted and deployed |
+| GitHub PR generated | Per PR generated by AI |
+| Progressive rollout activated | Per rollout gate sequence initiated |
+
+**Moat Seeding Incentive:** First 10 experiments per tenant are free. This is not a free trial — it is a deliberate accumulation strategy. Ten experiments generate enough Tenant Intelligence Score data to make the platform materially more valuable than the zero-experiment state. Tenants who reach experiment 10 have a score that compounds into experiment 11, 12, and beyond.
+
+**Why this is the right enterprise AI pricing model:**
+The invoice is a ledger of AI activity. The budget conversation becomes: "We ran 47 experiments last quarter. Here is the revenue attribution for the 31 that were positive." That is a CFO-friendly conversation — consumption-based pricing aligns incentives, pays for outcomes not capability access, and is self-justifying.
+
+---
+
+## AI Experience Engine (Epic 8)
+
+### TCO Displacement Model
+
+| Tool Being Replaced | Annual Cost | ACI Capability |
+|---------------------|-------------|----------------|
+| ContentSquare | $100K+/yr | Session replay + heatmaps + journey analysis + AI frustration summarization |
+| Amplitude | $100K–$600K+/yr | Product analytics + event tracking + funnel + retention + cohort analysis |
+| FullStory | $100K–$300K+/yr | High-fidelity session replay + error debugging + behavioral analytics |
+| Optimizely | $300K–$700K+/yr | AI-powered A/B testing + multivariate + feature flags + autonomous experimentation |
+| **Combined** | **$350K–$1M+/yr** | **Replaced by AI Experience Engine — bundled core + consumption add-on** |
+
+Every external analytics tool is context-blind by design. ContentSquare sees a session. Amplitude sees an event sequence. Neither knows:
+- The visitor is a returning B2B buyer with a $2M annual contract
+- The product page has a 30% stock shortage
+- The A/B test variant is being shown to a segment with account-specific pricing
+- The buyer is in the middle of a 6-person approval workflow
+
+The AI Experience Engine knows all of this — because it runs on the same data model as the storefront. This advantage is permanently unavailable to any external tool.
+
+### P0 Behavioral Data Foundation
+
+**Critical insight: the Behavioral Data Infrastructure (Epic 5) ships at P0, not P2.**
+
+The ClickHouse event ingestion pipeline — capable of 100K events/second with <500ms query latency — is activated at project connection, before the AI Experience Engine is live. By the time Epic 8 ships and experiments become available, tenants in production have 3–6 months of behavioral history in the analytical layer. The first ConfidenceCard surfaces with real data, not a cold-start placeholder.
+
+The moat starts accumulating before the moat is visible to the customer. That is the correct sequencing.
+
+### ConfidenceCard Architecture
+
+Every AI recommendation surfaces a ConfidenceCard before any action is taken. This is not optional — there is no "AI autopilot" mode.
+
+**ConfidenceCard structure:**
+
+```
+[Behavioral Signal]
+"Your data shows 68% mobile exit rate on this category page,
+concentrated between the filter controls and the first product row."
+
+[Proposed Change]
+Reorder the above-the-fold component sequence: move product grid
+above filter controls on mobile viewport.
+
+[Expected Outcome]
++12–18% mobile add-to-cart rate (p=0.87 confidence interval)
+
+[Horizon Badges]
+⚡ Quick Win: H1 measurable within 5–7 days
+📈 Long Game: H2 CLV impact tracked over 90 days
+
+[Action]
+[ Run Experiment ]  [ Dismiss ]  [ Generate GitHub PR ]
+```
+
+**Language enforcement:** "Your data shows..." — never "AI recommends" or "the AI suggests." This is not stylistic preference — it is the trust architecture that makes enterprise adoption possible. Operators who feel they are being told what to do by an AI resist. Operators who feel they are being shown what their own data indicates and asked to decide adopt.
+
+### Two-Horizon Measurement Engine
+
+Every experiment simultaneously tracks two measurement horizons:
+
+| Horizon | Metrics | Window | Purpose |
+|---------|---------|--------|---------|
+| **H1 (Immediate)** | CTR, conversion rate, add-to-cart rate, bounce rate | Days 1–14 | Immediate feedback; experiment viability signal |
+| **H2 (CLV Impact)** | CLV delta, repeat purchase rate, AOV change, retention cohort | Days 1–90 | Catches long-term regressions; prevents pyrrhic wins |
+
+**Why this is a genuine differentiator:**
+
+No other commerce experimentation platform measures both horizons simultaneously. Optimizely and Amplitude measure H1 — their statistical models are built for conversion rate optimization, which closes quickly. CLV impact requires 90-day cohort windows and native access to order history, customer segments, and repurchase data. External tools receive events; they do not have the commerce data model to construct CLV cohorts.
+
+**The pyrrhic win problem:**
+
+An experiment that lifts CTR by 8% (H1 win) but reduces repeat purchase rate by 3% (H2 loss) represents a net negative customer value outcome. Under standard experimentation tooling, this experiment is declared a winner at day 7 and shipped to 100% of traffic. Under Two-Horizon measurement, the H2 signal triggers a rollback alert at day 45 — and the experiment is retired to the failure taxonomy library.
+
+### Tenant Intelligence Score
+
+The Tenant Intelligence Score is a 0–100 composite metric displayed in the Merchant Center navigation, updated in real time.
+
+**Composite weighting:**
+
+| Component | Weight | What It Measures |
+|-----------|--------|-----------------|
+| Sessions collected | 30% | Volume and recency of behavioral event ingestion |
+| Experiments completed | 25% | Accumulated experiment history and outcome diversity |
+| CLV cohort size | 25% | Depth of customer lifetime data for H2 measurement |
+| Prediction accuracy | 20% | Historical accuracy of platform's predictions vs. actuals |
+
+**The moat mechanics:**
+
+The score compounds monthly. An operator who starts at score 15 (project connection, no experiments) reaches score 40–50 after 10 experiments and 3 months of behavioral data. At score 70+, the platform's recommendation accuracy materially exceeds what any external tool could achieve.
+
+A tenant with a score of 78 and 50 completed experiments cannot migrate to a competing tool without abandoning that accumulated intelligence. The competitor's model starts at zero. The recommendation quality gap is not a 90-day problem — it is a 2–3 year problem.
+
+**This cannot be replicated from outside CT:** An external tool connecting to CT APIs has product data, order data, and customer data. It does not have the behavioral event stream fused with the commerce event stream in a single analytical layer. The Tenant Intelligence Score is computed on the fused dataset.
+
+### GitHub PR Generation
+
+When an AI recommendation requires a component change that exceeds Green Zone constraints, the platform generates a GitHub Pull Request:
+
+**PR contents:**
+- Component code diff (TypeScript)
+- Tastic (CT Frontend Studio) schema update
+- Behavioral evidence brief: the data that motivated the recommendation
+- Expected outcome with confidence interval
+- Auto-provisioned Neon database branch for preview data isolation
+- Preview deployment link for stakeholder review before merge
+
+The developer reviews and merges like any other PR. The AI generates the work; the developer provides oversight. This bridges the gap between AI-suggested and developer-implemented improvements without requiring the developer to start from scratch.
+
+### Progressive Rollout + Rollback
+
+**Rollout gates:** 5% → 25% → 50% → 100%
+
+Human-gated at each step — no auto-advancement. The platform surfaces the rollout dashboard after each gate, presents H1 metrics, and requests operator confirmation to advance.
+
+**Rollback Alert:** Proactive notification when live metrics fall below baseline during any rollout stage. Rollback is atomic — no partial state visible to live traffic.
+
+**Failure taxonomy classification:**
+
+| Category | Definition |
+|----------|-----------|
+| Metric degradation | H1 or H2 metrics fell below baseline |
+| Context mismatch | Experiment performed in test but degraded live |
+| Operator override | Operator manually rolled back without metric trigger |
+| Data immaturity | Insufficient data to reach statistical significance |
+
+**"Tried and Retired" library:** All failed experiments are classified and stored. The classification model feeds future recommendations — the platform will not repeatedly surface experiment types that have failed for a given tenant segment.
+
+**Confidence Decay:** Recommendations older than 90 days decay and are re-validated when new behavioral data arrives. The model is honest about what it knows and when.
+
+---
+
+## Differentiation: Why This, Why commercetools, Why Now
+
+### Positioning
+
+**Four-word differentiator:** **Native. B2X. AI-first. No-compromise.**
+
+| Competitor | Their Story | Our Answer |
+|------------|-------------|------------|
+| **Uniform** | Composable DXP, backend-agnostic | Backend-agnostic = shallow B2B integration. We own the data model they connect to. |
+| **Builder.io** | Visual editing for marketing teams | B2C page builder without B2B enterprise depth. We serve both — natively. |
+| **Vercel / Next.js** | Default developer frontend, AI SDK | Developer-centric infrastructure. Requires permanent engineering dependency. |
+| **Shopify Plus** | Speed and simplicity for B2C | B2B features are B2C add-ons. Can't serve both B2B and B2C from one backend. |
+| **ContentSquare** | DXA leader, AI "Sense" | Context-blind by architecture. Can't see your commerce data model. |
+| **Amplitude** | Product analytics, AI agents | Event-first model. Knows nothing about your B2B account, pricing, or catalog. |
+| **Optimizely** | Enterprise experimentation | Measures H1 only. No CLV-aware Two-Horizon model. No commerce context. |
+| **Bolt / v0 / Lovable** | AI code generation | Generates raw code. 45% of AI-generated code contains security flaws. No governance chokepoint. |
+
+### Defensive Moats
+
+**Moat 1 — The Tenant Intelligence Score**
+A compound behavioral model that accumulates monthly and cannot be replicated by any external tool. After 18–24 months, the prediction accuracy component creates recommendation quality that no new entrant can match without equivalent history. Switching cost is epistemic, not contractual — the tenant who leaves abandons their model.
+
+**Moat 2 — Green/Red Zone Governance Architecture**
+Structural security at the component level means enterprise architects trust AI-generated storefronts in a way they will never trust raw code generation tools. That trust is a market position that takes 12–18 months of enterprise deployments to establish. First-mover advantage compounds.
+
+**Moat 3 — CT-Native Commerce Context**
+Native access to the CT data layer — catalog, pricing, B2B accounts, order state machine — without an integration layer means behavioral intelligence has commerce context that external tools cannot replicate. The Two-Horizon measurement engine is only possible because the same analytical layer holds behavioral events and commerce events.
+
+**Moat 4 — Distribution Through CT Subscription**
+Bundled into the CT subscription, the platform eliminates the procurement process for the core product. A CT customer who becomes aware of the Next-Gen Frontend does not open a new procurement cycle — they activate something already in their contract. The AI Experience Engine consumption model does not require a new budget line; it comes from the experimentation budget currently going to Optimizely or Amplitude.
+
+---
+
+## Success Metrics
+
+### Product Adoption
+- Time-to-first-live: target **<90 days** from contract to production go-live
+- Business-user-driven change velocity: **80% of storefront changes** without developer involvement
+- AI quality: **≥90%** of AI-generated drafts require only minor edits before publish
+- Tenant Intelligence Score threshold: design partners reach **score 20+** within 60 days of project connection
+- Behavioral event ingestion: all connected partners flowing events within **14 days** of connection
+
+### Customer Value
+- TCO reduction vs. custom frontend + external analytics: **>$300K/yr per enterprise customer**
+- Tool decommission rate: % of design partners who cancel ContentSquare, Amplitude, or Optimizely **within 12 months**
+- H1 + H2 outcomes measurable: **100%** of AI Experience Engine experiments reporting both horizons
+- NPS vs. custom frontend benchmark
+
+### Commercial
+- Frontend attach rate to new commercetools implementations: **25% by month 18**
+- Logo retention improvement in accounts using the platform: **>5pp improvement in gross retention**
+- SI certification completions and co-sell pipeline generated
+- AI Experience Engine consumption: average **15+ experiments per active tenant**
+
+### Market Position
+- Gartner Peer Insights rating: established within 12 months of launch
+- Generative Engine Visibility: top result for "commercetools storefront" in ChatGPT, Perplexity, and Gemini
+- Analyst recognition: Forrester Wave or Gartner MQ consideration within 24 months
+
+---
+
+## Go-to-Market Strategy
+
+### Phase 1 — Beachhead (0–9 months): Own the installed base
+
+**Target:** Top 100 commercetools accounts by GMV with frontend EOL signal or active ContentSquare/Amplitude contracts
+**Motion:** Customer Success-led "Frontend + Intelligence Health Assessment" — identify accounts at risk and present the native platform as the path of least resistance
+**Channel:** Direct + SI partners already in these accounts
+**Proof:** 5–10 anchor reference customers across key verticals with documented ROI within 90 days of go-live
+**Message:** *"Your commercetools investment, finally complete — with a frontend your teams own and analytics that knows your commerce data."*
+
+### Phase 2 — AI Experience Engine Monetization (6–18 months): Convert behavioral data to revenue
+
+**Target:** Phase 1 deployments reaching experiment readiness (Tenant Intelligence Score 30+)
+**Motion:** TCO displacement case studies from Lighthouse cohort; ContentSquare / Optimizely / Amplitude contract renewal interception
+**Message:** *"Your ContentSquare contract is up for renewal. Here is what the same budget buys inside CT — with Two-Horizon measurement that catches the regressions your current tool misses."*
+
+### Phase 3 — Market Expansion (12–36 months): Win net-new through SIs
+
+**Target:** New commercetools implementations where SIs are building the frontend proposal
+**Motion:** SI certification program; pre-built vertical templates; MACH Alliance positioning; analyst briefings
+**SI value reframe:** The frontend frees partners from commodity Next.js build work. The GitHub PR generation workflow creates a recurring engagement model — SIs implement Red Zone components and custom Green Zone extensions, review AI-generated PRs, and advise on experiment strategy.
+**Message:** *"The fastest path from commercetools selection to go-live — no custom frontend build, no external analytics stack."*
+
+---
+
+## Implementation Roadmap
+
+| Priority | Epics | Timeline | Key Deliverables | Exit Criteria |
+|----------|-------|---------|-----------------|---------------|
+| **P0** | Epics 1 + 5 + 6-skeleton | Months 1–3 | MC Custom App shell; ClickHouse event ingestion live; Tenant Intelligence Score display; SAML/SCIM skeleton | Behavioral data pipeline ingesting events; Score visible in MC nav |
+| **P1** | Epics 2 + 3 | Months 3–5 | Governed component library; executor.ts governance; visual editor; B2X ContextBar; PublishAction | 20+ components; editor functional; Green/Red Zone validated |
+| **P2** | Epic 4 | Months 5–7 | AI site builder + Frontastic migrator; GitHub PR generation for sub-threshold items | ≥90% AI quality gate validated; end-to-end migration path confirmed |
+| **P3** | Epic 8 MVP | Months 7–9 | ConfidenceCard framework; Two-Horizon measurement; progressive rollout (manual gates); failure taxonomy | First experiment run end-to-end in production; H1 + H2 metrics collecting |
+| **P4** | Epic 8 Full | Months 9–12 | Full GitHub PR generation from AI recommendations; campaign workspace; full Tenant Intelligence composite model | Full consumption billing active; 10+ tenants on AI Experience Engine |
+| **P5** | Epic 6 Full | Months 12+ | Complete audit trail; multi-brand governance; role-based access at component level | Enterprise IT sign-off criteria met |
+
+**Implementation principles:**
+- Behavioral Data Infrastructure at P0 — the moat starts accumulating before the AI Engine ships
+- Ship MLP (P0+P1) within 90 days of product commitment — presence in market beats perfection in lab
+- Pre-built connectors for top 5 CT integration patterns (ERP, PIM, OMS, Search, CMS)
+- MACH readiness assessment for every prospect before commitment
+- Green/Red Zone criteria published before beta — establish the governance standard before SIs can lobby to expand Red Zone
+
+---
+
+## Risk Assessment
+
+| Risk | Likelihood | Impact | Mitigation |
+|------|-----------|--------|------------|
+| SI resistance (protect custom build revenue) | High | High | GitHub PR generation creates SI recurring engagement model; reframe SI value: component extension + experiment strategy advisory |
+| Two-Horizon statistical credibility challenged by data science teams | Medium | High | H2 CLV window is native-only advantage; Failure Taxonomy + ConfidenceCard language enforces "your data shows" not "AI decided" |
+| Tenant Intelligence Score cold-start (new tenants) | High | Medium | GA4/Hotjar/Mixpanel import at onboarding; first 10 experiments free; Score display shows accumulation progress |
+| Green/Red Zone boundary disputes with SIs | Medium | High | Publish objective Red Zone criteria before beta; criteria based on security risk, not SI commercial interest |
+| Uniform deepens commercetools integration before launch | High | High | P0+P1 ship within 90 days; native is always deeper than integration |
+| Vercel v0 becomes "good enough" AI storefront for devs | Medium-High | High | Publish official CT Next.js template on Vercel as stop-gap; own developer mindshare |
+| ContentSquare or Amplitude build native CT connector | High | High | Speed is the primary defense; ship before they can close the context gap |
+| Time-to-market overrun | Medium | High | P0–P5 priority sequencing is the scope boundary; P3+ not required for P1 to ship |
+
+---
+
+## Open Questions
+
+### Resolved
+
+| Question | Resolution |
+|---------|-----------|
+| B2X complexity: how to handle context switching? | ADR-001: URL `?ctx=b2c\|b2b\|dealer` + RSC re-render. One deployment, three commerce models, shareable preview URLs. |
+| Pricing architecture: bundled vs. modular vs. consumption? | Core platform (Epics 1–6) bundled into CT subscription. AI Experience Engine (Epic 8) consumption-based add-on. First 10 experiments free. |
+| ACI: build own statistical engine vs. partner with Statsig? | Building own Two-Horizon statistical engine. H2 CLV measurement requires native commerce data access that Statsig cannot provide. |
+| AI quality threshold: 80% or 90%? | 90%. Below 90% confidence, AI-generated storefronts surface gaps and route to GitHub PR generation. |
+
+### Active
+
+**SI resistance management:** The GitHub PR generation workflow creates a natural SI engagement model, but the transition from "SIs build everything" to "SIs build components and AI composes" requires active change management. What is the SI certification program, the revenue model for SI partners, and the timeline for SI channel readiness relative to the P1 launch?
+
+**MLP scope boundary:** Within each priority tier, what is the minimum component library size (Epic 2) that makes the Storefront Editor (Epic 3) genuinely useful for a Lighthouse cohort customer, as opposed to a demo-ready prototype?
+
+**Agentic commerce standards:** The platform is agentic-ready by architecture (structured component schema, machine-readable layouts, `executor.ts` as a deterministic action interface). The question is which emerging standards (Model Context Protocol, OpenAI Actions schema, Google Agents) to prioritize for Phase 3 expansion.
+
+---
+
+## Strategic Context
+
+### Why This Is the Right Moment
+
+Three conditions have converged:
+
+**1. The Frontastic EOL window is open now.** CT's acquisition of Frontastic created a two-year migration window. That window closes when customers make decisions and implement alternatives — likely within 12–18 months for the highest-value accounts.
+
+**2. Enterprise AI trust architecture is unsolved.** The enterprise market understands that AI will transform commerce operations. It does not yet trust raw code generation tools at production scale. The Green/Red Zone governance model, with `executor.ts` as a single chokepoint, is a credible answer. No competitor has articulated this architecture publicly.
+
+**3. The TCO displacement story is landing.** CFOs who approved ContentSquare, Optimizely, and Amplitude contracts are re-examining them. A platform that displaces $330K–$1.2M in annual tooling spend, bundled into an existing CT contract, arrives at exactly the right moment.
+
+### The Correct Frame
+
+This is not a CMS. It is not a DXP. It is not a page builder. It is a **commerce storefront intelligence platform** that happens to include visual editing because visual editing is table stakes.
+
+- The visual editor is the on-ramp.
+- The AI Experience Engine is the engine.
+- The Tenant Intelligence Score is the moat.
+- The Green/Red Zone governance is the trust architecture.
+
+**The pitch to the CFO:** "Replace your agency retainer, your Optimizely contract, and your ContentSquare contract with a platform that does all three better, costs less in aggregate, and gets smarter every month it runs."
+
+**The pitch to the CTO:** "The AI operates in a governed component library. The security boundary is at the component level. The same validation path handles AI-generated and human-generated mutations. You review components once; the AI composes them safely at any scale."
+
+**The pitch to the operator:** "Your data shows what your customers want. You decide what to test. We run it and tell you whether it worked — not just this week, but over the next 90 days. No more pyrrhic wins."
+
+---
+
+**Brief Version:** 2.0
+**Date:** 2026-05-05
+**Status:** Current — reflects all resolved architectural decisions and Epic priority sequencing
+**Next review:** On P0 delivery or upon significant architectural change

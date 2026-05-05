@@ -1,0 +1,1855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UX Design Directions — commercetools Next-Gen Frontend Editor</title>
+  <style>
+    :root {
+      --ct-navy: #1B2459;
+      --ct-navy-light: #2D3A7A;
+      --ct-navy-dark: #0F1635;
+      --ct-orange: #E8520A;
+      --ct-orange-light: #FF6B35;
+      --ct-bg: #F7F8FA;
+      --ct-white: #FFFFFF;
+      --ct-border: #E1E4E8;
+      --ct-border-dark: #CBD5E1;
+      --ct-text: #1A1A2E;
+      --ct-text-secondary: #64748B;
+      --ct-text-muted: #94A3B8;
+      --ct-success: #16A34A;
+      --ct-success-bg: #F0FDF4;
+      --ct-success-border: #BBF7D0;
+      --ct-warning: #D97706;
+      --ct-warning-bg: #FFFBEB;
+      --ct-warning-border: #FDE68A;
+      --ct-ai-bg: rgba(27, 36, 89, 0.05);
+      --ct-ai-border: rgba(27, 36, 89, 0.18);
+      --ct-ai-dot: #6366F1;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+      background: #0F1635;
+      color: var(--ct-text);
+      min-height: 100vh;
+    }
+
+    /* ── Showcase Header ── */
+    .showcase-header {
+      background: var(--ct-navy-dark);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding: 20px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .showcase-header h1 {
+      color: #fff;
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+    .showcase-header p {
+      color: rgba(255,255,255,0.45);
+      font-size: 12px;
+      margin-top: 2px;
+    }
+    .badge {
+      background: var(--ct-orange);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 20px;
+      letter-spacing: 0.03em;
+    }
+
+    /* ── Direction Tabs ── */
+    .direction-tabs {
+      background: var(--ct-navy);
+      padding: 0 32px;
+      display: flex;
+      gap: 2px;
+      overflow-x: auto;
+    }
+    .dir-tab {
+      padding: 12px 18px;
+      font-size: 12px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.5);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      white-space: nowrap;
+      transition: all 0.15s;
+    }
+    .dir-tab:hover { color: rgba(255,255,255,0.8); }
+    .dir-tab.active {
+      color: #fff;
+      border-bottom-color: var(--ct-orange);
+    }
+
+    /* ── Direction Panel ── */
+    .direction-panel { display: none; }
+    .direction-panel.active { display: flex; gap: 24px; padding: 24px 32px; }
+
+    .dir-info {
+      width: 260px;
+      flex-shrink: 0;
+    }
+    .dir-tag {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ct-orange);
+      margin-bottom: 8px;
+    }
+    .dir-info h2 {
+      color: #fff;
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      margin-bottom: 10px;
+    }
+    .dir-info p {
+      color: rgba(255,255,255,0.55);
+      font-size: 13px;
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+    .dir-traits { list-style: none; }
+    .dir-traits li {
+      font-size: 12px;
+      color: rgba(255,255,255,0.5);
+      padding: 5px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    .dir-traits li::before { content: '→'; color: var(--ct-orange); flex-shrink: 0; }
+    .eval-section { margin-top: 20px; }
+    .eval-section h3 {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.3);
+      margin-bottom: 10px;
+    }
+    .eval-row {
+      margin-bottom: 8px;
+    }
+    .eval-label {
+      font-size: 11px;
+      color: rgba(255,255,255,0.4);
+      margin-bottom: 3px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .eval-bar {
+      height: 3px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .eval-fill {
+      height: 100%;
+      background: var(--ct-orange);
+      border-radius: 2px;
+    }
+
+    /* ── Mockup Container ── */
+    .mockup-wrap {
+      flex: 1;
+      background: rgba(0,0,0,0.2);
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.08);
+      position: relative;
+    }
+    .mockup-bar {
+      background: #1a1f35;
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .dot { width: 10px; height: 10px; border-radius: 50%; }
+    .dot-r { background: #FF5F57; }
+    .dot-y { background: #FFBD2E; }
+    .dot-g { background: #28C941; }
+    .mockup-url {
+      background: rgba(255,255,255,0.06);
+      border-radius: 4px;
+      padding: 3px 10px;
+      font-size: 11px;
+      color: rgba(255,255,255,0.3);
+      margin-left: 8px;
+    }
+
+    /* ── MOCKUP 1: Merchant Center Native ── */
+    .mock1 {
+      display: flex;
+      height: 520px;
+      background: var(--ct-bg);
+    }
+    .mc-nav {
+      width: 48px;
+      background: var(--ct-navy);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 12px 0;
+      gap: 4px;
+    }
+    .mc-logo { width: 28px; height: 28px; background: var(--ct-orange); border-radius: 6px; margin-bottom: 8px; }
+    .mc-nav-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .mc-nav-icon.active { background: var(--ct-orange); }
+    .mc-nav-icon svg { width: 16px; height: 16px; fill: rgba(255,255,255,0.6); }
+    .mc-nav-icon.active svg { fill: white; }
+    .mc-main { flex: 1; display: flex; flex-direction: column; }
+    .mc-topbar {
+      height: 44px;
+      background: white;
+      border-bottom: 1px solid var(--ct-border);
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      gap: 12px;
+    }
+    .mc-breadcrumb { font-size: 12px; color: var(--ct-text-secondary); }
+    .mc-breadcrumb span { color: var(--ct-text); font-weight: 500; }
+    .ctx-bar {
+      background: white;
+      border-bottom: 1px solid var(--ct-border);
+      padding: 0 16px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .ctx-chip {
+      font-size: 11px;
+      font-weight: 500;
+      padding: 3px 10px;
+      border-radius: 20px;
+      background: rgba(27, 36, 89, 0.07);
+      color: var(--ct-navy);
+      border: 1px solid rgba(27,36,89,0.15);
+    }
+    .ctx-chip.b2b { background: #EFF6FF; color: #1D4ED8; border-color: #BFDBFE; }
+    .ctx-chip.locale { background: #F5F3FF; color: #7C3AED; border-color: #DDD6FE; }
+    .ctx-chip.draft {
+      background: var(--ct-warning-bg);
+      color: var(--ct-warning);
+      border-color: var(--ct-warning-border);
+    }
+    .mc-workspace {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+    }
+    .mc-canvas {
+      flex: 1;
+      background: white;
+      overflow: hidden;
+      position: relative;
+    }
+    .mc-sidebar-right {
+      width: 240px;
+      background: white;
+      border-left: 1px solid var(--ct-border);
+      display: flex;
+      flex-direction: column;
+    }
+    .sidebar-header {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--ct-border);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--ct-text);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .sidebar-section { padding: 10px 14px; border-bottom: 1px solid var(--ct-border); }
+    .sidebar-section label { font-size: 10px; color: var(--ct-text-muted); display: block; margin-bottom: 4px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.04em; }
+    .sidebar-input {
+      width: 100%;
+      background: var(--ct-bg);
+      border: 1px solid var(--ct-border);
+      border-radius: 4px;
+      padding: 5px 8px;
+      font-size: 12px;
+      color: var(--ct-text);
+    }
+    .sidebar-row { display: flex; gap: 6px; margin-bottom: 6px; }
+    .sidebar-btn {
+      flex: 1;
+      background: var(--ct-bg);
+      border: 1px solid var(--ct-border);
+      border-radius: 4px;
+      padding: 5px;
+      font-size: 11px;
+      color: var(--ct-text-secondary);
+      text-align: center;
+      cursor: pointer;
+    }
+    .sidebar-btn.active { background: var(--ct-navy); color: white; border-color: var(--ct-navy); }
+    .locked-badge {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 10px;
+      color: var(--ct-text-muted);
+      background: var(--ct-bg);
+      border: 1px solid var(--ct-border);
+      border-radius: 4px;
+      padding: 5px 8px;
+      margin-top: 4px;
+    }
+    .lock-icon { width: 10px; height: 10px; background: var(--ct-text-muted); border-radius: 2px; }
+    .mc-footer {
+      padding: 10px 14px;
+      border-top: 1px solid var(--ct-border);
+      display: flex;
+      gap: 6px;
+    }
+    .btn-primary {
+      flex: 1;
+      background: var(--ct-orange);
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 7px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+    }
+    .btn-secondary {
+      background: var(--ct-bg);
+      color: var(--ct-text-secondary);
+      border: 1px solid var(--ct-border);
+      border-radius: 5px;
+      padding: 7px 10px;
+      font-size: 12px;
+      cursor: pointer;
+      text-align: center;
+    }
+    /* Canvas storefront content */
+    .storefront-hero {
+      background: var(--ct-navy);
+      padding: 24px 20px;
+      color: white;
+      position: relative;
+      cursor: pointer;
+      transition: outline 0.1s;
+    }
+    .storefront-hero:hover { outline: 2px solid var(--ct-orange); }
+    .storefront-hero.selected { outline: 2px solid var(--ct-orange); }
+    .storefront-hero h2 { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+    .storefront-hero p { font-size: 11px; opacity: 0.7; margin-bottom: 12px; }
+    .hero-cta { background: var(--ct-orange); color: white; padding: 6px 14px; border-radius: 4px; font-size: 11px; font-weight: 600; display: inline-block; }
+    .storefront-products {
+      padding: 14px 20px;
+      background: white;
+      cursor: pointer;
+    }
+    .storefront-products:hover { outline: 2px solid rgba(27,36,89,0.2); }
+    .products-label { font-size: 10px; text-transform: uppercase; font-weight: 600; color: var(--ct-text-muted); letter-spacing: 0.05em; margin-bottom: 8px; }
+    .product-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+    .product-card { background: var(--ct-bg); border-radius: 4px; padding: 8px; }
+    .product-img { width: 100%; height: 40px; background: var(--ct-border); border-radius: 3px; margin-bottom: 4px; }
+    .product-name { font-size: 9px; font-weight: 500; color: var(--ct-text); }
+    .product-price { font-size: 9px; color: var(--ct-text-secondary); }
+    .ai-indicator {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      background: rgba(99, 102, 241, 0.15);
+      border: 1px solid rgba(99,102,241,0.3);
+      color: #6366F1;
+      font-size: 9px;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 3px;
+    }
+
+    /* ── MOCKUP 2: Canvas First ── */
+    .mock2 {
+      display: flex;
+      height: 520px;
+      background: #E8EAED;
+      position: relative;
+    }
+    .floating-toolbar {
+      position: absolute;
+      top: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+      padding: 6px 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      z-index: 10;
+    }
+    .floating-toolbar .ctx-chip { font-size: 10px; padding: 2px 8px; }
+    .toolbar-divider { width: 1px; height: 16px; background: var(--ct-border); }
+    .toolbar-action {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--ct-text-secondary);
+      padding: 3px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .toolbar-action:hover { background: var(--ct-bg); }
+    .toolbar-publish {
+      background: var(--ct-orange);
+      color: white;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .canvas-full {
+      position: absolute;
+      inset: 0;
+      background: white;
+      overflow: hidden;
+    }
+    .floating-sidebar {
+      position: absolute;
+      right: 12px;
+      top: 52px;
+      width: 220px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+      z-index: 10;
+      overflow: hidden;
+    }
+    .floating-ai {
+      position: absolute;
+      bottom: 16px;
+      right: 12px;
+      background: var(--ct-navy);
+      color: white;
+      border-radius: 24px;
+      padding: 8px 16px;
+      font-size: 12px;
+      font-weight: 500;
+      box-shadow: 0 4px 20px rgba(27,36,89,0.3);
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .ai-dot { width: 8px; height: 8px; border-radius: 50%; background: #6366F1; }
+
+    /* ── MOCKUP 3: Split Studio (Lovable-style) ── */
+    .mock3 {
+      display: flex;
+      height: 520px;
+      background: var(--ct-bg);
+    }
+    .split-left {
+      width: 300px;
+      background: white;
+      border-right: 1px solid var(--ct-border);
+      display: flex;
+      flex-direction: column;
+    }
+    .split-header {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--ct-border);
+      background: var(--ct-navy);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .split-header .mc-logo { width: 22px; height: 22px; margin: 0; border-radius: 4px; }
+    .split-header span { color: white; font-size: 13px; font-weight: 600; }
+    .split-context {
+      padding: 8px 14px;
+      border-bottom: 1px solid var(--ct-border);
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .chat-area {
+      flex: 1;
+      padding: 12px 14px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .chat-msg {
+      display: flex;
+      gap: 8px;
+    }
+    .chat-avatar {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--ct-ai-bg);
+      border: 1px solid var(--ct-ai-border);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .chat-avatar .ai-dot { background: #6366F1; }
+    .chat-user-avatar {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--ct-orange);
+      flex-shrink: 0;
+    }
+    .chat-bubble {
+      background: var(--ct-bg);
+      border-radius: 0 8px 8px 8px;
+      padding: 8px 10px;
+      font-size: 11px;
+      color: var(--ct-text);
+      line-height: 1.5;
+      max-width: 220px;
+    }
+    .chat-bubble.user {
+      background: var(--ct-navy);
+      color: white;
+      border-radius: 8px 0 8px 8px;
+      margin-left: auto;
+    }
+    .chat-bubble.ai-preview {
+      background: var(--ct-ai-bg);
+      border: 1px solid var(--ct-ai-border);
+      border-radius: 0 8px 8px 8px;
+    }
+    .ai-action-row {
+      display: flex;
+      gap: 6px;
+      margin-top: 6px;
+    }
+    .ai-action-btn {
+      font-size: 10px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      border: 1px solid var(--ct-border);
+      background: white;
+      color: var(--ct-text-secondary);
+      cursor: pointer;
+    }
+    .ai-action-btn.primary {
+      background: var(--ct-orange);
+      color: white;
+      border-color: var(--ct-orange);
+    }
+    .chat-input-area {
+      padding: 10px 14px;
+      border-top: 1px solid var(--ct-border);
+      background: var(--ct-bg);
+    }
+    .chat-input {
+      width: 100%;
+      background: white;
+      border: 1px solid var(--ct-border);
+      border-radius: 6px;
+      padding: 8px 10px;
+      font-size: 11px;
+      color: var(--ct-text-muted);
+    }
+    .split-right {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .split-top-bar {
+      height: 36px;
+      background: white;
+      border-bottom: 1px solid var(--ct-border);
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      gap: 8px;
+    }
+    .preview-tabs { display: flex; gap: 2px; }
+    .preview-tab {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      color: var(--ct-text-secondary);
+      cursor: pointer;
+    }
+    .preview-tab.active {
+      background: var(--ct-navy);
+      color: white;
+    }
+    .ml-auto { margin-left: auto; }
+    .split-canvas { flex: 1; background: white; overflow: hidden; }
+
+    /* ── MOCKUP 4: Command Center (Dark) ── */
+    .mock4 {
+      display: flex;
+      height: 520px;
+      background: #0D1117;
+    }
+    .dark-nav {
+      width: 48px;
+      background: #0D1117;
+      border-right: 1px solid rgba(255,255,255,0.06);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 12px 0;
+      gap: 6px;
+    }
+    .dark-nav-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.05);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .dark-nav-icon.active { background: var(--ct-orange); }
+    .dark-main { flex: 1; display: flex; flex-direction: column; }
+    .dark-topbar {
+      height: 40px;
+      background: #161B27;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      gap: 10px;
+    }
+    .dark-ctx-chip {
+      font-size: 10px;
+      font-weight: 500;
+      padding: 2px 8px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.06);
+      color: rgba(255,255,255,0.5);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .dark-ctx-chip.active-ctx {
+      background: rgba(232,82,10,0.15);
+      color: var(--ct-orange);
+      border-color: rgba(232,82,10,0.3);
+    }
+    .dark-workspace { flex: 1; display: flex; overflow: hidden; }
+    .dark-canvas {
+      flex: 1;
+      background: #1A1F2E;
+      position: relative;
+      overflow: hidden;
+    }
+    .dark-canvas-inner {
+      position: absolute;
+      inset: 16px;
+      background: white;
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.1);
+    }
+    .dark-sidebar {
+      width: 240px;
+      background: #161B27;
+      border-left: 1px solid rgba(255,255,255,0.06);
+    }
+    .dark-sidebar-header {
+      padding: 10px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      font-size: 10px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.3);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .dark-prop-row {
+      padding: 8px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .dark-prop-label {
+      font-size: 10px;
+      color: rgba(255,255,255,0.3);
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .dark-prop-input {
+      width: 100%;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 4px;
+      padding: 5px 8px;
+      font-size: 11px;
+      color: rgba(255,255,255,0.7);
+    }
+    .dark-locked {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 10px;
+      color: rgba(255,255,255,0.2);
+      padding: 6px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .dark-footer {
+      padding: 10px 14px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      display: flex;
+      gap: 6px;
+    }
+    .dark-btn-primary {
+      flex: 1;
+      background: var(--ct-orange);
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 7px;
+      font-size: 12px;
+      font-weight: 600;
+      text-align: center;
+    }
+    .dark-btn-secondary {
+      background: rgba(255,255,255,0.06);
+      color: rgba(255,255,255,0.4);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 5px;
+      padding: 7px 10px;
+      font-size: 12px;
+      text-align: center;
+    }
+    .cmd-palette {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 400px;
+      background: #1E2433;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 10px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+      z-index: 20;
+      overflow: hidden;
+    }
+    .cmd-input-wrap {
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .cmd-icon { color: rgba(255,255,255,0.3); font-size: 14px; }
+    .cmd-input-text { font-size: 13px; color: rgba(255,255,255,0.7); }
+    .cmd-result {
+      padding: 6px 14px;
+      font-size: 11px;
+      color: rgba(255,255,255,0.4);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .cmd-result.active-result {
+      background: rgba(232,82,10,0.1);
+      color: rgba(255,255,255,0.8);
+    }
+    .cmd-result-icon {
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
+      background: rgba(255,255,255,0.06);
+    }
+    .cmd-kbd {
+      margin-left: auto;
+      font-size: 9px;
+      color: rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.05);
+      border-radius: 3px;
+      padding: 2px 5px;
+    }
+
+    /* ── MOCKUP 5: Context Dashboard ── */
+    .mock5 {
+      display: flex;
+      flex-direction: column;
+      height: 520px;
+      background: var(--ct-bg);
+    }
+    .ctx-dash-header {
+      height: 44px;
+      background: var(--ct-navy);
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      gap: 12px;
+    }
+    .ctx-dash-header .mc-logo { width: 22px; height: 22px; margin: 0; border-radius: 4px; }
+    .ctx-dash-header span { color: white; font-size: 13px; font-weight: 600; }
+    .ctx-dash-workspace {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+    }
+    .ctx-panel {
+      width: 180px;
+      background: white;
+      border-right: 1px solid var(--ct-border);
+      display: flex;
+      flex-direction: column;
+    }
+    .ctx-panel-header {
+      padding: 10px 12px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--ct-text-muted);
+      border-bottom: 1px solid var(--ct-border);
+    }
+    .ctx-item {
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid var(--ct-border);
+      cursor: pointer;
+    }
+    .ctx-item.active-ctx-item { background: var(--ct-bg); }
+    .ctx-thumb {
+      width: 36px;
+      height: 24px;
+      border-radius: 3px;
+      background: var(--ct-border);
+      overflow: hidden;
+    }
+    .ctx-thumb-navy { background: var(--ct-navy); }
+    .ctx-thumb-orange { background: var(--ct-orange-light); }
+    .ctx-thumb-teal { background: #0891B2; }
+    .ctx-item-label { font-size: 11px; font-weight: 500; color: var(--ct-text); }
+    .ctx-item-sub { font-size: 9px; color: var(--ct-text-muted); }
+    .ctx-live-badge {
+      margin-left: auto;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--ct-success);
+    }
+    .ctx-draft-badge {
+      margin-left: auto;
+      font-size: 9px;
+      color: var(--ct-warning);
+      background: var(--ct-warning-bg);
+      padding: 1px 5px;
+      border-radius: 3px;
+    }
+    .ctx-main-area { flex: 1; display: flex; overflow: hidden; }
+    .ctx-canvas-wrap {
+      flex: 1;
+      background: #E8EAED;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      overflow: hidden;
+    }
+    .ctx-canvas-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: rgba(255,255,255,0.6);
+      background: rgba(0,0,0,0.3);
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 3px;
+      margin-bottom: 4px;
+    }
+    .ctx-canvas-frame {
+      background: white;
+      border-radius: 6px;
+      overflow: hidden;
+      flex: 1;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .ctx-sidebar-right {
+      width: 200px;
+      background: white;
+      border-left: 1px solid var(--ct-border);
+    }
+
+    /* ── MOCKUP 6: Guided Creation ── */
+    .mock6 {
+      display: flex;
+      height: 520px;
+      background: var(--ct-bg);
+    }
+    .guided-left {
+      width: 280px;
+      background: white;
+      border-right: 1px solid var(--ct-border);
+      display: flex;
+      flex-direction: column;
+    }
+    .guided-header-bar {
+      padding: 14px 16px;
+      background: var(--ct-navy);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .guided-header-bar h3 { color: white; font-size: 14px; font-weight: 700; }
+    .guided-header-bar p { color: rgba(255,255,255,0.5); font-size: 11px; margin-top: 2px; }
+    .guided-steps {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--ct-border);
+    }
+    .guided-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 6px 0;
+    }
+    .step-num {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--ct-border);
+      color: var(--ct-text-muted);
+      font-size: 10px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .step-num.done { background: var(--ct-success); color: white; }
+    .step-num.current { background: var(--ct-orange); color: white; }
+    .step-label { font-size: 11px; color: var(--ct-text-secondary); line-height: 1.4; }
+    .step-label.current { font-weight: 600; color: var(--ct-text); }
+    .guided-form { flex: 1; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
+    .form-field { }
+    .form-label { font-size: 11px; font-weight: 600; color: var(--ct-text); margin-bottom: 5px; display: block; }
+    .form-input {
+      width: 100%;
+      background: var(--ct-bg);
+      border: 1px solid var(--ct-border);
+      border-radius: 5px;
+      padding: 7px 10px;
+      font-size: 12px;
+      color: var(--ct-text);
+    }
+    .form-radio-group { display: flex; gap: 6px; }
+    .form-radio {
+      flex: 1;
+      border: 1px solid var(--ct-border);
+      border-radius: 5px;
+      padding: 6px 8px;
+      font-size: 10px;
+      text-align: center;
+      cursor: pointer;
+      color: var(--ct-text-secondary);
+    }
+    .form-radio.selected {
+      border-color: var(--ct-orange);
+      background: rgba(232,82,10,0.05);
+      color: var(--ct-orange);
+      font-weight: 600;
+    }
+    .ai-assist-row {
+      background: var(--ct-ai-bg);
+      border: 1px solid var(--ct-ai-border);
+      border-radius: 6px;
+      padding: 8px 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .ai-assist-row .ai-dot { background: #6366F1; }
+    .ai-assist-text { font-size: 11px; color: var(--ct-navy); line-height: 1.4; }
+    .guided-footer {
+      padding: 10px 16px;
+      border-top: 1px solid var(--ct-border);
+      display: flex;
+      gap: 8px;
+    }
+    .guided-right {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .guided-preview-header {
+      padding: 10px 14px;
+      background: white;
+      border-bottom: 1px solid var(--ct-border);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .guided-preview-label { font-size: 11px; font-weight: 600; color: var(--ct-text-secondary); }
+    .generating-badge {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 10px;
+      color: #6366F1;
+      background: rgba(99,102,241,0.08);
+      border: 1px solid rgba(99,102,241,0.2);
+      padding: 3px 8px;
+      border-radius: 12px;
+    }
+    .guided-canvas { flex: 1; background: #F0F2F5; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 16px; }
+    .canvas-preview-inner { background: white; border-radius: 6px; width: 100%; max-height: 100%; overflow: hidden; box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+
+    /* Utility */
+    .flex { display: flex; }
+    .flex-col { flex-direction: column; }
+    .items-center { align-items: center; }
+    .gap-6 { gap: 6px; }
+    .gap-8 { gap: 8px; }
+    .grow { flex: 1; }
+    .text-muted { color: var(--ct-text-muted); font-size: 11px; }
+    .spacer { flex: 1; }
+  </style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="showcase-header">
+  <div>
+    <h1>UX Design Directions — commercetools Next-Gen Frontend Editor</h1>
+    <p>Business Operator Plane · 6 design explorations · Based on UX Specification v1</p>
+  </div>
+  <span class="badge">6 DIRECTIONS</span>
+</div>
+
+<!-- Tabs -->
+<div class="direction-tabs">
+  <div class="dir-tab active" onclick="showDir(1)">1 · Merchant Center Native</div>
+  <div class="dir-tab" onclick="showDir(2)">2 · Canvas First</div>
+  <div class="dir-tab" onclick="showDir(3)">3 · Split Studio</div>
+  <div class="dir-tab" onclick="showDir(4)">4 · Command Center</div>
+  <div class="dir-tab" onclick="showDir(5)">5 · Context Dashboard</div>
+  <div class="dir-tab" onclick="showDir(6)">6 · Guided Creation</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- DIRECTION 1: Merchant Center Native -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div class="direction-panel active" id="dir1">
+  <div class="dir-info">
+    <span class="dir-tag">Direction 1</span>
+    <h2>Merchant Center Native</h2>
+    <p>The editor as a new screen inside Merchant Center. Operators feel zero context switch — the same nav rail, same header, same panel conventions they already know.</p>
+    <ul class="dir-traits">
+      <li>Left rail navigation matches existing MC</li>
+      <li>Right sidebar for component properties</li>
+      <li>Top context bar shows B2X / locale / draft state</li>
+      <li>Canvas center with click-to-select components</li>
+      <li>AI as a secondary panel (not front-and-center)</li>
+      <li>Governance locked badge on Red Zone components</li>
+    </ul>
+    <div class="eval-section">
+      <h3>Evaluation</h3>
+      <div class="eval-row">
+        <div class="eval-label"><span>Operator familiarity</span><span>9/10</span></div>
+        <div class="eval-bar"><div class="eval-fill" style="width:90%"></div></div>
+      </div>
+      <div class="eval-row">
+        <div class="eval-label"><span>AI centrality</span><span>4/10</span></div>
+        <div class="eval-bar"><div class="eval-fill" style="width:40%"></div></div>
+      </div>
+      <div class="eval-row">
+        <div class="eval-label"><span>Canvas real estate</span><span>6/10</span></div>
+        <div class="eval-bar"><div class="eval-fill" style="width:60%"></div></div>
+      </div>
+      <div class="eval-row">
+        <div class="eval-label"><span>Onboarding ease</span><span>9/10</span></div>
+        <div class="eval-bar"><div class="eval-fill" style="width:90%"></div></div>
+      </div>
+      <div class="eval-row">
+        <div class="eval-label"><span>AI-first feel</span><span>3/10</span></div>
+        <div class="eval-bar"><div class="eval-fill" style="width:30%"></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="mockup-wrap">
+    <div class="mockup-bar">
+      <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+      <div class="mockup-url">mc.commercetools.com / storefront-editor / home-page</div>
+    </div>
+    <div class="mock1">
+      <!-- Left nav rail -->
+      <div class="mc-nav">
+        <div class="mc-logo"></div>
+        <div class="mc-nav-icon active">
+          <svg viewBox="0 0 16 16"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>
+        </div>
+        <div class="mc-nav-icon">
+          <svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6" stroke="rgba(255,255,255,0.6)" stroke-width="1.5" fill="none"/><line x1="8" y1="2" x2="8" y2="14" stroke="rgba(255,255,255,0.6)" stroke-width="1.5"/><line x1="2" y1="8" x2="14" y2="8" stroke="rgba(255,255,255,0.6)" stroke-width="1.5"/></svg>
+        </div>
+        <div class="mc-nav-icon">
+          <svg viewBox="0 0 16 16"><rect x="2" y="2" width="12" height="3" rx="1" fill="rgba(255,255,255,0.6)"/><rect x="2" y="7" width="8" height="3" rx="1" fill="rgba(255,255,255,0.6)"/><rect x="2" y="12" width="10" height="2" rx="1" fill="rgba(255,255,255,0.6)"/></svg>
+        </div>
+      </div>
+      <!-- Main area -->
+      <div class="mc-main">
+        <div class="mc-topbar">
+          <div class="mc-breadcrumb">Storefront Editor › <span>Homepage</span></div>
+          <div style="margin-left:auto;display:flex;gap:8px;">
+            <div style="font-size:11px;color:var(--ct-text-secondary);padding:4px 10px;border:1px solid var(--ct-border);border-radius:4px;">Preview</div>
+            <div style="font-size:11px;background:var(--ct-orange);color:white;padding:4px 12px;border-radius:4px;font-weight:600;">Publish</div>
+          </div>
+        </div>
+        <div class="ctx-bar">
+          <div class="ctx-chip b2b">B2C</div>
+          <div class="ctx-chip locale">DE/AT/CH</div>
+          <div class="ctx-chip draft">● 3 unpublished changes</div>
+          <div style="margin-left:auto;font-size:11px;color:var(--ct-text-muted);">Share draft ↗</div>
+        </div>
+        <div class="mc-workspace">
+          <!-- Canvas -->
+          <div class="mc-canvas">
+            <div class="storefront-hero selected" style="position:relative;">
+              <div class="ai-indicator">AI generated</div>
+              <h2>Summer Collection — DACH</h2>
+              <p>Discover the season's essential styles, now in EUR pricing</p>
+              <div class="hero-cta">Shop Now</div>
+            </div>
+            <div class="storefront-products">
+              <div class="products-label">Featured Products</div>
+              <div class="product-grid">
+                <div class="product-card"><div class="product-img"></div><div class="product-name">Product A</div><div class="product-price">€129</div></div>
+                <div class="product-card"><div class="product-img"></div><div class="product-name">Product B</div><div class="product-price">€89</div></div>
+                <div class="product-card"><div class="product-img"></div><div class="product-name">Product C</div><div class="product-price">€199</div></div>
+                <div class="product-card"><div class="product-img"></div><div class="product-name">Product D</div><div class="product-price">€149</div></div>
+              </div>
+            </div>
+          </div>
+          <!-- Right sidebar -->
+          <div class="mc-sidebar-right">
+            <div class="sidebar-header">Hero Section</div>
+            <div class="sidebar-section">
+              <label>Headline</label>
+              <input class="sidebar-input" value="Summer Collection — DACH">
+            </div>
+            <div class="sidebar-section">
+              <label>Alignment</label>
+              <div class="sidebar-row">
+                <div class="sidebar-btn active">Left</div>
+                <div class="sidebar-btn">Center</div>
+                <div class="sidebar-btn">Right</div>
+              </div>
+            </div>
+            <div class="sidebar-section">
+              <label>CTA Button</label>
+              <input class="sidebar-input" value="Shop Now">
+            </div>
+            <div class="sidebar-section">
+              <label>Pricing Logic</label>
+              <div class="locked-badge">
+                <div class="lock-icon"></div>
+                Platform-managed · EUR channel
+              </div>
+            </div>
+            <div class="mc-footer">
+              <div class="btn-secondary">Reset</div>
+              <div class="btn-primary">Apply</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- DIRECTION 2: Canvas First -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div class="direction-panel" id="dir2">
+  <div class="dir-info">
+    <span class="dir-tag">Direction 2</span>
+    <h2>Canvas First</h2>
+    <p>Maximum canvas real estate. Toolbars float above the storefront. The editor gets out of the way — the storefront IS the editing surface. AI surfaces as a floating action button that expands to a panel.</p>
+    <ul class="dir-traits">
+      <li>Canvas fills the entire screen</li>
+      <li>Floating toolbar with context + publish at top</li>
+      <li>Property sidebar appears on right when element selected</li>
+      <li>AI chat as floating button → expands to bottom drawer</li>
+      <li>Figma-like feel: the design tool disappears</li>
+      <li>Best for experienced operators who want immersion</li>
+    </ul>
+    <div class="eval-section">
+      <h3>Evaluation</h3>
+      <div class="eval-row">
+        <div class="eval-label"><span>Canvas real estate</span><span>10/10</span></div>
+        <div class="eval-bar"><div class="eval-fill" style="width:100%"></div></div>
+      </div>
+      <div class="eval-row">
+        <div class="eval-label"><span>Operator familiarity</span><span>5/10</span></div>
+        <div class="eval-bar"><div class="eval-fill" style="width:50%"></div></div>
+      </div>
+      <div class="eval-row">
+        <div class="eval-label"><span>AI discoverability</span><span>5/10</span></div>
+        <div class="eval-bar"><div class="eval-fill" style="width:50%"></div></div>
+      </div>
+      <div class="eval-row">
+        <div class="eval-label"><span>Power user appeal</span><span>9/10</span></div>
+        <div class="eval-bar"><div class="eval-fill" style="width:90%"></div></div>
+      </div>
+      <div class="eval-row">
+        <div class="eval-label"><span>New user confidence</span><span>4/10</span></div>
+        <div class="eval-bar"><div class="eval-fill" style="width:40%"></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="mockup-wrap">
+    <div class="mockup-bar">
+      <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+      <div class="mockup-url">storefront-editor.commercetools.com / homepage</div>
+    </div>
+    <div class="mock2">
+      <div class="canvas-full">
+        <div style="background:var(--ct-navy);padding:32px 40px;color:white;">
+          <div style="font-size:22px;font-weight:700;margin-bottom:8px;">Summer Collection — DACH</div>
+          <div style="font-size:13px;opacity:0.7;margin-bottom:16px;">Discover the season's essentials. Now in EUR.</div>
+          <div style="background:var(--ct-orange);display:inline-block;padding:8px 18px;border-radius:5px;font-size:12px;font-weight:600;">Shop Now</div>
+        </div>
+        <div style="padding:20px 40px;background:white;">
+          <div style="font-size:11px;text-transform:uppercase;font-weight:600;color:var(--ct-text-muted);letter-spacing:0.05em;margin-bottom:12px;">Featured Products</div>
+          <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;">
+            <div style="background:var(--ct-bg);border-radius:5px;padding:10px;"><div style="width:100%;height:50px;background:var(--ct-border);border-radius:3px;margin-bottom:6px;"></div><div style="font-size:10px;font-weight:500;">Product A</div><div style="font-size:10px;color:var(--ct-text-secondary);">€129</div></div>
+            <div style="background:var(--ct-bg);border-radius:5px;padding:10px;"><div style="width:100%;height:50px;background:var(--ct-border);border-radius:3px;margin-bottom:6px;"></div><div style="font-size:10px;font-weight:500;">Product B</div><div style="font-size:10px;color:var(--ct-text-secondary);">€89</div></div>
+            <div style="background:var(--ct-bg);border-radius:5px;padding:10px;"><div style="width:100%;height:50px;background:var(--ct-border);border-radius:3px;margin-bottom:6px;"></div><div style="font-size:10px;font-weight:500;">Product C</div><div style="font-size:10px;color:var(--ct-text-secondary);">€199</div></div>
+            <div style="background:var(--ct-bg);border-radius:5px;padding:10px;"><div style="width:100%;height:50px;background:var(--ct-border);border-radius:3px;margin-bottom:6px;"></div><div style="font-size:10px;font-weight:500;">Product D</div><div style="font-size:10px;color:var(--ct-text-secondary);">€149</div></div>
+            <div style="background:var(--ct-bg);border-radius:5px;padding:10px;"><div style="width:100%;height:50px;background:var(--ct-border);border-radius:3px;margin-bottom:6px;"></div><div style="font-size:10px;font-weight:500;">Product E</div><div style="font-size:10px;color:var(--ct-text-secondary);">€229</div></div>
+          </div>
+        </div>
+      </div>
+      <!-- Floating toolbar -->
+      <div class="floating-toolbar">
+        <div style="width:22px;height:22px;background:var(--ct-orange);border-radius:4px;"></div>
+        <div class="toolbar-divider"></div>
+        <div class="ctx-chip b2b" style="font-size:10px;">B2C</div>
+        <div class="ctx-chip locale" style="font-size:10px;">DE/AT/CH</div>
+        <div class="ctx-chip draft" style="font-size:10px;">● 3 changes</div>
+        <div class="toolbar-divider"></div>
+        <div class="toolbar-action">Preview</div>
+        <div class="toolbar-action">Share</div>
+        <div class="toolbar-publish">Publish</div>
+      </div>
+      <!-- Floating sidebar (shows on selection) -->
+      <div class="floating-sidebar">
+        <div class="sidebar-header" style="background:var(--ct-navy);color:white;border:none;">Hero Section</div>
+        <div class="sidebar-section">
+          <label>Headline</label>
+          <input class="sidebar-input" value="Summer Collection — DACH">
+        </div>
+        <div class="sidebar-section">
+          <label>Background</label>
+          <div class="sidebar-row">
+            <div style="width:20px;height:20px;border-radius:3px;background:var(--ct-navy);border:2px solid var(--ct-orange);"></div>
+            <div style="width:20px;height:20px;border-radius:3px;background:#0891B2;border:1px solid var(--ct-border);"></div>
+            <div style="width:20px;height:20px;border-radius:3px;background:#1A1A2E;border:1px solid var(--ct-border);"></div>
+          </div>
+        </div>
+        <div class="sidebar-section">
+          <label>Pricing Logic</label>
+          <div class="locked-badge"><div class="lock-icon"></div>Platform-managed</div>
+        </div>
+      </div>
+      <!-- Floating AI button -->
+      <div class="floating-ai">
+        <div class="ai-dot"></div>
+        Ask AI
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- DIRECTION 3: Split Studio -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div class="direction-panel" id="dir3">
+  <div class="dir-info">
+    <span class="dir-tag">Direction 3</span>
+    <h2>Split Studio</h2>
+    <p>Lovable-inspired. AI conversation on the left, live storefront canvas on the right. The AI is the primary creation surface — operators describe, and watch changes materialize in real time.</p>
+    <ul class="dir-traits">
+      <li>Left panel: AI chat + context controls</li>
+      <li>Right panel: live storefront canvas</li>
+      <li>AI reasoning appears before applying changes</li>
+      <li>Conversation history = undo history</li>
+      <li>Direct edit available by clicking canvas</li>
+      <li>Best for AI-first creation workflows</li>
+    </ul>
+    <div class="eval-section">
+      <h3>Evaluation</h3>
+      <div class="eval-row">
+        <div class="eval-label"><span>AI-first feel</span><span>10/10</span></div>
+        <div class="eval-bar"><div class="eval-fill" style="width:100%"></div></div>
+      </div>
+      <div class="eval-row">
+        <div class="eval-label"><span>Canvas real estate</span><span>6/10</span></div>
+        <div class="eval-bar"><div class="eval-fill" style="width:60%"></div></div>
+      </div>
+      <div class="eval-row">
+        <div class="eval-label"><span>Operator familiarity</span><span>6/10</span></div>
+        <div class="eval-bar"><div class="eval-fill" style="width:60%"></div></div>
+      </div>
+      <div class="eval-row">
+        <div class="eval-label"><span>AI trust transparency</span><span>10/10</span></div>
+        <div class="eval-bar"><div class="eval-fill" style="width:100%"></div></div>
+      </div>
+      <div class="eval-row">
+        <div class="eval-label"><span>Enterprise credibility</span><span>7/10</span></div>
+        <div class="eval-bar"><div class="eval-fill" style="width:70%"></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="mockup-wrap">
+    <div class="mockup-bar">
+      <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+      <div class="mockup-url">storefront-editor.commercetools.com / homepage</div>
+    </div>
+    <div class="mock3">
+      <!-- Left: AI + controls -->
+      <div class="split-left">
+        <div class="split-header">
+          <div class="mc-logo"></div>
+          <span>Storefront Editor</span>
+        </div>
+        <div class="split-context">
+          <div class="ctx-chip b2b">B2C</div>
+          <div class="ctx-chip locale">DE/AT/CH</div>
+          <div class="ctx-chip draft">● Draft</div>
+        </div>
+        <div class="chat-area">
+          <!-- User message -->
+          <div class="chat-msg" style="flex-direction:row-reverse;">
+            <div class="chat-user-avatar"></div>
+            <div class="chat-bubble user">Create a summer campaign hero for our DACH B2C segment — use the seasonal palette</div>
+          </div>
+          <!-- AI response with reasoning -->
+          <div class="chat-msg">
+            <div class="chat-avatar"><div class="ai-dot"></div></div>
+            <div>
+              <div class="chat-bubble ai-preview">
+                <div style="font-size:10px;color:#6366F1;font-weight:600;margin-bottom:4px;">AI · Reasoning before acting</div>
+                I'll assemble a hero using your B2C storefront layout, apply seasonal color tokens from your brand library, and set locale to DE/AT/CH.<br><br>
+                Pricing will use your EUR channel (platform-managed).
+                <div class="ai-action-row">
+                  <div class="ai-action-btn primary">Apply</div>
+                  <div class="ai-action-btn">Edit plan</div>
+                  <div class="ai-action-btn">Cancel</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- System message -->
+          <div style="font-size:10px;color:var(--ct-text-muted);text-align:center;padding:4px 0;">✓ Hero section applied to canvas</div>
+          <!-- Follow-up -->
+          <div class="chat-msg" style="flex-direction:row-reverse;">
+            <div class="chat-user-avatar"></div>
+            <div class="chat-bubble user">Make the headline bigger and center it</div>
+          </div>
+          <div class="chat-msg">
+            <div class="chat-avatar"><div class="ai-dot"></div></div>
+            <div class="chat-bubble">Updated headline to 28px centered. Preview updated →</div>
+          </div>
+        </div>
+        <div class="chat-input-area">
+          <input class="chat-input" placeholder="Describe what you want to change...">
+        </div>
+      </div>
+      <!-- Right: Canvas -->
+      <div class="split-right">
+        <div class="split-top-bar">
+          <div class="preview-tabs">
+            <div class="preview-tab active">Desktop</div>
+            <div class="preview-tab">Mobile</div>
+            <div class="preview-tab">B2B View</div>
+          </div>
+          <div class="spacer"></div>
+          <div style="font-size:11px;color:var(--ct-text-secondary);margin-right:8px;">Share draft ↗</div>
+          <div class="btn-primary" style="padding:5px 14px;border-radius:5px;font-size:12px;">Publish</div>
+        </div>
+        <div class="split-canvas">
+          <div style="background:var(--ct-navy);padding:28px 24px;color:white;text-align:center;cursor:pointer;">
+            <div style="font-size:20px;font-weight:700;margin-bottom:6px;">Summer Collection — DACH</div>
+            <div style="font-size:11px;opacity:0.7;margin-bottom:14px;">Discover the season's essentials. Now in EUR.</div>
+            <div style="background:var(--ct-orange);display:inline-block;padding:7px 16px;border-radius:4px;font-size:11px;font-weight:600;">Shop Now</div>
+          </div>
+          <div style="padding:16px 24px;background:white;">
+            <div style="font-size:10px;text-transform:uppercase;font-weight:600;color:var(--ct-text-muted);letter-spacing:0.05em;margin-bottom:10px;">Featured Products</div>
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
+              <div style="background:var(--ct-bg);border-radius:4px;padding:8px;"><div style="height:40px;background:var(--ct-border);border-radius:3px;margin-bottom:5px;"></div><div style="font-size:9px;font-weight:500;">Product A</div><div style="font-size:9px;color:var(--ct-text-secondary);">€129</div></div>
+              <div style="background:var(--ct-bg);border-radius:4px;padding:8px;"><div style="height:40px;background:var(--ct-border);border-radius:3px;margin-bottom:5px;"></div><div style="font-size:9px;font-weight:500;">Product B</div><div style="font-size:9px;color:var(--ct-text-secondary);">€89</div></div>
+              <div style="background:var(--ct-bg);border-radius:4px;padding:8px;"><div style="height:40px;background:var(--ct-border);border-radius:3px;margin-bottom:5px;"></div><div style="font-size:9px;font-weight:500;">Product C</div><div style="font-size:9px;color:var(--ct-text-secondary);">€199</div></div>
+              <div style="background:var(--ct-bg);border-radius:4px;padding:8px;"><div style="height:40px;background:var(--ct-border);border-radius:3px;margin-bottom:5px;"></div><div style="font-size:9px;font-weight:500;">Product D</div><div style="font-size:9px;color:var(--ct-text-secondary);">€149</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- DIRECTION 4: Command Center (Dark) -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div class="direction-panel" id="dir4">
+  <div class="dir-info">
+    <span class="dir-tag">Direction 4</span>
+    <h2>Command Center</h2>
+    <p>Dark-mode, power-user focused. AI is invoked via a command palette (⌘K). Dense information. For experienced operators who want maximum efficiency with minimal UI chrome.</p>
+    <ul class="dir-traits">
+      <li>Dark theme extending MC's enterprise feel</li>
+      <li>AI via ⌘K command palette — not always visible</li>
+      <li>Canvas shown with a subtle inset border</li>
+      <li>Maximum keyboard operability</li>
+      <li>Dense sidebar with compact property controls</li>
+      <li>Best for CRO and data-fluent power users</li>
+    </ul>
+    <div class="eval-section">
+      <h3>Evaluation</h3>
+      <div class="eval-row">
+        <div class="eval-label"><span>Power user appeal</span><span>10/10</span></div>
+        <div class="eval-bar"><div class="eval-fill" style="width:100%"></div></div>
+      </div>
+      <div class="eval-row">
+        <div class="eval-label"><span>New user confidence</span><span>3/10</span></div>
+        <div class="eval-bar"><div class="eval-fill" style="width:30%"></div></div>
+      </div>
+      <div class="eval-row">
+        <div class="eval-label"><span>AI discoverability</span><span>4/10</span></div>
+        <div class="eval-bar"><div class="eval-fill" style="width:40%"></div></div>
+      </div>
+      <div class="eval-row">
+        <div class="eval-label"><span>Visual distinction</span><span>9/10</span></div>
+        <div class="eval-bar"><div class="eval-fill" style="width:90%"></div></div>
+      </div>
+      <div class="eval-row">
+        <div class="eval-label"><span>Enterprise credibility</span><span>9/10</span></div>
+        <div class="eval-bar"><div class="eval-fill" style="width:90%"></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="mockup-wrap">
+    <div class="mockup-bar">
+      <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+      <div class="mockup-url">mc.commercetools.com / storefront-editor / homepage</div>
+    </div>
+    <div class="mock4">
+      <div class="dark-nav">
+        <div class="mc-logo" style="margin-bottom:8px;"></div>
+        <div class="dark-nav-icon active"></div>
+        <div class="dark-nav-icon"></div>
+        <div class="dark-nav-icon"></div>
+        <div class="dark-nav-icon" style="margin-top:auto;margin-bottom:8px;"></div>
+      </div>
+      <div class="dark-main">
+        <div class="dark-topbar">
+          <div style="color:rgba(255,255,255,0.4);font-size:11px;">Storefront Editor</div>
+          <div style="color:rgba(255,255,255,0.2);font-size:11px;">/</div>
+          <div style="color:rgba(255,255,255,0.7);font-size:11px;font-weight:500;">Homepage</div>
+          <div style="margin-left:auto;display:flex;gap:8px;align-items:center;">
+            <div class="dark-ctx-chip active-ctx">B2C</div>
+            <div class="dark-ctx-chip">DE/AT/CH</div>
+            <div class="dark-ctx-chip" style="color:var(--ct-warning);background:rgba(217,119,6,0.1);border-color:rgba(217,119,6,0.2);">● 3 changes</div>
+            <div style="font-size:10px;color:rgba(255,255,255,0.3);background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:4px;padding:3px 8px;">⌘K</div>
+            <div class="dark-btn-primary" style="padding:4px 12px;border-radius:4px;font-size:11px;">Publish</div>
+          </div>
+        </div>
+        <div class="dark-workspace">
+          <div class="dark-canvas">
+            <div class="dark-canvas-inner">
+              <div style="background:var(--ct-navy);padding:20px;color:white;">
+                <div style="font-size:16px;font-weight:700;margin-bottom:5px;">Summer Collection — DACH</div>
+                <div style="font-size:10px;opacity:0.6;margin-bottom:10px;">Discover the season's essentials.</div>
+                <div style="background:var(--ct-orange);display:inline-block;padding:5px 12px;border-radius:3px;font-size:10px;font-weight:600;">Shop Now</div>
+              </div>
+              <div style="padding:12px;background:white;">
+                <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;">
+                  <div style="background:var(--ct-bg);border-radius:3px;padding:6px;"><div style="height:30px;background:var(--ct-border);border-radius:2px;margin-bottom:4px;"></div><div style="font-size:8px;">Product A</div></div>
+                  <div style="background:var(--ct-bg);border-radius:3px;padding:6px;"><div style="height:30px;background:var(--ct-border);border-radius:2px;margin-bottom:4px;"></div><div style="font-size:8px;">Product B</div></div>
+                  <div style="background:var(--ct-bg);border-radius:3px;padding:6px;"><div style="height:30px;background:var(--ct-border);border-radius:2px;margin-bottom:4px;"></div><div style="font-size:8px;">Product C</div></div>
+                  <div style="background:var(--ct-bg);border-radius:3px;padding:6px;"><div style="height:30px;background:var(--ct-border);border-radius:2px;margin-bottom:4px;"></div><div style="font-size:8px;">Product D</div></div>
+                </div>
+              </div>
+            </div>
+            <!-- Command Palette overlay -->
+            <div class="cmd-palette">
+              <div class="cmd-input-wrap">
+                <div class="cmd-icon">⌘</div>
+                <div class="cmd-input-text">Create summer hero for DACH B2C...</div>
+              </div>
+              <div class="cmd-result active-result">
+                <div class="cmd-result-icon"></div>
+                <div>
+                  <div style="font-size:11px;color:rgba(255,255,255,0.8);">AI: Generate hero section</div>
+                  <div style="font-size:10px;color:rgba(255,255,255,0.3);">Using your B2C layout + DE/AT/CH locale</div>
+                </div>
+                <div class="cmd-kbd">↵</div>
+              </div>
+              <div class="cmd-result">
+                <div class="cmd-result-icon"></div>
+                <div style="font-size:11px;">Edit hero section properties</div>
+                <div class="cmd-kbd">⌘E</div>
+              </div>
+              <div class="cmd-result">
+                <div class="cmd-result-icon"></div>
+                <div style="font-size:11px;">Switch to B2B context</div>
+                <div class="cmd-kbd">⌘⇧B</div>
+              </div>
+              <div class="cmd-result">
+                <div class="cmd-result-icon"></div>
+                <div style="font-size:11px;">Publish current changes</div>
+                <div class="cmd-kbd">⌘⇧P</div>
+              </div>
+            </div>
+          </div>
+          <div class="dark-sidebar">
+            <div class="dark-sidebar-header">Hero Section</div>
+            <div class="dark-prop-row">
+              <div class="dark-prop-label">Headline</div>
+              <input class="dark-prop-input" value="Summer Collection — DACH">
+            </div>
+            <div class="dark-prop-row">
+              <div class="dark-prop-label">Subheadline</div>
+              <input class="dark-prop-input" value="Discover the season's essentials">
+            </div>
+            <div class="dark-prop-row">
+              <div class="dark-prop-label">CTA Label</div>
+              <input class="dark-prop-input" value="Shop Now">
+            </div>
+            <div class="dark-locked">🔒 Pricing logic — platform-managed</div>
+            <div class="dark-locked">🔒 Locale routing — DE/AT/CH</div>
+            <div class="dark-footer">
+              <div class="dark-btn-secondary">Reset</div>
+              <div class="dark-btn-primary">Apply</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- DIRECTION 5: Context Dashboard -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div class="direction-panel" id="dir5">
+  <div class="dir-info">
+    <span class="dir-tag">Direction 5</span>
+    <h2>Context Dashboard</h2>
+    <p>All B2X contexts visible simultaneously in a left panel. Click to activate a context and edit it. Designed for multi-market operators managing B2B, B2C, and multiple locales at once.</p>
+    <ul class="dir-traits">
+      <li>Left panel lists all live contexts with status</li>
+      <li>Canvas shows active context, click to switch</li>
+      <li>Each context shows its own live/draft state</li>
+      <li>Multi-market operators see their full scope at once</li>
+      <li>Best for Segment 4 (Multi-Brand B2C Enterprise)</li>
+      <li>Reinforces the B2X moat visually</li>
+    </ul>
+    <div class="eval-section">
+      <h3>Evaluation</h3>
+      <div class="eval-row">
+        <div class="eval-label"><span>B2X moat visibility</span><span>10/10</span></div>
+        <div class="eval-bar"><div class="eval-fill" style="width:100%"></div></div>
+      </div>
+      <div class="eval-row">
+        <div class="eval-label"><span>Single-market usability</span><span>5/10</span></div>
+        <div class="eval-bar"><div class="eval-fill" style="width:50%"></div></div>
+      </div>
+      <div class="eval-row">
+        <div class="eval-label"><span>Canvas real estate</span><span>6/10</span></div>
+        <div class="eval-bar"><div class="eval-fill" style="width:60%"></div></div>
+      </div>
+      <div class="eval-row">
+        <div class="eval-label"><span>Operator familiarity</span><span>7/10</span></div>
+        <div class="eval-bar"><div class="eval-fill" style="width:70%"></div></div>
+      </div>
+      <div class="eval-row">
+        <div class="eval-label"><span>Multi-brand scalability</span><span>10/10</span></div>
+        <div class="eval-bar"><div class="eval-fill" style="width:100%"></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="mockup-wrap">
+    <div class="mockup-bar">
+      <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+      <div class="mockup-url">mc.commercetools.com / storefront-editor / homepage</div>
+    </div>
+    <div class="mock5">
+      <div class="ctx-dash-header">
+        <div class="mc-logo"></div>
+        <span>Storefront Editor · Homepage</span>
+        <div style="margin-left:auto;display:flex;gap:8px;align-items:center;">
+          <div style="font-size:11px;color:rgba(255,255,255,0.5);">Share draft ↗</div>
+          <div style="background:var(--ct-orange);color:white;padding:5px 14px;border-radius:4px;font-size:11px;font-weight:600;">Publish Selected</div>
+        </div>
+      </div>
+      <div class="ctx-dash-workspace">
+        <!-- Left: context list -->
+        <div class="ctx-panel">
+          <div class="ctx-panel-header">Contexts</div>
+          <div class="ctx-item active-ctx-item">
+            <div class="ctx-thumb ctx-thumb-navy"></div>
+            <div>
+              <div class="ctx-item-label">B2C · DE/AT/CH</div>
+              <div class="ctx-item-sub">3 changes</div>
+            </div>
+            <div class="ctx-draft-badge">Draft</div>
+          </div>
+          <div class="ctx-item">
+            <div class="ctx-thumb ctx-thumb-teal"></div>
+            <div>
+              <div class="ctx-item-label">B2B · DACH</div>
+              <div class="ctx-item-sub">Enterprise</div>
+            </div>
+            <div class="ctx-live-badge"></div>
+          </div>
+          <div class="ctx-item">
+            <div class="ctx-thumb ctx-thumb-orange"></div>
+            <div>
+              <div class="ctx-item-label">B2C · UK</div>
+              <div class="ctx-item-sub">1 change</div>
+            </div>
+            <div class="ctx-draft-badge">Draft</div>
+          </div>
+          <div class="ctx-item">
+            <div class="ctx-thumb"></div>
+            <div>
+              <div class="ctx-item-label">B2C · US</div>
+              <div class="ctx-item-sub">Live</div>
+            </div>
+            <div class="ctx-live-badge"></div>
+          </div>
+          <div class="ctx-item">
+            <div class="ctx-thumb"></div>
+            <div>
+              <div class="ctx-item-label">Dealer · EU</div>
+              <div class="ctx-item-sub">B2B2C</div>
+            </div>
+            <div class="ctx-live-badge"></div>
+          </div>
+          <div style="padding:10px 12px;margin-top:auto;border-top:1px solid var(--ct-border);">
+            <div style="font-size:11px;color:var(--ct-orange);cursor:pointer;">+ Add context</div>
+          </div>
+        </div>
+        <!-- Main canvas area -->
+        <div class="ctx-main-area">
+          <div class="ctx-canvas-wrap">
+            <div>
+              <div class="ctx-canvas-label">B2C · DE/AT/CH · Draft</div>
+            </div>
+            <div class="ctx-canvas-frame">
+              <div style="background:var(--ct-navy);padding:20px;color:white;">
+                <div style="font-size:16px;font-weight:700;margin-bottom:5px;">Summer Collection — DACH</div>
+                <div style="font-size:10px;opacity:0.7;margin-bottom:10px;">Discover the season's essentials. EUR pricing.</div>
+                <div style="background:var(--ct-orange);display:inline-block;padding:5px 12px;border-radius:3px;font-size:10px;font-weight:600;">Shop Now</div>
+              </div>
+              <div style="padding:12px;">
+                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;">
+                  <div style="background:var(--ct-bg);border-radius:3px;padding:7px;"><div style="height:32px;background:var(--ct-border);border-radius:2px;margin-bottom:4px;"></div><div style="font-size:9px;">Product A · €129</div></div>
+                  <div style="background:var(--ct-bg);border-radius:3px;padding:7px;"><div style="height:32px;background:var(--ct-border);border-radius:2px;margin-bottom:4px;"></div><div style="font-size:9px;">Product B · €89</div></div>
+                  <div style="background:var(--ct-bg);border-radius:3px;padding:7px;"><div style="height:32px;background:var(--ct-border);border-radius:2px;margin-bottom:4px;"></div><div style="font-size:9px;">Product C · €199</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="ctx-sidebar-right">
+            <div class="sidebar-header">Section Properties</div>
+            <div class="sidebar-section">
+              <label>Headline</label>
+              <input class="sidebar-input" value="Summer Collection — DACH">
+            </div>
+            <div class="sidebar-section">
+              <label>Context scope</label>
+              <div style="font-size:11px;color:var(--ct-text-secondary);">B2C DE/AT/CH only</div>
+              <div style="font-size:10px;color:var(--ct-text-muted);margin-top:3px;">Changes won't affect other contexts</div>
+            </div>
+            <div class="sidebar-section">
+              <label>Pricing</label>
+              <div class="locked-badge"><div class="lock-icon"></div>EUR channel</div>
+            </div>
+            <div class="mc-footer">
+              <div class="btn-primary">Apply to B2C DACH</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- DIRECTION 6: Guided Creation -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div class="direction-panel" id="dir6">
+  <div class="dir-info">
+    <span class="dir-tag">Direction 6</span>
+    <h2>Guided Creation</h2>
+    <p>Step-by-step left panel guides operators through creating a new page or section. AI generates at each step based on inputs. Designed for onboarding and new-page creation flows.</p>
+    <ul class="dir-traits">
+      <li>Left panel: wizard with clear step progress</li>
+      <li>AI generates preview as operator fills in details</li>
+      <li>Right panel: live canvas preview updating in real time</li>
+      <li>"Generating…" state visible and non-anxious</li>
+      <li>Best for first-time use and new page creation</li>
+      <li>Transitions to Direction 1 after initial creation</li>
+    </ul>
+    <div class="eval-section">
+      <h3>Evaluation</h3>
+      <div class="eval-row">
+        <div class="eval-label"><span>Onboarding ease</span><span>10/10</span></div>
+        <div class="eval-bar"><div class="eval-fill" style="width:100%"></div></div>
+      </div>
+      <div class="eval-row">
+        <div class="eval-label"><span>Daily-use efficiency</span><span>4/10</span></div>
+        <div class="eval-bar"><div class="eval-fill" style="width:40%"></div></div>
+      </div>
+      <div class="eval-row">
+        <div class="eval-label"><span>AI trust building</span><span>9/10</span></div>
+        <div class="eval-bar"><div class="eval-fill" style="width:90%"></div></div>
+      </div>
+      <div class="eval-row">
+        <div class="eval-label"><span>New user confidence</span><span>10/10</span></div>
+        <div class="eval-bar"><div class="eval-fill" style="width:100%"></div></div>
+      </div>
+      <div class="eval-row">
+        <div class="eval-label"><span>Power user appeal</span><span>2/10</span></div>
+        <div class="eval-bar"><div class="eval-fill" style="width:20%"></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="mockup-wrap">
+    <div class="mockup-bar">
+      <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+      <div class="mockup-url">mc.commercetools.com / storefront-editor / new-page</div>
+    </div>
+    <div class="mock6">
+      <!-- Left: guided steps -->
+      <div class="guided-left">
+        <div class="guided-header-bar">
+          <h3>Create New Page</h3>
+          <p>AI will generate a draft as you go</p>
+        </div>
+        <div class="guided-steps">
+          <div class="guided-step">
+            <div class="step-num done">✓</div>
+            <div class="step-label">Page type & goal</div>
+          </div>
+          <div class="guided-step">
+            <div class="step-num done">✓</div>
+            <div class="step-label">Target audience</div>
+          </div>
+          <div class="guided-step">
+            <div class="step-num current">3</div>
+            <div class="step-label current">Content brief</div>
+          </div>
+          <div class="guided-step">
+            <div class="step-num">4</div>
+            <div class="step-label">Review & refine</div>
+          </div>
+          <div class="guided-step">
+            <div class="step-num">5</div>
+            <div class="step-label">Publish</div>
+          </div>
+        </div>
+        <div class="guided-form">
+          <div class="form-field">
+            <label class="form-label">What's this page for?</label>
+            <input class="form-input" value="Summer campaign landing page">
+          </div>
+          <div class="form-field">
+            <label class="form-label">Commerce context</label>
+            <div class="form-radio-group">
+              <div class="form-radio selected">B2C</div>
+              <div class="form-radio">B2B</div>
+              <div class="form-radio">B2X</div>
+            </div>
+          </div>
+          <div class="form-field">
+            <label class="form-label">Key message</label>
+            <input class="form-input" value="Seasonal collection, EUR pricing, DACH market">
+          </div>
+          <div class="ai-assist-row">
+            <div class="ai-dot"></div>
+            <div class="ai-assist-text">AI is reading your catalog, brand tokens, and DE/AT/CH locale config to generate the page...</div>
+          </div>
+        </div>
+        <div class="guided-footer">
+          <div class="btn-secondary">← Back</div>
+          <div class="btn-primary" style="flex:1;">Generate Preview →</div>
+        </div>
+      </div>
+      <!-- Right: live canvas preview -->
+      <div class="guided-right">
+        <div class="guided-preview-header">
+          <div class="guided-preview-label">Live Preview · Generating from your inputs</div>
+          <div class="generating-badge">
+            <div class="ai-dot" style="width:6px;height:6px;"></div>
+            AI generating
+          </div>
+        </div>
+        <div class="guided-canvas">
+          <div class="canvas-preview-inner">
+            <div style="background:var(--ct-navy);padding:24px;color:white;">
+              <div style="font-size:18px;font-weight:700;margin-bottom:6px;">Summer Collection — DACH</div>
+              <div style="font-size:11px;opacity:0.6;margin-bottom:14px;">Discover the season's essentials, now in EUR</div>
+              <div style="background:var(--ct-orange);display:inline-block;padding:7px 16px;border-radius:4px;font-size:11px;font-weight:600;">Shop Now</div>
+              <div style="margin-top:14px;display:flex;gap:8px;">
+                <div style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);border-radius:3px;padding:4px 10px;font-size:10px;">Free delivery over €75</div>
+                <div style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);border-radius:3px;padding:4px 10px;font-size:10px;">30-day returns</div>
+              </div>
+            </div>
+            <div style="padding:14px;background:white;">
+              <div style="font-size:10px;text-transform:uppercase;font-weight:600;color:var(--ct-text-muted);letter-spacing:0.05em;margin-bottom:8px;">New arrivals</div>
+              <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:7px;">
+                <div style="background:var(--ct-bg);border-radius:4px;padding:7px;"><div style="height:35px;background:var(--ct-border);border-radius:2px;margin-bottom:4px;"></div><div style="font-size:9px;font-weight:500;">Product A</div><div style="font-size:9px;color:var(--ct-text-secondary);">€129</div></div>
+                <div style="background:var(--ct-bg);border-radius:4px;padding:7px;"><div style="height:35px;background:var(--ct-border);border-radius:2px;margin-bottom:4px;"></div><div style="font-size:9px;font-weight:500;">Product B</div><div style="font-size:9px;color:var(--ct-text-secondary);">€89</div></div>
+                <div style="background:var(--ct-bg);border-radius:4px;padding:7px;"><div style="height:35px;background:var(--ct-border);border-radius:2px;margin-bottom:4px;"></div><div style="font-size:9px;font-weight:500;">Product C</div><div style="font-size:9px;color:var(--ct-text-secondary);">€199</div></div>
+                <div style="background:var(--ct-bg);border-radius:4px;padding:7px;opacity:0.4;"><div style="height:35px;background:var(--ct-border);border-radius:2px;margin-bottom:4px;"></div><div style="font-size:9px;font-weight:500;">Generating...</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function showDir(n) {
+    document.querySelectorAll('.direction-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.dir-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('dir' + n).classList.add('active');
+    document.querySelectorAll('.dir-tab')[n - 1].classList.add('active');
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,85 @@
+---
+date: 2026-05-05
+version: 1.0
+author: Leandro Palazzo
+---
+
+# commercetools Next-Gen Frontend — Elevator Pitch Document
+
+*Head of Product – Next-Gen Frontend | Prepared by Leandro Palazzo*
+
+---
+
+## 1. The 30-Second Version
+
+commercetools enterprise customers are sitting on a frontend time bomb — 52% face end-of-life within two years — while paying up to $1M annually for analytics tools that cannot see their B2B account tier, contract price, or catalog segment. The Next-Gen Frontend ships natively inside the Merchant Center as a Connect-packaged application: no new infrastructure, no new contract, just a new tab in the environment operators already use. It replaces the fragmented stack with a single AI-native layer that governs itself, measures both short- and long-term outcomes simultaneously, and gets smarter with every experiment. Native. B2X. AI-first. No compromise.
+
+---
+
+## 2. The 2-Minute Version
+
+**The problem.** commercetools customers own a powerful commerce backend and a fragile frontend story. The average enterprise stitches together ContentSquare, Amplitude, FullStory, and Optimizely at a cost of $350K to $1M per year — tools that are context-blind to the data that actually matters: B2B account tier, negotiated contract price, catalog segment, approval workflows. Meanwhile, 52% of CT enterprise customers face frontend end-of-life within two years, and 79% of B2B companies now sell D2C, meaning a single frontend must serve fundamentally different commerce models. No incumbent solves all of this. Most solve none of it.
+
+**The product.** The Next-Gen Frontend is a commercetools Connect-packaged MC Custom Application. It appears in the operator's existing Merchant Center environment — no new infrastructure, no separate login, no procurement cycle for a new platform. The core platform — foundation, editor, governance, and compliance — is bundled into the commercetools subscription. On top of it, an AI Experience Engine operates as a consumption-based add-on: charged per experiment run, per recommendation applied, per GitHub PR generated, per progressive rollout activated, with the first ten experiments per tenant free. The architecture is built around a single governance chokepoint — `executor.ts` — that enforces a hard boundary between what AI can compose freely (the tenant's approved component library) and what it can never touch (pricing, checkout, auth, approval workflows). Every recommendation surfaces through a ConfidenceCard before execution: the operator decides, the platform executes.
+
+**Why now, why us.** The competitive window is twelve months before Uniform and Vercel entrench further in the CT ecosystem. The moat is the Tenant Intelligence Score — a 0–100 composite metric that compounds monthly across session data, experiment history, CLV cohort analysis, and prediction accuracy. It cannot be replicated by any tool that merely connects to CT APIs from the outside. This product is built from the inside of the platform, by a team that has been on both sides of the commercetools relationship — as the vendor and as the customer.
+
+---
+
+## 3. The CFO Version
+
+Start with the stack you already pay for. The average commercetools enterprise spends $350K to $1M annually across ContentSquare, Amplitude, FullStory, and Optimizely. Every one of those tools operates in isolation from the commerce data that would make it useful — blind to B2B account tier, contract price, catalog segment, and approval state. You are paying full price for partial insight.
+
+Add the cost of the frontend itself. A custom composable frontend build runs $500K to $1.5M in SI fees, followed by ongoing maintenance that competes with feature work every sprint. With 52% of CT enterprise frontends facing end-of-life within two years, that bill is coming regardless.
+
+The Next-Gen Frontend displaces both. The core platform — editor, governance, compliance, measurement — is bundled into your existing commercetools subscription. No incremental line item. The AI Experience Engine is consumption-based: the first ten experiments per tenant are free, and every subsequent charge is tied to a measurable action — an experiment run, a recommendation applied, a GitHub PR generated, a rollout stage activated. You pay when value is delivered, not when the contract is signed.
+
+The combined TCO reduction — analytics stack displacement plus avoided custom build cost — is material in year one. The Tenant Intelligence Score compounds that advantage every month thereafter, making the platform more accurate and the marginal cost of each new experiment lower over time.
+
+---
+
+## 4. The Head of Digital Version
+
+The status quo is a ticket queue. Every time a merchandiser wants to test a new hero layout, swap a recommendation module, or run a promotional experiment, they write a ticket, wait for a sprint slot, wait for QA, and wait for a deployment window. By the time the change ships, the commercial moment has passed.
+
+The Next-Gen Frontend changes the dependency structure. Marketing and merchandising teams publish content, configure experiments, and activate promotions directly from the Merchant Center — the same environment they already use for catalog and pricing. No new tool to learn, no new login, no new vendor relationship.
+
+The AI layer surfaces opportunities without overreaching. When the platform identifies a pattern in behavioral data, it presents a ConfidenceCard: "your data shows that B2B accounts browsing the industrial catalog convert 34% higher when the reorder module appears above the fold." The language is deliberate. The platform does not issue directives. The operator decides; the platform executes. Progressive rollout gates — 5%, 25%, 50%, 100% — mean every experiment is a controlled test, not a coin flip. Atomic rollback is always one click away.
+
+The Tenant Intelligence Score is how you know the platform is actually learning your business. It measures session volume, experiment cadence, CLV cohort depth, and prediction accuracy on a 0–100 scale. It grows every month. An operator who has been running experiments for twelve months has a fundamentally more capable platform than one who just onboarded — and that capability lives in the platform, not in a spreadsheet or a third-party tool that can be cancelled.
+
+---
+
+## 5. The CTO / Head of Architecture Version
+
+The packaging question is the first question any architect asks, and the answer here is deliberately conservative. The Next-Gen Frontend ships as a commercetools Connect-packaged MC Custom Application. It runs inside the Merchant Center shell. There is no new infrastructure to provision, no new authentication layer to integrate, no new deployment pipeline to maintain. It appears as a tab in the CT environment your team already operates. The security surface area does not expand.
+
+The governance model is architectural, not policy-based. AI operates exclusively within the Green Zone — the tenant's approved, version-controlled component library. Platform-protected commerce logic — pricing, checkout, authentication, approval workflows — is Red Zone. The AI cannot read it, cannot propose changes to it, and cannot route around it. This is not a permission setting. It is a hard boundary enforced at a single chokepoint: `executor.ts`. There is one file to audit, one file to own.
+
+Every AI recommendation surfaces through a ConfidenceCard before any action is taken. The operator approves. Only then does the platform execute. When a recommendation requires a component change beyond Green Zone constraints, the platform does not apply it silently. It generates a GitHub PR with a full code diff, schema update, behavioral evidence brief, a Neon branch, and a preview deployment. Your engineers review it. They merge it or they don't.
+
+Progressive rollout gates — 5%, 25%, 50%, 100% — are human-gated at every step. Atomic rollback is always available. Failed experiments are not discarded; they are classified by failure type — metric degradation, context mismatch, operator override, data immaturity — and that taxonomy filters future recommendations. The platform gets more conservative in the right places over time.
+
+---
+
+## 6. The SI Partner Version
+
+The current engagement model for commercetools frontend work is predictable and increasingly uncomfortable: twelve-month builds, significant scope risk, and a finished product that begins aging on the day it ships. The Next-Gen Frontend changes the SI opportunity, not the SI relationship.
+
+The core platform is bundled into the commercetools subscription. Implementation is scoped, deliverable, and exits cleanly. That frees SI capacity for the engagements that carry higher margin and longer tenure: AI strategy, experiment program design, B2X architecture, and commerce intelligence advisory. The platform creates the need for that work; it does not eliminate it.
+
+The co-sell motion is straightforward. SI implements and configures the core platform. The AI Experience Engine is a consumption-based add-on — first ten experiments free, then pay-per-value. SI teams are positioned to design the experiment programs, interpret the Two-Horizon Measurement data, and build the strategic roadmap that the platform's evidence supports.
+
+The Tenant Intelligence Score makes every account stickier. A customer whose score is compounding monthly has a tangible, measurable reason not to migrate. That is good for the customer's business continuity and good for the SI's account longevity. The platform builds the moat; the SI helps the customer understand its value.
+
+---
+
+## 7. One-Liner Variants
+
+| Persona | One-liner |
+|---|---|
+| CFO | Replace your $1M analytics stack with one bundled platform that pays per result. |
+| Head of Digital | Ship experiments without tickets — AI surfaces the insight, you make the call. |
+| CTO / Head of Architecture | AI-native frontend, zero new infrastructure, one governance chokepoint to audit. |
+| SI Partner | End 12-month builds; start high-margin AI strategy engagements on a compounding platform. |
+| CEO / CCO | One frontend, three commerce models, a moat that grows every month you run it. |
