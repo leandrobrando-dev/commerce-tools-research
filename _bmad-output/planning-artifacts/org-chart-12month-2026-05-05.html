@@ -199,12 +199,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .ig-why strong{color:#F8FAFC;}
 
 /* Product pillars */
-.ig-pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.ig-pillars{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
 .ig-pillar{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:24px;position:relative;overflow:hidden;}
 .ig-pillar::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
 .ig-pillar.govern::before{background:linear-gradient(90deg,#34D399,#10B981);}
 .ig-pillar.build::before{background:linear-gradient(90deg,#60A5FA,#3B82F6);}
 .ig-pillar.optimize::before{background:linear-gradient(90deg,#A78BFA,#7C3AED);}
+.ig-pillar.extend::before{background:linear-gradient(90deg,#F59E0B,#D97706);}
 .ig-pillar-icon{font-size:28px;margin-bottom:12px;display:block;}
 .ig-pillar-title{font-size:16px;font-weight:800;color:#F8FAFC;margin-bottom:8px;}
 .ig-pillar-desc{font-size:12.5px;color:rgba(255,255,255,.6);line-height:1.65;}
@@ -212,6 +213,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .govern .ig-pillar-stat{background:rgba(52,211,153,.1);color:#34D399;border:1px solid rgba(52,211,153,.2);}
 .build .ig-pillar-stat{background:rgba(96,165,250,.1);color:#60A5FA;border:1px solid rgba(96,165,250,.2);}
 .optimize .ig-pillar-stat{background:rgba(167,139,250,.1);color:#A78BFA;border:1px solid rgba(167,139,250,.2);}
+.extend .ig-pillar-stat{background:rgba(245,158,11,.1);color:#F59E0B;border:1px solid rgba(245,158,11,.2);}
 
 /* Moat */
 .ig-moat{background:linear-gradient(135deg,rgba(99,102,241,.1),rgba(139,92,246,.08));border:1px solid rgba(99,102,241,.2);border-radius:16px;padding:40px 48px;text-align:center;}
@@ -248,7 +250,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .ig-phase.ph4 .ig-phase-label{color:#FBBF24;}
 
 /* Displacement */
-.ig-displacement{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.ig-displacement{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;}
 .ig-displace-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:22px;position:relative;overflow:hidden;}
 .ig-displace-card::after{content:'→';position:absolute;top:50%;right:16px;transform:translateY(-50%);font-size:24px;color:rgba(255,255,255,.06);font-weight:800;}
 .ig-displace-from{font-size:11px;font-weight:600;color:rgba(255,255,255,.35);text-decoration:line-through;margin-bottom:4px;}
@@ -350,7 +352,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
   <div class="section-label"><span>Head of Product — Next-Gen Frontend</span></div>
   <div class="row">
-    <div class="node head-node p0 ag-low"><div class="phase-bar"></div><div class="role">Head of Product<br>Next-Gen Frontend</div><div class="name-tag">Leandro Palazzo</div><div class="owns">Roadmap · Epics 1–8<br>Design partner program<br>SI partner strategy<br>$1M ARR at Month 12</div><span class="hire-badge">Day 1</span><div class="agent-strip"><div class="ag-bar-wrap"><div class="ag-bar" style="width:10%"></div></div><span class="ag-label">10% · Research + Content</span></div><div class="tooltip"><b>Leandro — 10% Agent Coverage</b>Human terrain navigation is irreplaceable<br>Design partner trust-building is human-speed<br><span class="tl-agent">Agents assist: competitive research drafts, backlog formatting, meeting summaries</span></div></div>
+    <div class="node head-node p0 ag-low"><div class="phase-bar"></div><div class="role">Head of Product<br>Next-Gen Frontend</div><div class="name-tag">Leandro Palazzo</div><div class="owns">Roadmap · Epics 1–9<br>Design partner program<br>SI partner strategy<br>Epic 9: POS partner eval<br>$1M ARR at Month 12</div><span class="hire-badge">Day 1</span><div class="agent-strip"><div class="ag-bar-wrap"><div class="ag-bar" style="width:10%"></div></div><span class="ag-label">10% · Research + Content</span></div><div class="tooltip"><b>Leandro — 10% Agent Coverage</b>Human terrain navigation is irreplaceable<br>Design partner trust-building is human-speed<br><span class="tl-agent">Agents assist: competitive research drafts, backlog formatting, meeting summaries</span></div></div>
   </div>
   <div class="connector-down" style="margin-top:4px"></div>
 
@@ -432,6 +434,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <div class="tl-cell inactive"></div><div class="tl-cell inactive"></div><div class="tl-cell inactive"></div><div class="tl-cell inactive"></div><div class="tl-cell inactive"></div><div class="tl-cell inactive"></div><div class="tl-cell active" style="background:var(--phase-gtm)"></div><div class="tl-cell active" style="background:var(--phase-gtm)"></div><div class="tl-cell active" style="background:var(--phase-gtm)"></div><div class="tl-cell active" style="background:var(--phase-gtm)"></div><div class="tl-cell active" style="background:var(--phase-gtm)"></div><div class="tl-cell active" style="background:var(--phase-gtm)"></div>
     <div class="tl-label">CS Manager</div>
     <div class="tl-cell inactive"></div><div class="tl-cell inactive"></div><div class="tl-cell inactive"></div><div class="tl-cell inactive"></div><div class="tl-cell inactive"></div><div class="tl-cell inactive"></div><div class="tl-cell inactive"></div><div class="tl-cell active" style="background:var(--phase-gtm)"></div><div class="tl-cell active" style="background:var(--phase-gtm)"></div><div class="tl-cell active" style="background:var(--phase-gtm)"></div><div class="tl-cell active" style="background:var(--phase-gtm)"></div><div class="tl-cell active" style="background:var(--phase-gtm)"></div>
+    <div class="tl-label" style="font-size:9px;color:#6366F1;font-style:italic">Epic 9 POS Research</div>
+    <div class="tl-cell inactive"></div><div class="tl-cell inactive"></div><div class="tl-cell inactive"></div><div class="tl-cell inactive"></div><div class="tl-cell inactive"></div><div class="tl-cell" style="background:rgba(99,102,241,.35);border-radius:3px 0 0 3px"></div><div class="tl-cell" style="background:rgba(99,102,241,.35)"></div><div class="tl-cell" style="background:rgba(99,102,241,.35)"></div><div class="tl-cell" style="background:rgba(99,102,241,.55)"></div><div class="tl-cell" style="background:rgba(99,102,241,.55)"></div><div class="tl-cell" style="background:rgba(99,102,241,.55)"></div><div class="tl-cell" style="background:rgba(99,102,241,.55);border-radius:0 3px 3px 0"></div>
     <div class="tl-label" style="font-size:9px;color:var(--ct-muted)">Milestone</div>
     <div class="tl-cell" style="font-size:8px;color:var(--ct-blue);font-weight:700;display:flex;align-items:center;justify-content:center">P0 start</div>
     <div class="tl-cell inactive"></div>
@@ -442,7 +446,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <div class="tl-cell" style="font-size:8px;color:var(--phase2);font-weight:700;display:flex;align-items:center;justify-content:center">AI builder</div>
     <div class="tl-cell inactive"></div>
     <div class="tl-cell" style="font-size:8px;color:var(--phase3);font-weight:700;display:flex;align-items:center;justify-content:center">AI Engine</div>
-    <div class="tl-cell inactive"></div><div class="tl-cell inactive"></div>
+    <div class="tl-cell" style="font-size:8px;color:#6366F1;font-weight:700;display:flex;align-items:center;justify-content:center">POS POC</div><div class="tl-cell inactive"></div>
     <div class="tl-cell" style="font-size:8px;color:var(--phase-gtm);font-weight:700;display:flex;align-items:center;justify-content:center">$1M ARR</div>
   </div>
   <div style="margin-top:12px;font-size:10px;color:var(--ct-muted);display:flex;gap:20px;flex-wrap:wrap">
@@ -479,7 +483,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       <div>
         <div class="ig-eyebrow">commercetools · Next-Gen Frontend &amp; ACI · May 2026</div>
         <h1 class="ig-hero-title">The frontend<br>commercetools<br>was <em>always missing.</em></h1>
-        <p class="ig-hero-sub">AI-native composable storefront platform with autonomous commerce intelligence — natively embedded in Merchant Center. Architecture decided. 80 stories written. Ready to build.</p>
+        <p class="ig-hero-sub">AI-native composable storefront platform with autonomous commerce intelligence — natively embedded in Merchant Center. Extending to physical retail via composable POS partnership. Architecture decided. 80+ stories written. Ready to build.</p>
       </div>
       <div class="ig-hero-stats">
         <div class="ig-stat-card">
@@ -563,6 +567,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
         <div class="ig-pillar-title">Optimize</div>
         <div class="ig-pillar-desc">ACI: native behavioral analytics, session heatmaps, A/B experiments, and autonomous recommendations — all inside the same editor where operators publish. No ETL. No third-party handoffs. The publish → measure → optimize → republish loop collapses from weeks to hours.</div>
         <span class="ig-pillar-stat">Replaces ContentSquare, Optimizely, Amplitude</span>
+      </div>
+      <div class="ig-pillar extend">
+        <span class="ig-pillar-icon">🏪</span>
+        <div class="ig-pillar-title">Extend</div>
+        <div class="ig-pillar-desc">Physical retail via a strategic composable POS partnership. The vendor owns fiscal compliance (NF525, GoBD, RTF) and hardware. We own the CT-native integration layer: unified inventory, unified order pipeline, and in-store behavioral signals flowing into the same ACI model as online events.</div>
+        <span class="ig-pillar-stat">Epic 9 · Research track · M6+</span>
       </div>
     </div>
   </div>
@@ -672,6 +682,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
         </ul>
       </div>
     </div>
+    <div style="margin-top:16px;padding:18px 22px;background:rgba(99,102,241,.07);border:1px solid rgba(99,102,241,.2);border-radius:10px;display:flex;gap:20px;align-items:flex-start;">
+      <div style="flex-shrink:0;margin-top:2px;font-size:11px;font-weight:800;color:#818CF8;text-transform:uppercase;letter-spacing:.08em;padding:3px 10px;border:1px solid rgba(99,102,241,.3);border-radius:20px;background:rgba(99,102,241,.1)">Research Track</div>
+      <div>
+        <div style="font-size:13px;font-weight:700;color:#F8FAFC;margin-bottom:4px;">Epic 9: Physical Retail POS — Parallel from M6</div>
+        <div style="font-size:11.5px;color:rgba(255,255,255,.55);line-height:1.65;">Vendor selection (Sitoo / NewStore / Adyen) → POC integration → CT-native integration layer. Partner owns fiscal compliance (NF525, GoBD, RTF) + hardware certification. We own: POS embedded in MC shell, CT Inventory + Order API bridge, ACI in-store event ingestion. Extends the Tenant Intelligence Score to physical touchpoints — moat grows beyond the browser.</div>
+      </div>
+    </div>
   </div>
 
   <div class="ig-divider"></div>
@@ -718,6 +735,18 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
         </ul>
         <span class="ig-displace-saving">~$150K/yr saved per customer</span>
       </div>
+      <div class="ig-displace-card" style="border-color:rgba(245,158,11,.2);background:rgba(245,158,11,.04);">
+        <div class="ig-displace-from">Custom POS build ($500K–2M one-time)</div>
+        <div class="ig-displace-to" style="color:#FBBF24;">Epic 9 — Composable POS Partnership</div>
+        <div class="ig-displace-phase" style="color:#F59E0B;">Research Track · M6+ · Sitoo / NewStore / Adyen</div>
+        <ul class="ig-displace-bullets">
+          <li>POS embedded inside Merchant Center — no new login, no new vendor</li>
+          <li>Unified CT inventory + order pipeline for online and in-store</li>
+          <li>In-store behavioral signals feed the same ACI model as online events</li>
+          <li>Partner owns fiscal compliance (NF525, GoBD, RTF) and hardware</li>
+        </ul>
+        <span class="ig-displace-saving" style="background:rgba(245,158,11,.1);color:#F59E0B;border-color:rgba(245,158,11,.2);">Custom POS build cost avoided</span>
+      </div>
     </div>
   </div>
 
@@ -757,8 +786,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <!-- THE ASK -->
   <div class="ig-section" style="padding-bottom:80px;">
     <div class="ig-section-eyebrow" style="color:#F87171">The Ask</div>
-    <div class="ig-section-title">Four decisions. All needed in the first 45 days.</div>
-    <div class="ig-section-sub">The architecture is decided. The product is ready to build. These are the organizational decisions that unblock execution.</div>
+    <div class="ig-section-title">Five decisions. All needed in the first 60 days.</div>
+    <div class="ig-section-sub">The architecture is decided. The product is ready to build. These are the organizational decisions that unblock execution — including the POS partnership that extends the moat to physical retail.</div>
     <div class="ig-card" style="padding:0;overflow:hidden;">
       <table class="ig-ask-table">
         <thead>
@@ -794,6 +823,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
             <td><span class="ig-ask-owner">CPO + Revenue</span></td>
             <td style="font-size:12px;color:rgba(255,255,255,.5)">P3 adoption and 12-month ARR trajectory both depend on this decision.</td>
           </tr>
+          <tr>
+            <td><div class="ig-ask-decision">POS Partnership Strategy</div><div class="ig-ask-stakes">Which composable POS vendor? What commercial model? Evaluate Sitoo, NewStore, Adyen Unified Commerce.</div></td>
+            <td><span class="ig-ask-day" style="background:rgba(245,158,11,.1);color:#F59E0B;border-color:rgba(245,158,11,.2)">Day 60</span></td>
+            <td><span class="ig-ask-owner" style="color:#FBBF24;">CPO + CTO + CRO</span></td>
+            <td style="font-size:12px;color:rgba(255,255,255,.5)">Partner selection unlocks the M6 research track. Delay means Physical Retail moat extension slips beyond 12 months.</td>
+          </tr>
         </tbody>
       </table>
     </div>
@@ -801,7 +836,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       <div style="font-size:32px">🎯</div>
       <div>
         <div style="font-size:14px;font-weight:700;color:#F8FAFC;margin-bottom:4px;">The moat is not the AI. It's the clock.</div>
-        <div style="font-size:13px;color:rgba(255,255,255,.5);line-height:1.6;">Every design partner who connects in Month 1 has a 9-month head start on behavioral intelligence. Every week we delay these four decisions is a week of moat that cannot be recovered. The conditions for this product have never been better aligned — and they won't stay aligned indefinitely.</div>
+        <div style="font-size:13px;color:rgba(255,255,255,.5);line-height:1.6;">Every design partner who connects in Month 1 has a 9-month head start on behavioral intelligence. Selecting the POS partner by Day 60 extends that moat to physical in-store touchpoints — a data advantage no pure-digital competitor can replicate. Every week we delay these five decisions is a week of moat that cannot be recovered.</div>
       </div>
     </div>
   </div>

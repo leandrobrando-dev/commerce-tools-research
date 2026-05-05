@@ -51,6 +51,7 @@ Architecture is documented in `architecture.md`. Epics are sequenced in `epics.m
 - AI Experience Engine pricing gates: who sets the consumption model and first 10 experiments free policy?
 - Tenant Intelligence Score transparency: visible in free tier or only for AI Engine subscribers?
 - Org reporting: does this team report to Product or Engineering, and what does that mean for headcount authority?
+- POS partnership strategy: which composable POS vendor to pursue (Sitoo, NewStore, Adyen Unified Commerce)? What commercial model — white-label, co-sell, or OEM? Who owns the partner relationship internally?
 
 **Days 2–5 schedule:**
 
@@ -151,6 +152,11 @@ This is not a new architecture debate. It is a scope and sequencing conversation
 
 **P5 (Months 12+):**
 - Epic 6 full
+
+**P6 Research Track (Parallel from M6):**
+- Epic 9: POS partner selection (vendor evaluation scorecard — Sitoo, NewStore, Adyen Unified Commerce)
+- Epic 9: Proof-of-concept integration with selected partner SDK in local dev environment
+- Epic 9: CT-native integration layer design — MC shell embed, Inventory + Order API bridge, ACI in-store event schema extension
 
 **The moat story to communicate to leadership:** Behavioral Data Infrastructure ships at P0, not P2. ClickHouse event ingestion starts at project connection. Design partners who connect early will have the richest Tenant Intelligence Score data when AI experiments go live in P3. The moat starts on Day 1.
 
@@ -353,6 +359,8 @@ Public beta announcement should not happen until all the above are green. Day 90
 | ContentSquare/Amplitude displacement at design partner | At least 1 account by Month 6 |
 | SI co-sells at 12 months | 3 minimum |
 | Reference customers live at 12 months | 10 minimum |
+| POS partner selected and vendor POC complete | By Month 10 |
+| ACI in-store event schema extension designed and reviewed | By Month 10 |
 
 ---
 
@@ -367,6 +375,7 @@ Public beta announcement should not happen until all the above are green. Day 90
 | **Marketing and GTM Ownership** — who owns the "Next-Gen Frontend" external story, analyst briefings, and launch messaging? | Product and Marketing need to operate from the same narrative | CPO + CMO | Day 21 |
 | **AI Experience Engine Pricing Gates** — who sets the consumption model and the first 10 experiments free policy? | Affects design partner adoption of P3 and attach rate story at 12 months | CPO + Revenue | Day 45 |
 | **Tenant Intelligence Score Transparency** — visible to customers in free tier or only AI Engine subscribers? | Determines product-led growth hook vs. premium upsell story | CPO + Leandro | Day 45 |
+| **POS Partnership Strategy** — which composable POS vendor, commercial model (white-label, co-sell, OEM), and who owns the relationship? | Vendor selection by Day 60 unlocks the M6 research track; delays push physical retail moat extension past 12 months | CPO + CTO + CRO | Day 60 |
 
 ---
 

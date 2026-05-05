@@ -24,6 +24,8 @@ commercetools enterprise customers are sitting on a frontend time bomb — 52% f
 
 **Why now, why us.** The competitive window is twelve months before Uniform and Vercel entrench further in the CT ecosystem. The moat is the Tenant Intelligence Score — a 0–100 composite metric that compounds monthly across session data, experiment history, CLV cohort analysis, and prediction accuracy. It cannot be replicated by any tool that merely connects to CT APIs from the outside. This product is built from the inside of the platform, by a team that has been on both sides of the commercetools relationship — as the vendor and as the customer.
 
+**A fourth vector: physical retail.** Epic 9 extends the platform to in-store commerce through a strategic composable POS partnership. The vendor — evaluated against Sitoo, NewStore, and Adyen Unified Commerce — owns fiscal compliance (NF525, GoBD, RTF) and hardware certification. The platform owns the CT-native integration layer: POS embedded inside the Merchant Center shell, unified CT inventory and order pipeline, and anonymized in-store behavioral signals ingested into the same ACI ClickHouse pipeline as online events. When a store associate searches a product or a customer abandons at the terminal, that signal feeds the Tenant Intelligence Score — extending the moat beyond the browser to every physical touchpoint the retailer operates.
+
 ---
 
 ## 3. The CFO Version
@@ -70,6 +72,8 @@ The core platform is bundled into the commercetools subscription. Implementation
 
 The co-sell motion is straightforward. SI implements and configures the core platform. The AI Experience Engine is a consumption-based add-on — first ten experiments free, then pay-per-value. SI teams are positioned to design the experiment programs, interpret the Two-Horizon Measurement data, and build the strategic roadmap that the platform's evidence supports.
 
+The POS partnership (Epic 9) opens a second SI engagement vector. Physical retail implementations using the composable POS partner require SI-led configuration for location setup, associate onboarding, and fiscal compliance validation. The CT-native integration layer creates the need for that engagement; the SI provides the in-store retail expertise the platform does not pretend to replace.
+
 The Tenant Intelligence Score makes every account stickier. A customer whose score is compounding monthly has a tangible, measurable reason not to migrate. That is good for the customer's business continuity and good for the SI's account longevity. The platform builds the moat; the SI helps the customer understand its value.
 
 ---
@@ -82,4 +86,4 @@ The Tenant Intelligence Score makes every account stickier. A customer whose sco
 | Head of Digital | Ship experiments without tickets — AI surfaces the insight, you make the call. |
 | CTO / Head of Architecture | AI-native frontend, zero new infrastructure, one governance chokepoint to audit. |
 | SI Partner | End 12-month builds; start high-margin AI strategy engagements on a compounding platform. |
-| CEO / CCO | One frontend, three commerce models, a moat that grows every month you run it. |
+| CEO / CCO | One platform, any commerce model — online and physical retail — a moat that grows with every touchpoint it connects. |
