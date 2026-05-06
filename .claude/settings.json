@@ -1,7 +1,17 @@
 {
   "permissions": {
     "allow": [
-      "WebSearch"
+      "WebSearch",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Read(//Users/mac-LPALAZ03/Bmad/**)",
+      "Bash(npx @commercetools-frontend/create-mc-app@latest next-gen-frontend --template starter-typescript)",
+      "Bash(npx tsc *)"
+    ],
+    "additionalDirectories": [
+      "/Users/mac-LPALAZ03/Bmad/next-gen-frontend/src",
+      "/Users/mac-LPALAZ03/Bmad/next-gen-frontend"
     ]
   }
 }
