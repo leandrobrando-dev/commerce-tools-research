@@ -1,0 +1,52 @@
+
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12/marked.min.js"></script>
+<script>
+  (function() {
+    const target = document.getElementById('content');
+    const source = document.getElementById('markdown-source');
+    let md = source.textContent.trim();
+
+    // Strip YAML frontmatter
+    if (md.startsWith('---')) {
+      const end = md.indexOf('\n---', 4);
+      if (end > -1) md = md.slice(end + 4).trim();
+    }
+
+    function renderFallback() {
+      target.innerHTML =
+        '<div class="reader-error"><strong>marked.js did not load.</strong> ' +
+        'Showing raw markdown below. For a rendered view, try opening this file via ' +
+        '<code>VS Code → Simple Browser</code> or a local HTTP server.</div>' +
+        '<pre><code>' + md.replace(/&/g, '&amp;').replace(/</g, '&lt;') + '</code></pre>';
+    }
+
+    if (typeof marked === 'undefined') {
+      renderFallback();
+      return;
+    }
+
+    try {
+      marked.setOptions({ gfm: true, breaks: false, headerIds: true, mangle: false });
+      target.innerHTML = marked.parse(md);
+
+      // Rewrite relative markdown links to their HTML twins where one exists
+      target.querySelectorAll('a[href$=".md"]').forEach(a => {
+        const raw = a.getAttribute('href');
+        if (raw.startsWith('http')) return;
+        const htmlTwin = raw.replace(/\.md$/, '.html');
+        a.setAttribute('href', htmlTwin);
+        a.setAttribute('data-original-md', raw);
+      });
+
+      // Set the page title from the first h1
+      const firstH1 = target.querySelector('h1');
+      if (firstH1) document.title = firstH1.textContent + ' · BMad';
+    } catch (err) {
+      renderFallback();
+    }
+  })();
+</script>
+</body>
+</html>

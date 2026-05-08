@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Product Requirements Document (PRD) · BMad · commercetools Next-Gen Frontend</title>
+<link rel="stylesheet" href="doc-reader-styles.css">
+<style>
+  /* Frontmatter hidden — data contained there is not reader-relevant */
+  .reader-content pre:first-child code:only-child {
+    display: block;
+  }
+</style>
+</head>
+<body data-phase="plan">
+
+<nav class="reader-topbar">
+  <a href="00-bmad-journey-map.html" class="back-link">
+    <span>←</span> Journey map
+  </a>
+  <span class="phase-chip">Phase 02 · Planning</span>
+  <span class="breadcrumb">planning-artifacts</span>
+  <span class="spacer"></span>
+  <span class="meta">2026-05-05 · 697 lines</span>
+</nav>
+
+<header class="reader-doc-header">
+  <div class="eyebrow">Phase 02 · Planning · Product Requirements Document</div>
+  <h1>Product Requirements Document (PRD)</h1>
+  <div class="subtitle">Executive summary, user journeys, 65 functional requirements, and phased development plan for the Next-Gen Frontend platform.</div>
+</header>
+
+<main class="reader-main">
+  <article class="reader-content" id="content">
+    <div class="reader-loading">
+      <div class="spinner"></div>
+      <div>Rendering document…</div>
+    </div>
+  </article>
+</main>
+
+<footer class="reader-footer">
+  <div>Part of BMad planning artifacts · <strong>commercetools Next-Gen Frontend</strong></div>
+  <div><a href="00-bmad-journey-map.html">← Back to journey map</a></div>
+</footer>
+
+<script type="text/markdown" id="markdown-source">
+---
+stepsCompleted: [step-01-init, step-02-discovery, step-02b-vision, step-02c-executive-summary, step-03-success, step-04-journeys, step-05-domain, step-06-innovation, step-07-project-type, step-08-scoping, step-09-functional, step-10-nonfunctional, step-11-polish]
+releaseMode: phased
+inputDocuments:
+  - planning-artifacts/briefs/product-brief-commercetools-next-gen-frontend-aci-2026-05-04.md
+  - planning-artifacts/research/market-ai-native-next-gen-frontend-platform-enterprise-commerce-research-2026-05-03.md
+  - planning-artifacts/research/market-autonomous-commerce-intelligence-storefront-research-2026-05-04.md
+  - planning-artifacts/ux-design-specification.md
+workflowType: 'prd'
+classification:
+  projectType: saas_b2b
+  domain: commerce-technology
+  complexity: high
+  projectContext: greenfield
+---
+
+# Product Requirements Document - Tutorial
+
+**Author:** Leandro
+**Date:** 2026-05-04
+
+---
+
+## Executive Summary
+
+commercetools Next-Gen Frontend is the first AI-native, composable storefront platform natively integrated with commercetools, closing the critical ecosystem gap that forces enterprise customers to assemble $350K–$1M/yr in disconnected external tools. Business operators — marketing managers and merchandisers — build, iterate, and publish governed storefront experiences without developer dependency, using an AI-assisted creation flow (describe → AI generates governed draft → operator refines → publish). A single storefront renders correctly for B2C consumers, B2B buyers, and dealer portals from one backend (B2X).
+
+The platform ships with the Autonomous Commerce Intelligence (ACI) module — a native behavioral analytics and continuous optimization layer that replaces external tools like ContentSquare, Amplitude, and Optimizely. ACI is phased: Phase 1 (MVP) delivers behavioral analytics and heatmaps; Phase 2 adds A/B testing and experiment management; Phase 3 unlocks full-funnel event analytics and autonomous recommendations. Because ACI is native to the storefront where data is generated and decisions are acted on, the publish → measure → optimize → republish loop collapses from weeks to hours. Intelligence is not a bolt-on; it is the product.
+
+**Target Users:**
+- **Business Operators** (primary) — marketing managers and merchandisers who own storefront campaigns and experiences
+- **Storefront Developers** (secondary) — engineers who define the governed component library and Green Zone boundaries
+- **Commerce Strategists** (tertiary) — analytics and strategy users consuming ACI intelligence dashboards
+
+**The Problem Solved:** commercetools solved composable commerce on the backend brilliantly. The frontend remained an open wound — every enterprise customer manually integrating a stack of point solutions, each adding integration overhead, licensing cost, and operational fragility. This product is that frontend, designed from first principles as AI-native.
+
+### What Makes This Special
+
+Three compounding differentiators no competitor can replicate without rebuilding from scratch:
+
+1. **Native intelligence loop** — ACI behavioral data flows directly from the live storefront into the editor recommendations and autonomous optimization rules. No ETL, no third-party handoffs, no data lag.
+2. **Green/Red Zone governance** — AI composes freely from a developer-governed component library (Green Zone) while platform-protected commerce logic (Red Zone) remains inviolable. Operators get creative freedom without breaking the commerce contract.
+3. **Describe-to-storefront creation** — Operators describe intent in natural language; AI generates a fully governed, on-brand draft instantly. The Lovable-inspired flow for enterprise: not a toy, a professional publishing tool with guardrails baked in.
+
+**Why Now:** Large language models reached production-grade reliability for structured generation (the "Lovable moment" arrived for enterprise). Composable commerce achieved mainstream adoption. Enterprise buyers hit peak TCO fatigue from fragmented tool stacks. The conditions for a native, AI-first first-party frontend have never been better aligned.
+
+## Project Classification
+
+| Dimension | Value |
+|---|---|
+| Project Type | Enterprise B2B SaaS Platform |
+| Domain | Commerce Technology / E-commerce |
+| Complexity | High |
+| Project Context | Greenfield |
+| Innovation Profile | Novel AI technology + enterprise B2B + ecosystem gap fill |
+
+---
+
+## Success Criteria
+
+### User Success
+
+**Business Operators (primary)**
+- First campaign published within the same business day — no developer ticket required
+- Operators describe a storefront intent and receive a governed, on-brand AI draft within 60 seconds
+- Operator NPS target: >50 — publishing feels confident, not risky
+- Zero Red Zone violations in published storefronts — governance holds under independent operator use
+
+**Storefront Developers (secondary)**
+- A developer configures a governed Green Zone component library within one sprint (2 weeks)
+- Component library serves 10+ operator use cases without per-campaign custom dev work
+
+**Migration Success**
+- An existing commercetools customer migrates their storefront within 30 days of onboarding
+- Migration requires no custom integration work beyond standard commercetools API credentials
+- Operators are productive (first publish) within one week of migration
+
+### Business Success
+
+- **12-Month ARR Target:** $1M
+- **Customer Profile:** Enterprise commercetools customers with active frontend + analytics spend
+- **ACI Displacement (Phase 1):** At least one pilot customer retires a behavioral analytics tool (ContentSquare-equivalent) within 6 months of ACI activation
+- **Operator Adoption:** ≥80% of licensed operators actively publishing within 60 days of onboarding
+- **Expansion Signal:** ≥30% of customers activate ACI Phase 1 within 90 days of storefront launch
+
+### Technical Success
+
+- **Storefront Performance:** Core Web Vitals pass (LCP <2.5s, CLS <0.1, INP <200ms) on mobile and desktop for all published storefronts
+- **Platform Uptime:** 99.9% editor availability; 99.95% storefront availability (live commerce traffic)
+- **AI Generation Quality:** ≥90% of AI-generated drafts require only minor adjustments before publish — no regeneration needed
+- **B2X Rendering:** Single storefront correctly resolves B2C, B2B, and dealer portal contexts with zero manual duplication
+
+### Measurable Outcomes
+
+| Outcome | Target | Timeline |
+|---|---|---|
+| 12-Month ARR | $1M | Month 12 |
+| Time-to-first-publish (new operator) | Same business day | Day 1 of use |
+| Migration time (existing CT customer) | ≤30 days | Onboarding |
+| ACI tool displacement (per customer) | ≥1 tool retired | Month 6 |
+| Operator NPS | >50 | Month 3 |
+| Green Zone component reuse rate | ≥10 campaigns per component | Month 3 |
+
+---
+
+## Product Scope
+
+### MVP — Minimum Viable Product
+
+**Theme: Easy to migrate. Satisfying to build.**
+
+MVP is the product a commercetools customer can migrate to, use confidently on day one, and say "this is obviously better than what I had." Advanced intelligence and autonomy come later.
+
+**In MVP:**
+- **Storefront Editor** — StorefrontCanvas with Green/Red Zone governance, visual component placement, context-aware editing
+- **AI Creation Flow** — Describe → AI generates governed draft → operator refines → publish (Lovable-inspired, enterprise-grade)
+- **Governed Component Library** — Developer-defined Green Zone; Red Zone protection for cart, checkout, and product data
+- **B2X Rendering** — Single storefront resolves B2C, B2B, and dealer portal contexts from commercetools data
+- **Migration Tooling** — Automated commercetools project connection, component scaffolding from existing catalog structure
+- **ACI Phase 1: Behavioral Analytics** — Session heatmaps, page performance metrics, engagement scoring native to the storefront (ContentSquare baseline displacement)
+- **Publish Workflow** — Preview, approval gate, publish with first-publish celebration moment
+- **commercetools Merchant Center Shell** — Native MC-integrated UX, SSO, project context switching
+
+**Out of MVP:**
+- A/B testing and multivariate experiments
+- Autonomous optimization rules
+- Full-funnel event analytics (Amplitude-equivalent)
+- Personalization engine
+- Multi-channel publishing
+
+### Growth Features (Post-MVP)
+
+**Theme: Becoming the intelligence layer operators rely on daily.**
+
+- **ACI Phase 2: Experiment Platform** — A/B and multivariate testing with statistical significance reporting (Optimizely displacement)
+- **ACI Phase 3: Event Analytics** — Full-funnel behavioral analytics, cohort analysis, conversion attribution (Amplitude displacement)
+- **Autonomous Recommendations** — AI surfaces optimization suggestions from ACI data; operator approves with one click
+- **Advanced Personalization** — Audience-segment-aware storefront variations governed by ACI signals
+- **Cross-channel Publishing** — Component library extends to email, push, and app surfaces
+
+### Vision (Future)
+
+**Theme: The storefront that optimizes itself.**
+
+- **Full Autonomous Commerce Intelligence** — Storefront tests, learns, and applies optimizations autonomously within operator-defined guardrails
+- **Predictive Inventory Surfacing** — ACI anticipates demand shifts and adjusts product hierarchy before trends peak
+- **Cross-brand Composition AI** — Multi-brand commercetools customers manage brand-safe storefront variants across business units from one platform
+- **Commerce Intelligence Network** — Anonymized cross-customer learning (opt-in) — ACI improves from aggregate platform behavior
+
+---
+
+## User Journeys
+
+### Journey 1: Sofia Launches a Campaign — The Day Marketing Got Its Power Back
+
+**Persona:** Sofia Martins, Senior Marketing Manager, European fashion retailer. 8 years in digital marketing. Knows exactly what she wants. Tired of waiting for it.
+
+**Opening Scene:** It's Wednesday, 2pm. Sofia's product team just confirmed the Valentine's Day capsule collection — 200 units, in stock, ready to ship. Valentine's Day is Saturday. In the old world, she'd raise a Jira ticket, hope a developer picks it up Thursday, review a draft that's 60% right, request changes, wait another day. Maybe it goes live Friday night if she's lucky — and she's learned "lucky" doesn't happen much.
+
+Today she opens the storefront editor from Merchant Center. She's done this before. She knows what to do.
+
+**Rising Action:** She types into the AI panel: *"Valentine's Day capsule collection landing page — romantic, deep red palette, feature the Velvet Edit pieces above the fold, limited stock urgency messaging."* Sixty seconds later, the canvas populates with three hero variants — all using her approved component library, all on-brand, all Red Zone protected so commerce logic is untouched. She picks the middle one. She swaps one image from the asset library. She rewrites the headline: *"Made for the ones worth it."* She hits Preview. Desktop looks right. Mobile looks right.
+
+**Climax:** She clicks Publish. The governance check runs in the background — zero violations. The storefront goes live. Sofia watches the first session appear in the ACI panel within minutes.
+
+**Resolution:** 47 minutes from idea to live storefront. The Velvet Edit capsule sells out in 36 hours. At the Monday retrospective, Sofia's CMO asks how she pulled off a same-day campaign launch. She shrugs: *"It just works now."*
+
+**Capabilities revealed:** AI creation flow, governed component library, asset management, preview (desktop/mobile), publish workflow, ACI real-time session tracking.
+
+---
+
+### Journey 2: Sofia Fixes a Crisis Before Anyone Knows — The 6am Win
+
+**Persona:** Sofia Martins, same person. Black Friday. 5:58am.
+
+**Opening Scene:** Sofia's phone wakes her up — not an alarm, a gut feeling. She opens the storefront on her phone. The homepage hero is showing broken image placeholders. The carousel is dead. Traffic is already 8x normal. She does not panic. She opens the editor.
+
+**Rising Action:** She navigates to the homepage in the editor. The hero carousel component is in the Green Zone — she can touch it. She drags a static hero image component from the component shelf (already in her library, already approved), drops it in place of the carousel, swaps in the Black Friday hero asset she uploaded last week, checks the CTA link. Previews in mobile view. Looks right.
+
+**Climax:** She publishes at 6:08am. The broken carousel disappears from the live storefront. She monitors the ACI engagement score for the hero section — it climbs back to 0.71 within 20 minutes.
+
+**Resolution:** Her developer lead messages at 8:15am: *"Morning — saw a blip in monitoring around 6am, did something happen?"* Sofia replies: *"Fixed it at 6:08. Broken carousel, swapped it out. All good."* Long pause. *"You... fixed a production issue yourself?"* *"Yep."*
+
+**Capabilities revealed:** Mobile editor access, component swap within Green Zone, real-time publish, ACI engagement monitoring, governance boundary (operator can fix Green Zone without developer).
+
+---
+
+### Journey 3: Mateus Sets the Rules — The Developer Who Became a Force Multiplier
+
+**Persona:** Mateus Oliveira, Senior Frontend Developer, B2B industrial distributor. Joined 3 years ago to "build custom UIs." Has since become the human traffic light standing between marketing ideas and production disasters.
+
+**Opening Scene:** Mateus has 14 open Jira tickets from the marketing team. All of them are things marketing could theoretically do themselves if the system let them. He's tired of being the bottleneck. He wants to set up governance once and trust it to hold.
+
+**Rising Action:** He opens the Developer Console. He defines 14 core components: Hero Banner, Product Grid, Promo Strip, Category Nav, B2B Account Portal, Dealer Tier Badge, Announcement Bar, and more. For each, he configures the Green Zone parameters: what operators can edit (copy, images, colors, layout variants), what's locked (pricing logic, SKU bindings, cart integration, account-tier gating). He marks Cart, Checkout, and the B2B Account Portal core flows as Red Zone — no operator access, full stop. He publishes the component library.
+
+**Climax:** He creates a test operator account. He logs in as the test user and tries to edit the cart drawer. The platform refuses — Red Zone boundary enforced. He tries to change a product price display. Also locked. He tries to swap a hero image. It works perfectly. He tries to add a new component that doesn't exist in the library. The AI panel only generates from approved components — nothing unapproved can appear on the canvas. Governance holds everywhere he tests it.
+
+**Resolution:** He sends a message to the marketing team: *"You're live. Go try it."* His Jira queue drops to 2 tickets by end of week — both genuine engineering requests, nothing that should've been a ticket in the first place. His phone doesn't ring about a production incident for 3 weeks. That's the win.
+
+**Capabilities revealed:** Developer Console, Green/Red Zone configuration, component library publishing, governance boundary enforcement, AI panel restricted to governed component set.
+
+---
+
+### Journey 4: Camille Kills the Monday Ritual — Intelligence Without the Spreadsheet
+
+**Persona:** Camille Dubois, Head of Digital Strategy, large B2C fashion retailer. Every Monday morning for 3 years: export ContentSquare heatmaps, pull Amplitude funnel data, reconcile the two in a spreadsheet, build slides for the 11am strategy review. She gets in at 7:30am for this. She hates it.
+
+**Opening Scene:** It's Camille's first Monday on the new platform. She opens the ACI dashboard inside the storefront editor. She doesn't export anything.
+
+**Rising Action:** The live heatmap for the current homepage hero loads instantly — session data from the last 7 days, overlaid directly on the storefront canvas. She spots a dead zone immediately: the bottom-left block, a "New Arrivals" navigation link, has near-zero click density. The ACI engagement score for the section reads 0.31 — well below the 0.60 threshold the team set last month. She clicks the section, opens the insights panel — bounce rate from that element is 67%. She flags it to Sofia directly from the ACI dashboard with one click: *"This block isn't working — consider replacing it before the spring campaign launch."*
+
+**Climax:** Sofia gets the notification inside the editor. She looks at the heatmap context, immediately sees the dead zone, pulls a better component from the library, and publishes a replacement before noon. No ticket. No meeting. No spreadsheet.
+
+**Resolution:** The 11am strategy review has a slide ready — ACI-generated, showing last week's engagement trends and three flagged optimization opportunities. Camille walked into the room at 11:00am. She used to arrive at 7:30am for this. Monday is no longer a spreadsheet day.
+
+**Capabilities revealed:** ACI behavioral analytics dashboard, live heatmap overlay on storefront canvas, engagement scoring, section-level flagging and team notification, direct link to editor from ACI insight.
+
+---
+
+### Journey 5: Marcus Provisions 3 Brands in a Day — Enterprise IT Done Right
+
+**Persona:** Marcus Chen, Enterprise IT Manager, large multi-brand lifestyle retailer. Responsible for SaaS governance across 60+ tools. Has seen too many "enterprise-ready" platforms that become a support ticket backlog after go-live.
+
+**Opening Scene:** Marcus has a mandate: get three brands (Outdoor, Urban, Kids) live on the platform within two weeks, 42 operators across brands, full SSO, EU data residency confirmed for legal. He's done this before with other tools. It usually takes a month and a half.
+
+**Rising Action:** He connects the platform to the company's Okta identity provider — standard SAML 2.0 flow, documented and done in 30 minutes. He maps the three brands to their respective commercetools projects inside the platform's tenant configuration. He defines role groups: Brand Editors (publish to staging only), Brand Publishers (publish to live), Cross-brand Admins (read access across all three brands). He sets EU data residency in the platform data settings. He generates the Data Processing Agreement from the platform's compliance module and sends it to legal.
+
+**Climax:** Legal reviews and approves the DPA the next morning — standard terms, nothing unusual. Marcus sends the platform invite batch to all 42 users via Okta provisioning. SSO works on first login for all of them.
+
+**Resolution:** All 42 operators are active by end of day 3. Zero support tickets about login or access. Marcus sends his standard "you're provisioned" email to the three brand teams. He gets three replies — all some version of *"wow that was fast."* He marks the project complete in his tracker. Day 4 of a two-week mandate.
+
+**Capabilities revealed:** SSO / SAML 2.0 integration, multi-tenant project mapping, role-based access control, EU data residency configuration, DPA / compliance module, Okta provisioning support.
+
+---
+
+### Journey 6: Diego Migrates — From "I Own Every Pixel" to "I Own the Governance Layer"
+
+**Persona:** Diego Ferreira, Senior Frontend Engineer, mid-market outdoor apparel retailer. 18 months ago, Diego led the build of a custom Next.js storefront on top of commercetools. It works. It's also a 3-developer maintenance burden — every marketing request is a code change, every campaign is a deployment, every holiday season is three weeks of ticket hell.
+
+**Opening Scene:** When his company signs onto the platform, Diego is handed the migration. He approaches it with professional skepticism. He opens the Migration Console for the first time. He expects to spend two weeks manually rebuilding components.
+
+**Rising Action:** The platform connects to his existing commercetools project via API key — catalog structure, product types, and content models are read automatically. The migration scaffolding tool analyzes his existing page templates and proposes a Green Zone component mapping: his `HeroBanner` component becomes a governed Hero component, his `ProductGrid` maps to the Product Grid component with editable fields pre-detected from his existing prop interface. He reviews the mapping — 80% accurate. He adjusts 4 components manually, adds the field-level Green/Red Zone designations, and publishes the library.
+
+He runs the content migration script — existing page configurations map to the new storefront canvas. Most pages come across cleanly. Three pages have custom layout logic that doesn't map automatically; Diego rebuilds those as structured templates in the component library. It takes an afternoon, not a week.
+
+**Climax:** He runs the validation check: all 47 pages migrated, Core Web Vitals baseline measured against the existing storefront — the new platform is 340ms faster on LCP mobile. He does a side-by-side review with his marketing lead. She points to the AI creation panel: *"Wait — I can just type what I want and it builds it?"* Diego says: *"Within the components I set up, yes."* She books time the next morning to try it. Diego realizes the migration isn't the end of his ownership — it's a different kind of ownership.
+
+**Resolution:** Go-live happens on day 22. Post-migration, the marketing team's ticket volume to Diego's team drops 70% in the first month. His remaining tickets are architectural — new component types, integration work, performance tuning. At the next team retrospective he says: *"I finally have the job I thought I signed up for."*
+
+**Capabilities revealed:** Migration Console, commercetools project auto-connection, component scaffolding from existing codebase, content migration tooling, Green/Red Zone field mapping, Core Web Vitals baseline measurement, page validation.
+
+---
+
+### Journey Requirements Summary
+
+| Capability Area | Revealed By |
+|---|---|
+| AI creation flow (describe → draft → publish) | Journeys 1, 2 |
+| Governed component library (Green/Red Zone) | Journeys 1, 2, 3, 6 |
+| Mobile editor access | Journey 2 |
+| Real-time publish + governance validation | Journeys 1, 2, 3 |
+| Developer Console (component + governance configuration) | Journeys 3, 6 |
+| ACI behavioral analytics + heatmap overlay | Journey 4 |
+| ACI engagement scoring + section flagging | Journey 4 |
+| Cross-role notification (ACI → editor) | Journey 4 |
+| SSO / SAML 2.0 + Okta provisioning | Journey 5 |
+| Multi-tenant project mapping | Journey 5 |
+| Role-based access control | Journey 5 |
+| EU data residency + DPA compliance module | Journey 5 |
+| Migration Console + CT project auto-connection | Journey 6 |
+| Component scaffolding from existing codebase | Journey 6 |
+| Content migration tooling | Journey 6 |
+| Core Web Vitals baseline measurement | Journey 6 |
+
+---
+
+## Domain-Specific Requirements
+
+### Compliance & Regulatory
+
+**GDPR / ePrivacy Directive (EU)**
+- The platform is a **data processor** for all behavioral data (ACI heatmaps, session recordings, engagement events) collected from end consumers on customer storefronts. Customers are data controllers. A Data Processing Agreement (DPA) is required for every enterprise customer at onboarding.
+- ACI behavioral tracking must support **consent-aware event collection** — no tracking fires until the end consumer grants consent via the storefront's cookie consent mechanism.
+- Platform must support **right to erasure (Article 17)** — ability to purge a specific consumer's behavioral data on customer request, fulfilled within 30 days.
+- ACI data retention default: **13 months rolling** (GDPR-aligned standard), configurable per tenant.
+- **EU data residency** option required at tenant provisioning — behavioral data and storefront configuration data must remain within EU infrastructure when selected.
+
+**ePrivacy / Cookie Consent**
+- ACI tracking scripts on live storefronts must integrate with standard consent management platforms (OneTrust, Cookiebot, Didomi) via Consent Management Platform (CMP) API.
+- Platform must provide a native lightweight consent banner component (Green Zone, operator-configurable) as a default option for customers without an existing CMP.
+- Tracking scripts must respect `navigator.doNotTrack` and IAB TCF 2.0 consent signals.
+
+**PCI DSS Boundary**
+- The Red Zone governance model must enforce a hard separation between behavioral tracking scope and payment scope. ACI tracking scripts must **never execute within the checkout or payment capture flow**.
+- Platform architecture must maintain a **SAQ-A** compliance posture for the storefront layer — no cardholder data transits through the platform; all payment processing delegated entirely to commercetools and downstream payment providers.
+- Regular penetration testing of the Red Zone boundary is required pre-launch and annually thereafter.
+
+**Accessibility (WCAG 2.1 AA)**
+- The storefront editor (operator-facing) must meet WCAG 2.1 AA. Enterprise customers with accessibility obligations require their internal tools to meet the same standard as their consumer products.
+- All platform-provided Green Zone components must ship WCAG 2.1 AA compliant by default. Accessibility compliance must not be breakable through Green Zone operator edits.
+- Keyboard navigation, screen reader support, and sufficient color contrast are required in both the editor UI and the default component library.
+
+### Technical Constraints
+
+**Multi-tenant Data Isolation**
+- All tenant data (storefront configurations, ACI behavioral data, component libraries, publish history) must be strictly isolated at the data layer. Cross-tenant data access must be architecturally impossible, not just access-controlled.
+- Tenant provisioning and deprovisioning must include complete data purge capability within 30 days of contract termination.
+
+**commercetools API Compliance**
+- The platform must implement per-tenant **API call budgeting** to avoid exhausting commercetools API rate limits under high editor activity or ACI data enrichment workloads.
+- API key scoping follows **principle of least privilege**: storefront read access only (catalog, pricing, inventory display). No write access to commercetools resources from the storefront layer.
+- Platform must remain within commercetools API terms of service — no API reverse engineering, no undocumented endpoint dependencies.
+
+**SOC 2 Type II**
+- Enterprise customers will require SOC 2 Type II attestation before contract signature. Platform must be architected for SOC 2 compliance from day one (audit logging, access control, encryption at rest and in transit, incident response).
+- Target: SOC 2 Type II report available within 12 months of launch.
+
+### Integration Requirements
+
+**Consent Management Platforms (CMP)**
+- First-class integrations: OneTrust, Cookiebot, Didomi (IAB TCF 2.0 compatible)
+- Generic CMP integration via IAB TCF 2.0 API for unlisted providers
+
+**Identity Providers (IdP)**
+- SAML 2.0 and OIDC for SSO (Okta, Azure AD, Google Workspace)
+- SCIM 2.0 for automated user provisioning and deprovisioning
+
+**commercetools Platform**
+- commercetools Merchant Center SSO integration (native shell)
+- commercetools APIs: Composable Commerce (catalog, cart, pricing), Import API (bulk content), Subscriptions API (change notifications for live data sync)
+
+### Risk Mitigations
+
+| Risk | Mitigation |
+|---|---|
+| ACI tracking fires in checkout scope → PCI violation | Red Zone enforcement prevents any script injection in checkout flow; automated scope audit in CI pipeline |
+| Customer requests data erasure → slow fulfillment | Automated erasure pipeline triggered via API; 30-day SLA baked into DPA |
+| Operator publishes WCAG-violating content via Green Zone edits | Automated accessibility scan on publish preview; violations surface as warnings (not hard blocks) with remediation suggestions |
+| Cross-tenant data leak in multi-tenant ACI data store | Tenant ID partitioning enforced at ORM layer; quarterly isolation penetration tests |
+| commercetools API rate limit exhausted under load | Per-tenant request budgeting with circuit breaker; ACI data enrichment runs on async queue, not request path |
+
+---
+
+## Innovation & Novel Patterns
+
+### Detected Innovation Areas
+
+**1. Native Intelligence Loop (Core Innovation)**
+
+Every existing commerce analytics tool is architecturally external — data leaves the storefront, flows through ETL pipelines to a third-party analytics platform, generates insights in a separate UI, and requires a human to translate those insights back into storefront changes. This product collapses that chain entirely.
+
+ACI behavioral data is collected natively on the storefront, processed within the platform, surfaced as insights inside the same editor where operators make changes, and acted on without leaving the tool. The publish → measure → optimize → republish loop becomes a single-surface workflow. No competitor can replicate this without rebuilding their storefront layer from scratch. This is the moat.
+
+**2. Green/Red Zone Governance Model (Novel Pattern for AI in Enterprise)**
+
+AI-assisted creation tools (Lovable, v0, Bolt, Framer AI) are permissive by design — they generate anything, and the human reviews the output. That model is correct for individual developers but dangerous for enterprise commerce: one operator error can break a payment flow, violate pricing contracts, or publish legally non-compliant content at scale.
+
+The Green/Red Zone model is a novel solution to this problem. It doesn't restrict AI capability — it restricts AI *surface area*. AI composes freely within developer-governed boundaries (Green Zone), while commerce-critical logic is platform-protected (Red Zone). Operators get Lovable-grade creative freedom; enterprises get the governance contract they need. No existing AI-assisted storefront tool has this architecture.
+
+**3. Describe-to-Storefront for Enterprise (AI Agent Workflow)**
+
+Natural language → governed storefront generation is not new in isolation (Lovable, v0 do this). What's new is doing it within an enterprise governance envelope: AI generates only from an approved component library, respects brand tokens, maintains Red Zone boundaries, and produces a reviewable draft rather than a free-form output. The innovation is in making the Lovable-grade creation experience safe for enterprise publishing workflows — where the output goes live to thousands of paying customers, not a personal portfolio.
+
+**4. B2X Unified Rendering**
+
+Single-storefront multi-context rendering (B2C + B2B + dealer portals from one backend) is not possible in any competing first-party or common third-party storefront today. Existing solutions require maintaining parallel storefronts with separate deployment and governance overhead. The innovation: commercetools' flexible data model + the platform's context-aware rendering layer resolve the correct experience per buyer context at runtime, from one governed component library.
+
+**5. Workflow Automation: The 47-Minute Campaign**
+
+The Sofia journey is itself an innovation signal. A marketing manager launching a fully governed, on-brand campaign from idea to live production in under an hour — without a developer, without a deployment, without a ticket queue — is a workflow that does not exist today in enterprise commerce. The product's job is to make that 47-minute number the new normal, then make it 20 minutes.
+
+### Market Context & Competitive Landscape
+
+- **commercetools ecosystem gap:** No first-party frontend exists. Enterprise customers universally assemble custom Next.js storefronts + ContentSquare + Amplitude + Optimizely stacks. This is the status quo this product disrupts.
+- **AI-native storefront competitors:** Ninetailed (personalization layer, acquired by Contentful), Uniform (visual experience composition) — neither ships with native behavioral analytics. Neither has Green/Red Zone governance.
+- **Analytics-first tools:** ContentSquare, Heap — powerful analytics, zero storefront authoring. No AI creation. No publish pipeline.
+- **No competitor combines:** Storefront editor + native behavioral analytics + AI creation + governance model + commercetools-native integration. The combination is the competitive moat, not any single capability.
+
+### Validation Approach
+
+| Innovation Claim | Validation Method | Success Signal |
+|---|---|---|
+| AI drafts are publishable with minimal edits | Beta cohort: measure regeneration rate and edit depth before publish | ≥90% publish after minor edits only |
+| Green/Red Zone governance holds under real operator use | Red team exercise: operators attempt to break Red Zone boundaries; penetration test | Zero boundary violations in 100-operator beta |
+| ACI engagement scores correlate with business outcomes | A/B test: compare ACI-flagged low-engagement sections vs. control — measure conversion delta | Statistically significant conversion lift in optimized sections |
+| B2X rendering works without performance degradation | Load test across all three contexts (B2C, B2B, dealer) simultaneously | LCP <2.5s across all contexts under peak load |
+| 47-minute campaign is reproducible | Time-tracked beta sessions for first campaign publish | Median operator time-to-first-publish ≤60 minutes |
+
+### Risk Mitigation
+
+| Innovation Risk | Fallback |
+|---|---|
+| AI generation quality is poor for complex layouts | Canvas works fully without AI — operators revert to manual component placement; AI is an accelerator, not a dependency |
+| ACI data insufficient for insights in early use (<30 days traffic) | Platform surfaces "warming up" state; provides manual heatmap annotation tool for early sessions; sets expectation in onboarding |
+| Green Zone is too restrictive → operators feel constrained | Governor tuning tools for developers to expand Green Zone boundaries per component without redeploying |
+| B2X context resolution incorrect for edge cases | Context override flag in editor — operator manually forces context for preview and testing |
+| Competitors copy the native analytics model | Native intelligence loop requires deep storefront instrumentation; copying requires full platform rebuild — 18+ month lead time advantage |
+
+---
+
+## B2B SaaS Platform Requirements
+
+### Project-Type Overview
+
+The platform is a multi-tenant B2B SaaS product serving enterprise commercetools customers. Each customer organization maps to one tenant; tenants can contain multiple brands (commercetools projects). All tenants share platform infrastructure with strict data isolation. Revenue is usage-based, aligning platform cost with customer storefront growth and AI consumption.
+
+### Tenant Model
+
+**Tenant Hierarchy:**
+```
+Organization (Tenant)
+├── Brand A → commercetools Project A
+├── Brand B → commercetools Project B
+└── Brand C → commercetools Project C
+```
+
+- One tenant per customer organization, provisioned at contract signing
+- Tenants connect to one or more commercetools projects — each project maps to one managed storefront
+- Multi-brand retailers manage multiple storefronts under one tenant
+- Tenant isolation enforced at data layer — all ACI behavioral data, storefront configs, and component libraries are tenant-scoped; cross-tenant access architecturally impossible
+- Tenant offboarding: full data purge within 30 days of contract termination, automated pipeline with audit trail
+
+**Tenant Provisioning Flow:**
+1. Contract signed → tenant provisioned in platform
+2. IT Admin connects commercetools project via API key (read-scoped)
+3. SSO configured (SAML 2.0 / OIDC)
+4. Data residency region selected (EU / US)
+5. DPA generated and signed
+6. Developer configures Green/Red Zone component library
+7. Operators invited via SSO provisioning (SCIM 2.0 or manual batch)
+
+### RBAC Matrix
+
+| Role | Editor Access | Publish to Staging | Publish to Live | Developer Console | ACI Dashboard | Admin / Provisioning |
+|---|---|---|---|---|---|---|
+| **IT Admin** | — | — | — | — | — | ✅ Full |
+| **Storefront Developer** | ✅ Full | ✅ | ✅ | ✅ Full | Read | — |
+| **Brand Publisher** | ✅ Green Zone | ✅ | ✅ | — | Read | — |
+| **Brand Editor** | ✅ Green Zone | ✅ | — | — | Read | — |
+| **ACI Analyst** | — | — | — | — | ✅ Full + Flag | — |
+| **Cross-brand Admin** | Read only | — | — | — | ✅ Read all brands | — |
+
+**Role Definitions:**
+- **IT Admin** — tenant provisioning, SSO configuration, data residency, user lifecycle management, DPA management
+- **Storefront Developer** — defines component library, Green/Red Zone boundaries, Developer Console; full publish rights for deployments
+- **Brand Publisher** — marketing/merchandising lead; full publish pipeline (staging + live); Green Zone edits only; AI creation flow access
+- **Brand Editor** — marketing contributor; Green Zone edits and staging publishes; live publish requires Publisher approval
+- **ACI Analyst** — commerce strategist / analytics role; full ACI dashboard access including heatmaps, engagement scoring, and section flagging; cannot edit or publish
+- **Cross-brand Admin** — executive or agency role; read access across all tenant brands; no publish rights
+
+### Subscription Tiers (Usage-Based)
+
+**Billable Usage Dimensions:**
+
+| Metric | Definition |
+|---|---|
+| **Storefront sessions** | One ACI-instrumented visitor session on a live storefront |
+| **AI generation events** | One describe → governed draft execution (regardless of publish outcome) |
+| **Connected storefronts** | Number of commercetools projects actively connected to the platform |
+
+**Usage Tiers:**
+
+| Tier | Sessions/month | AI Generations/month | Connected Storefronts | Target Customer |
+|---|---|---|---|---|
+| **Starter** | Up to 500K | Up to 500 | 1 | SMB / pilot |
+| **Growth** | Up to 5M | Up to 5,000 | Up to 3 | Mid-market |
+| **Enterprise** | Custom (unlimited) | Custom (unlimited) | Unlimited | Enterprise / multi-brand |
+
+- Overage pricing applies beyond tier limits on sessions and AI generations
+- ACI Phase 1 (behavioral analytics) included in all tiers — not a separate SKU
+- Advanced ACI features (experiment platform, event analytics — Phase 2/3) gated to Growth and Enterprise
+- Enterprise tier includes: dedicated data residency, SOC 2 Type II report, SLA guarantees, professional services onboarding
+
+### Integration List
+
+**Core Platform Integrations (Required for MVP):**
+
+| System | Integration Type | Purpose |
+|---|---|---|
+| commercetools Composable Commerce | REST API | Catalog, pricing, inventory, cart, checkout data |
+| commercetools Merchant Center | SSO + Shell | Native UX embedding, project context switching |
+| Okta / Azure AD / Google Workspace | SAML 2.0 + OIDC + SCIM 2.0 | Enterprise SSO and automated user provisioning |
+| CDN (Vercel Edge / Cloudflare) | Edge rendering | Storefront delivery and Core Web Vitals performance |
+| OneTrust / Cookiebot / Didomi | IAB TCF 2.0 CMP API | Cookie consent + GDPR-compliant ACI tracking |
+
+**Growth Integrations (Post-MVP):**
+
+| System | Integration Type | Purpose |
+|---|---|---|
+| Cloudinary / Contentful Assets | DAM API | Native asset management for operator image uploads |
+| Snowflake / BigQuery | Data export | ACI behavioral data export to customer data warehouse |
+| Slack / Microsoft Teams | Webhook | ACI section flagging notifications to team channels |
+| Contentful / Storyblok | Content sync | Content migration tooling for brownfield onboarding |
+
+### Implementation Considerations
+
+- **Edge rendering architecture:** Storefront must render at the edge (Vercel Edge Functions or Cloudflare Workers) for Core Web Vitals compliance. Server-side rendering at origin is a fallback only.
+- **Incremental static regeneration (ISR):** Product catalog and pricing data changes in commercetools must propagate to live storefronts within 60 seconds via ISR or subscription-based cache invalidation.
+- **AI generation latency budget:** Describe → governed draft must complete within 30 seconds end-to-end (LLM + component assembly + canvas render). User-facing streaming progress indicator required.
+- **ACI event pipeline:** Behavioral events must be ingested asynchronously without blocking storefront render performance. ACI script must add zero measurable impact to Core Web Vitals scores.
+- **Zero-downtime deploys:** Operator publishes must deploy atomically — no partial state visible to live traffic. Blue/green or canary deployment model required.
+
+---
+
+## Project Scoping & Phased Development
+
+### MVP Strategy & Philosophy
+
+**MVP Approach: Platform MVP — prove the dependency break.**
+
+The MVP doesn't need to be the best AI storefront generator. It needs to prove one thing: a marketing manager can launch a governed, on-brand campaign without filing a developer ticket. Everything else is acceleration.
+
+The AI creation flow is in MVP, but manual canvas editing is the safety net. If AI generation quality is imperfect at launch, operators fall back to manual component placement — the product works either way. Fine-tuning on real usage data (which components were kept vs. swapped vs. regenerated) builds the improvement flywheel post-launch: the model gets measurably better with every publish cycle.
+
+**MVP Resource Requirements:** Requires a cross-functional team covering: frontend engineering (React/Next.js + edge rendering), platform/backend engineering (multi-tenant SaaS, ACI event pipeline), AI/ML engineering (LLM integration + fine-tuning infrastructure), product design (editor UX + operator experience), and DevOps (edge deployment, CI/CD, SOC 2 compliance groundwork).
+
+### MVP Feature Set (Phase 1)
+
+**Core User Journeys Supported:**
+- Journey 1 (Sofia — campaign launch): Full describe → AI draft → refine → publish flow
+- Journey 2 (Sofia — crisis recovery): Mobile editor access + Green Zone component swap
+- Journey 3 (Mateus — governance setup): Developer Console + Green/Red Zone configuration
+- Journey 5 (Marcus — provisioning): SSO, multi-tenant, RBAC, EU data residency
+- Journey 6 (Diego — migration): Migration Console + CT project auto-connection + component scaffolding
+
+**Must-Have Capabilities:**
+- Storefront editor (StorefrontCanvas, Green/Red Zone governance, visual component placement)
+- AI creation flow (describe → governed draft → refine → publish); manual editing as fallback
+- Governed component library + Developer Console
+- B2X rendering (B2C, B2B, dealer portal contexts from one storefront)
+- Migration Console (commercetools project connection, component scaffolding, content migration)
+- ACI Phase 1: behavioral analytics (session heatmaps, engagement scoring, page performance)
+- Publish workflow (preview, staging, live publish with governance validation)
+- commercetools Merchant Center shell (native SSO, project context switching)
+- Multi-tenant platform (SSO via SAML/OIDC, RBAC, EU data residency, DPA module)
+- Core Web Vitals compliance (edge rendering, ISR cache invalidation within 60s)
+
+**Deferred to Growth (Phase 2):**
+- ACI Phase 2: A/B testing + experiment platform (Optimizely displacement)
+- ACI Phase 3: Full-funnel event analytics (Amplitude displacement)
+- Autonomous optimization recommendations
+- Advanced personalization engine
+- Cross-channel publishing (email, push, app)
+- Snowflake/BigQuery ACI data export
+- Slack/Teams notifications
+
+**Deferred to Vision (Phase 3):**
+- Full autonomous commerce intelligence (self-optimizing storefronts)
+- Predictive inventory surfacing
+- Cross-brand composition AI
+- Commerce Intelligence Network (cross-customer learning)
+
+### Risk Mitigation Strategy
+
+**Technical Risks:**
+
+| Risk | Likelihood | Impact | Mitigation |
+|---|---|---|---|
+| AI generation quality insufficient at launch | High | Medium | Manual canvas editing is the fallback — product works without AI generation. Fine-tuning roadmap starts from Day 1 of beta: log kept/swapped/regenerated decisions as training signal. |
+| Edge rendering performance misses Core Web Vitals targets | Medium | High | Instrument Core Web Vitals in CI pipeline pre-launch. Automated Lighthouse regression blocking on PR merges to main. |
+| Green/Red Zone boundary circumvented | Low | High | Red team exercise with 10+ real operators pre-launch. Automated scope audit in CI. Penetration test against Red Zone interfaces. |
+| ACI event pipeline adds latency to storefront render | Medium | High | ACI script loads asynchronously, non-blocking. Synthetic monitoring with ACI on vs. off comparison. Hard budget: 0ms impact on LCP. |
+| commercetools API rate limits hit under load | Low | Medium | Per-tenant request budgeting + circuit breaker from Day 1. Load test simulates 10x peak traffic per tenant. |
+
+**Market Risks:**
+
+| Risk | Mitigation |
+|---|---|
+| Enterprise buyers require SOC 2 before signing | Begin SOC 2 Type II audit process at beta launch — target report by Month 12 in parallel with GA |
+| Competing commercetools SI partners build comparable frontend | Native ACI integration and Green/Red Zone governance model require 18+ months to replicate; focus on capturing commercetools enterprise accounts in Year 1 before ecosystem catches up |
+| Migration is harder than expected → slows adoption | Dedicated migration engineering sprint pre-GA; 2-3 lighthouse customer migrations validated before public launch |
+
+**Resource Risks:**
+
+| Risk | Mitigation |
+|---|---|
+| AI/ML engineering capacity constrained | Scope fine-tuning to post-MVP; use managed LLM APIs (Anthropic/OpenAI) at launch rather than self-hosted models |
+| Edge rendering expertise gap | Leverage Vercel's managed edge infrastructure and existing Next.js ecosystem; avoid custom edge runtime at MVP |
+| SOC 2 compliance overhead underestimated | Engage compliance automation tooling (Vanta, Drata) from Day 1; avoid manual evidence collection |
+
+---
+
+## Functional Requirements
+
+### Storefront Authoring
+
+- **FR1:** Business Operators can view and navigate their live storefront structure in a visual canvas editor
+- **FR2:** Business Operators can add, remove, and reorder Green Zone components on the storefront canvas
+- **FR3:** Business Operators can edit content properties (copy, images, colors, layout variants) within Green Zone component constraints
+- **FR4:** Business Operators can preview the storefront in desktop, tablet, and mobile viewports before publishing
+- **FR5:** Business Operators can preview the storefront in B2C, B2B, and dealer portal contexts before publishing
+- **FR6:** Business Operators can access the storefront editor from a mobile device
+
+### AI-Assisted Creation
+
+- **FR7:** Business Operators can describe a storefront intent in natural language and receive a governed AI-generated draft
+- **FR8:** The platform generates AI drafts composed exclusively from the tenant's approved Green Zone component library
+- **FR9:** Business Operators can view AI reasoning and component selection intent before the draft is applied to the canvas
+- **FR10:** Business Operators can accept, modify, or reject individual AI-generated component placements
+- **FR11:** Business Operators can manually edit or replace any AI-generated component within Green Zone constraints
+- **FR12:** The platform provides real-time streaming progress feedback during AI draft generation
+
+### Governance & Publishing
+
+- **FR13:** Storefront Developers can designate individual components as Green Zone (operator-editable) or Red Zone (platform-protected)
+- **FR14:** Storefront Developers can configure which component properties are editable by operators within each Green Zone component
+- **FR15:** The platform enforces Red Zone boundaries — operator and AI actions cannot modify Red Zone components or commerce logic
+- **FR16:** Business Operators can publish storefronts to a staging environment for review
+- **FR17:** Brand Publishers can publish staged storefronts to the live production environment
+- **FR18:** The platform validates governance compliance before every publish — blocked publishes surface specific violations
+- **FR19:** The platform deploys published storefronts atomically — no partial state is visible to live traffic
+- **FR20:** The platform records all publish actions with author identity, timestamp, and content diff in an immutable audit log
+
+### Autonomous Commerce Intelligence (ACI)
+
+- **FR21:** ACI Analysts and Business Operators can view session behavioral heatmaps overlaid directly on the live storefront canvas
+- **FR22:** The platform calculates and displays engagement scores for individual storefront sections
+- **FR23:** ACI Analysts can flag low-performing storefront sections and send notifications to Business Operators
+- **FR24:** Business Operators can navigate directly from an ACI section flag to the relevant component in the storefront editor
+- **FR25:** The platform collects behavioral events asynchronously without impacting storefront render performance
+- **FR26:** The platform withholds behavioral data collection until end-consumer cookie consent is granted, and stops collection immediately upon consent withdrawal
+- **FR27:** ACI Analysts can view page-level performance metrics (load time, scroll depth, exit rate) in the ACI dashboard
+- **FR28:** IT Admins can configure the ACI behavioral data retention period (default: 13 months rolling)
+
+### Developer & Component Management
+
+- **FR29:** Storefront Developers can create, configure, and publish a governed component library via the Developer Console
+- **FR30:** Storefront Developers can define field-level edit permissions for each Green Zone component
+- **FR31:** Storefront Developers can simulate operator access in the Developer Console to verify governance boundary enforcement
+- **FR32:** Storefront Developers can update component library definitions without requiring a full platform redeployment
+- **FR33:** The platform restricts AI draft generation to components present in the tenant's published component library
+
+### Migration & Onboarding
+
+- **FR34:** Storefront Developers can connect an existing commercetools project to the platform using API credentials
+- **FR35:** The platform proposes a Green Zone component mapping scaffolded from an existing page template structure or codebase
+- **FR36:** Storefront Developers can review, adjust, and publish the scaffolded component mapping
+- **FR37:** The platform migrates existing page configurations to the storefront canvas format
+- **FR38:** The platform measures and reports Core Web Vitals baseline for an existing storefront before migration
+- **FR39:** The platform validates all migrated pages for completeness and renders a readiness report before go-live
+
+### Platform & Administration
+
+- **FR40:** IT Admins can configure tenant SSO via SAML 2.0 or OIDC with enterprise identity providers
+- **FR41:** IT Admins can automate user provisioning and deprovisioning via SCIM 2.0
+- **FR42:** IT Admins can assign platform roles to users (IT Admin, Storefront Developer, Brand Publisher, Brand Editor, ACI Analyst, Cross-brand Admin)
+- **FR43:** IT Admins can configure per-brand access boundaries for multi-brand tenants
+- **FR44:** IT Admins can select EU or US data residency region at tenant provisioning
+- **FR45:** IT Admins can generate and download a Data Processing Agreement within the platform
+- **FR46:** The platform provides IT Admins with a usage dashboard showing sessions consumed, AI generations used, and connected storefronts against tier limits
+
+### Compliance & Data Privacy
+
+- **FR47:** End consumers can withdraw behavioral tracking consent and the platform immediately stops ACI data collection for that session
+- **FR48:** IT Admins can submit a right-to-erasure request for a specific consumer's behavioral data, fulfilled within 30 days
+- **FR49:** The platform enforces PCI DSS boundary — ACI tracking scripts are blocked from executing within checkout and payment capture flows
+- **FR50:** All platform-provided Green Zone components meet WCAG 2.1 AA accessibility standards by default
+- **FR51:** The platform surfaces accessibility warnings when operator edits may violate WCAG 2.1 AA prior to publish confirmation
+
+---
+
+## Non-Functional Requirements
+
+### Performance
+
+- **NFR1:** Editor user actions (component placement, property edits, canvas navigation) complete with visible response within 500ms
+- **NFR2:** AI draft generation (describe → fully rendered draft on canvas) completes within 30 seconds end-to-end, with streaming progress shown after 2 seconds
+- **NFR3:** Publish action (governance validation + deployment) completes within 15 seconds for storefronts ≤500KB
+- **NFR4:** Storefront page load (LCP): <2.5s on mobile, <1.5s on desktop; CLS <0.1; INP <200ms (Core Web Vitals Pass)
+- **NFR5:** ACI heatmap overlay loads within 3 seconds after canvas navigates to a new page section
+- **NFR6:** commercetools API sync (catalog, pricing, inventory updates) propagates to live storefronts within 60 seconds via ISR or cache invalidation
+
+### Security
+
+- **NFR7:** All data in transit encrypted with TLS 1.3 or higher
+- **NFR8:** All tenant data at rest encrypted with AES-256
+- **NFR9:** Red Zone governance boundaries enforced at platform layer — operator and AI actions cannot bypass Red Zone restrictions regardless of attack vector (API manipulation, payload tampering, etc.)
+- **NFR10:** ACI tracking scripts blocked from executing within checkout and payment capture flows via strict Content Security Policy (CSP) scope audit and runtime enforcement
+- **NFR11:** Multi-tenant data isolation enforced at ORM layer with tenant ID required in every query; cross-tenant queries impossible even with compromised credentials
+- **NFR12:** Audit log for all platform actions (user login, publish, component update, data access) with immutable record storage and no deletion capability
+- **NFR13:** Secrets (API keys, database credentials, encryption keys) managed via platform secrets vault; no plaintext storage or logging
+- **NFR14:** All external integrations (commercetools, Okta, CMPs) validate TLS certificates and reject self-signed or expired certificates
+
+### Scalability
+
+- **NFR15:** Platform handles 10x concurrent operator sessions with <10% performance degradation
+- **NFR16:** ACI event ingestion pipeline handles 100K events/second with <500ms latency
+- **NFR17:** Platform scales horizontally — adding nodes increases throughput linearly up to 1M concurrent storefront sessions
+- **NFR18:** commercetools API calls budgeted per tenant to prevent rate-limit exhaustion under load; circuit breaker activates if tenant exceeds 10K calls/minute
+- **NFR19:** Database connections pooled with auto-scaling within per-tenant connection limits (e.g., 100 connections per Enterprise tenant)
+- **NFR20:** CDN edge rendering (Vercel Edge / Cloudflare Workers) handles geographic distribution without origin overload; origin fallback activates only on CDN failure
+
+### Accessibility
+
+- **NFR21:** Storefront editor meets WCAG 2.1 AA for keyboard navigation, screen reader support, color contrast (4.5:1 text, 3:1 UI)
+- **NFR22:** All platform-provided Green Zone components meet WCAG 2.1 AA by default
+- **NFR23:** Publish validation warns on accessibility violations (missing alt text, insufficient contrast, inaccessible form labels) before confirming publish
+
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12/marked.min.js"></script>
+<script>
+  (function() {
+    const target = document.getElementById('content');
+    const source = document.getElementById('markdown-source');
+    let md = source.textContent.trim();
+
+    // Strip YAML frontmatter
+    if (md.startsWith('---')) {
+      const end = md.indexOf('\n---', 4);
+      if (end > -1) md = md.slice(end + 4).trim();
+    }
+
+    function renderFallback() {
+      target.innerHTML =
+        '<div class="reader-error"><strong>marked.js did not load.</strong> ' +
+        'Showing raw markdown below. For a rendered view, try opening this file via ' +
+        '<code>VS Code → Simple Browser</code> or a local HTTP server.</div>' +
+        '<pre><code>' + md.replace(/&/g, '&amp;').replace(/</g, '&lt;') + '</code></pre>';
+    }
+
+    if (typeof marked === 'undefined') {
+      renderFallback();
+      return;
+    }
+
+    try {
+      marked.setOptions({ gfm: true, breaks: false, headerIds: true, mangle: false });
+      target.innerHTML = marked.parse(md);
+
+      // Rewrite relative markdown links to their HTML twins where one exists
+      target.querySelectorAll('a[href$=".md"]').forEach(a => {
+        const raw = a.getAttribute('href');
+        if (raw.startsWith('http')) return;
+        const htmlTwin = raw.replace(/\.md$/, '.html');
+        a.setAttribute('href', htmlTwin);
+        a.setAttribute('data-original-md', raw);
+      });
+
+      // Set the page title from the first h1
+      const firstH1 = target.querySelector('h1');
+      if (firstH1) document.title = firstH1.textContent + ' · BMad';
+    } catch (err) {
+      renderFallback();
+    }
+  })();
+</script>
+</body>
+</html>

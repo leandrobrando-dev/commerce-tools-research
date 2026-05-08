@@ -1,0 +1,1441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Technical Research — commercetools Frontend Development · BMad · commercetools Next-Gen Frontend</title>
+<link rel="stylesheet" href="../doc-reader-styles.css">
+<style>
+  /* Frontmatter hidden — data contained there is not reader-relevant */
+  .reader-content pre:first-child code:only-child {
+    display: block;
+  }
+</style>
+</head>
+<body data-phase="research">
+
+<nav class="reader-topbar">
+  <a href="../00-bmad-journey-map.html" class="back-link">
+    <span>←</span> Journey map
+  </a>
+  <span class="phase-chip">Phase 01 · Analysis</span>
+  <span class="breadcrumb">planning-artifacts / research</span>
+  <span class="spacer"></span>
+  <span class="meta">2026-05-05 · 1,342 lines</span>
+</nav>
+
+<header class="reader-doc-header">
+  <div class="eyebrow">Phase 01 · Analysis · Technical research</div>
+  <h1>Technical Research — commercetools Frontend Development</h1>
+  <div class="subtitle">Composable commerce stack, frontend options, integration surfaces, and the build-vs-partner decision for the Next-Gen Frontend platform.</div>
+</header>
+
+<main class="reader-main">
+  <article class="reader-content" id="content">
+    <div class="reader-loading">
+      <div class="spinner"></div>
+      <div>Rendering document…</div>
+    </div>
+  </article>
+</main>
+
+<footer class="reader-footer">
+  <div>Part of BMad planning artifacts · <strong>commercetools Next-Gen Frontend</strong></div>
+  <div><a href="../00-bmad-journey-map.html">← Back to journey map</a></div>
+</footer>
+
+<script type="text/markdown" id="markdown-source">
+---
+stepsCompleted: [1, 2, 3, 4, 5, 6]
+inputDocuments: []
+workflowType: 'research'
+lastStep: 6
+research_type: 'technical'
+research_topic: 'commercetools Frontend Development Platform — Merchant Center Frontend SDK, APIs, and Architecture'
+research_goals: 'Understand the commercetools frontend development ecosystem (Merchant Center SDK, Custom Applications, storefront APIs) so the Next-Gen Frontend project can galvanize on existing commercetools technology and architecture rather than reinventing what already exists'
+user_name: 'Leandro'
+date: '2026-05-05'
+web_research_enabled: true
+source_verification: true
+---
+
+# Research Report: Technical
+
+**Date:** 2026-05-05
+**Author:** Leandro
+**Research Type:** Technical
+
+---
+
+## Research Overview
+
+This report documents a systematic crawl of the official commercetools Frontend Development documentation (`docs.commercetools.com/frontend-development/`) and Merchant Center Customizations documentation (`docs.commercetools.com/merchant-center-customizations/`), supplemented by GitHub repository analysis. The goal is to understand the existing commercetools frontend technology ecosystem so the Next-Gen Frontend project can align with and extend it rather than duplicate or contradict it.
+
+**Key discovery:** commercetools operates **two distinct frontend development domains** that are frequently confused — the **storefront platform** (formerly Frontastic, for consumer-facing PWAs) and the **Merchant Center Customizations** platform (for extending the internal admin UI). The Next-Gen Frontend project lives at the intersection of both.
+
+---
+
+## Technical Research Scope Confirmation
+
+**Research Topic:** commercetools Frontend Development Platform — Merchant Center Frontend SDK, APIs, and Architecture
+**Research Goals:** Understand the commercetools frontend development ecosystem (Merchant Center SDK, Custom Applications, storefront APIs) so the Next-Gen Frontend project can galvanize on existing commercetools technology and architecture rather than reinventing what already exists
+
+**Technical Research Scope:**
+
+- Architecture Analysis - design patterns, frameworks, system architecture
+- Implementation Approaches - development methodologies, coding patterns
+- Technology Stack - languages, frameworks, tools, platforms
+- Integration Patterns - APIs, protocols, interoperability
+- Performance Considerations - scalability, optimization, patterns
+
+**Research Methodology:**
+
+- Crawled official commercetools frontend development docs (16 pages)
+- Analyzed GitHub repositories: `merchant-center-application-kit`, `ui-kit`
+- Web search validation for current version data and ecosystem context
+- Direct doc-to-project alignment mapping
+
+**Scope Confirmed:** 2026-05-05
+
+---
+
+## Technology Stack Analysis
+
+### Platform Architecture: Two Distinct Domains
+
+commercetools operates two separate frontend development platforms with different SDKs, frameworks, and deployment models:
+
+| Domain | Purpose | Docs Root |
+|---|---|---|
+| **commercetools Frontend** (formerly Frontastic) | Storefront/PWA for end-consumer-facing websites | `docs.commercetools.com/frontend-development/` |
+| **Merchant Center Customizations** | Extending the internal Merchant Center admin UI with Custom Applications and Custom Views | `docs.commercetools.com/merchant-center-customizations/` |
+
+_Source: [commercetools Frontend Development](https://docs.commercetools.com/frontend-development/), [Merchant Center Customizations](https://docs.commercetools.com/merchant-center-customizations/)_
+
+---
+
+### Programming Languages
+
+The entire commercetools frontend ecosystem is TypeScript-first:
+
+- **TypeScript** `5.8.2` — primary language for both storefront extensions and Merchant Center custom applications (85.8% of the Application Kit monorepo)
+- **JavaScript** — secondary, legacy support only (13.3% of Application Kit monorepo)
+- **Node.js** `22.x` recommended (`≥20` required); Node.js `<20` deprecated for storefront extensions as of July 2025
+
+_Popular Languages: TypeScript (dominant), JavaScript (legacy)_
+_Emerging: No new languages — TypeScript is the settled standard_
+_Language Evolution: Strong migration from JS to TS across all packages; strict mode TypeScript standard_
+_Performance Characteristics: TypeScript compilation via SWC for fast builds; Turbopack supported in Next.js 16+_
+_Source: [Architecture and Stack](https://docs.commercetools.com/frontend-development/architecture-and-stack), [GitHub - merchant-center-application-kit](https://github.com/commercetools/merchant-center-application-kit)_
+
+---
+
+### Development Frameworks and Libraries
+
+**Storefront Platform (commercetools Frontend):**
+
+| Framework/Library | Version | Role |
+|---|---|---|
+| **Next.js** | `16.0.7` | React framework with SSR/SSG/ISR, App Router |
+| **React** | `19.2.3` (B2B) / `19.2.1` (B2C) | UI library |
+| **Turbopack** | Built-in (Next.js 16+) | Development build system |
+| **Storybook** | `10.1.2` | Component development and documentation |
+| **ESLint** | `9.23.0` | Linting |
+| **Yarn** | Primary | Package manager |
+
+**Merchant Center Customizations:**
+
+| Framework/Library | Version | Role |
+|---|---|---|
+| **React** | `19` | UI library (migrated Jun 2025, UI Kit v20) |
+| **Apollo Client** | `v3+` | GraphQL client |
+| **React Intl** | `v6` | Internationalization |
+| **React Redux / Redux** | Latest | State management |
+| **React Router DOM** | Latest | Client-side routing |
+| **Formik** | Latest | Form management |
+| **FlopFlip** | Built-in | Feature toggle management |
+
+_Major Frameworks: Next.js 16 for storefronts; framework-agnostic React 19 SPA for Merchant Center Custom Applications_
+_Ecosystem Maturity: Both ecosystems are production-grade; Application Kit v27 (Mar 2026); UI Kit v20.5.0 (Mar 2026)_
+_Source: [Frontend Development Releases](https://docs.commercetools.com/frontend-development/releases), [Merchant Center Customizations Releases](https://docs.commercetools.com/merchant-center-customizations/releases)_
+
+---
+
+### Database and Storage Technologies
+
+The commercetools frontend platform abstracts data storage — the frontend layers do not manage databases directly:
+
+- **commercetools Composable Commerce APIs** — product catalog, pricing, inventory, cart, checkout via REST and GraphQL (the authoritative data layer)
+- **API Hub (BFF)** — Backend-for-Frontend orchestration layer; handles Data Source responses, relays page layout during SSR, runs extensions
+- **Session management** — handled at API Hub level; session-based auth for storefront consumers
+- **Merchant Center** — Apollo Client (GraphQL) connects directly to commercetools Merchant Center API for admin data
+
+_No traditional database technology in the frontend layer — data comes exclusively through commercetools APIs_
+_Source: [Architecture and Stack](https://docs.commercetools.com/frontend-development/architecture-and-stack)_
+
+---
+
+### Development Tools and Platforms
+
+**Storefront Development:**
+- `frontastic run` — local extension development server
+- `@commercetools/frontend-sdk` `v2.1.0` — core SDK (Jan 2026)
+- `@commercetools/frontend-composable-commerce` — Composable Commerce integration layer
+- `@commercetools/frontend-domain-types` — TypeScript type definitions
+- GitHub repository + CI/CD pipelines (provided by the platform)
+
+**Merchant Center Custom Applications:**
+- `npx @commercetools-frontend/create-mc-app@latest` — project scaffolding CLI
+- `custom-application-config.mjs` — root configuration file
+- `@commercetools-frontend/jest-preset-mc-app` — Jest testing preset
+- `@commercetools-frontend/cypress` — Cypress E2E testing utilities
+- `@commercetools-backend/eslint-config-node` — ESLint config for backend/Node
+- GraphQL codegen (`codegen.core.yml`, `codegen.ctp.yml`, `codegen.mc.yml`, etc.)
+
+_Source: [Installing the Frontend SDK](https://docs.commercetools.com/frontend-development/installing-the-frontend-sdk), [Create Custom Application Tutorial](https://docs.commercetools.com/tutorials/create-custom-application)_
+
+---
+
+### Cloud Infrastructure and Deployment
+
+**Storefront Platform (commercetools Frontend):**
+- **Hosted on Google Cloud** — auto-scaling, 99.9% uptime SLA
+- **Netlify** — primary recommended deployment for storefronts
+- **Vercel** — supported deployment target
+- Three environment tiers: prod (`.frontastic.live`), staging (`.frontastic.io`), dev (`.frontastic.rocks`)
+
+**Merchant Center Custom Applications:**
+- **Vercel** — primary tutorial deployment target (Framework: "Create React App", Build: `yarn build`, Output: `public/`)
+- **Netlify**, **Render**, **AWS**, **Azure**, **Google Cloud**, **Cloudflare**, **Surge**
+- **commercetools Connect** — official app distribution marketplace
+
+_CDN and Edge Computing: Storefront uses API Hub as BFF; edge rendering at deployment platform level (Vercel/Netlify edge functions)_
+_Source: [Architecture and Stack](https://docs.commercetools.com/frontend-development/architecture-and-stack), [Create Custom Application Tutorial](https://docs.commercetools.com/tutorials/create-custom-application)_
+
+---
+
+### Technology Adoption Trends
+
+| Trend | Details |
+|---|---|
+| React 19 migration | Complete across both platforms (UI Kit v20, Jun 2025) |
+| Next.js 16 + App Router | Current standard for storefronts (Jan 2026) |
+| Turbopack adoption | Now supported as default dev build tool in Next.js 16 |
+| ESLint 9 migration | Application Kit v27 (Mar 2026) — flat config format |
+| Node.js 20+ enforcement | Node.js <20 deprecated for extensions (Jul 2025) |
+| TypeScript dominance | 85.8% of Application Kit; strict mode standard |
+| Store Launchpad v2.0.0 | Updated B2C and B2B Manufacturing starter templates (Jan 2026) |
+
+_Source: [Frontend Development Releases](https://docs.commercetools.com/frontend-development/releases), [Merchant Center Customizations Releases](https://docs.commercetools.com/merchant-center-customizations/releases)_
+
+---
+
+## Integration Patterns Analysis
+
+### API Design Patterns
+
+**The two API strata for frontend development:**
+
+**1. Merchant Center API Gateway (browser-safe proxy)**
+All Custom Application API calls route through `https://mc-api.{region}.commercetools.com/proxy/*`. The gateway validates the user session and enforces OAuth scopes before forwarding — no OAuth client secrets ever reach browser code.
+
+| Proxy Path | Routes To |
+|---|---|
+| `/proxy/ctp/{projectKey}/...` | Composable Commerce HTTP API (REST) |
+| `/proxy/import/{projectKey}/...` | Import API (bulk operations) |
+| `/proxy/forward-to` | Any external HTTPS API (with JWT exchange) |
+| `/graphql` | GraphQL unified endpoint (target via `X-Graphql-Target` header: `ctp` / `change-history` / `mc`) |
+
+**Required request headers for every MC API Gateway call:**
+- `X-Project-Key`: commercetools project key
+- `X-Application-ID`: `{applicationId}:{entryPointUriPath}` (Custom Apps)
+- `Accept: application/json`
+
+**2. Composable Commerce HTTP API (direct OAuth 2.0)**
+Used by backend services, storefront BFFs, and extension runners. Auth via `https://auth.{region}.commercetools.com/oauth/token` — client credentials grant, tokens valid 172,800 seconds (2 days).
+
+_RESTful APIs: Composable Commerce REST API is the primary integration target for both storefront extensions and backend services_
+_GraphQL APIs: Primary pattern for Merchant Center Custom Applications; accessed via MC API Gateway `/graphql` endpoint_
+_GraphQL complexity cap: 20,000 score (queries above this are rejected)_
+_Source: [HTTP API Authorization](https://docs.commercetools.com/api/authorization), [MC Proxy Router](https://docs.commercetools.com/merchant-center-customizations/concepts/merchant-center-proxy-router)_
+
+---
+
+### Communication Protocols
+
+**HTTP/HTTPS**: All API access is HTTPS-only; minimum TLS 1.2. The `forward-to` proxy rejects HTTP targets outright.
+
+**Real-time**: Not natively provided by commercetools APIs. Real-time updates achieved via Subscriptions (push to SQS/SNS/Pub-Sub) or ISR-based cache invalidation.
+
+**Message Queue Protocols**: Subscription destinations support AWS SQS/SNS/EventBridge, Azure Service Bus/Event Grid, GCP Cloud Pub/Sub, Confluent Cloud Kafka (SASL_SSL/PLAIN).
+
+_Source: [API General Concepts](https://docs.commercetools.com/api/general-concepts), [Subscriptions](https://docs.commercetools.com/api/projects/subscriptions)_
+
+---
+
+### Data Formats and Standards
+
+| Format | Usage |
+|---|---|
+| **JSON** | All REST and GraphQL API payloads |
+| **CloudEvents 1.0** | Azure Event Grid subscriptions |
+| **JWT (RS256)** | `forward-to` proxy JWT; JWKS at `/.well-known/jwks.json`; 60-second validity |
+| **ISO 8601** | All date/time values in API responses |
+| **CUID** | Resource IDs (24-char random strings) |
+
+**Optimistic concurrency**: Every resource carries a `version` field. Update requests must include the current version — stale version returns `ConcurrentModification` error (409).
+
+_Source: [API General Concepts](https://docs.commercetools.com/api/general-concepts)_
+
+---
+
+### System Interoperability Approaches
+
+**Proxy-to-External-API Pattern (forward-to):**
+The primary mechanism for Custom Applications to call external APIs without exposing credentials in browser code:
+
+```javascript
+actions.forwardTo.post({
+  uri: 'https://my-api.com/graphql',
+  payload: { query: '...' },
+  audiencePolicy: 'forward-url-origin',
+  includeUserPermissions: true,
+});
+```
+
+The MC Gateway attaches a short-lived JWT (60 seconds) signed with the JWKS at:
+`https://mc-api.{region}.commercetools.com/.well-known/jwks.json`
+
+**Custom Objects bridge (storefront ↔ MC):**
+The two platforms are largely independent but share the Composable Commerce API. The primary interoperability pattern is **Custom Objects** — MC Custom Apps create/manage configuration data stored as custom objects; storefront extensions read them via Data Sources.
+
+_Source: [Proxy-to-External-API](https://docs.commercetools.com/merchant-center-customizations/development/proxy-to-external-api)_
+
+---
+
+### Microservices Integration Patterns
+
+**API Extensions (synchronous, pre-persistence hooks):**
+Execute before a resource is persisted — validate, modify, or reject API requests across ALL clients.
+- Timeout: 2 seconds default (max 10s via support)
+- Max 25 API Extensions per project; max 100 update actions per response
+
+**When to use API Extensions vs BFF:**
+
+| Scenario | Pattern |
+|---|---|
+| Enforce rules across ALL clients (MC, mobile, PIM, storefront) | API Extension |
+| Customer-facing cart validation (latency-sensitive) | BFF (storefront action) |
+| Fraud check before order creation | BFF (resilience, no timeout risk) |
+
+**Data Sources (storefront BFF pattern):**
+All Data Sources in a page request are fetched in parallel by the API Hub with automatic request deduplication. Functions must complete within 8 seconds.
+
+_Source: [API Extensions](https://docs.commercetools.com/api/projects/api-extensions), [Frontend Extensions](https://docs.commercetools.com/frontend-development/extensions)_
+
+---
+
+### Event-Driven Integration
+
+**Subscriptions (async events):**
+- At-least-once delivery — consumers must be idempotent
+- No ordering guarantee — use `sequenceNumber` (messages) or `version` (changes) for ordering logic
+- Retry: `TemporaryError` → 48 hours; `ConfigurationError` → 24h prod / 1h dev
+- Max 50 subscriptions per project
+
+**Fan-out pattern** (bypassing the 50-subscription limit):
+One broad subscription → SNS → multiple Lambda consumers for different downstream tasks.
+
+**Storefront SDK event system:**
+```typescript
+sdk.trigger(new Event({ eventName: 'cartUpdated', data: { cartId } }));
+sdk.on('cartUpdated', (data) => { /* update UI */ });
+if (sdk.hasEventHandlers('cartUpdated')) { // performance guard
+  sdk.trigger(new Event({ eventName: 'cartUpdated', data: heavyPayload }));
+}
+```
+
+_Source: [Subscriptions](https://docs.commercetools.com/api/projects/subscriptions), [Frontend SDK v2](https://docs.commercetools.com/frontend-development/frontend-sdk)_
+
+---
+
+### Integration Security Patterns
+
+**Authentication layers:**
+
+| Layer | Mechanism | Token Location |
+|---|---|---|
+| Composable Commerce API | OAuth 2.0 client credentials | Server-side only; never in browser |
+| Merchant Center Custom Apps | MC session cookie (`mcAccessToken`, 30-day JWT) | HttpOnly cookie (auto by MC) |
+| forward-to external APIs | Short-lived JWT (60s) from MC Gateway | MC Gateway injects; never in app code |
+| Storefront customer auth | Password Flow → encrypted session cookie | Server-side BFF |
+| Anonymous storefront | Anonymous Session Flow | BFF; `anonymousId` in session |
+
+**OAuth scope architecture:**
+```typescript
+oAuthScopes: { view: ["view_states"], manage: ["manage_orders"] },
+additionalOAuthScopes: [
+  { name: "delivery", view: ["view_channels"], manage: ["manage_channels"] }
+  // Generates: ViewChannelsDelivery, ManageChannelsDelivery
+]
+```
+
+**Security rules:**
+- No OAuth client secrets in browser code — always use MC API Gateway as the proxy layer
+- `manage_project:{projectKey}` grants full access — never use in client-facing apps
+- All `forward-to` targets must be HTTPS; JWT validity = 60 seconds
+- Correlation IDs (`X-Correlation-ID`) strongly recommended on all API calls
+
+_Source: [Permissions](https://docs.commercetools.com/merchant-center-customizations/development/permissions), [HTTP API Authorization](https://docs.commercetools.com/api/authorization)_
+
+---
+
+### commercetools Connect vs Custom Applications
+
+| Dimension | Custom Applications / Views | commercetools Connect |
+|---|---|---|
+| **What it is** | Frontend UI extension inside MC browser shell | Hosted backend service managed by commercetools |
+| **Hosting** | Developer manages (Vercel, Netlify, etc.) | commercetools manages infrastructure |
+| **Runtime** | Browser (React SPA) | Node.js / Java server-side |
+| **Auth pattern** | MC session cookie + Proxy Router | OAuth 2.0; Connect manages secrets |
+| **Marketplace** | Not marketplace-distributed | Can publish to commercetools marketplace |
+| **Connector types** | Custom Application, Custom View | `service`, `event`, `job`, `merchant-center-custom-application`, `assets` |
+
+**Key insight for the project**: A Connect connector can deploy both a `merchant-center-custom-application` (the editor UI) and a `service` or `event` type (backend logic) as a single installable unit. This is the **recommended distribution model** for the Next-Gen Frontend when packaging for commercetools customers.
+
+_Source: [commercetools Connect Overview](https://docs.commercetools.com/connect/overview)_
+
+---
+
+## Architectural Patterns and Design
+
+### System Architecture Patterns
+
+#### commercetools Frontend: Four-Layer Architecture
+
+```
+┌─────────────────────────────────────────────────────────┐
+│  STUDIO (Business User Interface)                       │
+│  • Page composition, data source binding                │
+│  • Component drag-and-drop, config fields               │
+│  • Publish, version history, real-time preview          │
+│  • On-page comments, @mentions, assignments (2024)      │
+├─────────────────────────────────────────────────────────┤
+│  FRONTEND DELIVERY (Next.js 16 PWA)                     │
+│  • Catch-all route: pages/[[...slug]].tsx               │
+│  • SSR / ISR / CSR, auto-scaling on Google Cloud        │
+│  • 99.9% uptime SLA, managed infrastructure             │
+├─────────────────────────────────────────────────────────┤
+│  API HUB (BFF / Extension Runner)                       │
+│  • Executes Data Sources (parallel), Actions, Dynamic   │
+│    Page Handler                                         │
+│  • Page routing priority: static → dynamic → 404        │
+│  • Node.js runtime, 8-second extension timeout          │
+│  • Hostnames: .frontastic.live / .io / .rocks           │
+├─────────────────────────────────────────────────────────┤
+│  DEVELOPER TOOLING                                      │
+│  • frontastic CLI, GitHub repo, CI/CD pipelines         │
+│  • Up to 20 active branch deployments                   │
+│  • Version tracking via Git commit hash                 │
+└─────────────────────────────────────────────────────────┘
+```
+
+**The core design principle**: The Studio decouples content configuration from code. Data Sources are separate entities from Components — business users bind them together in the Studio without code deployments. Changing which product list a component shows requires zero code changes.
+
+**Extension registration entry point** (`packages/<project>/backend/index.ts`):
+```typescript
+export default {
+  'data-sources': {
+    'example/product-list': async (config, context) => ({
+      dataSourcePayload: await fetchProducts(config.configuration),
+      previewPayload: [{ title: 'Preview item' }],
+    }),
+  },
+  'actions': {
+    cart: { add: async (request, ctx) => { /* mutate */ } },
+  },
+  'dynamic-page-handler': async (request, context) => {
+    const match = request.query.path.match(/\/p\/(.+)/);
+    if (match) return { dynamicPageType: 'myproject/product-detail', dataSourcePayload: { productId: match[1] } };
+    return null;
+  },
+};
+```
+
+**Full rendering pipeline:**
+```
+Browser → Next.js catch-all → API Hub (page structure + parallel Data Sources)
+→ Next.js SSR renders components with props → HTML to browser
+```
+
+_Source: [Architecture and Stack](https://docs.commercetools.com/frontend-development/architecture-and-stack), [Frontend Development Concepts](https://docs.commercetools.com/frontend-development/development-concepts)_
+
+---
+
+### Design Principles and Best Practices
+
+#### Component Schema Design
+
+Every tastic (Frontend component) has a `schema.json` defining its configurable fields. The full field type system:
+
+| Type | Purpose | Key Properties |
+|---|---|---|
+| `string` / `text` | Text content | `translatable` (default: true), `maxLength` |
+| `enum` | Dropdown options | `values: [{name, value}]` |
+| `boolean` | Toggle | Not translatable |
+| `media` | Image/video asset | Not translatable |
+| `reference` | Page folder or URL | `translatable: false` by default |
+| `dataSource` | Bind a data source | Requires `dataSourceType` |
+| `group` | Repeatable field group | `min`, `max`, `itemLabelField` |
+| `markdown` | Rich text | `translatable: true` |
+| `encrypted` | Secure credentials | Use only for secrets |
+
+**Best practices:**
+- Start with no configurable options; add schema fields only as needed
+- Always provide `default` values for backward compatibility when adding new fields
+- Keep components large initially; avoid over-fragmentation
+- `maxUsePerPage: 1` for components that should only appear once per page
+
+**Component data access pattern:**
+```typescript
+const MyTastic = ({ data }: { data: { heading: string; data: { dataSource: Product[] } } }) => {
+  const { heading, data: { dataSource: products } } = data;
+  // render...
+};
+```
+
+**Component registration** (`frontastic/tastics/index.tsx`):
+```typescript
+export const tastics = {
+  'example/product-hero': ProductHeroComponent,
+  'example/search-results': SearchResultsComponent,
+};
+```
+
+_Source: [Frontend Component Schemas](https://docs.commercetools.com/frontend-development/schemas), [Creating a Configurable Frontend Component](https://docs.commercetools.com/frontend-development/creating-a-configurable-frontend-component)_
+
+---
+
+#### Custom Applications: ApplicationShell Architecture
+
+`ApplicationShell` is the mandatory root component that initializes the entire dependency tree:
+
+```
+ApplicationShell
+├── Apollo Client Provider (pre-configured MC API links + cache)
+├── Redux Store Provider (@commercetools-frontend/sdk)
+├── React Router (/:projectKey/:entryPointUriPath)
+├── React Intl Provider (i18n via applicationMessages)
+├── FlopFlip Provider (feature flags, memoryAdapter default)
+├── ApplicationContext (user, project, environment, dataLocale)
+├── Error Boundary + setupGlobalErrorListener (Sentry integration)
+└── Entry Point Route (View permission guard)
+    └── AsyncApplicationRoutes (React.lazy loaded)
+```
+
+**Entry point pattern:**
+```tsx
+setupGlobalErrorListener();
+const AsyncApplicationRoutes = React.lazy(() => import('../../routes'));
+
+const EntryPoint = () => (
+  <ApplicationShell environment={window.app} applicationMessages={loadMessages}>
+    <AsyncApplicationRoutes />
+  </ApplicationShell>
+);
+```
+
+**Context hooks:**
+```typescript
+const { user, project, environment } = useApplicationContext((ctx) => ({
+  user: ctx.user,         // { id, email, firstName, lastName, locale, timeZone }
+  project: ctx.project,   // { key, name, countries, currencies, languages }
+  environment: ctx.environment, // { applicationId, entryPointUriPath }
+}));
+```
+
+_Source: [ApplicationShell](https://docs.commercetools.com/merchant-center-customizations/tooling-and-configuration/commercetools-frontend-application-shell)_
+
+---
+
+### Scalability and Performance Patterns
+
+**Data Sources parallel execution**: The API Hub fetches ALL data sources for a page in parallel with automatic request deduplication — no cascading sequential calls. This is the primary performance mechanism for the storefront BFF.
+
+**ISR (Incremental Static Regeneration)**: Standard Next.js `revalidate` in `getStaticProps`. The API Hub does not own ISR — this is a Next.js responsibility. Cache behavior is observable via the `x-nextjs-cache` response header (`HIT`, `STALE`, `MISS`, `REVALIDATED`).
+
+**Custom Application state management:**
+
+| State Type | Tool | Pattern |
+|---|---|---|
+| GraphQL / server data | Apollo Client via `useMcQuery` / `useMcMutation` | Primary; pre-configured by ApplicationShell |
+| REST / server data | `@commercetools-frontend/sdk` (Redux-based) | Secondary; lacks built-in caching |
+| Feature flags | FlopFlip (`useFeatureToggle`) | Adapter-based; LaunchDarkly for production |
+
+**Connector hook pattern** (extract data logic from components):
+```typescript
+const useChannelsFetcher = () => {
+  const { data, loading, error } = useMcQuery(FetchChannelsQuery, {
+    context: { target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM },
+  });
+  return { channels: data?.channels?.results, loading, error };
+};
+```
+
+**External API via forward-to (Custom Application):**
+```typescript
+const { data } = useQuery(MyExternalQuery, {
+  context: createApolloContextForProxyForwardTo({ uri: 'https://my-api.com/graphql' }),
+});
+```
+
+_Source: [Data Fetching](https://docs.commercetools.com/merchant-center-customizations/development/data-fetching), [Frontend Development Concepts](https://docs.commercetools.com/frontend-development/development-concepts)_
+
+---
+
+### Deployment and Operations Architecture
+
+**Custom Application folder structure** (`create-mc-app` scaffold):
+```
+my-custom-application/
+├── custom-application-config.mjs   # entryPointUriPath, oAuthScopes, cloudIdentifier
+├── src/
+│   ├── index.tsx                   # ApplicationShell entry point
+│   ├── routes.tsx                  # React Router routes (lazy-loaded)
+│   ├── constants.ts                # entryPointUriPath, PERMISSIONS, GRAPHQL_TARGETS
+│   ├── i18n/en.json                # Translations
+│   ├── components/
+│   │   └── {feature}/
+│   │       ├── list.tsx            # TabularMainPage or InfoMainPage
+│   │       ├── list.graphql
+│   │       ├── details.tsx         # FormDetailPage or TabularDetailPage
+│   │       └── details.graphql
+│   └── hooks/
+│       └── use-{feature}-fetcher/  # Connector hook pattern
+└── public/index.html
+```
+
+**Page component hierarchy** (from `@commercetools-frontend/application-components`):
+
+| Level | Components | When to Use |
+|---|---|---|
+| Main Pages | `TabularMainPage`, `FormMainPage`, `InfoMainPage`, `CustomFormMainPage` | Top-level views (lists, dashboards) |
+| Detail Pages | `FormDetailPage`, `TabularDetailPage`, `InfoDetailPage` | Single resource views with back navigation |
+| Modal Pages | `FormModalPage`, `InfoModalPage`, `TabularModalPage` | Overlay forms on top of detail views |
+| Dialogs | `ConfirmationDialog`, `FormDialog`, `InfoDialog` | Lightweight confirmation or quick forms |
+| Drawer | `Drawer` (sizes 10/20/30) | Right-sliding side panels for secondary actions |
+
+**Page content layout:**
+```tsx
+<PageContentNarrow>  // Single column form
+<PageContentWide columns="1/1">  // Two equal columns
+<PageContentWide columns="2/1">  // 2:1 ratio
+<PageContentFull>  // Full-width tables
+```
+
+**Routing with `useRoutesCreator`:**
+```typescript
+const routes = { channelDetails: createRoute<'channelId'>(`/:projectKey/${entryPointUriPath}/:channelId`) };
+// routes.channelDetails.getUrl({ channelId: '123' }) — real URL
+// routes.channelDetails.go({ channelId: '123' })   — navigate
+```
+
+**Feature flags (FlopFlip):**
+```typescript
+const isFeatureEnabled = useFeatureToggle('myFeatureFlag');
+// <ToggleFeature flag="myFeatureFlag"><NewComponent /></ToggleFeature>
+```
+
+**CI/CD (v25.2.0+):**
+```bash
+mc-scripts login --headless   # Non-interactive auth for CI pipelines
+mc-scripts config:sync:ci     # Sync config without interactive prompts
+```
+
+_Source: [Create Custom Application Tutorial](https://docs.commercetools.com/tutorials/create-custom-application), [Application Components](https://docs.commercetools.com/merchant-center-customizations/tooling-and-configuration/commercetools-frontend-application-components), [Routing](https://docs.commercetools.com/merchant-center-customizations/development/routing)_
+
+---
+
+### Security Architecture Patterns
+
+**Multi-tenancy via URL structure**: The `projectKey` in `/:projectKey/:entryPointUriPath` scopes all requests automatically. `useApplicationContext()` provides `project.key` — no manual tenant switching code is needed.
+
+**Permission system:**
+```typescript
+// From entryPointUriPath 'channels' → generates ViewChannels, ManageChannels
+export const PERMISSIONS = entryPointUriPathToPermissionKeys(entryPointUriPath);
+
+// With groups: → also generates ViewChannelsDelivery, ManageChannelsDelivery
+export const PERMISSIONS = entryPointUriPathToPermissionKeys(entryPointUriPath, ['delivery']);
+
+// Runtime guard:
+const canManage = useIsAuthorized({ demandedPermissions: [PERMISSIONS.Manage] });
+{!canManage && <PageUnauthorized />}
+```
+
+**No secrets in browser code** — all sensitive API calls go through:
+1. MC API Gateway proxy (`/proxy/ctp/...`, `/proxy/forward-to`)
+2. JWT exchange for external APIs (60-second validity, JWKS verification)
+3. `ApplicationShell` manages all token lifecycle automatically
+
+_Source: [Permissions](https://docs.commercetools.com/merchant-center-customizations/development/permissions), [Integrate with Your Own API](https://docs.commercetools.com/merchant-center-customizations/concepts/integrate-with-your-own-api)_
+
+---
+
+### Data Architecture Patterns
+
+**commercetools Frontend data flow:**
+```
+Studio (configure Data Source) → bound to Component on page version
+→ API Hub fetches Data Source results in parallel at render time
+→ Next.js receives { dataSourcePayload } in component props
+→ Component accesses: props.data.[fieldName].dataSource
+```
+
+**URL generation for dynamic pages:**
+```typescript
+// Return _url from data source for canonical URL
+return { dataSourcePayload: { ...product, _url: `/products/${product.slug}` } };
+// Or multi-locale:
+return { dataSourcePayload: { ...product, _urls: { en_US: '/products/...', de_DE: '/produkte/...' } } };
+```
+
+**`context.isPreview` flag**: Data source extensions receive `context.isPreview = true` when the Studio requests a preview render — allows returning mock/preview data for the live-editing canvas without affecting production.
+
+**Custom Objects bridge pattern** (storefront ↔ MC Custom App):
+MC Custom Apps manage configuration stored as Custom Objects; storefront Data Sources read these Custom Objects via the Composable Commerce API — primary pattern for platform-level configuration that operators set in MC and the storefront consumes.
+
+_Source: [Developing a Data Source Extension](https://docs.commercetools.com/frontend-development/developing-a-data-source-extension), [Creating a Frontend Component with a Data Source](https://docs.commercetools.com/frontend-development/creating-frontend-component-with-a-data-source)_
+
+## Implementation Approaches and Technology Adoption
+
+### Technology Adoption Strategies
+
+The recommended adoption strategy for commercetools Frontend Development is **incremental adoption via commercetools Connect** — the official packaging and distribution model that bundles a `merchant-center-custom-application` (editor UI) with `service`/`event` backend components into a single installable unit. This aligns the Next-Gen Frontend project with how commercetools customers consume platform extensions.
+
+**Scaffolding approach:**
+```bash
+npx @commercetools-frontend/create-mc-app@latest my-app --template starter-typescript
+```
+
+**Three-tier migration path:**
+1. Stand up the Custom Application scaffold alongside existing architecture
+2. Port editor UI components to MC Custom App patterns (ApplicationShell, `useMcQuery`)
+3. Package as a Connect application for distribution
+
+_Source: https://docs.commercetools.com/connect/getting-started_
+
+### Development Workflows and Tooling
+
+**Core CLI commands:**
+
+| Task | Command | Notes |
+|------|---------|-------|
+| Local dev server | `yarn mc-scripts start` | Runs on `localhost:3001` |
+| Production build | `yarn mc-scripts build` | Output in `public/` |
+| Static hosting build | `yarn mc-scripts compile-html` | SPA-safe HTML routing |
+| Config sync to MC | `mc-scripts config:sync` | Interactive |
+| CI/CD headless sync | `mc-scripts config:sync:ci --headless` | SSO not supported |
+
+**Critical configuration file:** `custom-application-config.mjs` defines `entryPointUriPath` (2–64 chars, lowercase alphanumeric/hyphens/underscores), `cloudIdentifier`, `oAuthScopes`, and CSP headers. Environment variables injected via `${env:VAR_NAME}` syntax.
+
+**Dotenv priority order (highest → lowest):**
+1. `.env.development.local`
+2. `.env.development`
+3. `.env.local`
+4. `.env`
+
+_Source: https://docs.commercetools.com/merchant-center-customizations/tooling-and-configuration/custom-application-config_
+
+### Testing and Quality Assurance
+
+**Jest setup:**
+```bash
+yarn add --dev @commercetools-frontend/jest-preset-mc-app jest
+```
+
+```javascript
+// jest.config.js
+module.exports = {
+  preset: '@commercetools-frontend/jest-preset-mc-app',
+};
+```
+
+**Key testing utility:** `renderAppWithRedux` from `@commercetools-frontend/application-shell/test-utils` — must replace plain `render()` to provide Apollo Client, Redux, permissions context, and React Intl.
+
+**Critical pitfall:** Tests that omit `allAppliedPermissions` in `renderAppWithRedux` silently bypass permission guards — the component renders regardless of access rules.
+
+**MSW (Mock Service Worker)** for API mocking — handlers keyed by GraphQL query name.
+
+**E2E:** Cypress + `@commercetools-frontend/cypress` package.
+
+**React 19 migration note:** Replace `@testing-library/react-hooks` imports with `renderHook` from `@testing-library/react` directly.
+
+_Source: https://docs.commercetools.com/merchant-center-customizations/tooling-and-configuration/commercetools-frontend-jest-preset-mc-app_
+
+### Deployment and Operations Practices
+
+**Connect deployment pipeline:**
+```
+git tag v1.0.0 → Connect CLI validate → Preview deploy → Sandbox → Production
+```
+
+**Deployment types:**
+- `preview` — ConnectorStaged only (development)
+- `sandbox` — default for Connector references (staging)
+- `production` — requires production-marked Composable Commerce project
+
+**Expected deployment time:** Up to 15 minutes per deployment.
+
+**Key Connect CLI commands:**
+```bash
+commercetools connect validate                           # Validate connect.yaml
+commercetools connect deployment create --type production
+commercetools connect deployment:logs --key <key>       # Debug
+commercetools connect deployment:redeploy --key <key>   # Update config
+```
+
+**Standalone hosting** (Vercel, AWS S3+CloudFront, Azure): Configure 404 error → `index.html` for SPA routing; otherwise deep-link navigation returns 404.
+
+_Source: https://docs.commercetools.com/connect/deployments_
+
+### Team Organization and Skills
+
+**Required competencies:**
+- React 19 (MC apps migrated to React 19 — migration guide available at docs)
+- GraphQL (MC API is GraphQL-first; all data fetching uses `useMcQuery`/`useMcMutation`)
+- `@commercetools-frontend/application-shell` patterns (ApplicationShell, ApplicationContext, useApplicationContext)
+- `@commercetools-uikit/*` v20.5.0 component library
+- Connect CLI deployment workflow
+- MSW + RTL testing patterns with MC test utilities
+
+_Source: https://github.com/commercetools/merchant-center-application-kit_
+
+### Cost Optimization and Resource Management
+
+**Development cost reduction via scaffolding:** The `create-mc-app` template eliminates boilerplate for Webpack config, Apollo setup, Redux initialization, React Intl, and routing — reducing initial setup from days to hours.
+
+**Connect runtime cost model:** Connect charges per deployment — use `sandbox` type during development, `production` only for live customer-facing deployments. Preview deployments are free for ConnectorStaged.
+
+**Caching:** MC Custom Apps support ISR patterns through the Frontend Delivery layer. Use `stale-while-revalidate` for catalog data; avoid disabling ISR for commerce-critical pages.
+
+_Source: https://docs.commercetools.com/connect/getting-started_
+
+### Risk Assessment and Mitigation
+
+**Risk 1 — Architecture mismatch (CRITICAL)**
+Current `architecture.md` specifies Clerk + tRPC. Both conflict with the MC Custom Application layer.
+- **Mitigation:** Scope Clerk to the storefront layer only. Replace tRPC with `useMcQuery`/`useMcMutation` within Custom App boundaries. Create an ADR documenting this boundary decision before Epic 1 stories begin.
+
+**Risk 2 — `entryPointUriPath` misconfiguration**
+Mismatch between config and Merchant Center UI settings causes infinite page reload.
+- **Mitigation:** Treat `entryPointUriPath` as an immutable constant; define it in `.env` and reference via `${env:ENTRY_POINT_URI_PATH}`. Validate during CI with `mc-scripts config:sync:ci`.
+
+**Risk 3 — Secured configuration loss**
+Secured config values cannot be retrieved after being set — only redeployed.
+- **Mitigation:** Store all secrets in a secrets manager (AWS Secrets Manager, HashiCorp Vault) and automate injection via CI/CD. Never rely on manual re-entry.
+
+**Risk 4 — React 19 / MC library compatibility**
+MC libraries are on React 19; project may have React 18 dependencies.
+- **Mitigation:** Follow the official React 19 migration guide for MC customizations. Run `npx @commercetools-frontend/create-mc-app` to verify latest compatible versions.
+
+**Risk 5 — SPA routing 404 on static hosting**
+Deep-link navigation returns 404 if hosting doesn't redirect to `index.html`.
+- **Mitigation:** Use `yarn mc-scripts compile-html` for static deployments; configure CloudFront/S3 error responses to serve `index.html`.
+
+_Source: https://docs.commercetools.com/merchant-center-customizations/troubleshooting_
+
+## Technical Research Recommendations
+
+### Implementation Roadmap
+
+1. **Week 1–2:** Scaffold Custom Application with `create-mc-app --template starter-typescript`. Replace Clerk with MC session cookie auth for the editor layer. Define `entryPointUriPath` constant.
+2. **Week 3–4:** Implement ApplicationShell integration. Port existing editor UI components to MC page layout primitives (MainPage, DetailPage, ModalPage).
+3. **Week 5–6:** Implement data layer using `useMcQuery`/`useMcMutation`. Wire Custom Objects bridge for storefront ↔ editor config persistence.
+4. **Week 7–8:** Package as Connect application (`connect.yaml`). Deploy to sandbox via Connect CLI. Run E2E tests with Cypress + MC Cypress package.
+5. **Week 9+:** Iterate on component schema design for Governed Component Library. Implement FlopFlip feature flags for Green/Red Zone governance.
+
+### Technology Stack Recommendations
+
+| Layer | Current (architecture.md) | Recommended (MC-aligned) |
+|-------|--------------------------|--------------------------|
+| Editor auth | Clerk | MC session cookie (`mcAccessToken`) via ApplicationShell |
+| Editor API calls | tRPC | `useMcQuery` / `useMcMutation` from `application-shell` |
+| Admin UI framework | Next.js App Router | MC Custom Application (`application-shell` v27) |
+| UI components | Radix UI + MC tokens | `@commercetools-uikit/*` v20.5.0 |
+| Feature flags | Custom | FlopFlip (built-in via ApplicationShell) |
+| Deployment | Vercel | commercetools Connect (+ Vercel for storefront) |
+| Config persistence | PostgreSQL/Neon | CT Custom Objects (editor config), PostgreSQL (ACI analytics) |
+
+### Skill Development Requirements
+
+- **Immediate:** `@commercetools-frontend/application-shell` API, `useMcQuery`/`useMcMutation` patterns, `@commercetools-uikit` components
+- **Short-term:** Connect CLI, `connect.yaml` structure, deployment lifecycle management
+- **Medium-term:** commercetools Frontend tastic/component schema design, FlopFlip adapter configuration, B2X context switching patterns
+
+### Success Metrics and KPIs
+
+- Custom Application boots in MC shell without errors (local + staging)
+- `entryPointUriPath` stable across all environments (zero reload loops)
+- Test coverage ≥80% with `renderAppWithRedux` utilities (not plain RTL)
+- Connect deployment completes in <15 minutes (sandbox)
+- Zero Clerk dependencies in Custom Application codebase
+- All epic FR coverage maintained (51/51 FRs traced to stories)
+
+---
+
+# Composable Storefront Authority: Comprehensive commercetools Frontend Development Platform Technical Research
+
+## Executive Summary
+
+The commercetools Frontend Development Platform is a dual-domain ecosystem that separates consumer-facing storefront concerns from merchant-facing admin UI concerns into two distinct technical stacks. Understanding this boundary is the single most important prerequisite for any project building on commercetools — including the Next-Gen Frontend / ACI platform.
+
+The **storefront domain** (commercetools Frontend, formerly Frontastic) runs on Next.js 16.0.7 with React 19.2, TypeScript 5.8.2, and the `@commercetools/frontend-sdk` v2.1.0. It uses a tastic/component schema model for configurable commerce components, a four-layer architecture (Studio → Frontend Delivery → API Hub → Developer Tooling), and ISR-enabled server rendering. The **admin UI domain** (Merchant Center Customizations) provides the `@commercetools-frontend/application-shell` v27 shell that auto-initializes Apollo Client, Redux, React Router, React Intl, FlopFlip feature flags, and authentication via HttpOnly `mcAccessToken` cookie. Custom Applications and Custom Views are the extension points; `@commercetools-uikit/*` v20.5.0 is the design system.
+
+Comprehensive research across five areas — technology stack, integration patterns, architectural patterns, implementation workflows, and strategic context — reveals five critical findings for the Next-Gen Frontend project: (1) the MC shell handles auth automatically, making Clerk incompatible at the Custom Application layer; (2) `useMcQuery`/`useMcMutation` from ApplicationShell are the correct data-fetching primitives, replacing tRPC; (3) Custom Objects is the canonical bridge between editor configuration and storefront rendering; (4) FlopFlip, built into ApplicationShell, enables feature-flag-based governance (Green/Red Zone) without custom infrastructure; (5) commercetools Connect is the correct packaging and distribution model for delivering the editor to commercetools customers.
+
+**Key Technical Findings:**
+
+- commercetools operates **two distinct frontend platforms** — storefront (Next.js/frontend-sdk) and admin UI (application-shell/MC Customizations) — that must each be addressed correctly
+- MC ApplicationShell provides **auth, routing, Redux, Apollo, i18n, and feature flags out of the box** — duplicating any of these is both wasteful and architecturally incorrect
+- **Custom Objects** (`/custom-objects` API) is the primary interoperability bridge between editor configuration and storefront rendering
+- The **proxy-to-external-API (forward-to) pattern** enables browser-safe calls to third-party APIs from Custom Applications via JWT exchange (60-second validity)
+- **Node.js 20 is deprecated April 2026** — target Node 22+ for all new development
+- The headless commerce market is at $1.74B (2025) growing to $7.16B by 2032 at 22.4% CAGR, validating the platform investment
+
+**Technical Recommendations:**
+
+1. Remove Clerk from the Custom Application layer — scope it to the storefront only; let `mcAccessToken` handle MC session auth
+2. Replace tRPC with `useMcQuery`/`useMcMutation` for all editor API calls
+3. Use FlopFlip (already in ApplicationShell) for Green/Red Zone governance — no custom feature flag infrastructure needed
+4. Adopt commercetools Connect as the deployment and distribution model
+5. Create an ADR documenting the Clerk/tRPC boundary decision before Epic 1 stories begin
+
+## Table of Contents
+
+1. Technical Research Introduction and Methodology
+2. commercetools Frontend Development Technical Landscape and Architecture Analysis
+3. Implementation Approaches and Best Practices
+4. Technology Stack Evolution and Current Trends
+5. Integration and Interoperability Patterns
+6. Performance and Scalability Analysis
+7. Security and Compliance Considerations
+8. Strategic Technical Recommendations
+9. Implementation Roadmap and Risk Assessment
+10. Future Technical Outlook and Innovation Opportunities
+11. Technical Research Methodology and Source Verification
+12. Technical Appendices and Reference Materials
+
+---
+
+## 1. Technical Research Introduction and Methodology
+
+### Technical Research Significance
+
+The commercetools Frontend Development Platform represents the technical backbone of an ecosystem that powers enterprise commerce for brands operating at scale across B2C, B2B, and omnichannel channels. As of 2025, 92% of US brands have adopted composable commerce and the headless commerce market is growing at 22.4% CAGR — commercetools' MACH-native architecture (Microservices, API-first, Cloud-native, Headless) positions it as a primary beneficiary of this structural shift.
+
+For the Next-Gen Frontend project, understanding this platform is not optional background — it is a prerequisite for correct architectural decisions. The project's goal of building an AI-native storefront editor and ACI analytics platform on top of commercetools requires deep alignment with how commercetools actually structures its frontend ecosystem, not how a generic SaaS architecture might approach it.
+
+_Technical Importance: The dual-platform structure (storefront vs. admin UI) creates non-obvious boundary decisions that, if missed, result in authentication conflicts, API pattern mismatches, and incorrect distribution models._
+_Business Impact: Misalignment with commercetools architecture increases time-to-market, creates maintenance burden, and may block commercetools Connect marketplace distribution._
+_Source: https://docs.commercetools.com/frontend-development/_
+
+### Technical Research Methodology
+
+- **Technical Scope**: Two distinct platform domains (commercetools Frontend + MC Customizations), their SDK packages, integration patterns, architectural conventions, developer tooling, testing frameworks, and deployment pipelines
+- **Data Sources**: Official commercetools documentation (docs.commercetools.com), GitHub repositories (`merchant-center-application-kit`, `connect-application-kit`), commercetools engineering blog, market research from Alokai and Swell.is
+- **Analysis Framework**: Five-step sequential research covering technology stack → integration patterns → architectural patterns → implementation workflows → strategic synthesis
+- **Time Period**: Current (2025–2026 focus, including January 2026 platform releases)
+- **Technical Depth**: Implementation-level detail including CLI commands, configuration file structures, SDK method names, testing utilities, and deployment pipeline steps
+
+### Technical Research Goals and Objectives
+
+**Original Technical Goals:** Understand the commercetools frontend development ecosystem (Merchant Center SDK, Custom Applications, storefront APIs) so the Next-Gen Frontend project can galvanize on existing commercetools technology and architecture rather than reinventing what already exists.
+
+**Achieved Technical Objectives:**
+
+- Identified exact SDK packages and versions for both platform domains with complete npm dependency maps
+- Documented all MC API Gateway proxy paths, auth patterns, and forward-to integration model
+- Mapped the ApplicationShell initialization sequence and its complete list of auto-provided capabilities
+- Extracted tastic/component schema field type reference for Governed Component Library design
+- Identified five specific architecture conflicts between the current project `architecture.md` and the commercetools platform requirements
+- Produced a concrete 8-week implementation roadmap with milestone-by-milestone guidance
+
+---
+
+## 2. commercetools Frontend Development Technical Landscape and Architecture Analysis
+
+### Current Technical Architecture Patterns
+
+The commercetools frontend ecosystem is structured as two parallel stacks with deliberate separation of concerns:
+
+**Storefront Platform (commercetools Frontend / formerly Frontastic)**
+
+Four-layer architecture:
+- **Studio** — visual CMS for non-technical editors; tastic/component drag-and-drop
+- **Frontend Delivery** — Next.js 16 SSR/ISR; `@commercetools/frontend-sdk` v2.1.0; component rendering
+- **API Hub** — proxy and extension orchestration layer; extension points via API Extensions and Subscriptions
+- **Developer Tooling** — Frontastic CLI, component schema JSON files, local dev server
+
+**Merchant Center Customizations Platform**
+
+Single-shell architecture:
+- `ApplicationShell` from `@commercetools-frontend/application-shell` v27 is the mandatory root wrapper
+- Auto-initializes: Apollo Client → Redux → React Router v6 → React Intl → FlopFlip → `ApplicationContext`
+- Provides `useMcQuery`/`useMcMutation` hooks for all GraphQL data operations
+- Session auth via `mcAccessToken` HttpOnly cookie (30-day JWT); JWKS at `/.well-known/jwks.json`
+
+_Dominant Patterns: Component schema design (storefront), ApplicationShell wrapper (admin UI), Custom Objects bridge (cross-domain)_
+_Architectural Evolution: Frontastic rebranded to commercetools Frontend; MC Customizations evolved from monolithic to SDK-based extension model_
+_Architectural Trade-offs: Strong separation between storefront and admin reduces cross-domain complexity but requires explicit bridge patterns (Custom Objects) for config sharing_
+_Source: https://docs.commercetools.com/merchant-center-customizations/custom-applications_
+
+### System Design Principles and Best Practices
+
+**Green/Red Zone Governance via FlopFlip:**
+`useFlagVariation(flag)` hook from FlopFlip (built into ApplicationShell) gates component editing capabilities. Green Zone = operator-editable components; Red Zone = locked commerce-critical logic (cart, checkout, pricing). No custom feature flag infrastructure required.
+
+**Custom Objects as Bridge:**
+The canonical pattern for sharing configuration between the storefront and the admin editor is CT Custom Objects (`/custom-objects` endpoint). The editor writes configs; the storefront reads them. This is the correct replacement for any direct database or tRPC bridge.
+
+**Multi-tenancy via URL structure:**
+`/{projectKey}/{locale}/...` — context flows via `ApplicationContext`. No custom tenant resolution logic needed.
+
+_Design Principles: Convention over configuration; platform-provided primitives over custom implementations; Custom Objects as the cross-domain contract_
+_Best Practice Patterns: Use `renderAppWithRedux` for all tests; use `entryPointUriPath` as an immutable constant; use `compile-html` for static hosting_
+_Source: https://docs.commercetools.com/merchant-center-customizations/custom-applications/development_
+
+---
+
+## 3. Implementation Approaches and Best Practices
+
+### Current Implementation Methodologies
+
+**Scaffold-first approach:**
+```bash
+npx @commercetools-frontend/create-mc-app@latest my-app --template starter-typescript
+```
+This eliminates boilerplate for Webpack, Apollo, Redux, React Intl, and routing setup.
+
+**Configuration via `custom-application-config.mjs`:**
+Defines `entryPointUriPath` (2–64 chars, lowercase alphanumeric/hyphens/underscores only), `cloudIdentifier`, `oAuthScopes`, CSP headers. Environment variables injected via `${env:VAR_NAME}` syntax.
+
+**Testing with MC-aware utilities:**
+`renderAppWithRedux` from `@commercetools-frontend/application-shell/test-utils` is mandatory — plain RTL `render()` omits permission context, Apollo, and project data. Jest preset: `@commercetools-frontend/jest-preset-mc-app`.
+
+_Development Approaches: Scaffold → configure → integrate shell → implement UI → package as Connect_
+_Code Organization Patterns: Feature-based directory structure within `entryPointUriPath` route namespace_
+_Quality Assurance Practices: RTL + MSW for unit/integration; Cypress + `@commercetools-frontend/cypress` for E2E_
+_Deployment Strategies: Connect for distribution; Vercel/AWS for standalone hosting_
+_Source: https://docs.commercetools.com/merchant-center-customizations/tooling-and-configuration_
+
+### Implementation Framework and Tooling
+
+| Task | Command |
+|------|---------|
+| Start dev server | `yarn mc-scripts start` → `localhost:3001` |
+| Production build | `yarn mc-scripts build` → `public/` |
+| Static hosting build | `yarn mc-scripts compile-html` |
+| Config sync to MC | `mc-scripts config:sync` |
+| CI/CD headless sync | `mc-scripts config:sync:ci --headless` |
+| Connect validate | `commercetools connect validate` |
+| Connect deploy | `commercetools connect deployment create --type production` |
+| Debug deployment | `commercetools connect deployment:logs --key <key>` |
+
+_Source: https://docs.commercetools.com/merchant-center-customizations/tooling-and-configuration/cli_
+
+---
+
+## 4. Technology Stack Evolution and Current Trends
+
+### Current Technology Stack Landscape
+
+**Storefront Stack (January 2026 versions):**
+
+| Package | Version |
+|---------|---------|
+| Next.js | 16.0.7 (with Turbopack) |
+| React | 19.2 |
+| TypeScript | 5.8.2 |
+| `@commercetools/frontend-sdk` | v2.1.0 |
+| Node.js target | 22+ |
+
+**MC Customizations Stack:**
+
+| Package | Version |
+|---------|---------|
+| `@commercetools-frontend/application-shell` | v27 |
+| `@commercetools-uikit/*` | v20.5.0 |
+| React | 19 |
+| Apollo Client | v3 |
+| `@commercetools-frontend/jest-preset-mc-app` | latest |
+
+### Technology Adoption Patterns
+
+- **React 19 is production-standard** on both commercetools platforms — migration guide published June 2025
+- **Turbopack** is now the default bundler for storefront development (Next.js 16)
+- **`@testing-library/react-hooks` deprecated** → use `renderHook` from `@testing-library/react` directly (React 19 migration)
+- **Node.js LTS target: Node 22** — Node 20 deprecated April 2026, Node <20 already deprecated July 2025
+- **Express payments** (PayPal, Google Pay, Apple Pay) now native to storefront cart/product pages
+
+_Source: https://docs.commercetools.com/frontend-development/releases_
+_Source: https://commercetools.com/blog/product-recap-whats-new-at-commercetools_
+
+---
+
+## 5. Integration and Interoperability Patterns
+
+### Current Integration Approaches
+
+**MC API Gateway Proxy paths:**
+
+| Path | Purpose |
+|------|---------|
+| `/proxy/ctp/` | Pass-through to Composable Commerce API |
+| `/proxy/forward-to` | Proxy to external APIs (JWT-authenticated) |
+| `/graphql` | GraphQL endpoint for MC data |
+
+Base URL: `https://mc-api.{region}.commercetools.com`
+
+**Proxy-to-External-API (forward-to) pattern:**
+Browser sends request to `/proxy/forward-to` with `X-Forward-To` header pointing to external API. MC gateway exchanges `mcAccessToken` for a short-lived JWT (60-second validity). JWKS endpoint at `/.well-known/jwks.json` for server-side verification.
+
+**API Extensions (synchronous hooks):**
+- Trigger: pre-create, pre-update, pre-delete on CT resources
+- Default timeout: 2 seconds (configurable)
+- Maximum: 25 per project
+- Use case: validation, price enrichment, inventory checks before persistence
+
+**Subscriptions (async events):**
+- At-least-once delivery
+- Maximum: 50 per project
+- Destinations: AWS SQS/SNS, Azure Service Bus, GCP Pub/Sub, Kafka
+- Use case: post-order processing, sync to external systems
+
+_API Design Patterns: GraphQL-first for MC; REST for Composable Commerce APIs; proxy-mediated for external integrations_
+_Source: https://docs.commercetools.com/merchant-center-customizations/api-gateways_
+
+### Interoperability Standards and Protocols
+
+- **Custom Objects** as the storefront ↔ editor configuration bridge (write from editor, read from storefront)
+- **commercetools Connect** as the packaging standard for distributing editor + backend as an installable unit
+- **OAuth 2.0** — direct client credentials for server-side; MC session cookie for browser-side Custom Apps
+- **Content Security Policy** headers configurable per Custom Application via `custom-application-config.mjs`
+
+_Source: https://docs.commercetools.com/connect/getting-started_
+
+---
+
+## 6. Performance and Scalability Analysis
+
+### Performance Characteristics and Optimization
+
+**Storefront ISR (Incremental Static Regeneration):**
+Next.js 16 storefront supports ISR with `stale-while-revalidate` for catalog data. Storefront pages are pre-rendered at build time with on-demand revalidation — delivering sub-100ms TTFB for cached pages.
+
+**MC Custom App performance:**
+ApplicationShell lazy-loads route segments. Apollo Client's normalized cache prevents redundant network calls. `useMcQuery` integrates with Apollo's `InMemoryCache` by default.
+
+**Market benchmark:**
+Composable commerce implementations report average 20% reduction in website load times vs. monolithic alternatives.
+
+_Source: https://alokai.com/blog/headless-commerce-statistics_
+
+### Scalability Patterns and Approaches
+
+- **Multi-tenancy:** URL-keyed by `/{projectKey}/` — horizontal scale via project key namespace
+- **Connect runtime:** Managed scaling; no infrastructure provisioning required
+- **API Extensions:** 25/project hard limit — design extensions to be composable and stateless
+- **Subscriptions:** 50/project limit — use for async fan-out; do not use for synchronous flows
+
+---
+
+## 7. Security and Compliance Considerations
+
+### Security Best Practices and Frameworks
+
+**Authentication layering:**
+- Storefront: OAuth 2.0 client credentials (server-side); Clerk acceptable at this layer
+- MC Custom Applications: `mcAccessToken` HttpOnly cookie (30-day JWT); ApplicationShell manages refresh
+- External API calls from browser: must go through `/proxy/forward-to` with JWKS verification — never expose client secrets to browser
+
+**CSP headers:**
+Configured per Custom Application in `custom-application-config.mjs`:
+```javascript
+headers: {
+  csp: {
+    'connect-src': ["'self'", 'https://api.example.com']
+  }
+}
+```
+
+**Permissions model:**
+Defined via `oAuthScopes` in config (`view_*` / `manage_*`); checked in components via `useApplicationContext().userPermissions`. `manage_` scopes imply corresponding `view_` scopes.
+
+_Source: https://docs.commercetools.com/merchant-center-customizations/custom-applications/development/going-to-production_
+
+### Compliance and Regulatory Considerations
+
+- MC session cookie is HttpOnly + Secure — never accessible from JavaScript
+- JWKS endpoint enables server-side JWT verification for forward-to integrations
+- Secured configuration in Connect (`securedConfiguration`) is encrypted at rest and never retrievable after set
+- All Connect deployments run in isolated container environments per deployment key
+
+---
+
+## 8. Strategic Technical Recommendations
+
+### Technical Strategy and Decision Framework
+
+**Architecture boundary decision (CRITICAL — requires ADR):**
+The project must formally document which auth and API patterns belong to which layer:
+- **MC Custom Application layer:** ApplicationShell auth only; `useMcQuery`/`useMcMutation` for data; no Clerk; no tRPC
+- **Storefront layer:** Clerk acceptable; any data fetching pattern; connects to CT APIs via SDK
+- **Bridge layer:** Custom Objects API for config persistence; forward-to proxy for external API calls
+
+**Technology stack alignment table:**
+
+| Concern | Current `architecture.md` | Recommended (MC-aligned) |
+|---------|--------------------------|--------------------------|
+| Editor auth | Clerk | `mcAccessToken` via ApplicationShell |
+| Editor API calls | tRPC | `useMcQuery` / `useMcMutation` |
+| Admin UI framework | Next.js App Router | MC Custom Application (`application-shell` v27) |
+| UI components | Radix UI + MC tokens | `@commercetools-uikit/*` v20.5.0 |
+| Feature flags | Custom | FlopFlip (built-in) |
+| Distribution | Vercel | commercetools Connect |
+| Config store | PostgreSQL/Neon | CT Custom Objects (editor config) |
+
+_Source: https://docs.commercetools.com/merchant-center-customizations/custom-applications_
+
+### Competitive Technical Advantage
+
+Building natively on commercetools infrastructure provides:
+- **Marketplace distribution** via Connect — customers install from the CT marketplace without custom deployment
+- **Trust signal** — MC-native UI inherits CT's design system, auth, and permission model; no custom security review
+- **Future-proof** — CT's January 2026 roadmap shows continued investment in MC Customizations; native apps benefit automatically
+- **Reduced operational overhead** — Connect runtime eliminates infrastructure management for service/event components
+
+_Source: https://commercetools.com/blog/product-recap-whats-new-at-commercetools_
+
+---
+
+## 9. Implementation Roadmap and Risk Assessment
+
+### Technical Implementation Framework
+
+**8-Week Phased Roadmap:**
+
+| Phase | Weeks | Milestones |
+|-------|-------|-----------|
+| Foundation | 1–2 | Scaffold Custom Application; remove Clerk from editor layer; define `entryPointUriPath` constant; establish `connect.yaml` |
+| Shell Integration | 3–4 | Port editor UI to MC page layout primitives (MainPage, DetailPage, ModalPage, Drawer); implement `useApplicationContext` |
+| Data Layer | 5–6 | Replace tRPC with `useMcQuery`/`useMcMutation`; implement Custom Objects bridge for config persistence |
+| Connect Packaging | 7–8 | Package as Connect application; sandbox deploy via Connect CLI; Cypress E2E tests with MC test utilities |
+
+**Post-MVP:**
+- Component Schema Design for Governed Component Library (Epic 2)
+- FlopFlip adapter configuration for Green/Red Zone governance
+- B2X context switching ADR and implementation (Epic 3 prerequisite)
+
+_Source: https://docs.commercetools.com/connect/getting-started_
+
+### Technical Risk Management
+
+| Risk | Severity | Mitigation |
+|------|----------|-----------|
+| Architecture mismatch (Clerk + tRPC in Custom App layer) | CRITICAL | Create ADR; scope Clerk to storefront; replace tRPC with MC SDK patterns before Epic 1 stories |
+| `entryPointUriPath` misconfiguration → infinite reload | HIGH | Define as `.env` constant; validate in CI with `config:sync:ci`; document exact format constraints |
+| Secured configuration loss (cannot retrieve after set) | MEDIUM | Store in secrets manager (AWS Secrets Manager/Vault); automate injection via CI/CD |
+| React 19 / MC library compatibility | MEDIUM | Follow official React 19 migration guide; use `create-mc-app` for verified dependency baseline |
+| SPA routing 404 on static hosting | LOW | Use `compile-html`; configure 404 → `index.html` on CloudFront/S3 |
+
+---
+
+## 10. Future Technical Outlook and Innovation Opportunities
+
+### Emerging Technology Trends
+
+**Near-term (2026):**
+- Turbopack as default bundler replacing Webpack (already in January 2026 release)
+- Node 22 as minimum target (Node 20 deprecated April 2026)
+- React 19 concurrency features in storefront and MC components
+
+**Medium-term (2026–2028):**
+- AI-augmented Studio CMS — commercetools' roadmap trajectory suggests AI component generation built into Studio
+- Express payments expansion (PayPal/Google Pay/Apple Pay now live; more PSPs expected)
+- B2B Manufacturing design system (official Figma system released January 2026) enabling faster B2B storefront builds
+
+**Long-term (2028+):**
+- Platform unification between storefront Studio and MC Customizations — blurring the two-domain boundary
+- MACH Alliance standards convergence on component schema interchange formats
+
+_Source: https://docs.commercetools.com/frontend-development/releases_
+
+### Innovation and Research Opportunities
+
+- **ACI Analytics via CT Subscriptions:** Subscription-based event capture is the natural fit for ACI analytics — commerce events flow to ACI without polling or custom webhooks
+- **AI component generation aligned with tastic schema:** Generating tastic-compatible components from prompts is a direct extension of the existing schema model
+- **Green/Red Zone via FlopFlip + CT Permissions:** Combining FlopFlip flags with CT's `oAuthScopes` permission model creates a robust, platform-native governance layer with no external dependencies
+
+---
+
+## 11. Technical Research Methodology and Source Verification
+
+### Comprehensive Technical Source Documentation
+
+_Primary Technical Sources:_
+- https://docs.commercetools.com/frontend-development/ — Official storefront platform documentation
+- https://docs.commercetools.com/merchant-center-customizations/ — Official MC Customizations documentation
+- https://docs.commercetools.com/connect/ — commercetools Connect platform
+- https://github.com/commercetools/merchant-center-application-kit — MC Application Kit source
+- https://github.com/commercetools/connect-application-kit — Connect Application Kit source
+- https://commercetools.com/blog/product-recap-whats-new-at-commercetools — Q1 2026 product recap
+
+_Secondary Technical Sources:_
+- https://alokai.com/blog/headless-commerce-statistics — Market sizing data
+- https://www.swell.is/content/headless-commerce-trends-statistics — Composable commerce adoption rates
+
+_Technical Web Search Queries Used:_
+- "commercetools merchant center custom application testing jest"
+- "commercetools connect deployment pipeline"
+- "commercetools frontend development workflow local"
+- "commercetools frontend development 2025 2026 roadmap"
+- "commercetools composable commerce headless storefront trends 2025"
+
+### Technical Research Quality Assurance
+
+_Technical Source Verification:_ All SDK versions verified against official docs and GitHub releases. CLI commands verified against official tooling documentation.
+_Technical Confidence Levels:_ High confidence on architecture patterns (multiple independent sources); medium confidence on roadmap items (blog posts, not official commitments)
+_Technical Limitations:_ B2X context switching mechanism not documented in official CT docs — flagged as requiring an ADR; exact FlopFlip adapter configuration for CT-specific use cases requires implementation testing
+_Methodology Transparency:_ Five-step sequential research; each step required web verification before content generation; no extrapolation from training data alone
+
+---
+
+## 12. Technical Appendices and Reference Materials
+
+### Detailed Technical Data Tables
+
+**Component Schema Field Types (Tastic):**
+
+| Field Type | Purpose |
+|-----------|---------|
+| `string` | Text content |
+| `number` | Numeric values |
+| `boolean` | Toggle flags |
+| `enum` | Fixed option sets |
+| `group` | Nested field groups |
+| `reference` | CT data type references (product, category, etc.) |
+| `dataSource` | Binds a registered data source to the component |
+| `media` | Image/video asset |
+
+**MC Page Layout Primitives:**
+
+| Component | Use Case |
+|-----------|---------|
+| `MainPage` | Primary page content with header |
+| `DetailPage` | Detail view with breadcrumbs |
+| `ModalPage` | Full-screen modal workflows |
+| `Drawer` | Side panel for contextual editing |
+| `PageContent` | Content area within any layout |
+
+**Connect Deployment Lifecycle:**
+
+```
+Draft → Queued → Deploying → Deployed
+                          → Failed
+                          → Undeploying → UndeployFailed
+```
+
+### Technical Resources and References
+
+_Technical Standards:_ MACH Alliance principles (Microservices, API-first, Cloud-native, Headless)
+_Open Source Projects:_
+- `merchant-center-application-kit`: https://github.com/commercetools/merchant-center-application-kit
+- `connect-application-kit`: https://github.com/commercetools/connect-application-kit
+- `nodejs-sdk-v2`: https://github.com/commercetools/commercetools-sdk-typescript
+
+_Technical Communities:_
+- commercetools Developer Forum: https://developer.commercetools.com/
+- MACH Alliance: https://machalliance.org/
+
+---
+
+## Technical Research Conclusion
+
+### Summary of Key Technical Findings
+
+The commercetools Frontend Development Platform is a mature, well-documented dual-domain ecosystem. The storefront domain (commercetools Frontend) and the admin UI domain (Merchant Center Customizations) have distinct technical stacks, auth models, and deployment pipelines that must each be addressed on their own terms. The most common failure mode for projects building on commercetools is treating both domains as a generic React application and missing the platform-provided primitives (ApplicationShell, Custom Objects, Connect, FlopFlip) that eliminate large categories of custom engineering.
+
+### Strategic Technical Impact Assessment
+
+For the Next-Gen Frontend project, adopting commercetools-native patterns across all five alignment areas (auth, API calls, UI framework, feature flags, deployment) reduces implementation risk, eliminates maintenance of custom infrastructure, enables Connect marketplace distribution, and positions the product as a trusted, platform-native extension rather than a bolt-on tool.
+
+### Next Steps Technical Recommendations
+
+1. **Immediate:** Create the architecture boundary ADR (Clerk scope, tRPC removal, MC SDK adoption)
+2. **This sprint:** Scaffold Custom Application with `create-mc-app --template starter-typescript`
+3. **Before Epic 1 stories:** Validate `entryPointUriPath` constant across all environments
+4. **Before Epic 2 stories:** Define complete tastic component schema field type mapping for Governed Component Library
+5. **Before Epic 3 stories:** Resolve B2X context switching mechanism — not documented in CT platform, requires custom ADR
+
+---
+
+**Technical Research Completion Date:** 2026-05-05
+**Research Period:** Comprehensive analysis of commercetools platform documentation and ecosystem (2025–2026 current state)
+**Document Length:** Complete — 5 research phases covering technology stack, integration patterns, architectural patterns, implementation workflows, and strategic synthesis
+**Source Verification:** All technical facts cited with current sources from official commercetools documentation and GitHub repositories
+**Technical Confidence Level:** High — based on multiple authoritative technical sources including official documentation, GitHub source, and current product releases
+
+_This comprehensive technical research document serves as an authoritative technical reference on the commercetools Frontend Development Platform and provides strategic technical insights for the Next-Gen Frontend / ACI platform implementation._
+
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12/marked.min.js"></script>
+<script>
+  (function() {
+    const target = document.getElementById('content');
+    const source = document.getElementById('markdown-source');
+    let md = source.textContent.trim();
+
+    // Strip YAML frontmatter
+    if (md.startsWith('---')) {
+      const end = md.indexOf('\n---', 4);
+      if (end > -1) md = md.slice(end + 4).trim();
+    }
+
+    function renderFallback() {
+      target.innerHTML =
+        '<div class="reader-error"><strong>marked.js did not load.</strong> ' +
+        'Showing raw markdown below. For a rendered view, try opening this file via ' +
+        '<code>VS Code → Simple Browser</code> or a local HTTP server.</div>' +
+        '<pre><code>' + md.replace(/&/g, '&amp;').replace(/</g, '&lt;') + '</code></pre>';
+    }
+
+    if (typeof marked === 'undefined') {
+      renderFallback();
+      return;
+    }
+
+    try {
+      marked.setOptions({ gfm: true, breaks: false, headerIds: true, mangle: false });
+      target.innerHTML = marked.parse(md);
+
+      // Rewrite relative markdown links to their HTML twins where one exists
+      target.querySelectorAll('a[href$=".md"]').forEach(a => {
+        const raw = a.getAttribute('href');
+        if (raw.startsWith('http')) return;
+        const htmlTwin = raw.replace(/\.md$/, '.html');
+        a.setAttribute('href', htmlTwin);
+        a.setAttribute('data-original-md', raw);
+      });
+
+      // Set the page title from the first h1
+      const firstH1 = target.querySelector('h1');
+      if (firstH1) document.title = firstH1.textContent + ' · BMad';
+    } catch (err) {
+      renderFallback();
+    }
+  })();
+</script>
+</body>
+</html>

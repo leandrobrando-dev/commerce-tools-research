@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Epic List & Priority Sequencing · BMad · commercetools Next-Gen Frontend</title>
+<link rel="stylesheet" href="doc-reader-styles.css">
+<style>
+  /* Frontmatter hidden — data contained there is not reader-relevant */
+  .reader-content pre:first-child code:only-child {
+    display: block;
+  }
+</style>
+</head>
+<body data-phase="plan">
+
+<nav class="reader-topbar">
+  <a href="00-bmad-journey-map.html" class="back-link">
+    <span>←</span> Journey map
+  </a>
+  <span class="phase-chip">Phase 02 · Planning</span>
+  <span class="breadcrumb">planning-artifacts</span>
+  <span class="spacer"></span>
+  <span class="meta">2026-05-05 · 440 lines</span>
+</nav>
+
+<header class="reader-doc-header">
+  <div class="eyebrow">Phase 02 · Planning · Epic list</div>
+  <h1>Epic List & Priority Sequencing</h1>
+  <div class="subtitle">Eight epics (Epic 7 dissolved into Epic 4) with FR coverage map and P0 → P3 priority ordering.</div>
+</header>
+
+<main class="reader-main">
+  <article class="reader-content" id="content">
+    <div class="reader-loading">
+      <div class="spinner"></div>
+      <div>Rendering document…</div>
+    </div>
+  </article>
+</main>
+
+<footer class="reader-footer">
+  <div>Part of BMad planning artifacts · <strong>commercetools Next-Gen Frontend</strong></div>
+  <div><a href="00-bmad-journey-map.html">← Back to journey map</a></div>
+</footer>
+
+<script type="text/markdown" id="markdown-source">
+---
+stepsCompleted: ["step-01-validate-prerequisites", "step-02-design-epics", "step-03-brainstorming-revision-2026-05-05"]
+inputDocuments:
+  - "_bmad-output/planning-artifacts/prd.md"
+  - "_bmad-output/planning-artifacts/architecture.md"
+  - "_bmad-output/planning-artifacts/ux-design-specification.md"
+  - "_bmad-output/planning-artifacts/research/technical-commercetools-frontend-development-research-2026-05-05.md"
+  - "_bmad-output/brainstorming/brainstorming-session-2026-05-05-1046.md"
+lastRevision: "2026-05-05"
+revisionRationale: "Revised based on commercetools platform research and competitive advantage brainstorming session. Epic 7 (Migration) dissolved into Epic 4. New Epic 8 (AI Experience Engine) added as compounding moat. Epic 5 refocused as Behavioral Data Infrastructure elevated to foundation layer. Architectural alignment with MC Custom Application model applied throughout. Epic 9 (Physical Retail POS) added as research epic — partnership-accelerated, fiscal compliance delegated to partner vendor."
+---
+
+# Tutorial - Epic Breakdown
+
+## Overview
+
+This document provides the complete epic and story breakdown for the commercetools Next-Gen Frontend platform, decomposing requirements from the PRD, UX Design Specification, Architecture, and the commercetools Frontend Development Platform research into implementable stories.
+
+**Revised Architecture:** The platform ships as a commercetools Connect-packaged MC Custom Application — living natively inside the Merchant Center shell. This is the commercial and architectural foundation for the CT-bundled distribution model.
+
+**Business Model:** Core platform (Epics 1–6) is bundled into the commercetools subscription. The AI Experience Engine (Epic 8) is a consumption-based add-on — charged per experiment run, recommendation applied, PR generated, and progressive rollout activated. The first 10 experiments per tenant are free to accelerate moat accumulation.
+
+**The Compounding Moat:** The AI Experience Engine accumulates tenant-specific intelligence — experiment outcomes, failure taxonomy, CLV correlation models, component behavioral provenance — that compounds monthly and cannot be replicated by connecting to CT APIs. The moat is the model, not the data access.
+
+---
+
+## Requirements Inventory
+
+### Functional Requirements
+
+FR1: Business Operators can view and navigate their live storefront structure in a visual canvas editor
+FR2: Business Operators can add, remove, and reorder Green Zone components on the storefront canvas
+FR3: Business Operators can edit content properties (copy, images, colors, layout variants) within Green Zone component constraints
+FR4: Business Operators can preview the storefront in desktop, tablet, and mobile viewports before publishing
+FR5: Business Operators can preview the storefront in B2C, B2B, and dealer portal contexts before publishing
+FR6: Business Operators can access the storefront editor from a mobile device
+FR7: Business Operators can begin editing a canvas and receive an AI completion offer — the AI infers intent from observed edits and offers to complete remaining sections using the governed component library
+FR8: The platform generates AI completions composed exclusively from the tenant's approved Green Zone component library
+FR9: Business Operators can view AI reasoning and component selection intent (via Commerce Intelligence Drawer) before the completion is applied to the canvas
+FR10: Business Operators can accept, modify, or reject individual AI-generated component placements
+FR11: Business Operators can manually edit or replace any AI-generated component within Green Zone constraints
+FR12: The platform provides real-time streaming progress feedback during AI completion generation
+FR13: Storefront Developers can designate individual components as Green Zone (operator-editable) or Red Zone (platform-protected)
+FR14: Storefront Developers can configure which component properties are editable by operators within each Green Zone component
+FR15: The platform enforces Red Zone boundaries — operator and AI actions cannot modify Red Zone components or commerce logic
+FR16: Business Operators can publish storefronts to a staging environment for review
+FR17: Brand Publishers can publish staged storefronts to the live production environment
+FR18: The platform validates governance compliance before every publish — blocked publishes surface specific violations
+FR19: The platform deploys published storefronts atomically — no partial state is visible to live traffic
+FR20: The platform records all publish actions with author identity, timestamp, and content diff in an immutable audit log
+FR21: ACI Analysts and Business Operators can view session behavioral heatmaps overlaid directly on the live storefront canvas (inline — no separate dashboard)
+FR22: The platform calculates and displays engagement scores for individual storefront sections as inline canvas badges
+FR23: ACI Analysts can flag low-performing storefront sections and send notifications to Business Operators
+FR24: Business Operators can navigate directly from an ACI section flag to the relevant component in the storefront editor
+FR25: The platform collects behavioral events asynchronously without impacting storefront render performance
+FR26: The platform withholds behavioral data collection until end-consumer cookie consent is granted, and stops collection immediately upon consent withdrawal
+FR27: ACI Analysts can view page-level performance metrics (load time, scroll depth, exit rate) via canvas-anchored contextual overlays
+FR28: IT Admins can configure the ACI behavioral data retention period (default: 13 months rolling)
+FR29: Storefront Developers can create, configure, and publish a governed component library via the Developer Console
+FR30: Storefront Developers can define field-level edit permissions for each Green Zone component
+FR31: Storefront Developers can simulate operator access in the Developer Console to verify governance boundary enforcement
+FR32: Storefront Developers can update component library definitions without requiring a full platform redeployment
+FR33: The platform restricts AI completions to components present in the tenant's published component library
+FR34: Storefront Developers can connect an existing commercetools project to the platform using API credentials
+FR35: The platform proposes a Green Zone component mapping scaffolded from an existing page template structure or codebase (supporting Frontastic, custom Next.js, and monolith migration paths)
+FR36: Storefront Developers can review, adjust, and publish the scaffolded component mapping
+FR37: The platform migrates existing page configurations to the storefront canvas format
+FR38: The platform measures and reports Core Web Vitals baseline for an existing storefront before migration (available as a pre-sales tool without full platform activation)
+FR39: The platform validates all migrated pages for completeness and renders a readiness report before go-live
+FR40: IT Admins can configure tenant SSO via SAML 2.0 or OIDC with enterprise identity providers
+FR41: IT Admins can automate user provisioning and deprovisioning via SCIM 2.0
+FR42: IT Admins can assign platform roles to users (IT Admin, Storefront Developer, Brand Publisher, Brand Editor, ACI Analyst, Cross-brand Admin)
+FR43: IT Admins can configure per-brand access boundaries for multi-brand tenants
+FR44: IT Admins can select EU or US data residency region at tenant provisioning
+FR45: IT Admins can generate and download a Data Processing Agreement within the platform
+FR46: The platform provides IT Admins with a usage dashboard showing sessions consumed, AI completions used, experiments run, recommendations applied, and connected storefronts against tier limits
+FR47: End consumers can withdraw behavioral tracking consent and the platform immediately stops ACI data collection for that session
+FR48: IT Admins can submit a right-to-erasure request for a specific consumer's behavioral data, fulfilled within 30 days
+FR49: The platform enforces PCI DSS boundary — ACI tracking scripts are blocked from executing within checkout and payment capture flows
+FR50: All platform-provided Green Zone components meet WCAG 2.1 AA accessibility standards by default
+FR51: The platform surfaces accessibility warnings when operator edits may violate WCAG 2.1 AA prior to publish confirmation
+
+### New Functional Requirements — AI Experience Engine (Epic 8)
+
+FR52: Operators can create manual A/B experiment hypotheses tied to a specific page, section, or component from the canvas surface
+FR53: The platform automatically generates experiment hypotheses from behavioral patterns when a minimum session threshold is reached (default: 2,000 qualified sessions per page)
+FR54: The platform runs controlled A/B tests with configurable traffic splits and measures Horizon 1 outcomes (CTR, conversion rate, add-to-cart rate) with statistical confidence intervals
+FR55: The platform measures Horizon 2 outcomes (CLV delta, repeat purchase rate, AOV change) over a 90-day window in parallel with Horizon 1 for all running experiments
+FR56: The platform surfaces a canvas-anchored recommendation panel showing ranked recommendations with expected outcomes, confidence intervals, and Horizon badges (⚡ Quick Win / 📈 Long Game) scoped to the page currently being edited
+FR57: Operators can apply a recommendation as a single-shot canvas change with configurable progressive rollout (5% → 25% → 50% → 100% traffic gates)
+FR58: When a recommendation requires a component change beyond Green Zone constraints, the platform generates a GitHub Pull Request containing the component code diff, tastic schema update, behavioral evidence brief, expected outcome, and an auto-provisioned Neon branch + preview deployment link
+FR59: The platform alerts operators when live metrics fall below a defined baseline threshold during progressive rollout; operators execute rollback via a single action; rollback is atomic with no partial state visible
+FR60: The platform classifies rolled-back experiments into a failure taxonomy (metric degradation / context mismatch / operator override / data immaturity) and surfaces a "Tried and Retired" library in the recommendation panel; classifications filter future recommendations
+FR61: The platform displays a Tenant Intelligence Score in the navigation — a calibration indicator showing sessions collected, experiments completed, CLV cohort size, and prediction accuracy — updated in real time
+FR62: The first 10 experiments per tenant are available at no consumption cost to accelerate moat accumulation before commitment
+FR63: The platform imports historical behavioral event data from GA4, Hotjar, Mixpanel, or Frontastic analytics during onboarding to pre-warm the recommendation engine before native data accumulates
+FR64: Operators can group experiments under a named campaign with a goal metric, timeline, and success threshold; results are reported as campaign-level outcomes
+FR65: The Commerce Intelligence Drawer operates in two modes — Create (AI observes operator edits and offers governed completion) and Optimize (canvas-anchored behavioral recommendations) — switching automatically based on whether the active page has sufficient behavioral data
+
+### New Functional Requirements — Physical Retail POS (Epic 9)
+
+FR66: Store Associates can initiate and complete in-store POS transactions from within the MC Custom Application shell without leaving the Merchant Center environment
+FR67: POS inventory reservations are reflected in live storefront availability within 60 seconds via the CT Inventory API
+FR68: In-store transactions are created as CT Orders in the same Order API pipeline as online orders — unified order state, unified fulfillment
+FR69: Store Associates can search the product catalog from the POS interface using the CT Catalog API with full attribute and pricing context
+FR70: Fiscal receipts are generated in compliance with the jurisdiction's requirements (NF525 France, RTF Italy, GoBD Germany, SAF-T Portugal/Poland) — handled by the partner integration layer, not the platform
+FR71: IT Admins can configure POS locations, register devices, and assign store associate access within the existing CASL RBAC model (no separate identity system)
+FR72: Anonymized in-store POS transaction behavioral signals (product lookup rate, associate-assisted add-to-cart, terminal cart abandonment) are ingested into the ACI ClickHouse pipeline alongside online behavioral events
+FR73: Store Associates can surface AI Experience Engine product recommendations during assisted-selling flows, drawn from the same tenant recommendation model as the online storefront
+FR74: POS promotion slots and upsell sections are operator-configurable as Green Zone components; pricing rules, discounts, and tax calculations remain Red Zone (enforced by CT Pricing API + partner fiscal engine)
+FR75: The platform supports an offline transaction queue for network-resilient POS operations — queued transactions sync automatically when connectivity is restored (handled by partner SDK)
+
+---
+
+### NonFunctional Requirements
+
+NFR1: Editor user actions (component placement, property edits, canvas navigation) complete with visible response within 500ms
+NFR2: AI completion generation (intent inferred → completion draft rendered on canvas) completes within 30 seconds end-to-end, with streaming progress shown after 2 seconds
+NFR3: Publish action (governance validation + deployment) completes within 15 seconds for storefronts ≤500KB
+NFR4: Storefront page load (LCP): <2.5s on mobile, <1.5s on desktop; CLS <0.1; INP <200ms (Core Web Vitals Pass)
+NFR5: ACI heatmap overlay loads within 3 seconds after canvas navigates to a new page section
+NFR6: commercetools API sync (catalog, pricing, inventory updates) propagates to live storefronts within 60 seconds via ISR or cache invalidation
+NFR7: All data in transit encrypted with TLS 1.3 or higher
+NFR8: All tenant data at rest encrypted with AES-256
+NFR9: Red Zone governance boundaries enforced at platform layer — operator and AI actions cannot bypass Red Zone restrictions regardless of attack vector
+NFR10: ACI tracking scripts blocked from executing within checkout and payment capture flows via strict CSP scope audit and runtime enforcement
+NFR11: Multi-tenant data isolation enforced at ORM layer with tenant ID required in every query; cross-tenant queries impossible even with compromised credentials
+NFR12: Audit log for all platform actions with immutable record storage and no deletion capability
+NFR13: Secrets managed via platform secrets vault; no plaintext storage or logging
+NFR14: All external integrations validate TLS certificates and reject self-signed or expired certificates
+NFR15: Platform handles 10x concurrent operator sessions with <10% performance degradation
+NFR16: ACI event ingestion pipeline handles 100K events/second with <500ms latency
+NFR17: Platform scales horizontally — adding nodes increases throughput linearly up to 1M concurrent storefront sessions
+NFR18: commercetools API calls budgeted per tenant to prevent rate-limit exhaustion; circuit breaker activates if tenant exceeds 10K calls/minute
+NFR19: Database connections pooled with auto-scaling within per-tenant connection limits
+NFR20: CDN edge rendering handles geographic distribution without origin overload; origin fallback activates only on CDN failure
+NFR21: Storefront editor meets WCAG 2.1 AA for keyboard navigation, screen reader support, color contrast (4.5:1 text, 3:1 UI)
+NFR22: All platform-provided Green Zone components meet WCAG 2.1 AA by default
+NFR23: Publish validation warns on accessibility violations (missing alt text, insufficient contrast, inaccessible form labels) before confirming publish
+
+### Additional Requirements
+
+**commercetools Platform Architecture (from research — supersedes prior architecture.md assumptions):**
+- Platform ships as an MC Custom Application deployed via commercetools Connect — installed into any CT project as a single marketplace activation
+- `@commercetools-frontend/application-shell` v27 is the mandatory root wrapper; it auto-provides Apollo Client, Redux, React Router, React Intl, FlopFlip feature flags, and MC session auth — these must NOT be reimplemented
+- Auth at the MC Custom Application layer: `mcAccessToken` HttpOnly cookie via ApplicationShell — Clerk is scoped to the storefront layer ONLY (not the editor)
+- API calls within the Custom Application: `useMcQuery`/`useMcMutation` from ApplicationShell — tRPC is scoped to internal storefront backend ONLY (not the editor layer)
+- Green/Red Zone governance: FlopFlip (built into ApplicationShell) via `useFlagVariation()` — no custom feature flag infrastructure required
+- Configuration persistence (editor config → storefront): CT Custom Objects (`/custom-objects` API) — the canonical bridge between editor and storefront
+- Developer tooling: `@commercetools-frontend/create-mc-app --template starter-typescript` as scaffold; `yarn mc-scripts start` for local dev on `localhost:3001`
+- Testing: `@commercetools-frontend/jest-preset-mc-app` + `renderAppWithRedux` from `application-shell/test-utils` — plain RTL `render()` omits MC permission context
+- Connect packaging: `connect.yaml` defines `merchant-center-custom-application` + `service`/`event` component types; `standardConfiguration` and `securedConfiguration` for environment variables
+- `entryPointUriPath`: defined once as an environment constant — must match exactly between `custom-application-config.mjs` and Merchant Center UI or infinite reload results
+- Node.js target: 22+ (Node 20 deprecated April 2026)
+
+**Foundation Infrastructure (before any feature work):**
+- MC Custom Application scaffold: `npx @commercetools-frontend/create-mc-app@latest platform --template starter-typescript`
+- `custom-application-config.mjs` with `entryPointUriPath`, `cloudIdentifier`, `oAuthScopes`, and CSP headers defined
+- Connect packaging: `connect.yaml` with `merchant-center-custom-application` + `service` types
+- PostgreSQL via Neon with Prisma: schema with Row-Level Security + tenant_id on all tables — behavioral events table included from Epic 1
+- CASL 6.x RBAC wired to ApplicationShell `oAuthScopes` permission model
+- ClickHouse Cloud: anonymized behavioral event ingestion pipeline — activated at project connection, not at Epic 5
+- Behavioral event schema defined and collecting from first storefront connection (moat accumulation starts immediately)
+- Liveblocks 3.18 room infrastructure + Command pattern editor architecture defined before editor stories
+- Inngest 4.2.6 async job infrastructure for AI completion and catalog sync
+- Redis Cloud (application cache) + Upstash (edge rate limiting)
+- Cloudflare R2 + Images CDN before media upload stories
+- OpenRouter `@openrouter/ai-sdk-provider` before AI completion stories
+- TipTap v3.22.5 rich text editor within Green Zone content components
+- Resend v6.12.2 + React Email templates for publish approval and notifications
+- GitHub Actions CI: lint + typecheck + unit tests on every PR; Neon branch-per-PR for isolated preview databases
+- Sentry + Axiom + Vercel Analytics observability stack before production launch
+- Vercel ISR on-demand revalidation wired to storefront publish pipeline
+- GDPR anonymization: user_hash (HMAC) in audit logs — never raw userId
+- Per-tenant CT API call budgeting with circuit breaker before catalog sync stories
+- GitHub App integration for automated PR generation (Epic 8 prerequisite)
+
+### UX Design Requirements
+
+UX-DR1: Implement Radix UI headless primitives as the Operator UI component foundation with commercetools Merchant Center design tokens (color, typography, spacing, elevation) applied as CSS custom properties — no hardcoded values in component code
+UX-DR2: Implement the semantic color system: MC primary blue (Publish CTA), success green (published state), warning amber (draft indicator), governance neutral/muted (Red Zone badges), AI accent tint (AI panel + AI-generated indicators exclusively), destructive red (delete/detach actions only)
+UX-DR3: Implement the typography system using MC typeface and type scale: Heading/page title, Label (sidebar properties), Body (AI chat), Caption/meta (context bar), Code/technical (governance labels, component IDs)
+UX-DR4: Implement the 8px base grid spacing system: fixed sidebar width matching MC nav panel, 16/24px panel gutters, compact context bar height matching MC top bar, breathing room canvas margin separating chrome from customer brand
+UX-DR5: Build StorefrontCanvas — main editing surface rendering customer's live storefront with selection overlay controls; states: idle, element-selected, AI-generating (skeleton pulse on affected section), read-only; keyboard navigation tab through sections, Enter to open sidebar; ARIA live region for AI generation announcements
+UX-DR6: Build ContextBar — persistent top bar with B2X context chips (B2B/B2C), locale chip, customer group chip, draft indicator ("N unpublished changes" amber), share link; clicking any chip switches context and re-renders canvas without discarding draft changes; announced as navigation landmark to screen reader
+UX-DR7: Build ComponentSlot — canvas overlay showing Green Zone (dashed border on hover, editable) vs Red Zone (muted lock icon + "platform-managed" tooltip) with AI-modified state (subtle AI tint badge on hover); Green Zone click opens property sidebar; Red Zone click shows explanation tooltip only
+UX-DR8: Build Commerce Intelligence Drawer — unified collapsible right drawer with two modes: (1) Create mode: AI observes operator edits, infers intent, offers completion brief for approval before canvas change; (2) Optimize mode: canvas-anchored recommendations with Confidence Cards, Horizon badges, and one-click apply; mode switches automatically based on page behavioral data maturity; slides in without reflowing canvas; toggles with property sidebar via ⌘/; conversation history persists per session; focus trap on open
+UX-DR9: Build AIReasoningCard / ConfidenceCard — pre-action transparency card shown BEFORE any canvas change; for Create mode: "What I'll do" description + components list + governance scope + Approve/Edit/Cancel; for Optimize mode: "What I observed" (behavioral signal + session count + confidence %) + "What I predict" (expected outcome with confidence interval) + "How I'd test it" + "What I can't be sure of"; canvas changes applied ONLY after Approve
+UX-DR10: Build PublishAction — primary publish button with dropdown (Stage first, Create A/B variant options); context-specific confirmation toast reading "Published to [context] — N changes live"; states: no-changes (disabled), has-changes (enabled), publishing (loading), published (confirmation auto-dismiss 5s)
+UX-DR11: Build ContextSwitcher — segmented control/dropdown listing all configured B2X/locale/customer-group contexts with live/draft status per context; context change re-renders canvas; draft changes preserved independently per context
+UX-DR12: Build GovernanceBadge — in-sidebar lock indicator for Red Zone properties; muted neutral styling; lock icon + "Platform-managed" label + optional "Why?" tooltip explaining the protection
+UX-DR13: Build FirstPublishCelebration (Phase 2) — full-canvas overlay appearing once per operator account on first publish only; auto-dismisses after 4s or Escape; announced as success alert to screen reader
+UX-DR14: Build B2XPreviewSplit (Phase 2) — side-by-side canvas showing B2B rendering left and B2C rendering right simultaneously; synchronized scrolling; change indicators per context
+UX-DR15: Implement sidebar-canvas split layout: left MC nav rail + central canvas + right column (property sidebar / Commerce Intelligence Drawer toggle at 240px); minimum viewport 1280px hard constraint
+UX-DR16: Implement hybrid design direction: MC Native as default shell; Commerce Intelligence Drawer as expandable right drawer within MC shell; ⌘K command palette as keyboard shortcut layer (Phase 2)
+UX-DR17: Implement canvas device simulation frames: Desktop (1440px), Tablet (768px), Mobile (390px) as fixed-width rendering within canvas scroll area
+UX-DR18: Implement WCAG 2.1 AA accessibility: keyboard drag-and-drop alternative (⌘↑/↓ for section reordering), focus management on sidebar panel transitions, all icon-only buttons with aria-label, no tabindex > 0, relative rem units
+UX-DR19: Implement accessibility testing pipeline: axe-core in CI gating deployments on zero AA violations; VoiceOver (macOS/Safari) + NVDA + Chrome Windows coverage
+UX-DR20: Implement button hierarchy: Primary (one per surface, MC primary blue — Publish/Apply/Generate), Secondary (outlined neutral — Preview/Share/Stage), Ghost (text only — Reset/Cancel/Edit plan), Destructive (filled red, conditional), AI-action (outlined with AI tint — Approve/Edit plan/Cancel in ConfidenceCard exclusively)
+UX-DR21: Implement feedback pattern system: draft badge (amber), context-specific publish toast (5s), inline validation errors below fields, canvas skeleton pulse for AI generating state, AI error inline in drawer with retry
+UX-DR22: Implement canvas interaction patterns: hover shows dashed border + section label; click activates selection; drag handle for section reordering; "+" insert button between sections on hover; context switch triggers cross-fade
+UX-DR23: Implement navigation patterns: breadcrumb top bar with page switcher; collapsible left section list; ⌘Z undo per canvas change; "Save draft?" prompt on MC nav exit with unpublished changes
+UX-DR24: Implement AI interaction patterns: context indicator always visible ("Editing B2C DE/AT/CH"); "your data shows" language throughout (never "the AI recommends"); Horizon badges (⚡ / 📈) on all recommendations; Tenant Intelligence Score in navigation
+UX-DR25: Implement reduced motion support: `prefers-reduced-motion` applied to all canvas animations
+
+**Experience Engine UX Requirements:**
+UX-DR26: Build Recommendation Panel — canvas-anchored panel showing ranked recommendations for the current page; each recommendation shows: observed behavioral signal, expected outcome with confidence interval, Horizon badge, Confidence Card on expand, Apply / Generate PR / Skip actions
+UX-DR27: Build Campaign Workspace — operators create named campaigns with goal metric, timeline, and success threshold; experiments grouped under campaigns; results reported as campaign outcomes not individual metric changes
+UX-DR28: Build Experiment Status Surface — inline canvas indicator showing running experiments on each section (subtle badge); click reveals: traffic split, current metric vs. baseline, ETA to statistical significance, Pause / Accelerate / Roll Back actions
+UX-DR29: Build Rollback Alert — proactive notification when live metrics fall below baseline threshold during rollout; shows current metric vs. baseline, traffic exposure, Roll Back Now action; operator decides, platform executes atomic revert; presents optional reason capture (10s, skippable)
+UX-DR30: Build PR Status Tracker — "Awaiting Developer" state in recommendation panel for pending PRs; shows PR link, developer name, time elapsed, single "Remind" nudge action; no GitHub account required for operator
+UX-DR31: Build Data Ramp Onboarding — Day 1 empty state shows live intelligence ramp: data collecting progress, session threshold to first hypothesis, manual hypothesis creation CTA; replaced by first automated recommendation when threshold reached
+
+### FR Coverage Map
+
+FR1:  Epic 3 — Visual canvas navigation and editing
+FR2:  Epic 3 — Add, remove, reorder Green Zone components
+FR3:  Epic 3 — Edit content properties within Green Zone constraints
+FR4:  Epic 3 — Preview in desktop/tablet/mobile viewports
+FR5:  Epic 3 — Preview in B2C/B2B/dealer portal contexts
+FR6:  Epic 3 — Mobile device editor access
+FR7:  Epic 4 — AI completion engine (intent inference → governed completion)
+FR8:  Epic 4 — AI completions from approved component library only
+FR9:  Epic 4 — ConfidenceCard / AIReasoningCard transparency before canvas change
+FR10: Epic 4 — Accept/modify/reject individual AI placements
+FR11: Epic 4 — Manual edit of AI-generated components
+FR12: Epic 4 — Streaming progress feedback during AI completion
+FR13: Epic 2 — Designate components Green Zone / Red Zone
+FR14: Epic 2 — Configure field-level edit permissions per component
+FR15: Epic 3 — Red Zone boundary enforcement in editor
+FR16: Epic 3 — Publish to staging environment
+FR17: Epic 3 — Publish staged storefronts to live production
+FR18: Epic 3 — Governance compliance validation before publish
+FR19: Epic 3 — Atomic deployment (no partial state on live traffic)
+FR20: Epic 3 — Immutable publish audit log
+FR21: Epic 5 — Behavioral heatmaps inline on canvas (no separate dashboard)
+FR22: Epic 5 — Engagement score badges per storefront section
+FR23: Epic 5 — ACI Analyst section flagging + operator notifications
+FR24: Epic 5 — Navigate from ACI flag to editor component
+FR25: Epic 5 — Async behavioral event collection (zero render impact)
+FR26: Epic 5 — Consent-aware collection with immediate stop on withdrawal
+FR27: Epic 5 — Page-level performance metrics via canvas-anchored overlays
+FR28: Epic 5 — Configurable ACI data retention period
+FR29: Epic 2 — Create, configure, and publish component library via Developer Console
+FR30: Epic 2 — Define field-level edit permissions per Green Zone component
+FR31: Epic 2 — Simulate operator access to verify governance
+FR32: Epic 2 — Update component library without full platform redeployment
+FR33: Epic 3 — AI completions restricted to published component library
+FR34: Epic 4 — Connect existing CT project via API credentials
+FR35: Epic 4 — AI-scaffolded component mapping from existing templates (3 migration paths)
+FR36: Epic 4 — Review, adjust, and publish scaffolded component mapping
+FR37: Epic 4 — Migrate existing page configurations to storefront canvas
+FR38: Epic 4 — Core Web Vitals baseline measurement (pre-sales tool + migration)
+FR39: Epic 4 — Validate migrated pages and generate readiness report
+FR40: Epic 1 (basic MC session auth) + Epic 6 (full SAML/OIDC enterprise SSO)
+FR41: Epic 6 — SCIM 2.0 automated user provisioning/deprovisioning
+FR42: Epic 1 (basic role assignment) + Epic 6 (full role management UI)
+FR43: Epic 6 — Per-brand access boundaries for multi-brand tenants
+FR44: Epic 6 — EU/US data residency region selection
+FR45: Epic 6 — Generate and download DPA within platform
+FR46: Epic 6 — Usage dashboard (sessions, AI completions, experiments, recommendations, storefronts vs. tier limits)
+FR47: Epic 5 — Consent withdrawal stops ACI collection immediately
+FR48: Epic 5 — Right-to-erasure request fulfilled within 30 days
+FR49: Epic 5 — PCI boundary: ACI scripts blocked in checkout/payment flows
+FR50: Epic 2 — Platform Green Zone components meet WCAG 2.1 AA by default
+FR51: Epic 3 — Accessibility warnings surfaced before publish confirmation
+FR52: Epic 8 — Manual experiment hypothesis creation
+FR53: Epic 8 — Automated hypothesis generation from behavioral patterns
+FR54: Epic 8 — A/B test runner with Horizon 1 measurement
+FR55: Epic 8 — Horizon 2 CLV measurement (parallel, 90-day window)
+FR56: Epic 8 — Canvas-anchored recommendation panel with expected outcomes
+FR57: Epic 8 — Single-shot recommendation apply with progressive rollout gates
+FR58: Epic 8 — GitHub PR generation for beyond-Green-Zone recommendations
+FR59: Epic 8 — Rollback alert + operator-executed atomic revert
+FR60: Epic 8 — Failure taxonomy + "Tried and Retired" recommendation library
+FR61: Epic 8 — Tenant Intelligence Score in navigation
+FR62: Epic 8 — First 10 experiments free (moat-first activation)
+FR63: Epic 4 — Historical behavioral data import during onboarding (pre-warm engine)
+FR64: Epic 8 — Campaign workspace with goal metric and timeline
+FR65: Epic 4 + Epic 8 — Commerce Intelligence Drawer (Create + Optimize modes)
+FR66: Epic 9 — POS transaction initiation within MC Custom Application shell
+FR67: Epic 9 — POS inventory reservations reflected in storefront availability within 60s
+FR68: Epic 9 — In-store orders created in CT Order API (unified pipeline)
+FR69: Epic 9 — Product catalog search from POS via CT Catalog API
+FR70: Epic 9 — Fiscal receipt generation via partner integration layer (jurisdiction-specific)
+FR71: Epic 9 — POS location + associate access via existing CASL RBAC
+FR72: Epic 9 — In-store behavioral signals ingested into ACI ClickHouse pipeline
+FR73: Epic 9 — AI Experience Engine recommendations surfaced in assisted-selling flow
+FR74: Epic 9 — POS Green Zone (promotion slots) vs Red Zone (pricing/tax) governance
+FR75: Epic 9 — Offline transaction queue + auto-sync (partner SDK)
+
+---
+
+## Epic List
+
+### Epic 1: Platform Foundation & Operator Workspace
+The running MC Custom Application exists — IT Admins and operators can sign in via MC session auth, navigate the platform within the Merchant Center shell, and manage their workspace. Establishes: MC Custom Application scaffold (Create-mc-app TypeScript template), Connect packaging (`connect.yaml`), multi-tenant PostgreSQL schema with RLS + behavioral events table (collecting from day 1), CASL RBAC wired to ApplicationShell `oAuthScopes`, MC session auth (no Clerk at editor layer), CI/CD pipeline with Neon branch-per-PR, base observability, and Epic 6 skeleton (SSO + data residency selection as procurement gate).
+
+**The behavioral events table is included in Epic 1 migration.** Behavioral collection infrastructure starts at project connection — the moat begins accumulating before any operator UI is built.
+
+**FRs covered:** FR40 (basic MC session auth), FR42 (basic role assignment)
+**Foundation deliverables:** Connect packaging, ApplicationShell integration, behavioral events schema, Epic 6 procurement skeleton
+
+---
+
+### Epic 2: Governed Component Library
+Storefront Developers can define, configure, and publish a governed component library — designating every component as Green Zone (operator-editable) or Red Zone (platform-protected), with field-level edit permissions. The component schema supports CLV-variant fields (`clv_tier` dimension) enabling CLV-aware component rendering without runtime logic. Component behavioral provenance is tracked per component — CTR lift, CLV impact, experiment win rate — visible in the Developer Console. Developers can simulate operator access to verify governance boundaries before publishing. All platform components meet WCAG 2.1 AA by default.
+
+**FRs covered:** FR13, FR14, FR29, FR30, FR31, FR32, FR50
+
+---
+
+### Epic 3: Storefront Editor & Publishing
+Business Operators can visually build and edit storefronts on a live canvas — adding, reordering, and editing Green Zone components — and publish with full governance validation and atomic deployment. The canvas operates in three dimensions: business context (B2C/B2B/dealer) × locale × consumer identity cohort. Behavioral analytics are dissolved into the canvas surface — heatmap overlay toggleable, engagement score badges on sections, drop-off annotations on hover; no separate analytics dashboard. Storefront branches (Git-model variants) allow operators to create isolated page variants for safe experimentation. Includes real-time collaboration (Liveblocks), multi-viewport preview, immutable publish audit log, and accessibility warnings before publish.
+
+**FRs covered:** FR1, FR2, FR3, FR4, FR5, FR6, FR15, FR16, FR17, FR18, FR19, FR20, FR33, FR51
+
+---
+
+### Epic 4: AI Core Site Builder & Migrator
+_(Combines former Epic 4 and Epic 7 — "get to live fast" epic)_
+
+**Site Builder:** The Commerce Intelligence Drawer operates in Create mode — AI observes operator edits on the canvas, infers intent from behavior, and offers to complete remaining sections using the governed component library. This is an inference-and-completion model, not a blank-canvas generation model. Operators approve a completion brief before any canvas change is applied. Historical behavioral data from GA4, Hotjar, Mixpanel, or Frontastic analytics can be imported during onboarding to pre-warm the AI Experience Engine before native data accumulates.
+
+**Migrator:** Existing commercetools customers can migrate their storefronts via three paths: (1) **Frontastic path** — near-native tastic schema compatibility, component mapping mostly automated; (2) **Custom Next.js path** — AI analyzes the codebase, maps components to governed schema, scaffolds Green/Red Zone boundaries from existing page structure; (3) **Monolith path** — full migration with Core Web Vitals baseline measurement as the before/after ROI proof. Core Web Vitals baseline is available as a pre-sales tool without full platform activation. All migrated pages validated before go-live with a readiness report.
+
+**FRs covered:** FR7, FR8, FR9, FR10, FR11, FR12, FR34, FR35, FR36, FR37, FR38, FR39, FR63, FR65 (Create mode)
+
+---
+
+### Epic 5: Behavioral Data Infrastructure
+_(Elevated to foundation layer — behavioral collection starts at Epic 1 project connection)_
+
+Behavioral collection infrastructure is activated when a customer connects their CT project — the moat begins accumulating silently before any analytics UI is built. The behavioral data layer is dissolved into the canvas surface: heatmap overlay toggleable on the canvas, engagement score badges on sections, drop-off rate annotations on hover. There is no separate ACI analytics dashboard — all behavioral insights are surfaced contextually where operators are already working.
+
+Dual-track consent: aggregate behavioral consent (ACI collection) and identity-linked personalization consent (CLV-enhanced rendering via consumer CLV tier) are separate, legally distinct consent layers managed in the IT Admin dashboard. Full GDPR compliance: consent-aware collection, right-to-erasure, configurable data retention, PCI boundary enforcement. Behavioral event pipeline feeds the AI Experience Engine recommendation model.
+
+**FRs covered:** FR21, FR22, FR23, FR24, FR25, FR26, FR27, FR28, FR47, FR48, FR49
+
+---
+
+### Epic 6: Enterprise Administration & Compliance
+_(Epic 6 skeleton ships with Epic 1 as procurement gate — SSO + data residency selection available from first activation)_
+
+Enterprise IT Admins can fully provision the platform: SAML 2.0/OIDC SSO, SCIM 2.0 automated user lifecycle, multi-brand access boundaries, EU/US data residency, DPA generation, and a usage dashboard covering sessions, AI completions, experiments run, recommendations applied, and PRs generated against subscription tier limits. The dual-consent model (aggregate behavioral + identity-linked personalization) is configurable per tenant with full audit visibility.
+
+**FRs covered:** FR40 (full SAML/OIDC), FR41, FR42 (full management UI), FR43, FR44, FR45, FR46
+
+---
+
+### ~~Epic 7: Migration & Onboarding~~
+**Dissolved.** All migration and onboarding scope absorbed into Epic 4 (AI Core Site Builder & Migrator). FR34–FR39 and FR63 are covered by Epic 4.
+
+---
+
+### Epic 8: AI Experience Engine
+_(New — the compounding moat. Requires Epic 5 behavioral data infrastructure to be live and collecting.)_
+
+The continuous optimization layer that activates once a storefront is live and behavioral data has accumulated. The longer it runs, the smarter it gets — and the accumulated tenant-specific intelligence (experiment outcomes, failure taxonomy, CLV correlation model, component behavioral provenance) cannot be replicated by a competitor connecting to CT APIs.
+
+**Experiment Entry:** Operators create manual hypotheses from the canvas surface (Day 1 capability, FR52) or the platform auto-generates hypotheses from behavioral patterns when session thresholds are met (FR53). Both paths flow through the same measurement pipeline.
+
+**Two-Horizon Measurement:** Every experiment measures Horizon 1 (CTR, conversion rate — days, FR54) and Horizon 2 (CLV delta, repeat purchase rate, AOV over 90 days — FR55) in parallel. Recommendations surface only after clearing a signal gate for their horizon type.
+
+**Recommendation Surface:** Canvas-anchored panel showing ranked recommendations for the current page (FR56). Each carries a Confidence Card ("your data shows" — never "the AI recommends"), Horizon badge (⚡ Quick Win / 📈 Long Game), and expected outcome with confidence interval. Recommendations are grouped under named campaigns with goal metrics and timelines (FR64).
+
+**Apply Workflows:** Single-shot apply with configurable progressive rollout gates (5% → 25% → 50% → 100%, FR57). For recommendations requiring beyond-Green-Zone component changes: auto-generated GitHub PR with code diff, schema update, behavioral evidence brief, expected outcome, and auto-provisioned preview deployment (FR58). Merge-to-component-library pipeline via GitHub webhook — zero manual steps.
+
+**Rollback & Learning:** Operator-decided rollback triggered by proactive platform alert when metrics fall below baseline (FR59). Rollback with optional reason capture. Failure taxonomy classification (FR60) feeds the "Tried and Retired" library and filters future recommendations. Confidence Decay on recommendations older than 90 days.
+
+**Engine Calibration:** Tenant Intelligence Score visible in navigation (FR61) — sessions collected, experiments completed, CLV cohort size, prediction accuracy. First 10 experiments free (FR62). Historical behavioral import from prior analytics tools pre-warms the engine at onboarding (FR63).
+
+**Commerce Intelligence Drawer — Optimize Mode:** The unified right drawer switches to Optimize mode automatically when the active page has sufficient behavioral data (FR65), surfacing contextual recommendations without requiring operators to navigate to a separate section.
+
+**FRs covered:** FR52, FR53, FR54, FR55, FR56, FR57, FR58, FR59, FR60, FR61, FR62, FR64, FR65 (Optimize mode)
+
+---
+
+### Epic 9: Physical Retail POS — Partnership-Accelerated
+_(Research epic — evaluate, select, and integrate a composable POS partner that owns fiscal compliance and hardware certification. We build the CT-native integration layer on top.)_
+
+**The Problem:** Enterprise retailers running commercetools online need a unified commerce story across digital and physical channels. Building a POS from scratch — fiscal printer protocols, jurisdiction-specific receipt formats, card terminal PCI certification, offline queue — is 18+ months of non-differentiating infrastructure work. A composable POS partner collapses that timeline to an integration layer.
+
+**The Strategic Fit:** Physical behavioral data (in-store product lookup rate, associate-assisted add-to-cart, terminal abandonment) fed into the ACI pipeline extends the Tenant Intelligence Score beyond the browser. Retailers who connect POS get a unified online + in-store intelligence model that pure-digital competitors cannot replicate. This is moat extension, not feature addition.
+
+**Partner Selection Research — Evaluation Criteria:**
+
+| Criterion | Must Have | Nice to Have |
+|-----------|-----------|--------------|
+| CT Marketplace presence | Existing Connect connector or co-development path | CT partner tier (Gold/Platinum) |
+| Fiscal compliance | NF525 (FR), RTF (IT), GoBD (DE), SAF-T (PT/PL), jurisdiction-aware receipt engine | APAC fiscal scope (JP/AU) |
+| Hardware abstraction | Adyen Terminal API / Stripe Terminal / Verifone normalization, receipt printer SDK | Mobile device (iOS/Android) POS mode |
+| Architecture | Composable SDK — embeddable, not a monolithic SaaS UI | REST/GraphQL-first, headless-compatible |
+| Enterprise | Multi-location, multi-currency, multi-jurisdiction | Global rollout support (EU + APAC + US) |
+| Offline resilience | Local transaction queue, conflict-free sync on reconnect | Edge device sync via CRDT or similar |
+
+**Candidate Vendors for Research Phase:**
+- **Sitoo** — cloud-native POS with an existing commercetools Connect marketplace connector; Scandinavian fiscal compliance strength; headless-first architecture. Highest CT-ecosystem fit.
+- **NewStore** — enterprise mPOS targeting fashion and luxury (strong ICP overlap with CT customer base); unified commerce OMS + POS; existing CT integrations at major brands.
+- **Jumpmind Commerce** — open-architecture Java POS SDK; designed for customization; mid/large retail; fiscal compliance via plugin layer.
+- **Adyen Unified Commerce** — payment terminal (PCI PTS) + fiscal compliance engine + CT integration; strongest fiscal compliance globally; best for high-GMV transactions.
+
+**Research Deliverables (before Epic 9 build begins):**
+1. Structured vendor evaluation scorecard against the criteria above
+2. Proof-of-concept integration with the selected vendor's SDK in a local dev environment
+3. Fiscal compliance coverage map: which jurisdictions are covered out-of-the-box vs. require configuration
+4. CT Custom Object schema design for POS location, register, and session state
+5. ACI behavioral event schema extensions for in-store event types
+6. Architecture decision record (ADR) for partner selection with rationale
+
+**What We Build (the CT-native integration layer):**
+- POS transaction UI embedded within the MC Custom Application shell — store associates stay inside the Merchant Center; no separate POS SaaS login
+- CT Inventory API integration: POS reservations decrement CT stock; live storefront availability reflects in-store reservations within 60 seconds (ISR on-demand revalidation, same pipeline as online publish)
+- CT Order API bridge: in-store transactions land as CT Orders with `channel` dimension set to `pos:{locationId}` — same fulfillment pipeline, same order management, unified reporting
+- CASL RBAC extension: `StoreAssociate` role scoped to `locationId`; IT Admins assign locations via existing Epic 6 admin UI — no new identity system
+- ACI event adapter: partner SDK transaction events normalized to the ClickHouse behavioral event schema (anonymized `user_hash`, `session_id`, `event_type: pos_*`) and ingested alongside online events
+- AI Experience Engine assisted-selling surface: recommendation panel within the POS UI pulling from the same tenant recommendation model as the online storefront — product pairings, upsell slots, and inventory-aware suggestions
+- Green/Red Zone governance extended to POS: operator-configurable promotion slots and upsell section copy (Green Zone); pricing, discounts, and tax calculations enforced by CT Pricing API and the partner fiscal engine (Red Zone — double-sealed)
+
+**What the Partner Provides (explicitly out of scope for this platform):**
+- Fiscal compliance: jurisdiction-specific receipt/invoice format generation, fiscal printer protocol drivers, tax calculation engine, regulatory certification maintenance
+- Hardware certification: PCI PTS-certified card terminals, receipt printer SDK (EPSON/Bixolon/Star), barcode scanner abstraction
+- Offline resilience: local transaction queue, conflict resolution on sync, network-resilient session state
+- Returns and refunds at terminal: fiscal receipt amendment, credit note generation, refund routing
+
+**FRs covered:** FR66, FR67, FR68, FR69, FR70, FR71, FR72, FR73, FR74, FR75
+
+---
+
+## Revised Priority Sequencing
+
+| Priority | Epic(s) | Rationale |
+|----------|---------|-----------|
+| **P0 — Parallel Foundation** | Epic 1 + Epic 5 infrastructure + Epic 6 skeleton | CT activation + behavioral collection (moat starts) + procurement gate — simultaneous |
+| **P1 — Core Value** | Epic 2 + Epic 3 | Governed component library + editor — what operators come for |
+| **P2 — Entry Hook** | Epic 4 | AI Site Builder + Migrator — Frontastic path first (highest-urgency ICP) |
+| **P3 — Moat Activation** | Epic 8 MVP | Manual experiments + Horizon 1 + Unified Drawer Optimize mode + 10 free experiments |
+| **P4 — Compounding Moat** | Epic 8 full | Horizon 2 CLV, auto-hypotheses, PR generation, campaign workspace, progressive rollout |
+| **P5 — Enterprise Scale** | Epic 6 full | SCIM, multi-brand governance hub, usage dashboard with Experience Engine metrics |
+| **P6 — Physical Retail (Research → Build)** | Epic 9 | Partner selection + POC (M1-3 of research track); CT-native integration layer after partner selected; extends ACI moat to in-store behavioral signals |
+
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12/marked.min.js"></script>
+<script>
+  (function() {
+    const target = document.getElementById('content');
+    const source = document.getElementById('markdown-source');
+    let md = source.textContent.trim();
+
+    // Strip YAML frontmatter
+    if (md.startsWith('---')) {
+      const end = md.indexOf('\n---', 4);
+      if (end > -1) md = md.slice(end + 4).trim();
+    }
+
+    function renderFallback() {
+      target.innerHTML =
+        '<div class="reader-error"><strong>marked.js did not load.</strong> ' +
+        'Showing raw markdown below. For a rendered view, try opening this file via ' +
+        '<code>VS Code → Simple Browser</code> or a local HTTP server.</div>' +
+        '<pre><code>' + md.replace(/&/g, '&amp;').replace(/</g, '&lt;') + '</code></pre>';
+    }
+
+    if (typeof marked === 'undefined') {
+      renderFallback();
+      return;
+    }
+
+    try {
+      marked.setOptions({ gfm: true, breaks: false, headerIds: true, mangle: false });
+      target.innerHTML = marked.parse(md);
+
+      // Rewrite relative markdown links to their HTML twins where one exists
+      target.querySelectorAll('a[href$=".md"]').forEach(a => {
+        const raw = a.getAttribute('href');
+        if (raw.startsWith('http')) return;
+        const htmlTwin = raw.replace(/\.md$/, '.html');
+        a.setAttribute('href', htmlTwin);
+        a.setAttribute('data-original-md', raw);
+      });
+
+      // Set the page title from the first h1
+      const firstH1 = target.querySelector('h1');
+      if (firstH1) document.title = firstH1.textContent + ' · BMad';
+    } catch (err) {
+      renderFallback();
+    }
+  })();
+</script>
+</body>
+</html>
