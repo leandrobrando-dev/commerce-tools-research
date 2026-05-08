@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ADR-002 — Positioning against Amplitude+Statsig+OpenAI · BMad · commercetools Next-Gen Frontend</title>
+<link rel="stylesheet" href="doc-reader-styles.css">
+<style>
+  /* Frontmatter hidden — data contained there is not reader-relevant */
+  .reader-content pre:first-child code:only-child {
+    display: block;
+  }
+</style>
+</head>
+<body data-phase="plan">
+
+<nav class="reader-topbar">
+  <a href="00-bmad-journey-map.html" class="back-link">
+    <span>←</span> Journey map
+  </a>
+  <span class="phase-chip">Phase 02 · Planning</span>
+  <span class="breadcrumb">planning-artifacts</span>
+  <span class="spacer"></span>
+  <span class="meta">2026-05-08 · ADR-002</span>
+</nav>
+
+<header class="reader-doc-header">
+  <div class="eyebrow">Phase 02 · Planning · Strategic ADR</div>
+  <h1>ADR-002 — Positioning against Amplitude+Statsig+OpenAI</h1>
+  <div class="subtitle">Strategic positioning stance against the May 5, 2026 horizontal consolidation in the experimentation category. Seven structural moats, messaging framework, and monitoring triggers.</div>
+</header>
+
+<main class="reader-main">
+  <article class="reader-content" id="content">
+    <div class="reader-loading">
+      <div class="spinner"></div>
+      <div>Rendering document…</div>
+    </div>
+  </article>
+</main>
+
+<footer class="reader-footer">
+  <div>Part of BMad planning artifacts · <strong>commercetools Next-Gen Frontend</strong></div>
+  <div><a href="00-bmad-journey-map.html">← Back to journey map</a></div>
+</footer>
+
+<script type="text/markdown" id="markdown-source">
+---
+adr_id: ADR-002
+type: strategic-positioning
+status: Accepted
+date: 2026-05-08
+author: Leandro Palazzo
+related:
+  - planning-artifacts/architecture.md (ADR-001)
+  - planning-artifacts/epics.md (Epic 8 — AI Experience Engine)
+  - planning-artifacts/research/market-autonomous-commerce-intelligence-storefront-research-2026-05-04.md
+  - planning-artifacts/briefs/elevator-pitch-commercetools-next-gen-frontend-2026-05-05.md
+  - planning-artifacts/prd.md
+---
+
+# ADR-002: Positioning against Amplitude + Statsig + OpenAI horizontal consolidation
+
+**Status:** Accepted
+**Date:** 2026-05-08
+**Author:** Leandro Palazzo
+**Type:** Strategic / Competitive Positioning (first non-technical ADR in the project)
+
+---
+
+## Context
+
+On **May 5, 2026** — three days before this ADR was written — Amplitude CEO Spenser Skates announced a "strategic partnership" with Statsig. The unusual deal structure:
+
+- **Amplitude** takes Statsig's brand, customer base, and ongoing platform maintenance (cloud + warehouse deployments).
+- **OpenAI** keeps the Statsig team. Founder/CEO Vijaye Raji became OpenAI's **CTO of Applications** (reporting to Fidji Simo, ex-Instacart CEO) following OpenAI's **$1.1B all-stock acquisition of Statsig on September 2, 2025**.
+- Skates' public rationale: *"AI has lowered barriers to generating code. The bottleneck has shifted to evaluating, measuring, and iterating on shipped code. Amplitude + Statsig closes that loop for AI builders."*
+
+This is a direct framing collision with Epic 8 — our AI Experience Engine pitches the same loop (ship → measure → iterate) for commerce. Amplitude+Statsig pitches it for the general software development lifecycle.
+
+Parallel context: in the week immediately preceding the deal, Amplitude shipped an aggressive AI-builders product push:
+- **Apr 30, 2026** — Amplitude Wizard CLI
+- **May 1, 2026** — Amplitude AI Plugin for Claude/Cursor
+- **May 4, 2026** — Agent Skills for product review automation
+
+The signal is coordinated. Amplitude is consolidating the experimentation category horizontally — session analytics + feature flags + A/B testing + AI-builder tooling — under a single brand with preferential access to OpenAI's latest model capabilities through the Raji relationship.
+
+Before this deal, Epic 8's competitive pitch targeted four separate vendors (ContentSquare, Amplitude, FullStory, Optimizely) at $350K-$1M combined annual spend. The consolidation compresses that argument: customers can now buy Amplitude+Statsig as a single contract. The "fragmentation is expensive" pitch loses force. The "your consolidator is still commerce-blind" pitch is what replaces it — and this ADR documents that positioning stance.
+
+---
+
+## Decision
+
+**We compete vertically where Amplitude+Statsig compete horizontally, and we name the distinction explicitly in every sales surface.**
+
+Our positioning stance for the next 12 months:
+
+> *"Amplitude+Statsig is consolidating the experimentation category horizontally — same event model, same flag model, same commerce-blindness. We consolidate vertically, inside the commerce platform, with the commerce context they structurally cannot see: CLV tier, contract price, approval state, catalog segment, Green/Red Zone governance."*
+
+The consolidation of session analytics + experimentation + feature flags under one vendor is validated and real; the commerce-context gap is structural and unreachable without owning a commerce backend. Our response is not to dilute Epic 8 toward horizontal generality — it is to deepen every one of the seven defensible moats below.
+
+---
+
+## The seven structural moats (the decision's foundation)
+
+Epic 8 wins on these dimensions. Amplitude+Statsig cannot close any of them without buying a commerce backend — and even then, multi-year integration work.
+
+| # | Moat | Epic 8 implementation | Why A+S cannot close it |
+|---|------|----------------------|-------------------------|
+| **1** | **Commerce context** — CLV tier, contract price, catalog segment, B2B approval queue state, account tier | Native access through the commercetools data model, read at the component runtime | Amplitude reads SDK events; Statsig reads flag exposures. Neither has native access to CT's catalog, pricing service, or approval workflows. Closing this requires acquiring a commerce backend. |
+| **2** | **Two-Horizon Measurement (H1 + H2)** | H1 (CTR, CVR in 3-5 days) and H2 (CLV delta, repeat purchase, AOV over 90 days) gated independently and measured in parallel (FR54, FR55) | Amplitude has retention analytics; Statsig has experimentation. Neither has an opinionated commerce-specific H1/H2 model where recommendations surface only after clearing horizon-specific signal gates. |
+| **3** | **Green/Red Zone governance** | Component library is Green Zone (AI composes freely); pricing, checkout, auth, approvals are Red Zone (hard boundary enforced at `executor.ts`) | Statsig has feature flags; flags toggle behavior. Green Zone *structurally prevents* AI from touching pricing, checkout, or approval logic at the runtime level. This is architectural enforcement, not a policy layer. |
+| **4** | **Auto-generated GitHub PRs for beyond-Green-Zone changes** | AI produces full code diff + schema update + behavioral evidence brief + preview deployment; developer reviews and merges (FR58) | Statsig flags control behavior at runtime but produce no code artifact. We own the component library schema so AI can *write* the schema change, not just *gate* an existing feature. |
+| **5** | **Progressive rollout tied to component library** | 5→25→50→100% gates run on component-library versions with per-tenant hot-reload and atomic rollback of the commerce-governed runtime (FR57) | Statsig does progressive rollouts on feature flags — the same gate vocabulary, different scope of control. We roll out governed components, not toggles. |
+| **6** | **Tenant Intelligence Score** | A 0–100 composite metric compounding monthly from commerce-specific signals (experiment history, CLV cohort depth, prediction accuracy on commerce outcomes) (FR61) | No analytics platform can compute this without the commerce data model underneath. CLV-tier segmentation and prediction accuracy on commerce outcomes require native access to orders, line items, approvals, and pricing. |
+| **7** | **First-party, cookieless, GDPR-native ingestion** | Behavioral data collected at the storefront where commerce happens — no SDK instrumentation, no cookie barriers, no third-party tracking, no attribution stitching (FR21-28) | Amplitude still depends on SDK instrumentation and cookie-adjacent tracking. A storefront-native platform captures 40-50% more behavioral signal than consent-gated external tools. |
+
+**Scorecard:** Amplitude+Statsig matches **0 of 7** today. Even with OpenAI's AI tooling support, the structural gap requires a commerce backend acquisition.
+
+---
+
+## Mechanism: how we operationalize this positioning
+
+### 1. Sales motion — sequenced B2C → B2B
+
+The flip cascade committed 2026-05-08 (commit `8bd03e8`) already hard-codes B2C-first GTM sequencing across elevator pitch, product brief, market research, ACI research, and PRD. The Amplitude+Statsig threat validates this sequencing:
+
+- **B2C first** — high-traffic storefronts clear H1 signal gates in 3-5 days. Epic 8's ROI is documented inside the first quarter, before the Amplitude consolidation closes the window.
+- **B2B next** — once B2C proof exists, B2B depth becomes the moat extension. Commerce context (contract price, account tier, approval queue) is where Amplitude+Statsig is most visibly blind.
+- **Reference customers** — we need 5-10 B2C references with documented ROI inside 90 days of go-live. These are the sales proof points that outrun Amplitude+Statsig's bundled consolidation pitch.
+
+### 2. Messaging framework — one sentence per audience
+
+| Audience | Message |
+|----------|---------|
+| **CFO / Procurement** | "Amplitude+Statsig consolidates four vendor contracts into one. We consolidate the whole stack into zero — it's bundled into your existing commercetools subscription. You pay only when the engine ships measurable value." |
+| **Head of Digital (B2C)** | "Amplitude sees your sessions. We see your CLV cohorts, your catalog, and your commerce context. Both are useful. Only one writes the experiment variant for you." |
+| **Head of Digital (B2B)** | "Amplitude+Statsig cannot read a contract price or an approval state. We read both natively. Every recommendation we surface is commerce-context-aware; every one theirs surfaces is event-stream-generic." |
+| **CTO / Head of Architecture** | "Statsig toggles feature flags. We enforce a Green/Red Zone governance model at a single runtime chokepoint (`executor.ts`). One is a policy layer. The other is an architectural boundary." |
+| **Statsig customer** | "Your platform is in the middle of a 1.1B-dollar transition between OpenAI and Amplitude. The team you trusted is at OpenAI; the contract is at Amplitude. If you're on commercetools, there is a commerce-native alternative that captures the same value plus CLV tier, contract price, and approval-state context." |
+
+### 3. The comparison matrix (one-pager for sales)
+
+We produce a single-page visual comparison, updated quarterly, covering:
+
+- **Dimension** (one of the 7 moats above, plus pricing, lock-in, data-residency posture)
+- **Amplitude+Statsig** (honest capability description — not a straw-man)
+- **Epic 8** (our commerce-native implementation with FR reference)
+- **Why the gap is structural** (one-line explanation a CTO can verify)
+
+This one-pager is the first artifact sent after every discovery call where Amplitude or Statsig came up.
+
+### 4. The "Statsig migration path" one-pager
+
+A separate artifact (not produced in this ADR; see recommended actions) for commercetools customers currently running Statsig. Leads with the two live renewal concerns — pricing uncertainty under Amplitude, roadmap continuity without the team — then makes the commerce-native upgrade case.
+
+### 5. ADR governance
+
+- This ADR is numbered ADR-002, continuing the project's single ADR numbering sequence.
+- Future strategic/positioning ADRs (ADR-003+) go into standalone `adr-NNN-*.md` files in planning-artifacts/ to keep architecture.md focused on technical decisions.
+- Each strategic ADR includes a `Monitoring / Revisit conditions` section so we know when to re-evaluate.
+
+---
+
+## Consequences
+
+### Expected positive outcomes
+
+- ✅ **Named enemy clarifies the pitch.** Moving from "replace four tools" to "our consolidator owns commerce; theirs doesn't" is a sharper story for CFOs and CTOs.
+- ✅ **Renewal-window opportunity.** Statsig customers currently face genuine renewal uncertainty (pricing, roadmap, team transition). Every CT customer running Statsig is now a pre-qualified pipeline for ACI.
+- ✅ **Moat validated at $1.1B.** OpenAI paid $1.1B for Statsig; Amplitude is spending real resources on customer acquisition. The experimentation category is strategically important. Our commerce-specific variant is more defensible than Statsig was, because of the 7 structural moats.
+- ✅ **Flip cascade alignment.** The B2C-first GTM sequencing already committed is exactly the right ordering against this consolidation — B2C ROI lands inside a quarter, before Amplitude's consolidation locks in.
+- ✅ **Clear guidance for product investment.** Every roadmap decision on Epic 8 gets filtered through "does this deepen one of the seven moats?" — if it does, invest; if it races Amplitude+Statsig on horizontal AI features, deprioritize.
+
+### Risks accepted
+
+- ⚠️ **Single-vendor consolidation pricing pressure.** Customers paying 2-3 separate vendors can now consolidate under Amplitude. "Replace your $1M stack" becomes "replace your Amplitude contract" — a smaller target. Mitigation: lead with commerce-context moats where Amplitude cannot compete, not with stack-consolidation math.
+- ⚠️ **AI-builders framing outruns us on developer mindshare.** Amplitude's Claude/Cursor plugin, Wizard CLI, and Agent Skills are reaching commerce developers before Epic 8 ships. Mitigation: our developer surface is the Storefront Developer persona in Epic 2, not a generalist AI-builder persona. Deepen Epic 2's governance-simulator and behavioral-provenance surfaces instead of racing horizontally.
+- ⚠️ **OpenAI proximity is a structural AI advantage we cannot match one-for-one.** Raji at OpenAI + Fidji Simo's commerce background = preferential access to OpenAI AI capabilities. Mitigation: do not race them on generic AI; compound on commerce-specific AI (H1/H2, CLV modeling, approval-aware recommendations) that general-purpose stacks have no reason to productize.
+- ⚠️ **Brand confidence gap.** "Amplitude + Statsig + OpenAI" is a powerful compound brand. Every procurement conversation will now include *"why not just use Amplitude?"* Mitigation: 5-10 B2C reference customers with documented ROI within 90 days of go-live are the brand counterweight.
+
+### Unknowns to watch
+
+- **OpenAI's commerce ambitions.** Raji at OpenAI + Fidji Simo's ex-Instacart background + ChatGPT Shopping's 2025 expansion = OpenAI has credible commerce interest. If OpenAI announces an agentic-commerce product in 2026-2027, our positioning shifts from "better analytics" to "commerce-governed orchestration layer beneath the agents."
+- **Amplitude's commerce acquisition moves.** The only way Amplitude closes the commerce-context gap is buying a commerce backend. Watch for any Amplitude M&A activity targeting Shopify, BigCommerce, or — least likely but highest-risk — commercetools itself.
+- **Statsig customer defection patterns.** How many Statsig enterprise customers renew under Amplitude vs defect to alternatives? Monitor public case studies and G2 review sentiment for the 6-12 months following May 2026.
+
+---
+
+## Rejected alternatives
+
+### Alternative A: Race Amplitude+Statsig on horizontal AI features
+
+**Rejected.** We cannot out-general the company with OpenAI's CTO of Applications running their experimentation platform. Every dollar spent on horizontal AI-builder tooling is a dollar not spent on commerce-specific depth — and commerce-specific depth is the only place Amplitude+Statsig structurally cannot follow.
+
+### Alternative B: Acquire or partner with an experimentation vendor (LaunchDarkly, VWO, PostHog)
+
+**Rejected for now.** These are horizontal experimentation vendors. Bundling one of them gives us feature-flag infrastructure we already have (Epic 8 progressive rollout) and inherits their commerce-context blindness. If the category consolidates further and a strategic opportunity emerges (post-Amplitude-on-LaunchDarkly consolidation, for example), revisit.
+
+### Alternative C: Re-scope Epic 8 as a general-purpose experimentation platform that happens to run on commerce
+
+**Rejected.** This would dilute every one of the seven moats into a "me-too" platform that loses to Amplitude+Statsig on breadth and to commercetools on focus. The commerce-specific framing of Epic 8 — Two-Horizon, commerce-context recommendations, Green/Red Zone, Tenant Intelligence — is the moat. Protect it.
+
+### Alternative D: Stay silent on Amplitude+Statsig in customer-facing materials
+
+**Rejected.** The consolidation is public, $1.1B-validated, and customers are already asking about it in procurement. Silence reads as either unawareness or weakness. The positioning stance above names the competitor and explains the structural gap — this is the posture a mature category leader takes when a horizontal consolidation lands.
+
+---
+
+## Monitoring / Revisit conditions
+
+Revisit this ADR if any of the following occur:
+
+1. **Amplitude acquires a commerce backend** (Shopify, BigCommerce, Salesforce Commerce Cloud, SAP commerce, commercetools itself) — would immediately invalidate moats 1 and 7, and partially weaken 2, 3, 5, 6. This is the single highest-risk trigger.
+2. **OpenAI announces a commerce-agent product** — shifts our positioning from "better commerce analytics" to "commerce-governed orchestration layer beneath the agents." May require Epic 8 roadmap additions around agent interoperability.
+3. **Amplitude+Statsig ships a CLV-tier or commerce-context feature natively** — suggests they are investing in closing moat 1 without an acquisition. Less likely but worth monitoring.
+4. **A commercetools customer adopts Amplitude+Statsig as a fourth vendor on top of Epic 8** — would indicate our commerce-native pitch is not neutralizing theirs. Need case study on why and sharpen messaging.
+5. **Statsig customer churn pattern stabilizes** (positive for Amplitude) — reduces the renewal-window opportunity; shift GTM emphasis back to consolidation-pricing argument.
+6. **commercetools itself acquires a horizontal experimentation vendor** — change to our product scope, may obsolete parts of Epic 8 and require re-scoping.
+
+Scheduled revisit: **2026-11-08** (6 months), or sooner if any of the above occurs.
+
+---
+
+## References
+
+- [Amplitude + Statsig Partnership announcement — May 5, 2026](https://amplitude.com/blog/amplitude-and-statsig-partnership) · Spenser Skates
+- [TechCrunch — OpenAI's $1.1B Statsig acquisition (Sept 2025)](https://techcrunch.com/)
+- [Amplitude AI Plugin for Claude/Cursor — May 1, 2026](https://amplitude.com/blog)
+- [Amplitude Wizard CLI — Apr 30, 2026](https://amplitude.com/blog)
+- [Amplitude Agent Skills for product review — May 4, 2026](https://amplitude.com/blog)
+- [Amplitude → Statsig event streaming docs](https://amplitude.com/docs/data/destination-catalog/statsig)
+- [Statsig → Amplitude integration docs](https://docs.statsig.com/integrations/data-connectors/amplitude)
+- Planning-artifacts: [epics.md](epics.html) (Epic 8 — AI Experience Engine), [architecture.md](architecture.html) (ADR-001), [market-aci-research](research/market-autonomous-commerce-intelligence-storefront-research-2026-05-04.html) (post-flip competitive section)
+
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12/marked.min.js"></script>
+<script>
+  (function() {
+    const target = document.getElementById('content');
+    const source = document.getElementById('markdown-source');
+    let md = source.textContent.trim();
+
+    // Strip YAML frontmatter
+    if (md.startsWith('---')) {
+      const end = md.indexOf('\n---', 4);
+      if (end > -1) md = md.slice(end + 4).trim();
+    }
+
+    function renderFallback() {
+      target.innerHTML =
+        '<div class="reader-error"><strong>marked.js did not load.</strong> ' +
+        'Showing raw markdown below. For a rendered view, try opening this file via ' +
+        '<code>VS Code → Simple Browser</code> or a local HTTP server.</div>' +
+        '<pre><code>' + md.replace(/&/g, '&amp;').replace(/</g, '&lt;') + '</code></pre>';
+    }
+
+    if (typeof marked === 'undefined') {
+      renderFallback();
+      return;
+    }
+
+    try {
+      marked.setOptions({ gfm: true, breaks: false, headerIds: true, mangle: false });
+      target.innerHTML = marked.parse(md);
+
+      // Rewrite relative markdown links to their HTML twins where one exists
+      target.querySelectorAll('a[href$=".md"]').forEach(a => {
+        const raw = a.getAttribute('href');
+        if (raw.startsWith('http')) return;
+        const htmlTwin = raw.replace(/\.md$/, '.html');
+        a.setAttribute('href', htmlTwin);
+        a.setAttribute('data-original-md', raw);
+      });
+
+      // Set the page title from the first h1
+      const firstH1 = target.querySelector('h1');
+      if (firstH1) document.title = firstH1.textContent + ' · BMad';
+    } catch (err) {
+      renderFallback();
+    }
+  })();
+</script>
+</body>
+</html>
