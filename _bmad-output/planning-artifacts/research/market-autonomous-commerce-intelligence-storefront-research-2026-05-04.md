@@ -46,11 +46,11 @@ source_verification: true
 
 ## Executive Summary
 
-The market opportunity for an Autonomous Commerce Intelligence (ACI) layer natively embedded in a next-gen storefront is one of the most strategically defensible product expansions commercetools could make. Enterprises running a typical analytics stack today pay **$350K–$1M+ annually** across four separate vendor contracts (Amplitude, ContentSquare, Optimizely, FullStory) — fragmented, poorly integrated, and blind to the commerce context that makes behavioral data actionable. A native ACI module would consolidate this spend, eliminate integration overhead, and unlock a privacy-structural advantage no external tool can replicate: first-party behavioral data collected at the point of commerce, with full account, catalog, and transaction context, requiring no third-party tracking, no cookie consent risk, and no attribution stitching.
+The market opportunity for an Autonomous Commerce Intelligence (ACI) layer natively embedded in a next-gen storefront is one of the most strategically defensible product expansions commercetools could make. Enterprises running a typical analytics stack today pay **$350K–$1M+ annually** across four separate vendor contracts (Amplitude, ContentSquare, Optimizely, FullStory) — fragmented, poorly integrated, and blind to the commerce context that makes behavioral data actionable. A native ACI module would consolidate this spend, eliminate integration overhead, and unlock a privacy-structural advantage no external tool can replicate: first-party behavioral data collected at the point of commerce, with full account, catalog, CLV tier, and transaction context, requiring no third-party tracking, no cookie consent risk, and no attribution stitching.
 
-The autonomous experimentation market is accelerating sharply: AI-driven A/B testing delivers **15–40% conversion improvement** vs. 5–15% for manual testing, running 50–200+ experiments per month against 1–4 manually. The session replay market alone is growing from $463.7M (2025) to $1.7B by 2035. And the privacy regulatory environment — GDPR fines exceeding $8B cumulatively, 67% of US adults blocking tracking cookies — is making native, first-party behavioral analytics not just a product advantage but a compliance necessity. A storefront-native ACI module captures 40–50% more behavioral data than cookie-based external tools, because consent barriers disappear when data never leaves the platform.
+**B2C leads the autonomous-experimentation value story.** AI-driven experimentation delivers **15–40% conversion improvement** vs. 5–15% for manual testing, and runs **50–200+ experiments per month** against 1–4 manually. That velocity is only achievable on high-traffic B2C storefronts where H1 signal gates clear in 3–5 days — which is why B2C is the ACI proof-of-value beachhead. B2B adds the unreachable-by-competitors moat: contract price, account tier, approval-state context that no external analytics tool can see. The session replay market alone is growing from $463.7M (2025) to $1.7B by 2035. And the privacy regulatory environment — GDPR fines exceeding $8B cumulatively, 67% of US adults blocking tracking cookies — is making native, first-party behavioral analytics not just a product advantage but a compliance necessity. A storefront-native ACI module captures 40–50% more behavioral data than cookie-based external tools, because consent barriers disappear when data never leaves the platform.
 
-The competitive window is real: no commerce platform has productized this at the level of ContentSquare or Amplitude. PostHog and Statsig demonstrate enterprise appetite for consolidated, all-in-one intelligence platforms — but neither is commerce-native. The opportunity is to build what PostHog did for developer teams, natively for commerce teams, with the full commercetools data model as the intelligence substrate.
+**The competitive window is closing faster than it looks.** Amplitude acquired Statsig in 2025 — a direct consolidation signal that session analytics + feature flags + experimentation are merging into single-vendor platforms. The acquisition gives Amplitude a real experimentation product for the first time and directly threatens Optimizely, VWO, and LaunchDarkly. But Amplitude+Statsig remains **commerce-context blind** — the combined platform still doesn't know CLV tier, contract price, catalog segment, or approval state. The commercetools opportunity is to productize commerce-native ACI at the level of ContentSquare or Amplitude+Statsig, while owning the context they cannot reach. PostHog demonstrates enterprise appetite for consolidated, all-in-one intelligence platforms; it is not commerce-native either. The opportunity is to build what PostHog did for developer teams, natively for commerce teams, with the full commercetools data model as the intelligence substrate — on a B2C-first beachhead that extends into B2B depth.
 
 ---
 
@@ -179,10 +179,10 @@ _Source: [Statsig vs PostHog](https://www.statsig.com/vs/posthog), [Trakkr AI Co
 
 | Vendor | Core Strength | Annual Cost | Critical Gap |
 |---|---|---|---|
+| **Amplitude + Statsig** | Product analytics + event tracking + session replay (via Heap) + experimentation + feature flags (via Statsig, acquired 2025) | $200K–$900K+/yr combined | Commerce-context blind — no CLV tier, contract price, catalog segment, or approval state. Event-first model still misses session UX context. **The most serious consolidation threat in the category as of 2025.** |
 | **ContentSquare** | Session replay, heatmaps, journey analysis, AI "Sense" | $100K+/yr | No native experimentation; context-blind; cookie-dependent |
-| **Amplitude** | Product analytics, event tracking, AI agents, session replay (via Heap) | $100K–$600K+/yr | No native behavioral UX analytics; event-first model misses session context |
 | **FullStory** | Developer-grade session replay, behavioral analytics, error tracking | $100K–$300K+/yr | Developer-centric; no experimentation; expensive; high data volumes |
-| **Optimizely** | Enterprise experimentation, DXP, feature flags, server-side testing | $300K–$700K+/yr | No native behavioral analytics; requires external session/heatmap tools |
+| **Optimizely** | Enterprise experimentation, DXP, feature flags, server-side testing | $300K–$700K+/yr | No native behavioral analytics; requires external session/heatmap tools. Now directly threatened by Amplitude+Statsig consolidation. |
 
 **Tier 2 — Mid-Market Challengers (emerging threats):**
 
@@ -190,7 +190,7 @@ _Source: [Statsig vs PostHog](https://www.statsig.com/vs/posthog), [Trakkr AI Co
 |---|---|---|
 | **VWO** | All-in-one CRO (A/B, heatmaps, session, surveys); #1 G2 Experimentation | $50M ARR; PE-backed; 40K+ customers |
 | **PostHog** | Open-source all-in-one (analytics + replay + flags + experiments) | Developer community darling; generous free tier; self-hostable |
-| **Statsig** | Warehouse-native experimentation + analytics; CUPED, sequential testing | Powers OpenAI, Notion, Atlassian; AI Knowledge Graph 2026 |
+| **LaunchDarkly** | Feature flags + targeted rollouts + experimentation (since 2023) | Now under consolidation pressure from Amplitude+Statsig on the experimentation side |
 | **Hotjar** | SMB session replay + heatmaps; ease of use | Not enterprise-grade; lacks experimentation |
 | **Quantum Metric** | Revenue-impact scoring from behavioral data | Strong for enterprises where digital friction = direct revenue loss |
 
@@ -216,14 +216,21 @@ _Source: [G2 Session Replay 2026](https://learn.g2.com/best-session-replay-softw
 ### Competitive Positioning
 
 **The white space:** No competitor combines all of:
-1. Commerce-native behavioral context (account, pricing, catalog, B2B workflow)
+1. Commerce-native behavioral context (CLV tier, contract price, catalog, account structure, approval state)
 2. Session replay + heatmaps + journey analysis
 3. Product/digital analytics (event tracking, funnel, retention)
-4. Autonomous AI experimentation (AI-driven hypothesis → variant → deploy)
+4. Autonomous AI experimentation (AI-driven hypothesis → variant → progressive rollout → measure)
 5. First-party, cookieless, GDPR-native data collection
 6. Zero integration overhead (all in the same platform as the storefront)
+7. Two-Horizon Measurement — H1 short-term (CTR, CVR in days) + H2 long-term (CLV delta, repeat purchase over 90 days) gated independently
 
-ContentSquare has 1, 2, and partial 4. Amplitude has partial 2 and 3. PostHog has 2, 3, and 4 but lacks commerce context and is developer-centric. Nobody has all six — and nobody can have #1 and #6 without owning the storefront.
+**Scoring the field against these criteria:**
+- **Amplitude + Statsig** (post-acquisition): has 3 and 4 at enterprise-grade scale. Now adds experimentation and feature flags through Statsig. Lacks 1, 5, 6, 7. This is the most comprehensive competitor — but the commerce-context gap is structural; they cannot close it without owning a commerce backend.
+- **ContentSquare** has 1 (partial), 2, and partial 4. Nothing on experimentation.
+- **PostHog** has 2, 3, 4, but lacks commerce context and is developer-centric.
+- **Optimizely** has 4 and feature flags but no native analytics; under consolidation pressure.
+
+Nobody has all seven — and nobody can have #1 and #6 without owning the storefront. This is the ACI moat: commerce-native context + zero integration overhead + Two-Horizon Measurement are only reachable by a platform that *is* the storefront. Amplitude+Statsig can bundle experimentation and analytics, but they cannot ingest a B2B approval workflow state without a webhook, and cannot run a progressive rollout through the component library they don't own.
 
 ### Strengths and Weaknesses (ACI module perspective)
 

@@ -15,15 +15,17 @@
 
 ## Executive Summary
 
-commercetools is the infrastructure layer for enterprise commerce. It has won the backend. It does not have a frontend story. Every commercetools customer must solve frontend independently — and that gap costs them $500K–$2M per implementation, creates perpetual agency dependency, and produces storefronts that business users cannot operate without developer intervention.
+commercetools is the infrastructure layer for enterprise commerce — B2C, B2B, and direct-to-consumer from a single backend. It has won the backend. It does not have a frontend story. Every commercetools customer must solve frontend independently across every commerce model they operate — and that gap costs them $500K–$2M per implementation, creates perpetual agency dependency, and produces storefronts that business users cannot operate without developer intervention.
 
 The Next-Gen Frontend closes that gap. It ships as a commercetools Connect-packaged Merchant Center Custom Application — accessible through the CT environment operators already have, requiring zero new installation, zero new login, zero new context-switching. It is not a third-party DXP that happens to connect to CT. It is a first-party frontend platform that lives natively inside the Merchant Center shell, governed by the same component security model that CT's backend enforces on its APIs.
 
 The platform has two layers. The core platform — Visual editing, Governed Component Library, AI Site Builder, Behavioral Data Infrastructure, Enterprise Admin — is bundled into the CT subscription. The AI Experience Engine is a consumption-based add-on charged per experiment run, per recommendation applied, per GitHub PR generated, per progressive rollout activated. The first 10 experiments per tenant are free, seeding the moat.
 
+**B2C first, B2B next — and that order is strategic, not incidental.** The AI Experience Engine's hero capability is fast, measured experimentation. Fast experimentation requires traffic volume and short purchase cycles — which B2C commerce has in abundance and B2B commerce does not. High-velocity B2C storefronts clear Horizon-1 signal gates (CTR, conversion) in three to five days; progressive rollout gates become a tight, disciplined signal loop; the engine's value is demonstrable before the sales cycle ends. The same engine, deployed on a B2B wholesale flow, needs weeks to accumulate the same evidence — but it inherits the hardened infrastructure that B2C traffic has already stress-tested, and it reads commerce context (contract price, account tier, approval queue) that no external analytics tool can see. B2C is how we earn credibility. B2B is how we extend the moat into territory no competitor can follow. The dual-model story is the CEO-level pitch: one platform, any commerce model.
+
 The moat is the Tenant Intelligence Score: a 0–100 composite metric that compounds monthly, cannot be replicated by any tool connecting to CT APIs from outside, and represents the accumulated behavioral intelligence of the tenant's commerce operation. An operator who has run 50 experiments with a score of 78 cannot migrate to a competitor without losing that intelligence. The moat is the model, not the data access.
 
-**Product Vision:** The first commerce storefront that business users own, AI optimizes, and CFOs love — built natively for commercetools.
+**Product Vision:** The first commerce storefront that business users own, AI optimizes, and CFOs love — built natively for commercetools, for B2C velocity and B2B depth on a single platform.
 
 ---
 
@@ -47,7 +49,7 @@ This is not a process problem. It is an architecture problem. Systems that requi
 
 ### Third-Party DXPs Cannot Solve This
 
-Builder.io, Uniform, and Contentful Composable Commerce are backend-agnostic by design. That is their strength in a multi-vendor context and their structural weakness in a CT-native context. When a platform does not understand your product catalog, your pricing model, your B2B account structure, or your order state machine, its AI recommendations are generic. "Show more social proof" is not an insight. "Your B2B accounts with >$50K LTV convert 34% better when approval workflow steps are surfaced earlier in the cart" is an insight — and it requires commerce context to generate.
+Builder.io, Uniform, and Contentful Composable Commerce are backend-agnostic by design. That is their strength in a multi-vendor context and their structural weakness in a CT-native context. When a platform does not understand your product catalog, your pricing model, your CLV tier for a B2C consumer, your B2B account structure, or your order state machine, its AI recommendations are generic. "Show more social proof" is not an insight. *"Your returning mid-tier CLV consumers convert 28% higher when the loyalty strip appears above the fold"* is an insight. *"Your B2B accounts with >$50K LTV convert 34% better when approval workflow steps are surfaced earlier in the cart"* is an insight. Both require commerce context to generate. Neither is reachable by a tool reading events through a webhook.
 
 The consequences compound:
 
@@ -106,28 +108,31 @@ A tool that lives inside CT has native access to the commerce context — produc
 
 ### Primary Segments
 
-**Segment 1 — The Legacy-Trapped Enterprise (B2B)**
-Large manufacturer or distributor on commercetools with a slow, dev-maintained custom frontend reaching end-of-life. Wants a storefront that integrates cleanly with ERP, enables business users to move, and presents zero replatforming risk.
-*Verticals: Manufacturing, wholesale distribution, industrial supply*
+*Ordered for GTM sequencing: B2C-lead segments first (where the experimentation engine proves itself fastest), B2X convergence segments second (the CEO-level story), B2B depth segments third (where commerce context is the unreachable-by-competitors moat).*
 
-**Segment 2 — The Digital-Native B2B Scale-up**
-Mid-to-large B2B company using Uniform, Builder.io, or custom Next.js. Pain is fragmentation, high TCO, and no AI-native capabilities. Wants a unified, AI-native storefront purpose-built for commercetools.
+**Segment 1 — The Multi-Brand B2C Enterprise**
+Consumer brand managing 10–80+ D2C storefronts from one commercetools backend across regions and sub-brands. Content velocity is blocked by developer dependency; regional teams need to localize and launch in days; AI-driven personalization is expected but not implemented at scale. High-traffic storefronts clear experiment signal gates fastest — the AI Experience Engine earns its ROI here in the first quarter. Wants a frontend where brand teams own their storefront, AI generates content variations, and new regional sites launch in days not months.
+*Verticals: Apparel, home goods, appliances, beauty, CPG · Representative: Breville (80 D2C storefronts from one commercetools backend)*
+
+**Segment 2 — The Unified Commerce Leader (B2X)**
+Enterprise already on commercetools operating across B2B, B2C, marketplace, and in-store channels. Each channel has a bespoke frontend today — fragmented experiences, duplicated engineering effort, a unified customer record that isn't actually unified. Wants one frontend layer that orchestrates all channels with shared design systems, centralized content management, and channel-specific rendering. This is the CEO-level pitch: one platform, every commerce model, one TCO line.
+*Representative: Large retail/wholesale hybrids, global brands with omnichannel ambitions*
+
+**Segment 3 — The B2B2C / D2C Hybrid**
+Traditional B2B manufacturer adding D2C or building a B2C-style experience for distributors — 79% of B2B companies now sell D2C (up from 66% in 2024). Maintaining two separate frontends at double the cost and double the experimentation program. Wants one deployment that renders a B2C consumer experience and a B2B dealer portal from the same data model via the B2X context switching architecture (ADR-001).
+*Representative: Coflex (B2B2C portal in 90 days), Viewrail (B2B + D2C from one platform)*
+
+**Segment 4 — The AI-Forward Innovator**
+Forward-leaning strategic account experimenting with generative commerce — AI-assisted catalogs, conversational ordering, agentic procurement. Operates B2C or B2B or both; core profile is appetite for experimentation velocity. Wants a platform-native AI storefront with the Tenant Intelligence Score compounding from Day 1 and the first ten free experiments producing documented ROI inside the first quarter.
+*Verticals: Global retail, tech-led distributors, high-SKU consumer brands, high-SKU B2B*
+
+**Segment 5 — The Digital-Native B2B Scale-up**
+Mid-to-large B2B company already composable but using stitched-together third-party frontend tools (Uniform, Builder.io, custom Next.js) plus a separate B2C or D2C storefront. Pain is fragmentation, high TCO, and no AI-native capabilities that read commerce context (contract price, account tier, approval state). Wants a unified, AI-native storefront purpose-built for commercetools.
 *Verticals: B2B SaaS, tech, modern retail, logistics*
 
-**Segment 3 — The AI-Forward Innovator**
-Forward-leaning strategic account experimenting with generative commerce. Wants a platform-native AI storefront with the Tenant Intelligence Score compounding from Day 1.
-*Verticals: Global retail, tech-led distributors, high-SKU B2B*
-
-**Segment 4 — The Multi-Brand B2C Enterprise**
-Consumer brand managing 10–80+ D2C storefronts from one commercetools backend. Content velocity is blocked by developer dependency.
-*Representative: Breville (80 D2C storefronts from one commercetools backend)*
-
-**Segment 5 — The B2B2C / D2C Hybrid**
-Traditional B2B manufacturer adding D2C or building a B2C-style dealer portal. Maintaining two separate frontends at double the cost. Wants one deployment that serves B2B, B2C, and dealer contexts via the B2X context switching architecture (ADR-001).
-*Representative: Coflex (B2B2C in 90 days), Viewrail (B2B + D2C)*
-
-**Segment 6 — The Unified Commerce Leader**
-Enterprise operating across B2B, B2C, marketplace, and in-store. Bespoke frontends per channel creating fragmented experiences. Wants shared design systems, centralized content management, and channel-specific rendering from one platform.
+**Segment 6 — The Legacy-Trapped Enterprise (B2B)**
+Large manufacturer or distributor on commercetools with a slow, dev-maintained custom frontend reaching end-of-life. 64% cite legacy systems as the #1 barrier to digital success; 52% face frontend EOL within 2 years. Wants a storefront that integrates cleanly with ERP, enables business users to move, and presents zero replatforming risk. This is the consolidation play — a platform that serves B2B today and extends into D2C when the board asks.
+*Verticals: Manufacturing, wholesale distribution, industrial supply*
 
 ### Buyer Personas (Within Each Enterprise)
 
