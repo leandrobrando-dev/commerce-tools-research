@@ -277,7 +277,7 @@ Extending commercetools' existing Merchant Center design system was considered �
 - Accessibility baseline: WCAG 2.1 AA compliance through Radix UI primitives — enterprise procurement requirement
 - Dark mode support deferred to Phase 2 — operator UI is desktop-primary in controlled lighting environments
 
-## Core User Experience
+## Operator Plane: Detailed Interaction Design
 
 ### 2.1 Defining Experience
 
@@ -622,13 +622,13 @@ Ten components are unique to this product with no adequate equivalent in the des
 - *States:* locked (default), hovered (shows explanation tooltip)
 - *Key behavior:* Never alarming — muted neutral styling; tooltip explains the protection, does not block the operator
 
-#### Phase 2
-
 **FirstPublishCelebration**
-- *Purpose:* Onboarding milestone moment — emotional design for first publish
+- *Purpose:* Onboarding milestone moment — emotional design for first publish; the conversion event that turns a skeptic into an owner
 - *Anatomy:* Full-canvas overlay with confirmation + context list + encouraging copy + "continue editing" CTA
 - *States:* appears once per operator account on first publish only
 - *Key behavior:* Auto-dismisses after 4 seconds or on click; never shown again after first occurrence
+
+#### Phase 2
 
 **B2XPreviewSplit**
 - *Purpose:* Side-by-side canvas showing B2B rendering left, B2C rendering right simultaneously
@@ -646,8 +646,8 @@ Ten components are unique to this product with no adequate equivalent in the des
 
 | Phase | Components | Blocking journey |
 |-------|-----------|-----------------|
-| **MLP (Phase 1)** | StorefrontCanvas, ContextBar, ComponentSlot, AIPanel, AIReasoningCard, PublishAction, ContextSwitcher, GovernanceBadge | All three critical journeys |
-| **Phase 2** | FirstPublishCelebration, B2XPreviewSplit, ⌘K CommandPalette | Onboarding milestone + multi-market operators |
+| **MLP (Phase 1)** | StorefrontCanvas, ContextBar, ComponentSlot, AIPanel, AIReasoningCard, PublishAction, ContextSwitcher, GovernanceBadge, FirstPublishCelebration | All three critical journeys + first-publish conversion moment |
+| **Phase 2** | B2XPreviewSplit, ⌘K CommandPalette | Multi-market operators + power users |
 | **Phase 3** | MultiContextDashboard (Direction 5 layout) | Multi-brand B2C enterprise segment |
 
 ## UX Consistency Patterns
@@ -721,6 +721,111 @@ Ten components are unique to this product with no adequate equivalent in the des
 | **Editor ↔ Merchant Center** | MC nav rail always present; switching prompts "Save draft?" if unpublished changes exist |
 | **AI panel toggle** | Toggle at top of right column; keyboard shortcut ⌘/ |
 | **Undo** | ⌘Z — each canvas change is a revertible state; AI conversation turns each count as one undo step |
+
+### Progressive Disclosure Strategy
+
+The operator audience spans a wide capability range — a marketer updating a headline should never wade through experimentation UI. Depth is always available; it is never in the way.
+
+| Layer | Who encounters it | What they see | How depth is revealed |
+|-------|------------------|---------------|-----------------------|
+| **Layer 1 — Surface** | All operators, daily tasks | Editable canvas + publish button | Immediate; no interaction required |
+| **Layer 2 — Contextual** | Operators who click an element | Sidebar property panel for the selected component | Revealed by selection — only relevant properties surface |
+| **Layer 3 — AI creation** | Operators who need to build something new | AI chat panel, AIReasoningCard, draft/publish flow | Revealed by typing in the AI input — never shown unsolicited |
+| **Layer 4 — Experimentation** | CRO, Head of Merchandising | "Create A/B variant" branch on the publish action | Revealed only at the publish decision point — not visible during editing |
+| **Layer 5 — Power user** | Data-fluent operators | ⌘K command palette, keyboard shortcuts, B2XPreviewSplit | Revealed via keyboard; discoverable via ⌘? shortcut reference |
+
+**Rules:**
+- A user at Layer 1 must never see Layer 3+ UI unless they have explicitly taken an action to request it
+- Sidebar adapts to the selected element — never shows all properties for all components simultaneously
+- Experimentation UI is never surfaced during the edit flow; it appears only as an option at publish time
+- Power-user shortcuts are always available but never required — every Layer 5 action has a mouse-navigable equivalent
+
+## ACI Intelligence Plane: UX Specification
+
+The ACI (Autonomous Commerce Intelligence) plane serves a distinct user persona — data-fluent operators including CRO managers, Heads of Merchandising, and CMOs — who read behavioral signals, run experiments, and interpret commerce-native insights. This plane replaces the fragmented toolset of ContentSquare (session analytics), Amplitude (product analytics), and Optimizely (experimentation) with a single surface that carries native commerce context none of those tools can access.
+
+### ACI User Persona
+
+| Persona | Role | Primary job in ACI |
+|---------|------|-------------------|
+| **CRO Manager** | Conversion Rate Optimization | Run A/B tests, interpret experiment results, promote winners |
+| **Head of Merchandising** | Product & Catalog | Read category performance, identify hesitation signals, act on AI recommendations |
+| **CMO / VP Commerce** | Strategic oversight | Campaign ROI, segment performance, executive-level signal digest |
+| **Data Science** | Analytical depth | Export raw signals, build custom segments, validate statistical significance |
+
+### Defining ACI Experience
+
+> **"I see why revenue dropped on the DACH B2B catalog — and I can fix it without leaving this screen."**
+
+The ACI plane is not a passive reporting dashboard. The defining experience is the **signal → insight → action** loop: a behavioral signal surfaces, ACI provides commerce-native context the operator couldn't get from any external tool, and the operator acts directly — approving an experiment, promoting a variant, or routing a recommendation to the visual editor — without leaving the surface.
+
+### ACI Dashboard Architecture
+
+The ACI plane is a dedicated section within the Merchant Center navigation (not embedded in the visual editor). It shares the MC shell and design tokens — same chrome, different capability surface.
+
+**Three primary views:**
+
+| View | Replaces | What it shows |
+|------|----------|--------------|
+| **Commerce Signals** | ContentSquare session analytics | Session paths, hesitation moments, scroll depth — annotated with commerce context (account tier, cart value, pricing group) |
+| **Product Intelligence** | Amplitude product analytics | SKU and category performance, add-to-cart funnels, search-to-purchase journeys — with B2B approval workflow stages overlaid |
+| **Experiments** | Optimizely | Active A/B tests, statistical significance tracking, variant performance, winner promotion |
+
+### Commerce Context Advantage — The ACI Differentiator
+
+Every signal in the ACI plane carries context no external tool can access. The UX must make this context legible at a glance — not buried in filters.
+
+**Example signal card (Commerce Signals view):**
+
+```
+⚠ Hesitation signal — Product Detail Page
+B2B segment: Enterprise tier  |  Locale: DE  |  Customer group: Distributor
+
+47% of sessions in this segment paused 8+ seconds on the pricing block
+before abandoning in the last 14 days.
+
+Commerce context: Order total at hesitation avg. £4,850
+                  Approval threshold for this customer group: £5,000
+
+AI recommendation: Add a "Request approval" CTA below the price for
+orders within 15% of the approval threshold.
+
+[Approve recommendation →]  [Run A/B test →]  [View in editor →]
+```
+
+This card pattern — signal + commerce context + AI recommendation + direct action — is the repeating unit across all three ACI views.
+
+### ACI UX Patterns
+
+**Signal Card**
+- *Purpose:* The atomic unit of ACI — one behavioral signal with full commerce context and a recommended action
+- *Anatomy:* Signal type indicator + affected segment/locale chips + behavioral summary + commerce context block + AI recommendation + action buttons
+- *States:* unread, reviewed, action taken, dismissed
+- *Key behavior:* Action buttons route directly to the right surface — "View in editor" opens the visual editor at the relevant page; "Run A/B test" opens experiment setup with pre-populated variant config
+
+**Experiment Tracker**
+- *Purpose:* Live view of all running A/B tests with statistical significance and commerce-native outcome metrics
+- *Anatomy:* Experiment list with status chips + variant performance bars + significance indicator + "Promote winner" action
+- *Key behavior:* Significance indicator updates in real time; "Promote winner" routes to the visual editor with the winning variant pre-selected for publish
+
+**Commerce Intelligence Feed**
+- *Purpose:* Chronological feed of signals ranked by commercial impact — the "inbox" of ACI insights
+- *Anatomy:* Signal cards sorted by estimated revenue impact + filter bar (segment / locale / signal type) + "Mark reviewed" batch action
+- *Key behavior:* Signals created by the storefront's own behavioral data — not imported from external tools; filters are pre-populated with the operator's saved contexts
+
+### ACI Interaction Principles
+
+1. **Action at the point of insight** — Every signal card exposes the action directly; operators never navigate to a separate tool to act on what they've just read.
+2. **Commerce context is always visible** — Account tier, pricing group, approval threshold, and locale are present on every signal card — not available only on drill-down.
+3. **AI recommendation before operator decision** — ACI surfaces AI recommendations the same way the visual editor does: recommendation first, operator approves or modifies. The same trust model applies.
+4. **No raw data walls** — The default view is never a table of unprocessed numbers. Data Science users can access raw exports; the default surface presents interpreted signals with recommended actions.
+
+### ACI Navigation Integration
+
+- ACI is a top-level section in the MC nav rail — same hierarchy as the visual editor
+- Signals from ACI that affect a specific storefront page include a "View in editor" deep-link that opens the visual editor at the relevant page with the affected section highlighted
+- Experiment variants created in ACI are visible in the visual editor as draft variants — the two planes share state, not just navigation links
+- The ContextBar in the visual editor shows "1 active ACI signal" when an open signal exists for the current page/context — connecting the two planes without forcing a context switch
 
 ## Responsive Design & Accessibility
 
