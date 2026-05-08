@@ -1,0 +1,2110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Epic 5 — Behavioral Data Infrastructure — Wireframes</title>
+<style>
+  :root {
+    --mc-blue: #0066cc;
+    --mc-blue-wash: rgba(0, 102, 204, 0.08);
+    --mc-ai-tint: rgba(88, 28, 255, 0.08);
+    --mc-ai-accent: #5b21b6;
+    --mc-bg: #f5f7fa;
+    --mc-surface: #ffffff;
+    --mc-border: #e4e7eb;
+    --mc-border-strong: #cbd2d9;
+    --mc-text: #1f2933;
+    --mc-text-muted: #6b7280;
+    --mc-text-faint: #9aa5b1;
+    --mc-success: #16a34a;
+    --mc-success-bg: #ecfdf5;
+    --mc-warning: #d97706;
+    --mc-warning-bg: #fef3c7;
+    --mc-error: #dc2626;
+    --mc-error-bg: #fee2e2;
+    --mc-locked: #9aa5b1;
+    --mc-locked-bg: #f3f4f6;
+
+    /* Epic 5 additions */
+    --heat-hot: rgba(239, 68, 68, 0.55);
+    --heat-warm: rgba(249, 115, 22, 0.45);
+    --heat-mid: rgba(234, 179, 8, 0.35);
+    --heat-cool: rgba(59, 130, 246, 0.22);
+    --consent-aggregate: #0ea5e9;
+    --consent-aggregate-wash: rgba(14, 165, 233, 0.10);
+    --consent-identity: #c026d3;
+    --consent-identity-wash: rgba(192, 38, 211, 0.10);
+
+    --radius-sm: 4px;
+    --radius-md: 6px;
+    --radius-lg: 8px;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 2px 6px rgba(0,0,0,0.06);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 13px;
+    line-height: 1.5;
+    background: var(--mc-bg);
+    color: var(--mc-text);
+  }
+
+  code, .mono { font-family: 'SF Mono', 'Monaco', 'Consolas', monospace; font-size: 12px; }
+
+  /* ---------- Document header ---------- */
+  .doc-header {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: white;
+    padding: 24px 40px;
+  }
+  .doc-header h1 { font-size: 22px; font-weight: 600; margin-bottom: 6px; }
+  .doc-header p { font-size: 13px; opacity: 0.85; max-width: 900px; }
+  .doc-header .meta {
+    margin-top: 12px; display: flex; gap: 20px; font-size: 12px; opacity: 0.7;
+  }
+
+  /* ---------- Tab nav ---------- */
+  .tabs {
+    background: white;
+    border-bottom: 1px solid var(--mc-border);
+    display: flex;
+    padding: 0 40px;
+    gap: 32px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .tab {
+    padding: 14px 0;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    font-weight: 500;
+    font-size: 13px;
+    color: var(--mc-text-muted);
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .tab.active { border-bottom-color: var(--mc-blue); color: var(--mc-blue); }
+  .tab:hover { color: var(--mc-blue); }
+  .tab-num {
+    display: inline-block;
+    width: 18px; height: 18px;
+    background: var(--mc-border);
+    color: var(--mc-text-muted);
+    border-radius: 50%;
+    font-size: 11px;
+    text-align: center;
+    line-height: 18px;
+    font-weight: 600;
+  }
+  .tab.active .tab-num { background: var(--mc-blue); color: white; }
+
+  .tab-content { display: none; padding: 32px 40px 80px; }
+  .tab-content.active { display: block; }
+
+  /* ---------- Tab intro ---------- */
+  .tab-intro {
+    background: white;
+    border: 1px solid var(--mc-border);
+    border-left: 3px solid var(--mc-blue);
+    border-radius: var(--radius-md);
+    padding: 16px 20px;
+    margin-bottom: 28px;
+    max-width: 1100px;
+  }
+  .tab-intro h2 { font-size: 16px; margin-bottom: 6px; }
+  .tab-intro p { color: var(--mc-text-muted); font-size: 13px; }
+  .tab-intro .frs {
+    margin-top: 10px; display: flex; gap: 6px; flex-wrap: wrap;
+  }
+  .fr-chip {
+    background: var(--mc-blue-wash);
+    color: var(--mc-blue);
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 500;
+    font-family: 'SF Mono', 'Monaco', monospace;
+  }
+
+  /* ---------- Screen card ---------- */
+  .screen {
+    background: white;
+    border: 1px solid var(--mc-border);
+    border-radius: var(--radius-lg);
+    margin-bottom: 32px;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+  }
+  .screen-header {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--mc-border);
+    background: #fafbfc;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .screen-header h3 { font-size: 14px; font-weight: 600; }
+  .screen-header .tag {
+    font-family: 'SF Mono', monospace;
+    font-size: 11px;
+    color: var(--mc-text-muted);
+    background: white;
+    border: 1px solid var(--mc-border);
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+  .screen-body { padding: 24px; display: grid; grid-template-columns: 1fr 280px; gap: 24px; }
+  .screen-body.single { grid-template-columns: 1fr; }
+  .screen-annotations {
+    background: #fafbfc;
+    border: 1px solid var(--mc-border);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    font-size: 12px;
+  }
+  .screen-annotations h4 {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--mc-text-muted);
+    margin-bottom: 10px;
+  }
+  .screen-annotations ul { list-style: none; padding: 0; }
+  .screen-annotations li {
+    padding: 6px 0;
+    border-bottom: 1px dashed var(--mc-border);
+    color: var(--mc-text);
+    font-size: 12px;
+    line-height: 1.45;
+  }
+  .screen-annotations li:last-child { border-bottom: none; }
+  .screen-annotations li strong { color: var(--mc-blue); font-weight: 600; }
+
+  /* ---------- Editor frame (simulates Merchant Center shell) ---------- */
+  .editor-frame {
+    border: 1px solid var(--mc-border-strong);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background: var(--mc-bg);
+    display: grid;
+    grid-template-rows: 40px 36px 1fr;
+    height: 620px;
+    font-size: 12px;
+    position: relative;
+  }
+  .editor-topbar {
+    background: #1f2933;
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    gap: 20px;
+    font-size: 12px;
+  }
+  .editor-topbar .logo { font-weight: 600; letter-spacing: 0.3px; }
+  .editor-topbar .crumbs { opacity: 0.7; }
+  .editor-topbar .crumbs strong { color: white; opacity: 1; }
+  .editor-topbar .spacer { flex: 1; }
+  .editor-topbar .user {
+    width: 24px; height: 24px; border-radius: 50%;
+    background: var(--mc-blue); display: inline-flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 600;
+  }
+
+  .context-bar {
+    background: white;
+    border-bottom: 1px solid var(--mc-border);
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    gap: 8px;
+  }
+  .chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+    border: 1px solid var(--mc-border);
+    background: white;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .chip:hover { border-color: var(--mc-blue); color: var(--mc-blue); }
+  .chip.active { background: var(--mc-blue-wash); border-color: var(--mc-blue); color: var(--mc-blue); }
+  .chip.draft { background: var(--mc-warning-bg); border-color: var(--mc-warning); color: var(--mc-warning); }
+  .chip.live { background: var(--mc-success-bg); border-color: var(--mc-success); color: var(--mc-success); }
+  .chip .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  .context-bar .spacer { flex: 1; }
+  .context-bar .viewport-toggle {
+    display: flex; gap: 0; border: 1px solid var(--mc-border); border-radius: var(--radius-sm); overflow: hidden;
+  }
+  .context-bar .viewport-toggle button {
+    background: white; border: none; padding: 4px 10px; font-size: 11px; cursor: pointer;
+    color: var(--mc-text-muted); border-right: 1px solid var(--mc-border);
+  }
+  .context-bar .viewport-toggle button:last-child { border-right: none; }
+  .context-bar .viewport-toggle button.active { background: var(--mc-blue-wash); color: var(--mc-blue); font-weight: 500; }
+  .publish-btn {
+    background: var(--mc-blue); color: white; border: none;
+    padding: 5px 14px; border-radius: var(--radius-sm); font-size: 12px; font-weight: 500; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .publish-btn:hover { background: #0052a3; }
+  .publish-btn.disabled { background: var(--mc-border); color: var(--mc-text-faint); cursor: not-allowed; }
+
+  .editor-main { display: grid; grid-template-columns: 56px 1fr 300px; height: 100%; overflow: hidden; }
+  .nav-rail {
+    background: #fafbfc;
+    border-right: 1px solid var(--mc-border);
+    display: flex; flex-direction: column; align-items: center; padding: 12px 0; gap: 4px;
+  }
+  .nav-rail .nav-item {
+    width: 40px; height: 40px; border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; color: var(--mc-text-muted); cursor: pointer;
+    position: relative;
+  }
+  .nav-rail .nav-item:hover { background: white; color: var(--mc-blue); }
+  .nav-rail .nav-item.active { background: var(--mc-blue-wash); color: var(--mc-blue); }
+
+  .canvas-wrap {
+    overflow: auto;
+    background:
+      linear-gradient(45deg, #f0f2f5 25%, transparent 25%),
+      linear-gradient(-45deg, #f0f2f5 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, #f0f2f5 75%),
+      linear-gradient(-45deg, transparent 75%, #f0f2f5 75%);
+    background-size: 16px 16px;
+    background-position: 0 0, 0 8px, 8px -8px, -8px 0;
+    padding: 20px;
+    position: relative;
+  }
+  .canvas {
+    background: white;
+    border: 1px solid var(--mc-border-strong);
+    border-radius: var(--radius-sm);
+    min-height: 100%;
+    padding: 16px;
+    display: flex; flex-direction: column; gap: 14px;
+    box-shadow: var(--shadow-md);
+    position: relative;
+  }
+  .canvas.tablet { max-width: 768px; margin: 0 auto; }
+  .canvas.mobile { max-width: 375px; margin: 0 auto; }
+  .canvas-section {
+    border: 1px dashed var(--mc-border-strong);
+    border-radius: var(--radius-sm);
+    padding: 14px;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.15s;
+    background: white;
+  }
+  .canvas-section:hover { border-color: var(--mc-blue); border-style: solid; }
+  .canvas-section.selected {
+    border: 2px solid var(--mc-blue);
+    box-shadow: 0 0 0 3px var(--mc-blue-wash);
+  }
+  .canvas-section.red-zone {
+    border-style: solid;
+    border-color: var(--mc-locked);
+    background: var(--mc-locked-bg);
+    cursor: not-allowed;
+  }
+  .canvas-section .sec-label {
+    position: absolute; top: -9px; left: 10px;
+    background: white; padding: 0 6px; font-size: 10px; color: var(--mc-text-muted);
+    font-family: 'SF Mono', monospace;
+  }
+  .canvas-section.selected .sec-label { color: var(--mc-blue); font-weight: 600; }
+  .canvas-section.red-zone .sec-label { color: var(--mc-locked); }
+  .canvas-section .sec-body {
+    display: flex; gap: 12px; align-items: center;
+  }
+  .canvas-section .placeholder {
+    height: 48px; background: #f0f2f5; border-radius: var(--radius-sm); flex: 1;
+    display: flex; align-items: center; justify-content: center; color: var(--mc-text-faint); font-size: 11px;
+  }
+
+  /* ---------- Epic 5: Heatmap overlay ---------- */
+  .heat-overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 5;
+    opacity: 1;
+    transition: opacity 0.25s ease;
+    mix-blend-mode: multiply;
+  }
+  .heat-overlay.hidden { opacity: 0; }
+  .heat-blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(28px);
+  }
+  .heat-blob.hot {
+    background: radial-gradient(circle, var(--heat-hot) 0%, var(--heat-warm) 45%, transparent 70%);
+  }
+  .heat-blob.warm {
+    background: radial-gradient(circle, var(--heat-warm) 0%, var(--heat-mid) 50%, transparent 75%);
+  }
+  .heat-blob.cool {
+    background: radial-gradient(circle, var(--heat-cool) 0%, transparent 75%);
+  }
+
+  /* Engagement badges on sections */
+  .eng-badge {
+    position: absolute;
+    top: 8px; right: 10px;
+    font-size: 10px; font-weight: 600;
+    padding: 3px 8px; border-radius: 10px;
+    display: inline-flex; align-items: center; gap: 5px;
+    z-index: 6;
+    border: 1px solid transparent;
+  }
+  .eng-badge.high {
+    background: var(--mc-success-bg); color: var(--mc-success);
+    border-color: rgba(22, 163, 74, 0.3);
+  }
+  .eng-badge.mid {
+    background: var(--mc-warning-bg); color: var(--mc-warning);
+    border-color: rgba(217, 119, 6, 0.3);
+  }
+  .eng-badge.low {
+    background: var(--mc-locked-bg); color: var(--mc-text-muted);
+    border-color: var(--mc-border);
+  }
+  .eng-badge .dot {
+    width: 6px; height: 6px; border-radius: 50%; background: currentColor;
+  }
+
+  .dropoff-ann {
+    position: absolute;
+    top: 8px; left: 10px;
+    background: white;
+    border: 1px solid var(--mc-border);
+    color: var(--mc-text-muted);
+    font-size: 10px; font-weight: 500;
+    padding: 2px 7px; border-radius: 10px;
+    font-family: 'SF Mono', monospace;
+    z-index: 6;
+  }
+  .dropoff-ann.warn { color: var(--mc-warning); border-color: var(--mc-warning); }
+  .dropoff-ann.crit { color: var(--mc-error); border-color: var(--mc-error); background: var(--mc-error-bg); }
+
+  .hover-card {
+    position: absolute;
+    left: 50%; top: calc(100% + 8px);
+    transform: translateX(-50%);
+    width: 240px;
+    background: #1f2933;
+    color: white;
+    padding: 10px 12px;
+    border-radius: var(--radius-md);
+    font-size: 11px;
+    line-height: 1.5;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    z-index: 20;
+  }
+  .hover-card::before {
+    content: '';
+    position: absolute;
+    top: -6px; left: 50%; transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-bottom-color: #1f2933;
+    border-top: none;
+  }
+  .hover-card h6 { font-size: 11px; font-weight: 600; margin-bottom: 4px; }
+  .hover-card .metric-line {
+    display: flex; justify-content: space-between;
+    padding: 2px 0; opacity: 0.85;
+  }
+  .hover-card .metric-line strong { color: #fbbf24; font-weight: 600; }
+
+  /* Heatmap toggle in context bar */
+  .heat-toggle {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 11px; font-weight: 500;
+    border: 1px solid var(--mc-border);
+    background: white;
+    cursor: pointer;
+  }
+  .heat-toggle.active {
+    background: linear-gradient(90deg, rgba(239,68,68,0.12), rgba(234,179,8,0.12));
+    border-color: #f97316;
+    color: #b45309;
+  }
+  .heat-toggle .heat-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: linear-gradient(135deg, #ef4444, #f59e0b);
+  }
+
+  .heat-legend {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 10px; color: var(--mc-text-muted);
+    padding: 3px 8px; border: 1px solid var(--mc-border); border-radius: 12px;
+    background: white;
+  }
+  .heat-gradient-bar {
+    width: 80px; height: 8px; border-radius: 4px;
+    background: linear-gradient(90deg, var(--heat-cool) 0%, var(--heat-mid) 40%, var(--heat-warm) 70%, var(--heat-hot) 100%);
+  }
+
+  .side-panel {
+    background: white;
+    border-left: 1px solid var(--mc-border);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+  .side-panel .panel-tabs {
+    display: flex; border-bottom: 1px solid var(--mc-border); background: #fafbfc;
+  }
+  .side-panel .panel-tab {
+    flex: 1; padding: 10px 0; font-size: 11px; font-weight: 500; text-align: center; cursor: pointer;
+    color: var(--mc-text-muted); border-bottom: 2px solid transparent;
+  }
+  .side-panel .panel-tab.active { color: var(--mc-blue); border-bottom-color: var(--mc-blue); background: white; }
+  .side-panel .panel-body { padding: 14px; flex: 1; overflow-y: auto; }
+
+  .prop-group { margin-bottom: 18px; }
+  .prop-group h5 {
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.6px;
+    color: var(--mc-text-muted); margin-bottom: 8px; font-weight: 600;
+  }
+  .prop-row { margin-bottom: 10px; }
+  .prop-label { font-size: 11px; color: var(--mc-text-muted); margin-bottom: 3px; display: block; }
+  .prop-input {
+    width: 100%; padding: 6px 8px; border: 1px solid var(--mc-border);
+    border-radius: var(--radius-sm); font-size: 12px; background: white; font-family: inherit;
+  }
+
+  .btn-primary, .btn-ghost, .btn-danger {
+    padding: 5px 10px; border-radius: var(--radius-sm); font-size: 11px; font-weight: 500;
+    cursor: pointer; border: 1px solid transparent;
+  }
+  .btn-primary { background: var(--mc-blue); color: white; }
+  .btn-ghost { background: white; color: var(--mc-text-muted); border-color: var(--mc-border); }
+  .btn-danger { background: white; color: var(--mc-error); border-color: var(--mc-error); }
+
+  /* ---------- Epic 5: Dual consent layers ---------- */
+  .consent-shell {
+    border: 1px solid var(--mc-border-strong);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background: white;
+  }
+  .consent-shell-header {
+    background: #fafbfc;
+    border-bottom: 1px solid var(--mc-border);
+    padding: 12px 18px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .consent-shell-header h4 { font-size: 14px; font-weight: 600; }
+  .consent-shell-header .sub { color: var(--mc-text-muted); font-size: 12px; margin-left: auto; }
+
+  .consent-layers {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border-bottom: 1px solid var(--mc-border);
+  }
+  .consent-layer {
+    padding: 18px 20px;
+    border-right: 1px solid var(--mc-border);
+  }
+  .consent-layer:last-child { border-right: none; }
+  .consent-layer.aggregate {
+    background: var(--consent-aggregate-wash);
+    border-top: 3px solid var(--consent-aggregate);
+  }
+  .consent-layer.identity {
+    background: var(--consent-identity-wash);
+    border-top: 3px solid var(--consent-identity);
+  }
+  .consent-layer h5 {
+    font-size: 13px; font-weight: 600; margin-bottom: 4px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .consent-layer h5 .layer-num {
+    width: 20px; height: 20px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: white; font-size: 11px; font-weight: 700;
+  }
+  .consent-layer.aggregate h5 .layer-num { background: var(--consent-aggregate); }
+  .consent-layer.identity h5 .layer-num { background: var(--consent-identity); }
+  .consent-layer .desc {
+    font-size: 12px; color: var(--mc-text-muted); margin-bottom: 14px;
+    line-height: 1.5;
+  }
+  .consent-layer .legal-chip {
+    display: inline-block;
+    font-size: 10px; font-weight: 600;
+    padding: 2px 8px; border-radius: 10px;
+    font-family: 'SF Mono', monospace;
+    margin-bottom: 10px;
+  }
+  .consent-layer.aggregate .legal-chip { background: var(--consent-aggregate); color: white; }
+  .consent-layer.identity .legal-chip { background: var(--consent-identity); color: white; }
+
+  .consent-toggle {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 14px;
+    background: white;
+    border: 1px solid var(--mc-border);
+    border-radius: var(--radius-md);
+    margin-bottom: 8px;
+  }
+  .consent-toggle .tgl-label { font-size: 12px; font-weight: 500; }
+  .consent-toggle .tgl-label small { display: block; color: var(--mc-text-muted); font-weight: 400; font-size: 11px; margin-top: 2px; }
+  .toggle-switch {
+    width: 34px; height: 18px; border-radius: 9px;
+    background: var(--mc-border); position: relative; cursor: pointer;
+    flex-shrink: 0; transition: background 0.2s;
+  }
+  .toggle-switch::after {
+    content: ''; position: absolute; top: 2px; left: 2px;
+    width: 14px; height: 14px; border-radius: 50%; background: white;
+    transition: left 0.2s;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+  }
+  .toggle-switch.on { background: var(--mc-success); }
+  .toggle-switch.on::after { left: 18px; }
+  .toggle-switch.on.aggregate { background: var(--consent-aggregate); }
+  .toggle-switch.on.identity { background: var(--consent-identity); }
+
+  .scope-list {
+    list-style: none; padding: 0; margin-top: 10px;
+  }
+  .scope-list li {
+    font-size: 11px; padding: 4px 0;
+    display: flex; align-items: center; gap: 6px;
+    color: var(--mc-text);
+  }
+  .scope-list li .check {
+    color: var(--mc-success); font-weight: 700;
+  }
+  .scope-list li .cross { color: var(--mc-error); font-weight: 700; }
+
+  /* Erasure queue */
+  .erasure-row {
+    display: grid; grid-template-columns: 140px 1fr 110px 100px 110px 80px;
+    gap: 12px; padding: 10px 14px;
+    border-bottom: 1px solid var(--mc-border); font-size: 12px; align-items: center;
+  }
+  .erasure-row.header {
+    background: #fafbfc; font-size: 10px; text-transform: uppercase;
+    letter-spacing: 0.5px; color: var(--mc-text-muted); font-weight: 600;
+  }
+  .erasure-row:last-child { border-bottom: none; }
+  .erasure-row .timestamp { font-family: 'SF Mono', monospace; font-size: 11px; color: var(--mc-text-muted); }
+  .status-pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 2px 8px; border-radius: 10px;
+    font-size: 10px; font-weight: 600;
+  }
+  .status-pill.processing { background: var(--mc-warning-bg); color: var(--mc-warning); }
+  .status-pill.done { background: var(--mc-success-bg); color: var(--mc-success); }
+  .status-pill.queued { background: var(--mc-blue-wash); color: var(--mc-blue); }
+  .status-pill.overdue { background: var(--mc-error-bg); color: var(--mc-error); }
+  .status-pill .dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+
+  /* ---------- Epic 5: Metric cards for pipeline health ---------- */
+  .metric-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+  }
+  .metric-grid.wide-3 { grid-template-columns: repeat(3, 1fr); }
+  .metric-card {
+    background: white;
+    border: 1px solid var(--mc-border);
+    border-radius: var(--radius-md);
+    padding: 14px 16px;
+    position: relative;
+  }
+  .metric-card .metric-label {
+    font-size: 11px; color: var(--mc-text-muted);
+    text-transform: uppercase; letter-spacing: 0.4px;
+    margin-bottom: 8px; font-weight: 600;
+  }
+  .metric-card .metric-value {
+    font-size: 22px; font-weight: 600; color: var(--mc-text);
+    letter-spacing: -0.5px;
+    font-family: 'SF Mono', monospace;
+    margin-bottom: 4px;
+  }
+  .metric-card .metric-delta {
+    font-size: 11px; font-weight: 500;
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .metric-card .metric-delta.up { color: var(--mc-success); }
+  .metric-card .metric-delta.down { color: var(--mc-error); }
+  .metric-card .metric-delta.neutral { color: var(--mc-text-muted); }
+  .metric-card .metric-sparkline {
+    margin-top: 10px; height: 28px; width: 100%;
+  }
+  .metric-card .status-indicator {
+    position: absolute; top: 14px; right: 14px;
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--mc-success);
+    box-shadow: 0 0 0 3px var(--mc-success-bg);
+  }
+  .metric-card .status-indicator.warn { background: var(--mc-warning); box-shadow: 0 0 0 3px var(--mc-warning-bg); }
+  .metric-card .status-indicator.error { background: var(--mc-error); box-shadow: 0 0 0 3px var(--mc-error-bg); }
+
+  .pipeline-stage {
+    background: white;
+    border: 1px solid var(--mc-border);
+    border-radius: var(--radius-md);
+    padding: 16px 18px;
+    position: relative;
+  }
+  .pipeline-stage h5 {
+    font-size: 12px; font-weight: 600; margin-bottom: 6px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .pipeline-stage .stage-status {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--mc-success);
+  }
+  .pipeline-flow {
+    display: grid;
+    grid-template-columns: 1fr 24px 1fr 24px 1fr 24px 1fr;
+    align-items: center;
+    gap: 0;
+  }
+  .pipeline-arrow {
+    color: var(--mc-text-muted);
+    font-size: 18px; text-align: center;
+  }
+  .pipeline-stage .stage-meta {
+    font-size: 11px; color: var(--mc-text-muted);
+    margin-top: 4px; line-height: 1.5;
+  }
+  .pipeline-stage .stage-metric {
+    margin-top: 10px; padding-top: 10px;
+    border-top: 1px dashed var(--mc-border);
+    font-family: 'SF Mono', monospace;
+    font-size: 11px;
+    color: var(--mc-text);
+  }
+
+  .boundary-card {
+    background: white;
+    border: 1px solid var(--mc-border);
+    border-left: 3px solid var(--mc-success);
+    border-radius: var(--radius-md);
+    padding: 14px 18px;
+  }
+  .boundary-card.fail { border-left-color: var(--mc-error); }
+  .boundary-card h5 { font-size: 12px; font-weight: 600; margin-bottom: 4px; }
+  .boundary-card .check-ok { color: var(--mc-success); font-weight: 600; }
+  .boundary-card .check-fail { color: var(--mc-error); font-weight: 600; }
+
+  /* Retention slider */
+  .retention-slider {
+    background: white;
+    border: 1px solid var(--mc-border);
+    border-radius: var(--radius-md);
+    padding: 16px 18px;
+  }
+  .retention-track {
+    position: relative;
+    height: 6px;
+    background: linear-gradient(90deg, var(--mc-success) 0%, var(--mc-warning) 60%, var(--mc-error) 100%);
+    border-radius: 3px;
+    margin: 18px 0 10px;
+  }
+  .retention-marker {
+    position: absolute;
+    top: -6px;
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: white;
+    border: 3px solid var(--mc-blue);
+    transform: translateX(-50%);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  }
+  .retention-labels {
+    display: flex; justify-content: space-between;
+    font-size: 10px; color: var(--mc-text-muted);
+    font-family: 'SF Mono', monospace;
+  }
+
+  /* Audit log rows */
+  .audit-row {
+    display: grid; grid-template-columns: 130px 90px 1fr 120px;
+    gap: 12px; padding: 10px 14px;
+    border-bottom: 1px solid var(--mc-border); font-size: 12px; align-items: center;
+  }
+  .audit-row.header {
+    background: #fafbfc; font-size: 10px; text-transform: uppercase;
+    letter-spacing: 0.5px; color: var(--mc-text-muted); font-weight: 600;
+  }
+  .audit-row:last-child { border-bottom: none; }
+  .audit-row .timestamp { font-family: 'SF Mono', monospace; font-size: 11px; color: var(--mc-text-muted); }
+  .audit-row .avatar-sm {
+    width: 18px; height: 18px; border-radius: 50%;
+    background: var(--mc-blue); color: white; font-size: 9px; font-weight: 600;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+
+  /* Silent moat banner */
+  .moat-banner {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    color: white;
+    padding: 20px 24px;
+    border-radius: var(--radius-md);
+    margin-bottom: 20px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 20px;
+    align-items: center;
+  }
+  .moat-banner h4 { font-size: 14px; margin-bottom: 4px; }
+  .moat-banner p { font-size: 12px; opacity: 0.85; max-width: 680px; line-height: 1.5; }
+  .moat-banner .days-counter {
+    font-family: 'SF Mono', monospace;
+    text-align: right;
+  }
+  .moat-banner .days-counter .big {
+    font-size: 28px; font-weight: 600;
+    color: #fbbf24;
+  }
+  .moat-banner .days-counter .lbl {
+    font-size: 11px; opacity: 0.7;
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+
+  /* Legend */
+  .legend {
+    margin-top: 12px; display: flex; gap: 16px; font-size: 11px; color: var(--mc-text-muted);
+    padding: 10px 14px; background: #fafbfc; border: 1px solid var(--mc-border); border-radius: var(--radius-md);
+    flex-wrap: wrap;
+  }
+  .legend-item { display: inline-flex; align-items: center; gap: 6px; }
+  .legend-swatch {
+    width: 14px; height: 14px; border-radius: 3px; display: inline-block;
+  }
+
+  /* Footer */
+  .doc-footer {
+    background: white; border-top: 1px solid var(--mc-border);
+    padding: 20px 40px; font-size: 12px; color: var(--mc-text-muted); text-align: center;
+  }
+
+  /* ---------- Two-column helper ---------- */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+
+  .section-title {
+    font-size: 12px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.5px; color: var(--mc-text-muted);
+    margin: 18px 0 10px;
+  }
+  .section-title:first-child { margin-top: 0; }
+
+  .note-inline {
+    padding: 10px 14px; background: #fafbfc;
+    border: 1px dashed var(--mc-border); border-radius: var(--radius-sm);
+    font-size: 11px; color: var(--mc-text-muted);
+    margin-bottom: 14px;
+  }
+</style>
+</head>
+<body>
+
+<div class="doc-header">
+  <h1>Epic 5 — Behavioral Data Infrastructure Wireframes</h1>
+  <p>The compounding-moat layer for the commercetools Next-Gen Frontend. Behavioral collection silently activates when a CT project is connected (Epic 1) and accumulates before any analytics UI is built. Core product decision: there is <strong>no separate ACI analytics dashboard</strong> — behavioral data is dissolved into the canvas surface (heatmap overlay, engagement badges, drop-off annotations). IT Admin surfaces handle dual-consent configuration and pipeline health.</p>
+  <div class="meta">
+    <span>Author: Sally (UX)</span>
+    <span>Date: 2026-05-07</span>
+    <span>Status: Draft for review</span>
+    <span>Personas: Business Operator (canvas insights) · IT Admin (consent / GDPR) · Storefront Developer (pipeline)</span>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" data-tab="canvas"><span class="tab-num">1</span> Canvas with Behavioral Overlay</div>
+  <div class="tab" data-tab="consent"><span class="tab-num">2</span> Dual-Consent Management</div>
+  <div class="tab" data-tab="pipeline"><span class="tab-num">3</span> Behavioral Pipeline Health</div>
+</div>
+
+<!-- =========================================================
+     TAB 1 — CANVAS WITH BEHAVIORAL OVERLAY
+     ========================================================= -->
+<div id="tab-canvas" class="tab-content active">
+
+  <div class="tab-intro">
+    <h2>1 — Canvas with Behavioral Overlay</h2>
+    <p>Behavioral insights dissolve into the canvas surface Business Operators already use every day. There is no separate ACI analytics dashboard. Operators toggle a heatmap overlay on top of live components, read engagement score badges per section, and hover to see drop-off rates with suggested fixes. This is how FR21–FR26 surface: contextually, inside the work.</p>
+    <div class="frs">
+      <span class="fr-chip">FR21</span>
+      <span class="fr-chip">FR22</span>
+      <span class="fr-chip">FR23</span>
+      <span class="fr-chip">FR24</span>
+      <span class="fr-chip">FR25</span>
+      <span class="fr-chip">FR26</span>
+      <span class="fr-chip">FR27</span>
+    </div>
+  </div>
+
+  <div class="moat-banner">
+    <div>
+      <h4>The moat is already accumulating</h4>
+      <p>Behavioral collection activated the moment this tenant connected their commercetools project in Epic 1 — weeks before any analytics UI existed. What you see here are overlays on data already in the pipeline. Competitors connecting to CT APIs tomorrow start at day zero. Your tenant is at day 47.</p>
+    </div>
+    <div class="days-counter">
+      <div class="big">47</div>
+      <div class="lbl">Days collecting</div>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 1A — Heatmap overlay active ============ -->
+  <div class="screen">
+    <div class="screen-header">
+      <h3>1A — Heatmap overlay active on live canvas</h3>
+      <span class="tag">StorefrontCanvas + BehavioralOverlay (heatmap mode)</span>
+    </div>
+    <div class="screen-body">
+      <div class="editor-frame">
+        <div class="editor-topbar">
+          <span class="logo">commercetools</span>
+          <span class="crumbs">Tutorial &rsaquo; Storefront &rsaquo; <strong>Home</strong></span>
+          <span class="spacer"></span>
+          <span style="font-size:11px; opacity:0.6;">&#8984;K</span>
+          <span class="user">MB</span>
+        </div>
+        <div class="context-bar">
+          <span class="chip active"><span class="dot"></span> B2C · en-US</span>
+          <span class="chip live"><span class="dot"></span> Live</span>
+          <span class="chip"><span class="dot" style="background:#7c3aed;"></span> 12,847 sessions / 7d</span>
+          <span class="spacer"></span>
+          <span class="heat-legend">
+            <span>Low</span>
+            <span class="heat-gradient-bar"></span>
+            <span>Hot</span>
+          </span>
+          <button class="heat-toggle active">
+            <span class="heat-dot"></span> Heatmap ON
+          </button>
+          <button class="publish-btn" style="background: var(--mc-text); ">Publish changes</button>
+        </div>
+        <div class="editor-main">
+          <div class="nav-rail">
+            <div class="nav-item active">&#9635;</div>
+            <div class="nav-item">&#9783;</div>
+            <div class="nav-item">&#128196;</div>
+            <div class="nav-item">&#128736;</div>
+            <div class="nav-item">&#128202;</div>
+          </div>
+          <div class="canvas-wrap">
+            <div class="canvas">
+              <!-- Heatmap overlay layer -->
+              <div class="heat-overlay">
+                <div class="heat-blob hot"   style="width: 320px; height: 200px; top: 20px;   left: 40px;"></div>
+                <div class="heat-blob warm"  style="width: 260px; height: 160px; top: 30px;   right: 30px;"></div>
+                <div class="heat-blob warm"  style="width: 300px; height: 180px; top: 240px;  left: 30px;"></div>
+                <div class="heat-blob hot"   style="width: 240px; height: 140px; top: 270px;  left: 260px;"></div>
+                <div class="heat-blob cool"  style="width: 280px; height: 160px; top: 480px;  left: 40px;"></div>
+                <div class="heat-blob cool"  style="width: 240px; height: 140px; top: 640px;  left: 200px;"></div>
+              </div>
+
+              <div class="canvas-section selected" style="position: relative;">
+                <span class="sec-label">HeroBanner</span>
+                <span class="dropoff-ann">Drop-off 12%</span>
+                <span class="eng-badge high"><span class="dot"></span> Engagement 87</span>
+                <div class="sec-body">
+                  <div class="placeholder" style="height: 110px;">Brand hero image + headline + CTA</div>
+                </div>
+              </div>
+
+              <div class="canvas-section" style="position: relative;">
+                <span class="sec-label">FeaturedCollection</span>
+                <span class="dropoff-ann warn">Drop-off 28%</span>
+                <span class="eng-badge high"><span class="dot"></span> Engagement 82</span>
+                <div class="sec-body">
+                  <div class="placeholder" style="height: 90px;">4-product carousel · "New This Season"</div>
+                </div>
+              </div>
+
+              <div class="canvas-section" style="position: relative;">
+                <span class="sec-label">CategoryGrid</span>
+                <span class="dropoff-ann warn">Drop-off 34%</span>
+                <span class="eng-badge mid"><span class="dot"></span> Engagement 61</span>
+                <div class="sec-body">
+                  <div class="placeholder" style="height: 120px;">6-tile category navigation grid</div>
+                </div>
+              </div>
+
+              <div class="canvas-section" style="position: relative;">
+                <span class="sec-label">TestimonialsCarousel</span>
+                <span class="dropoff-ann crit">Drop-off 58%</span>
+                <span class="eng-badge low"><span class="dot"></span> Engagement 24</span>
+                <div class="sec-body">
+                  <div class="placeholder" style="height: 90px;">Customer reviews &middot; 3-card slider</div>
+                </div>
+                <div class="hover-card">
+                  <h6>&#9888; High drop-off point</h6>
+                  <div class="metric-line"><span>Sessions reaching</span><strong>5,401</strong></div>
+                  <div class="metric-line"><span>Scroll past</span><strong>2,268</strong></div>
+                  <div class="metric-line"><span>Drop-off rate</span><strong>58%</strong></div>
+                  <div class="metric-line"><span>CLV-high cohort</span><strong>-42% vs avg</strong></div>
+                  <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.15); font-size: 11px; color: #93c5fd;">
+                    ACI flagged: move below PromoStripe or shorten to 1 card
+                  </div>
+                </div>
+              </div>
+
+              <div class="canvas-section" style="position: relative;">
+                <span class="sec-label">PromoStripe</span>
+                <span class="dropoff-ann">Drop-off 9%</span>
+                <span class="eng-badge mid"><span class="dot"></span> Engagement 56</span>
+                <div class="sec-body">
+                  <div class="placeholder" style="height: 70px;">Full-width promotional banner</div>
+                </div>
+              </div>
+
+              <div class="canvas-section red-zone" style="position: relative;">
+                <span class="sec-label">CheckoutCTA &#128274;</span>
+                <div class="sec-body">
+                  <div class="placeholder" style="color: var(--mc-locked); height: 70px;">PCI boundary &middot; behavioral collection disabled</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="side-panel">
+            <div class="panel-tabs">
+              <div class="panel-tab">Properties</div>
+              <div class="panel-tab active">Behavioral</div>
+              <div class="panel-tab">AI</div>
+            </div>
+            <div class="panel-body">
+              <div class="prop-group">
+                <h5>Section · TestimonialsCarousel</h5>
+                <div style="background: var(--mc-error-bg); border-left: 3px solid var(--mc-error); padding: 10px 12px; border-radius: var(--radius-sm); margin-bottom: 12px;">
+                  <div style="font-size: 11px; font-weight: 600; color: var(--mc-error); margin-bottom: 3px;">&#9888; Highest drop-off on this page</div>
+                  <div style="font-size: 11px; color: var(--mc-text-muted); line-height: 1.45;">58% of sessions abandon scroll here. Score: Engagement 24 / Drop-off 58.</div>
+                </div>
+              </div>
+
+              <div class="prop-group">
+                <h5>Engagement breakdown</h5>
+                <div style="display: flex; justify-content: space-between; font-size: 11px; padding: 4px 0; border-bottom: 1px dashed var(--mc-border);">
+                  <span style="color: var(--mc-text-muted);">Click depth</span>
+                  <strong>0.4 / sec</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 11px; padding: 4px 0; border-bottom: 1px dashed var(--mc-border);">
+                  <span style="color: var(--mc-text-muted);">Dwell time</span>
+                  <strong>2.1s</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 11px; padding: 4px 0; border-bottom: 1px dashed var(--mc-border);">
+                  <span style="color: var(--mc-text-muted);">Hover rate</span>
+                  <strong>8%</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 11px; padding: 4px 0;">
+                  <span style="color: var(--mc-text-muted);">CTA click-through</span>
+                  <strong style="color: var(--mc-error);">1.2%</strong>
+                </div>
+              </div>
+
+              <div class="prop-group">
+                <h5>Data window</h5>
+                <div style="font-size: 11px; color: var(--mc-text-muted); line-height: 1.5;">
+                  7 days &middot; 12,847 anonymous sessions<br>
+                  Consent coverage: <strong style="color: var(--mc-success);">94%</strong><br>
+                  PCI-boundary-safe: <strong style="color: var(--mc-success);">&#10003; verified</strong>
+                </div>
+              </div>
+
+              <div class="prop-group">
+                <h5>ACI suggestion</h5>
+                <div style="background: var(--mc-ai-tint); border-left: 3px solid var(--mc-ai-accent); padding: 10px 12px; border-radius: var(--radius-sm); font-size: 11px; line-height: 1.5;">
+                  <div style="color: var(--mc-ai-accent); font-weight: 600; margin-bottom: 4px;">&#10024; Your data suggests</div>
+                  Move <em>TestimonialsCarousel</em> below <em>PromoStripe</em>. Similar re-orderings in the behavioral baseline lifted Engagement by +18 points.
+                </div>
+                <div style="display: flex; gap: 6px; margin-top: 10px;">
+                  <button class="btn-primary" style="background: var(--mc-ai-accent);">Apply in editor</button>
+                  <button class="btn-ghost">Why?</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-annotations">
+        <h4>Design Notes</h4>
+        <ul>
+          <li><strong>Dissolved into the canvas</strong> &mdash; heatmap is an overlay on the live editor, not a separate dashboard. Operators already scan the canvas; behavioral layer reuses that gaze. <em>(FR21)</em></li>
+          <li><strong>Heatmap toggle in the context bar</strong> &mdash; one click turns the overlay on/off. Heat intensity follows a cool-to-hot gradient (blue &rarr; yellow &rarr; orange &rarr; red). <em>(FR21)</em></li>
+          <li><strong>Engagement badges per section</strong> &mdash; green &ge;80, amber 50&ndash;79, muted &lt;50. A glance reveals which sections earn their canvas real estate. <em>(FR22)</em></li>
+          <li><strong>Drop-off annotations</strong> &mdash; each section carries its rolling 7-day drop-off rate on the top-left corner. Warn threshold 25%, critical 50%. <em>(FR21)</em></li>
+          <li><strong>Hover cards</strong> &mdash; dwell on any section to see raw session counts, CLV-tier breakdown, and the ACI flag reasoning. No context switch required. <em>(FR23)</em></li>
+          <li><strong>Behavioral panel replaces Properties contextually</strong> &mdash; right sidebar switches to the Behavioral tab when the operator selects a section with flagged insights. Click "Apply in editor" jumps back to Properties. <em>(FR24)</em></li>
+          <li><strong>Red Zone remains Red</strong> &mdash; CheckoutCTA shows explicitly that behavioral collection is disabled to satisfy the PCI boundary (FR49). The absence of a heat zone is itself the design affordance.</li>
+          <li><strong>No dashboard to navigate to</strong> &mdash; operator never leaves the canvas to "check analytics." The moat layer is where work already happens. <em>(FR21, FR27)</em></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 1B — Engagement-badges-only mode ============ -->
+  <div class="screen">
+    <div class="screen-header">
+      <h3>1B — Engagement badges only (heatmap off)</h3>
+      <span class="tag">StorefrontCanvas + EngagementBadges (quieter mode)</span>
+    </div>
+    <div class="screen-body">
+      <div class="editor-frame">
+        <div class="editor-topbar">
+          <span class="logo">commercetools</span>
+          <span class="crumbs">Tutorial &rsaquo; Storefront &rsaquo; <strong>Home</strong></span>
+          <span class="spacer"></span>
+          <span style="font-size:11px; opacity:0.6;">&#8984;K</span>
+          <span class="user">MB</span>
+        </div>
+        <div class="context-bar">
+          <span class="chip active"><span class="dot"></span> B2C · en-US</span>
+          <span class="chip live"><span class="dot"></span> Live</span>
+          <span class="chip"><span class="dot" style="background:#7c3aed;"></span> 12,847 sessions / 7d</span>
+          <span class="spacer"></span>
+          <span class="heat-legend">
+            <span>Low</span>
+            <span class="heat-gradient-bar"></span>
+            <span>Hot</span>
+          </span>
+          <button class="heat-toggle">
+            <span class="heat-dot"></span> Heatmap OFF
+          </button>
+          <button class="publish-btn" style="background: var(--mc-text);">Publish changes</button>
+        </div>
+        <div class="editor-main">
+          <div class="nav-rail">
+            <div class="nav-item active">&#9635;</div>
+            <div class="nav-item">&#9783;</div>
+            <div class="nav-item">&#128196;</div>
+            <div class="nav-item">&#128736;</div>
+            <div class="nav-item">&#128202;</div>
+          </div>
+          <div class="canvas-wrap">
+            <div class="canvas">
+              <div class="heat-overlay hidden">
+                <div class="heat-blob hot"  style="width: 320px; height: 200px; top: 20px; left: 40px;"></div>
+                <div class="heat-blob warm" style="width: 260px; height: 160px; top: 30px; right: 30px;"></div>
+              </div>
+
+              <div class="canvas-section" style="position: relative;">
+                <span class="sec-label">HeroBanner</span>
+                <span class="eng-badge high"><span class="dot"></span> Engagement 87</span>
+                <div class="sec-body"><div class="placeholder" style="height: 100px;">Brand hero image + headline + CTA</div></div>
+              </div>
+
+              <div class="canvas-section" style="position: relative;">
+                <span class="sec-label">FeaturedCollection</span>
+                <span class="eng-badge high"><span class="dot"></span> Engagement 82</span>
+                <div class="sec-body"><div class="placeholder" style="height: 80px;">4-product carousel &middot; "New This Season"</div></div>
+              </div>
+
+              <div class="canvas-section" style="position: relative;">
+                <span class="sec-label">CategoryGrid</span>
+                <span class="eng-badge mid"><span class="dot"></span> Engagement 61</span>
+                <div class="sec-body"><div class="placeholder" style="height: 110px;">6-tile category navigation grid</div></div>
+              </div>
+
+              <div class="canvas-section" style="position: relative;">
+                <span class="sec-label">TestimonialsCarousel</span>
+                <span class="eng-badge low"><span class="dot"></span> Engagement 24</span>
+                <div class="sec-body"><div class="placeholder" style="height: 80px;">Customer reviews &middot; 3-card slider</div></div>
+              </div>
+
+              <div class="canvas-section" style="position: relative;">
+                <span class="sec-label">PromoStripe</span>
+                <span class="eng-badge mid"><span class="dot"></span> Engagement 56</span>
+                <div class="sec-body"><div class="placeholder" style="height: 70px;">Full-width promotional banner</div></div>
+              </div>
+
+              <div class="canvas-section red-zone" style="position: relative;">
+                <span class="sec-label">CheckoutCTA &#128274;</span>
+                <div class="sec-body"><div class="placeholder" style="color: var(--mc-locked); height: 70px;">PCI boundary &middot; no behavioral data</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="side-panel">
+            <div class="panel-tabs">
+              <div class="panel-tab active">Properties</div>
+              <div class="panel-tab">Behavioral</div>
+              <div class="panel-tab">AI</div>
+            </div>
+            <div class="panel-body">
+              <div class="prop-group">
+                <h5>Page-level insights</h5>
+                <div style="background: #fafbfc; border: 1px solid var(--mc-border); border-radius: var(--radius-sm); padding: 10px 12px;">
+                  <div style="display: flex; justify-content: space-between; font-size: 11px; padding: 3px 0; border-bottom: 1px dashed var(--mc-border);">
+                    <span style="color: var(--mc-text-muted);">Page engagement avg</span>
+                    <strong>63</strong>
+                  </div>
+                  <div style="display: flex; justify-content: space-between; font-size: 11px; padding: 3px 0; border-bottom: 1px dashed var(--mc-border);">
+                    <span style="color: var(--mc-text-muted);">Scroll depth (median)</span>
+                    <strong>74%</strong>
+                  </div>
+                  <div style="display: flex; justify-content: space-between; font-size: 11px; padding: 3px 0; border-bottom: 1px dashed var(--mc-border);">
+                    <span style="color: var(--mc-text-muted);">Rage-clicks / 1k</span>
+                    <strong>2.1</strong>
+                  </div>
+                  <div style="display: flex; justify-content: space-between; font-size: 11px; padding: 3px 0;">
+                    <span style="color: var(--mc-text-muted);">LCP (p75)</span>
+                    <strong style="color: var(--mc-success);">1.8s</strong>
+                  </div>
+                </div>
+              </div>
+
+              <div class="prop-group">
+                <h5>Flagged by ACI Analyst</h5>
+                <ul style="list-style: none; padding: 0;">
+                  <li style="padding: 8px 10px; background: var(--mc-warning-bg); border-left: 3px solid var(--mc-warning); border-radius: var(--radius-sm); margin-bottom: 6px; font-size: 11px;">
+                    <strong>TestimonialsCarousel</strong> &middot; drop-off spike
+                    <div style="color: var(--mc-text-muted); margin-top: 2px;">58% abandoning scroll here</div>
+                  </li>
+                  <li style="padding: 8px 10px; background: var(--mc-warning-bg); border-left: 3px solid var(--mc-warning); border-radius: var(--radius-sm); font-size: 11px;">
+                    <strong>CategoryGrid</strong> &middot; mobile-only drop
+                    <div style="color: var(--mc-text-muted); margin-top: 2px;">Engagement 61 desktop / 34 mobile</div>
+                  </li>
+                </ul>
+              </div>
+
+              <div class="prop-group">
+                <h5>Display options</h5>
+                <div class="prop-row" style="display: flex; align-items: center; justify-content: space-between;">
+                  <span class="prop-label" style="margin: 0;">Show engagement badges</span>
+                  <div class="toggle-switch on"></div>
+                </div>
+                <div class="prop-row" style="display: flex; align-items: center; justify-content: space-between;">
+                  <span class="prop-label" style="margin: 0;">Show drop-off annotations</span>
+                  <div class="toggle-switch"></div>
+                </div>
+                <div class="prop-row" style="display: flex; align-items: center; justify-content: space-between;">
+                  <span class="prop-label" style="margin: 0;">Auto-open Behavioral tab on flag</span>
+                  <div class="toggle-switch on"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-annotations">
+        <h4>Design Notes</h4>
+        <ul>
+          <li><strong>Badges-only mode</strong> &mdash; operators editing content don't always want a heatmap. Badges stay on by default because they're compact; heatmap is opt-in. <em>(FR22)</em></li>
+          <li><strong>Properties tab remains primary</strong> &mdash; when the operator is actively editing, the sidebar stays in Properties mode with an at-a-glance page-level insights card at the top.</li>
+          <li><strong>Flagged-by-ACI list</strong> &mdash; surfaces the sections the Analyst has already flagged as problematic. Click a row to jump and select that section on the canvas. <em>(FR23, FR24)</em></li>
+          <li><strong>Display-options toggles</strong> &mdash; operators control badge/annotation visibility per session. Preferences persist per user per tenant.</li>
+          <li><strong>Zero render impact</strong> &mdash; the overlay is a pure CSS layer; collection is async beacon (FR25). The editor frame remains as fast as Epic 3 without behavioral data.</li>
+          <li><strong>Page-level LCP metric</strong> &mdash; Core Web Vitals surface here, anchored to the canvas rather than hidden in a dev-tools tab. <em>(FR27)</em></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 1C — ACI Analyst notification flow ============ -->
+  <div class="screen">
+    <div class="screen-header">
+      <h3>1C — ACI Analyst flags a section &rarr; operator notified</h3>
+      <span class="tag">ACI notification inbox + deep-link into canvas</span>
+    </div>
+    <div class="screen-body">
+      <div style="display: grid; grid-template-columns: 320px 1fr; gap: 16px; border: 1px solid var(--mc-border-strong); border-radius: var(--radius-md); overflow: hidden; background: white;">
+        <div style="border-right: 1px solid var(--mc-border); background: #fafbfc;">
+          <div style="padding: 14px 16px; border-bottom: 1px solid var(--mc-border); display: flex; align-items: center; gap: 8px;">
+            <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--mc-error);"></span>
+            <strong style="font-size: 13px;">ACI Analyst</strong>
+            <span class="spacer" style="flex:1;"></span>
+            <span style="font-size: 11px; color: var(--mc-text-muted);">3 new</span>
+          </div>
+          <div style="padding: 10px 16px; border-bottom: 1px solid var(--mc-border); cursor: pointer; background: white;">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+              <span class="status-pill overdue"><span class="dot"></span> Critical</span>
+              <span style="font-size: 10px; color: var(--mc-text-muted); font-family: monospace;">12 min ago</span>
+            </div>
+            <div style="font-size: 12px; font-weight: 600; margin-bottom: 2px;">TestimonialsCarousel &middot; 58% drop-off</div>
+            <div style="font-size: 11px; color: var(--mc-text-muted); line-height: 1.45;">Spike over last 48h on /home. CLV-high cohort impacted most.</div>
+          </div>
+          <div style="padding: 10px 16px; border-bottom: 1px solid var(--mc-border); cursor: pointer;">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+              <span class="status-pill processing"><span class="dot"></span> Warning</span>
+              <span style="font-size: 10px; color: var(--mc-text-muted); font-family: monospace;">2 h ago</span>
+            </div>
+            <div style="font-size: 12px; font-weight: 600; margin-bottom: 2px;">CategoryGrid &middot; mobile engagement drop</div>
+            <div style="font-size: 11px; color: var(--mc-text-muted); line-height: 1.45;">Mobile score 34 vs desktop 61. 3-day trend.</div>
+          </div>
+          <div style="padding: 10px 16px; border-bottom: 1px solid var(--mc-border); cursor: pointer;">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+              <span class="status-pill queued"><span class="dot"></span> Info</span>
+              <span style="font-size: 10px; color: var(--mc-text-muted); font-family: monospace;">6 h ago</span>
+            </div>
+            <div style="font-size: 12px; font-weight: 600; margin-bottom: 2px;">HeroBanner &middot; performance nominal</div>
+            <div style="font-size: 11px; color: var(--mc-text-muted); line-height: 1.45;">Sustained +87 engagement after last edit.</div>
+          </div>
+        </div>
+        <div style="padding: 20px 22px;">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+            <span class="status-pill overdue"><span class="dot"></span> Critical</span>
+            <span style="font-size: 11px; color: var(--mc-text-muted); font-family: monospace;">Ticket ACI-2847 &middot; 12 min ago</span>
+          </div>
+          <h3 style="font-size: 16px; margin-bottom: 10px;">TestimonialsCarousel &middot; 58% drop-off spike</h3>
+          <p style="font-size: 12px; color: var(--mc-text-muted); line-height: 1.6; margin-bottom: 14px;">Over the last 48 hours, session-level scroll events show 5,401 sessions reaching <code>TestimonialsCarousel</code> but only 2,268 continuing past it. The CLV-high cohort (consumer lifetime value &ge; $500) drops off at 42% above the baseline for this section type.</p>
+
+          <div class="three-col" style="margin-bottom: 16px;">
+            <div class="metric-card">
+              <div class="metric-label">Drop-off rate</div>
+              <div class="metric-value" style="color: var(--mc-error);">58%</div>
+              <div class="metric-delta down">&uarr; 34pp vs 7d baseline</div>
+              <div class="status-indicator error"></div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-label">Engagement score</div>
+              <div class="metric-value" style="color: var(--mc-warning);">24</div>
+              <div class="metric-delta down">&darr; 41 pts vs 7d</div>
+              <div class="status-indicator warn"></div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-label">Affected sessions</div>
+              <div class="metric-value">3,133</div>
+              <div class="metric-delta neutral">48h window</div>
+            </div>
+          </div>
+
+          <div style="background: var(--mc-ai-tint); border-left: 3px solid var(--mc-ai-accent); padding: 12px 14px; border-radius: var(--radius-sm); margin-bottom: 14px;">
+            <div style="font-size: 11px; font-weight: 600; color: var(--mc-ai-accent); margin-bottom: 4px;">&#10024; ACI Analyst reasoning</div>
+            <div style="font-size: 12px; color: var(--mc-text); line-height: 1.55;">Pattern match: similar testimonials-carousel-below-hero layouts across 3 peer tenants showed 35&ndash;60% drop-off until repositioning below promo banners or shortening to a single testimonial. 90% of repositionings held or improved after 30 days. Confidence: high.</div>
+          </div>
+
+          <div style="display: flex; gap: 8px;">
+            <button class="btn-primary">&#8690; Open in editor canvas</button>
+            <button class="btn-ghost">View session recording sample</button>
+            <button class="btn-ghost">Dismiss</button>
+            <button class="btn-ghost" style="margin-left: auto;">Send to AI Experience Engine</button>
+          </div>
+        </div>
+      </div>
+      <div class="screen-annotations">
+        <h4>Design Notes</h4>
+        <ul>
+          <li><strong>ACI Analyst is a notification surface, not a dashboard</strong> &mdash; it is a focused inbox reached from the nav rail. Every row is actionable; every action deep-links back into the canvas. <em>(FR23, FR24)</em></li>
+          <li><strong>Severity pills match heatmap semantics</strong> &mdash; critical = red (matches hot zones), warning = amber, info = blue. Consistent across the whole product. <em>(FR23)</em></li>
+          <li><strong>"Open in editor canvas" is the primary action</strong> &mdash; clicking it opens the home page with <code>TestimonialsCarousel</code> pre-selected, heatmap already on, and the Behavioral sidebar scrolled to the drop-off metric. <em>(FR24)</em></li>
+          <li><strong>Reasoning card is the "Your data shows" pattern</strong> &mdash; never "the AI recommends"; always surfaces the peer-tenant pattern match and confidence. Consistent with Epic 8 Commerce Intelligence Drawer language.</li>
+          <li><strong>Escalation to AI Experience Engine</strong> &mdash; "Send to AI Experience Engine" promotes this flag to an optimization experiment (Epic 8 handoff). This is where the behavioral moat feeds the compounding layer.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+</div>
+
+<!-- =========================================================
+     TAB 2 — DUAL-CONSENT MANAGEMENT
+     ========================================================= -->
+<div id="tab-consent" class="tab-content">
+
+  <div class="tab-intro">
+    <h2>2 — Dual-Consent Management (IT Admin)</h2>
+    <p>Two legally distinct consent layers, configured independently per tenant. <strong>Aggregate behavioral consent</strong> governs ACI collection (anonymized sessions, heatmap data, drop-off events). <strong>Identity-linked personalization consent</strong> governs CLV-enhanced rendering tied to a known consumer profile. The two are separate legal bases under GDPR Art. 6 and must never collapse into a single toggle. IT Admin also manages the right-to-erasure queue and data retention windows from this surface.</p>
+    <div class="frs">
+      <span class="fr-chip">FR26</span>
+      <span class="fr-chip">FR28</span>
+      <span class="fr-chip">FR47</span>
+      <span class="fr-chip">FR48</span>
+      <span class="fr-chip">FR49</span>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 2A — Dual-consent layer configuration ============ -->
+  <div class="screen">
+    <div class="screen-header">
+      <h3>2A — Dual-consent layers: separate toggles, scopes, and audit</h3>
+      <span class="tag">ConsentManager &middot; two independent legal tracks</span>
+    </div>
+    <div class="screen-body">
+      <div>
+        <div class="note-inline">
+          Critical design principle: these two consent layers are visually adjacent so operators see the distinction, but configured independently. A consumer can consent to aggregate behavioral collection without consenting to identity-linked personalization, and vice versa. The tenant-admin configures the <em>defaults</em> and the <em>scope</em>; the runtime consent banner (shown to end-consumers) respects both.
+        </div>
+
+        <div class="consent-shell">
+          <div class="consent-shell-header">
+            <h4>Consent layer configuration</h4>
+            <span style="font-size: 11px; color: var(--mc-text-muted);">Tenant: acme-storefront-prod</span>
+            <span class="sub">Last updated 2026-05-06 by <strong>it-admin@acme.com</strong></span>
+          </div>
+
+          <div class="consent-layers">
+            <!-- AGGREGATE layer -->
+            <div class="consent-layer aggregate">
+              <span class="legal-chip">GDPR Art. 6(1)(f) · legitimate interest</span>
+              <h5><span class="layer-num">1</span> Aggregate Behavioral Consent</h5>
+              <div class="desc">Anonymized, aggregated behavioral events feeding the ACI pipeline. No personal identifiers attached. Powers heatmaps, engagement scores, drop-off detection, and the AI Experience Engine baseline. This is the moat.</div>
+
+              <div class="consent-toggle">
+                <div class="tgl-label">Enable aggregate collection
+                  <small>Beacon-based, async, zero render impact</small>
+                </div>
+                <div class="toggle-switch on aggregate"></div>
+              </div>
+              <div class="consent-toggle">
+                <div class="tgl-label">Require explicit opt-in
+                  <small>EU default: ON. US default: OFF (implied consent)</small>
+                </div>
+                <div class="toggle-switch on aggregate"></div>
+              </div>
+              <div class="consent-toggle">
+                <div class="tgl-label">Stop on withdrawal
+                  <small>Immediate, same-session halt (FR47)</small>
+                </div>
+                <div class="toggle-switch on aggregate"></div>
+              </div>
+
+              <div style="margin-top: 14px;">
+                <div style="font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px; color: var(--mc-text-muted); margin-bottom: 6px;">Scope of collection</div>
+                <ul class="scope-list">
+                  <li><span class="check">&#10003;</span> Anonymous session_id (rotating per visit)</li>
+                  <li><span class="check">&#10003;</span> Page-view / scroll-depth / click coordinates</li>
+                  <li><span class="check">&#10003;</span> Component-level dwell time</li>
+                  <li><span class="check">&#10003;</span> Core Web Vitals (LCP, CLS, INP)</li>
+                  <li><span class="cross">&times;</span> Form field contents (never)</li>
+                  <li><span class="cross">&times;</span> URL query parameters matching PCI patterns</li>
+                  <li><span class="cross">&times;</span> Any component inside /checkout or /payment routes</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- IDENTITY layer -->
+            <div class="consent-layer identity">
+              <span class="legal-chip">GDPR Art. 6(1)(a) · explicit consent</span>
+              <h5><span class="layer-num">2</span> Identity-Linked Personalization Consent</h5>
+              <div class="desc">Behavioral signals tied to a known consumer profile (after sign-in or account creation). Drives CLV tiering, personalized rendering, and cohort-specific recommendations. Must be explicitly granted; never on by default.</div>
+
+              <div class="consent-toggle">
+                <div class="tgl-label">Enable identity linking
+                  <small>Requires signed-in session AND explicit checkbox</small>
+                </div>
+                <div class="toggle-switch on identity"></div>
+              </div>
+              <div class="consent-toggle">
+                <div class="tgl-label">Require granular purpose choice
+                  <small>Consumer picks: personalization / recommendations / marketing</small>
+                </div>
+                <div class="toggle-switch on identity"></div>
+              </div>
+              <div class="consent-toggle">
+                <div class="tgl-label">Stop on withdrawal
+                  <small>Decouples profile from behavioral events (FR47)</small>
+                </div>
+                <div class="toggle-switch on identity"></div>
+              </div>
+
+              <div style="margin-top: 14px;">
+                <div style="font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px; color: var(--mc-text-muted); margin-bottom: 6px;">Scope of personalization</div>
+                <ul class="scope-list">
+                  <li><span class="check">&#10003;</span> CLV tier calculation from purchase history</li>
+                  <li><span class="check">&#10003;</span> Product recommendations from behavioral cohorts</li>
+                  <li><span class="check">&#10003;</span> Cohort-specific layout variants (Epic 8)</li>
+                  <li><span class="cross">&times;</span> Cross-tenant data sharing (hard-blocked)</li>
+                  <li><span class="cross">&times;</span> Third-party advertising identifiers</li>
+                  <li><span class="cross">&times;</span> Sensitive category inferences (health, politics)</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div style="padding: 14px 20px; background: #fafbfc; border-top: 1px solid var(--mc-border); display: flex; align-items: center; gap: 12px;">
+            <span style="font-size: 11px; color: var(--mc-text-muted);">
+              <strong>Regional overrides:</strong> EU tenants auto-apply Art. 6(1)(a) on both layers. CA auto-applies CPRA "sensitive data" scope. Overrides are non-destructive (can be tightened by the Admin but not loosened below region minimum).
+            </span>
+            <span class="spacer" style="flex: 1;"></span>
+            <button class="btn-ghost">Preview consumer banner</button>
+            <button class="btn-primary">Save configuration</button>
+          </div>
+        </div>
+
+        <div class="section-title">Consent state across the tenant</div>
+        <div class="three-col">
+          <div class="metric-card">
+            <div class="metric-label">Aggregate consent rate</div>
+            <div class="metric-value" style="color: var(--consent-aggregate);">94.2%</div>
+            <div class="metric-delta up">+1.8pp vs 30d</div>
+            <svg class="metric-sparkline" viewBox="0 0 100 30" preserveAspectRatio="none">
+              <polyline fill="none" stroke="var(--consent-aggregate)" stroke-width="1.5" points="0,18 10,20 20,17 30,16 40,15 50,14 60,13 70,12 80,11 90,10 100,9"/>
+            </svg>
+            <div class="status-indicator"></div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Identity-linked consent rate</div>
+            <div class="metric-value" style="color: var(--consent-identity);">37.6%</div>
+            <div class="metric-delta up">+4.1pp vs 30d</div>
+            <svg class="metric-sparkline" viewBox="0 0 100 30" preserveAspectRatio="none">
+              <polyline fill="none" stroke="var(--consent-identity)" stroke-width="1.5" points="0,24 10,23 20,22 30,22 40,20 50,19 60,17 70,16 80,14 90,12 100,11"/>
+            </svg>
+            <div class="status-indicator"></div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Withdrawals (30d)</div>
+            <div class="metric-value">312</div>
+            <div class="metric-delta neutral">All honored &le; 50ms</div>
+            <svg class="metric-sparkline" viewBox="0 0 100 30" preserveAspectRatio="none">
+              <polyline fill="none" stroke="#6b7280" stroke-width="1.5" points="0,22 10,20 20,24 30,19 40,22 50,20 60,18 70,21 80,19 90,17 100,18"/>
+            </svg>
+            <div class="status-indicator"></div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-annotations">
+        <h4>Design Notes</h4>
+        <ul>
+          <li><strong>Two layers, never one</strong> &mdash; the visual separation is non-negotiable. Collapsing them into a single toggle would be legally ambiguous and reduce the moat (operators would default both ON or both OFF).</li>
+          <li><strong>Distinct accent colors</strong> &mdash; aggregate = sky blue, identity = fuchsia. The color carries the legal basis across every reference in the product (audit log, erasure queue, pipeline diagram). <em>(FR26)</em></li>
+          <li><strong>Legal-basis chip under each header</strong> &mdash; Art. 6(1)(f) legitimate interest vs Art. 6(1)(a) explicit consent. This is the only place in the product where we surface statute references; it's what IT Admins and their DPO need to sign off. <em>(FR47)</em></li>
+          <li><strong>Scope lists are read as a policy document</strong> &mdash; green checks for what's in scope, red crosses for what's explicitly excluded. Never a vague "other". <em>(FR49 PCI exclusions, FR26)</em></li>
+          <li><strong>Stop-on-withdrawal is defaulted ON and disabled to OFF</strong> &mdash; FR47 is a hard requirement. The toggle is shown for transparency; some regions forbid turning it off.</li>
+          <li><strong>Regional overrides shown at the bottom</strong> &mdash; the system computes the stricter of (tenant setting, regional minimum). Operators can't accidentally loosen below GDPR/CPRA floors.</li>
+          <li><strong>Consent rate metrics use the layer's accent color</strong> &mdash; reinforces which layer each number refers to.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 2B — Right-to-erasure queue ============ -->
+  <div class="screen">
+    <div class="screen-header">
+      <h3>2B — Right-to-erasure request queue &middot; 30-day SLA</h3>
+      <span class="tag">ErasureQueue &middot; GDPR Art. 17 / CPRA 1798.105</span>
+    </div>
+    <div class="screen-body">
+      <div>
+        <div class="three-col" style="margin-bottom: 16px;">
+          <div class="metric-card">
+            <div class="metric-label">Queued</div>
+            <div class="metric-value">14</div>
+            <div class="metric-delta neutral">Longest: 4d in queue</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Processing</div>
+            <div class="metric-value">3</div>
+            <div class="metric-delta up">All within SLA</div>
+            <div class="status-indicator"></div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Completed (30d)</div>
+            <div class="metric-value">247</div>
+            <div class="metric-delta up">Median 2.4 hours</div>
+            <div class="status-indicator"></div>
+          </div>
+        </div>
+
+        <div style="background: white; border: 1px solid var(--mc-border-strong); border-radius: var(--radius-md); overflow: hidden;">
+          <div style="padding: 12px 14px; background: #fafbfc; border-bottom: 1px solid var(--mc-border); display: flex; align-items: center; gap: 8px;">
+            <strong style="font-size: 13px;">Erasure request queue</strong>
+            <span style="font-size: 11px; color: var(--mc-text-muted);">SLA: 30 days (FR48) &middot; auto-executed, admin can fast-track</span>
+            <span class="spacer" style="flex: 1;"></span>
+            <button class="btn-ghost">Export CSV</button>
+            <button class="btn-ghost">Audit trail</button>
+          </div>
+
+          <div class="erasure-row header">
+            <span>Received</span>
+            <span>Subject</span>
+            <span>Scope</span>
+            <span>Days left</span>
+            <span>Status</span>
+            <span>Action</span>
+          </div>
+          <div class="erasure-row">
+            <span class="timestamp">2026-05-06 09:12</span>
+            <span>consumer-id: 8f3a&#8230;b21c <div style="font-size: 10px; color: var(--mc-text-muted);">sophie.m@example.com</div></span>
+            <span>
+              <span class="status-pill" style="background: var(--consent-aggregate-wash); color: var(--consent-aggregate);">Aggregate</span>
+              <span class="status-pill" style="background: var(--consent-identity-wash); color: var(--consent-identity);">Identity</span>
+            </span>
+            <span style="font-family: monospace; color: var(--mc-success); font-weight: 600;">29 d</span>
+            <span><span class="status-pill processing"><span class="dot"></span> Processing</span></span>
+            <span><button class="btn-ghost" style="font-size: 10px;">View</button></span>
+          </div>
+          <div class="erasure-row">
+            <span class="timestamp">2026-05-05 14:48</span>
+            <span>consumer-id: 2d71&#8230;e94a <div style="font-size: 10px; color: var(--mc-text-muted);">peter.l@example.com</div></span>
+            <span>
+              <span class="status-pill" style="background: var(--consent-identity-wash); color: var(--consent-identity);">Identity only</span>
+            </span>
+            <span style="font-family: monospace; color: var(--mc-success); font-weight: 600;">28 d</span>
+            <span><span class="status-pill queued"><span class="dot"></span> Queued</span></span>
+            <span><button class="btn-ghost" style="font-size: 10px;">View</button></span>
+          </div>
+          <div class="erasure-row">
+            <span class="timestamp">2026-05-03 11:30</span>
+            <span>consumer-id: c4e2&#8230;18df <div style="font-size: 10px; color: var(--mc-text-muted);">anon session &middot; cookie signed</div></span>
+            <span>
+              <span class="status-pill" style="background: var(--consent-aggregate-wash); color: var(--consent-aggregate);">Aggregate</span>
+            </span>
+            <span style="font-family: monospace; color: var(--mc-warning); font-weight: 600;">26 d</span>
+            <span><span class="status-pill processing"><span class="dot"></span> Processing</span></span>
+            <span><button class="btn-ghost" style="font-size: 10px;">View</button></span>
+          </div>
+          <div class="erasure-row">
+            <span class="timestamp">2026-05-02 18:03</span>
+            <span>consumer-id: 7a98&#8230;33fe <div style="font-size: 10px; color: var(--mc-text-muted);">anonymous &middot; self-service</div></span>
+            <span>
+              <span class="status-pill" style="background: var(--consent-aggregate-wash); color: var(--consent-aggregate);">Aggregate</span>
+              <span class="status-pill" style="background: var(--consent-identity-wash); color: var(--consent-identity);">Identity</span>
+            </span>
+            <span style="font-family: monospace; color: var(--mc-success); font-weight: 600;">25 d</span>
+            <span><span class="status-pill done"><span class="dot"></span> Completed</span></span>
+            <span><button class="btn-ghost" style="font-size: 10px;">Receipt</button></span>
+          </div>
+          <div class="erasure-row">
+            <span class="timestamp">2026-04-28 07:21</span>
+            <span>consumer-id: e412&#8230;b890 <div style="font-size: 10px; color: var(--mc-text-muted);">bulk import &middot; 12 subjects</div></span>
+            <span>
+              <span class="status-pill" style="background: var(--consent-aggregate-wash); color: var(--consent-aggregate);">Aggregate</span>
+            </span>
+            <span style="font-family: monospace; color: var(--mc-error); font-weight: 600;">4 d</span>
+            <span><span class="status-pill overdue"><span class="dot"></span> Escalated</span></span>
+            <span><button class="btn-primary" style="font-size: 10px;">Fast-track</button></span>
+          </div>
+          <div class="erasure-row">
+            <span class="timestamp">2026-04-25 22:15</span>
+            <span>consumer-id: 0910&#8230;44ca <div style="font-size: 10px; color: var(--mc-text-muted);">helen.p@example.com</div></span>
+            <span>
+              <span class="status-pill" style="background: var(--consent-identity-wash); color: var(--consent-identity);">Identity only</span>
+            </span>
+            <span style="font-family: monospace; color: var(--mc-text-muted);">&#10003; done</span>
+            <span><span class="status-pill done"><span class="dot"></span> Completed</span></span>
+            <span><button class="btn-ghost" style="font-size: 10px;">Receipt</button></span>
+          </div>
+        </div>
+
+        <div class="two-col" style="margin-top: 16px;">
+          <div class="boundary-card">
+            <h5>Self-service erasure portal</h5>
+            <div style="font-size: 12px; color: var(--mc-text-muted); line-height: 1.5; margin-bottom: 8px;">
+              Consumer-facing /privacy/erasure URL renders at each storefront. Verifies identity via signed email link, then submits to this queue automatically.
+            </div>
+            <div style="font-size: 11px; font-family: monospace; color: var(--mc-success); font-weight: 600;">&#10003; Enabled &middot; 82% of requests come through this path</div>
+          </div>
+          <div class="boundary-card">
+            <h5>Fulfillment mechanics</h5>
+            <div style="font-size: 12px; color: var(--mc-text-muted); line-height: 1.5; margin-bottom: 8px;">
+              Behavioral rows tombstoned in ClickHouse within 24h; identity links broken immediately; CLV cohort recomputed on next batch. Receipt email includes SHA-256 proof hash.
+            </div>
+            <div style="font-size: 11px; font-family: monospace; color: var(--mc-success); font-weight: 600;">&#10003; Median 2.4h &middot; 30d SLA &middot; FR48</div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-annotations">
+        <h4>Design Notes</h4>
+        <ul>
+          <li><strong>Scope column shows which layer is being erased</strong> &mdash; most requests hit both; some only identity (consumer is keeping anonymous session tracking but ending personalization). The two accent colors make this scannable. <em>(FR48, FR26)</em></li>
+          <li><strong>Days-left countdown is color-coded</strong> &mdash; green &gt;10d, amber 4&ndash;10d, red &lt;4d. Overdue rows surface a "Fast-track" primary button to collapse the fulfillment path. <em>(FR48)</em></li>
+          <li><strong>Completed rows keep a receipt</strong> &mdash; SHA-256 proof hash with the data subject's ID. Defensible for DPA audits.</li>
+          <li><strong>Self-service portal is the default path</strong> &mdash; 82% of requests route through a consumer-facing URL, not through IT Admin tickets. The admin screen is for escalations and audits.</li>
+          <li><strong>Bulk import supported</strong> &mdash; for rare legal processes (class action, regulator sweep). Row 5 shows the escalated case where an unusual scope triggers admin review.</li>
+          <li><strong>Audit trail link opens the log below</strong> &mdash; every state change on every row is immutable and queryable.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 2C — Retention & audit log ============ -->
+  <div class="screen">
+    <div class="screen-header">
+      <h3>2C — Data retention configuration & consent audit log</h3>
+      <span class="tag">RetentionConfig + ConsentAudit &middot; FR28 + FR47</span>
+    </div>
+    <div class="screen-body">
+      <div>
+        <div class="two-col" style="margin-bottom: 18px;">
+          <div class="retention-slider">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <strong style="font-size: 13px;">Aggregate behavioral retention</strong>
+              <span style="font-family: monospace; font-weight: 600; color: var(--consent-aggregate);">730 days</span>
+            </div>
+            <div style="font-size: 11px; color: var(--mc-text-muted); line-height: 1.5; margin-bottom: 8px;">Anonymous session events purged after this window. Longer = richer baseline; shorter = tighter compliance posture. Aggregates (engagement scores, heatmap models) are preserved indefinitely.</div>
+            <div class="retention-track">
+              <div class="retention-marker" style="left: 60%;"></div>
+            </div>
+            <div class="retention-labels">
+              <span>30d</span>
+              <span>180d</span>
+              <span>365d</span>
+              <span>730d</span>
+              <span>1825d</span>
+            </div>
+            <div style="font-size: 11px; color: var(--mc-text-muted); margin-top: 10px;">
+              Recommended: <strong>730d</strong> (2 years) &mdash; matches typical enterprise CLV cohort window while staying inside sector norms.
+            </div>
+          </div>
+
+          <div class="retention-slider">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <strong style="font-size: 13px;">Identity-linked retention</strong>
+              <span style="font-family: monospace; font-weight: 600; color: var(--consent-identity);">365 days</span>
+            </div>
+            <div style="font-size: 11px; color: var(--mc-text-muted); line-height: 1.5; margin-bottom: 8px;">Behavioral events linked to a known consumer profile. Shorter default than aggregate because the legal basis (explicit consent) carries a higher bar for proportionality.</div>
+            <div class="retention-track">
+              <div class="retention-marker" style="left: 22%; border-color: var(--consent-identity);"></div>
+            </div>
+            <div class="retention-labels">
+              <span>30d</span>
+              <span>180d</span>
+              <span>365d</span>
+              <span>730d</span>
+              <span>1825d</span>
+            </div>
+            <div style="font-size: 11px; color: var(--mc-text-muted); margin-top: 10px;">
+              Recommended: <strong>365d</strong> (1 year) &mdash; default. EU tenants locked to 365d max under current DPA template.
+            </div>
+          </div>
+        </div>
+
+        <div class="section-title">Consent state changes &middot; immutable audit log</div>
+        <div style="background: white; border: 1px solid var(--mc-border-strong); border-radius: var(--radius-md); overflow: hidden;">
+          <div class="audit-row header">
+            <span>Timestamp</span>
+            <span>Layer</span>
+            <span>Event</span>
+            <span>Actor</span>
+          </div>
+          <div class="audit-row">
+            <span class="timestamp">2026-05-06 09:14:08</span>
+            <span><span class="status-pill" style="background: var(--consent-aggregate-wash); color: var(--consent-aggregate);">Aggregate</span></span>
+            <span>Configuration saved &middot; scope unchanged, retention 730d &rarr; 730d</span>
+            <span><span class="avatar-sm">IT</span> it-admin@acme.com</span>
+          </div>
+          <div class="audit-row">
+            <span class="timestamp">2026-05-06 08:58:41</span>
+            <span><span class="status-pill" style="background: var(--consent-identity-wash); color: var(--consent-identity);">Identity</span></span>
+            <span>Erasure executed for consumer-id 0910&#8230;44ca</span>
+            <span><span class="avatar-sm" style="background: var(--mc-success);">SV</span> system-erasure-worker</span>
+          </div>
+          <div class="audit-row">
+            <span class="timestamp">2026-05-05 16:22:15</span>
+            <span><span class="status-pill" style="background: var(--consent-aggregate-wash); color: var(--consent-aggregate);">Aggregate</span></span>
+            <span>Regional override applied &middot; EU tenants now enforce Art. 6(1)(a) on this layer</span>
+            <span><span class="avatar-sm" style="background: var(--mc-warning);">SY</span> system-policy-engine</span>
+          </div>
+          <div class="audit-row">
+            <span class="timestamp">2026-05-04 11:07:55</span>
+            <span><span class="status-pill" style="background: var(--consent-identity-wash); color: var(--consent-identity);">Identity</span></span>
+            <span>Consent withdrawn by consumer-id 8f3a&#8230;b21c &middot; collection halted &lt;50ms</span>
+            <span><span class="avatar-sm" style="background: var(--mc-success);">RT</span> runtime</span>
+          </div>
+          <div class="audit-row">
+            <span class="timestamp">2026-05-03 09:42:33</span>
+            <span><span class="status-pill" style="background: var(--consent-aggregate-wash); color: var(--consent-aggregate);">Aggregate</span></span>
+            <span>Retention window changed &middot; 1095d &rarr; 730d (tightened)</span>
+            <span><span class="avatar-sm">DP</span> dpo@acme.com</span>
+          </div>
+          <div class="audit-row">
+            <span class="timestamp">2026-05-01 14:18:09</span>
+            <span>
+              <span class="status-pill" style="background: var(--consent-aggregate-wash); color: var(--consent-aggregate);">Aggregate</span>
+              <span class="status-pill" style="background: var(--consent-identity-wash); color: var(--consent-identity);">Identity</span>
+            </span>
+            <span>Tenant provisioned &middot; both layers initialized with regional defaults</span>
+            <span><span class="avatar-sm">IT</span> it-admin@acme.com</span>
+          </div>
+          <div class="audit-row">
+            <span class="timestamp">2026-04-28 07:19:22</span>
+            <span><span class="status-pill" style="background: var(--consent-identity-wash); color: var(--consent-identity);">Identity</span></span>
+            <span>Scope narrowed &middot; "sensitive inferences" permanently disabled for this tenant</span>
+            <span><span class="avatar-sm">DP</span> dpo@acme.com</span>
+          </div>
+        </div>
+      </div>
+      <div class="screen-annotations">
+        <h4>Design Notes</h4>
+        <ul>
+          <li><strong>Retention configured per layer, independently</strong> &mdash; aggregate gets a longer default (730d) because the legal basis (legitimate interest) supports a longer cohort window; identity gets 365d because explicit consent carries a higher proportionality bar. <em>(FR28)</em></li>
+          <li><strong>Slider with color-coded risk gradient</strong> &mdash; green &rarr; amber &rarr; red from short to long. The visual cue reminds admins that longer retention = higher compliance exposure.</li>
+          <li><strong>Regional ceilings displayed inline</strong> &mdash; EU tenants hit a hard ceiling on identity retention at 365d under the current DPA template. The marker is draggable only within the region-allowed band.</li>
+          <li><strong>Audit log is immutable, append-only</strong> &mdash; every config save, every erasure, every consent withdrawal, every regional override is logged with actor, timestamp, and layer. No delete. No edit.</li>
+          <li><strong>System actors distinguished by badge color</strong> &mdash; green avatar = automated system action; blue = IT admin; amber = policy engine. The DPO is color-independent because they wear multiple hats.</li>
+          <li><strong>Consent withdrawal latency logged</strong> &mdash; row 4 shows "halted &lt;50ms" as proof of FR47 compliance. This latency is also tracked on the Pipeline Health tab.</li>
+          <li><strong>Export-to-CSV available at the top right</strong> (implicit) &mdash; DPO workflows frequently need audit exports for regulator inquiries.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+</div>
+
+<!-- =========================================================
+     TAB 3 — BEHAVIORAL PIPELINE HEALTH
+     ========================================================= -->
+<div id="tab-pipeline" class="tab-content">
+
+  <div class="tab-intro">
+    <h2>3 — Behavioral Pipeline Health</h2>
+    <p>The data pipeline is silently doing its job from the moment a CT project is connected. This surface, aimed at the IT Admin and Storefront Developer, proves it: events/sec throughput, consent coverage, PCI boundary compliance, retention windows, error rate. There is no analytics UI here &mdash; only operational telemetry showing that the moat is accumulating correctly, before anyone is looking.</p>
+    <div class="frs">
+      <span class="fr-chip">FR25</span>
+      <span class="fr-chip">FR26</span>
+      <span class="fr-chip">FR28</span>
+      <span class="fr-chip">FR47</span>
+      <span class="fr-chip">FR49</span>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 3A — Pipeline health dashboard ============ -->
+  <div class="screen">
+    <div class="screen-header">
+      <h3>3A — Pipeline health &middot; silent moat telemetry</h3>
+      <span class="tag">BehavioralPipelineHealth &middot; IT Admin + Dev view</span>
+    </div>
+    <div class="screen-body">
+      <div>
+        <div class="metric-grid" style="margin-bottom: 18px;">
+          <div class="metric-card">
+            <div class="metric-label">Events / sec</div>
+            <div class="metric-value">1,284</div>
+            <div class="metric-delta up">&uarr; 8% vs 7d avg</div>
+            <svg class="metric-sparkline" viewBox="0 0 100 30" preserveAspectRatio="none">
+              <polyline fill="none" stroke="var(--mc-blue)" stroke-width="1.5" points="0,20 8,18 16,22 24,17 32,19 40,15 48,16 56,13 64,15 72,11 80,12 88,9 100,10"/>
+            </svg>
+            <div class="status-indicator"></div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Consent coverage</div>
+            <div class="metric-value">94.2%</div>
+            <div class="metric-delta up">&uarr; 1.8pp</div>
+            <svg class="metric-sparkline" viewBox="0 0 100 30" preserveAspectRatio="none">
+              <polyline fill="none" stroke="var(--mc-success)" stroke-width="1.5" points="0,14 10,13 20,13 30,12 40,12 50,11 60,11 70,10 80,10 90,9 100,8"/>
+            </svg>
+            <div class="status-indicator"></div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">PCI boundary</div>
+            <div class="metric-value" style="color: var(--mc-success);">&#10003; Clean</div>
+            <div class="metric-delta up">0 violations 30d</div>
+            <svg class="metric-sparkline" viewBox="0 0 100 30" preserveAspectRatio="none">
+              <polyline fill="none" stroke="var(--mc-success)" stroke-width="1.5" points="0,25 100,25"/>
+            </svg>
+            <div class="status-indicator"></div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Pipeline error rate</div>
+            <div class="metric-value">0.02%</div>
+            <div class="metric-delta neutral">Within SLO (&lt; 0.1%)</div>
+            <svg class="metric-sparkline" viewBox="0 0 100 30" preserveAspectRatio="none">
+              <polyline fill="none" stroke="#9aa5b1" stroke-width="1.5" points="0,25 20,24 40,26 60,23 80,25 100,24"/>
+            </svg>
+            <div class="status-indicator"></div>
+          </div>
+        </div>
+
+        <div class="metric-grid" style="margin-bottom: 18px;">
+          <div class="metric-card">
+            <div class="metric-label">Sessions / day</div>
+            <div class="metric-value">198k</div>
+            <div class="metric-delta up">&uarr; 12%</div>
+            <svg class="metric-sparkline" viewBox="0 0 100 30" preserveAspectRatio="none">
+              <polyline fill="none" stroke="var(--mc-blue)" stroke-width="1.5" points="0,22 14,20 28,21 42,18 56,19 70,15 84,14 100,10"/>
+            </svg>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Ingest lag (p99)</div>
+            <div class="metric-value">1.2s</div>
+            <div class="metric-delta neutral">SLO &lt; 5s</div>
+            <svg class="metric-sparkline" viewBox="0 0 100 30" preserveAspectRatio="none">
+              <polyline fill="none" stroke="var(--mc-warning)" stroke-width="1.5" points="0,18 12,20 24,17 36,19 48,18 60,20 72,18 84,17 100,18"/>
+            </svg>
+            <div class="status-indicator"></div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Withdrawal latency (p95)</div>
+            <div class="metric-value">34ms</div>
+            <div class="metric-delta up">FR47: &lt; 1s</div>
+            <svg class="metric-sparkline" viewBox="0 0 100 30" preserveAspectRatio="none">
+              <polyline fill="none" stroke="var(--mc-success)" stroke-width="1.5" points="0,22 20,21 40,22 60,20 80,21 100,20"/>
+            </svg>
+            <div class="status-indicator"></div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Retention compliance</div>
+            <div class="metric-value" style="color: var(--mc-success);">&#10003; OK</div>
+            <div class="metric-delta neutral">Last sweep 04:00 UTC</div>
+            <svg class="metric-sparkline" viewBox="0 0 100 30" preserveAspectRatio="none">
+              <polyline fill="none" stroke="var(--mc-success)" stroke-width="1.5" points="0,24 100,24"/>
+            </svg>
+            <div class="status-indicator"></div>
+          </div>
+        </div>
+
+        <div class="section-title">Pipeline stages &middot; left-to-right data flow</div>
+        <div class="pipeline-flow">
+          <div class="pipeline-stage">
+            <h5><span class="stage-status"></span> Storefront beacon</h5>
+            <div class="stage-meta">Async send-beacon on page lifecycle events. Zero render impact (FR25).</div>
+            <div class="stage-metric">&rarr; 1,284 evt/s</div>
+          </div>
+          <div class="pipeline-arrow">&rarr;</div>
+          <div class="pipeline-stage">
+            <h5><span class="stage-status"></span> Edge validator</h5>
+            <div class="stage-meta">Consent check, PCI-pattern scrubber, schema validation at CDN edge.</div>
+            <div class="stage-metric">&rarr; 1,207 evt/s (-6% filtered)</div>
+          </div>
+          <div class="pipeline-arrow">&rarr;</div>
+          <div class="pipeline-stage">
+            <h5><span class="stage-status"></span> Kafka ingest</h5>
+            <div class="stage-meta">Partitioned by tenant_id &middot; 7-day replay window.</div>
+            <div class="stage-metric">&rarr; lag p99: 1.2s</div>
+          </div>
+          <div class="pipeline-arrow">&rarr;</div>
+          <div class="pipeline-stage">
+            <h5><span class="stage-status"></span> ClickHouse Cloud</h5>
+            <div class="stage-meta">Tenant-isolated tables, TTL-enforced retention, queryable from canvas.</div>
+            <div class="stage-metric">&rarr; 420TB stored &middot; 730d</div>
+          </div>
+        </div>
+
+        <div class="note-inline" style="margin-top: 14px;">
+          <strong>Filter ratio is expected:</strong> edge validator rejects events failing consent check, PCI-pattern matches, or schema validation. The 6% drop is the legal firewall working. Any sudden change in this ratio fires an alert to the on-call developer.
+        </div>
+
+        <div class="section-title">Event-type breakdown (last 24h)</div>
+        <div style="background: white; border: 1px solid var(--mc-border-strong); border-radius: var(--radius-md); padding: 16px 18px;">
+          <div style="display: grid; grid-template-columns: 1fr 100px 120px 90px 30px; gap: 12px; font-size: 11px; color: var(--mc-text-muted); text-transform: uppercase; letter-spacing: 0.4px; font-weight: 600; padding: 4px 0; border-bottom: 1px solid var(--mc-border);">
+            <span>Event type</span><span>Count</span><span>Share</span><span>&Delta; 7d</span><span></span>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 100px 120px 90px 30px; gap: 12px; font-size: 12px; padding: 7px 0; border-bottom: 1px dashed var(--mc-border); align-items: center;">
+            <span>page_view</span>
+            <span style="font-family: monospace;">42.1M</span>
+            <span><div style="height: 6px; background: var(--mc-blue); width: 100%; border-radius: 3px;"></div></span>
+            <span style="color: var(--mc-success); font-family: monospace;">+3%</span>
+            <span>&#9635;</span>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 100px 120px 90px 30px; gap: 12px; font-size: 12px; padding: 7px 0; border-bottom: 1px dashed var(--mc-border); align-items: center;">
+            <span>scroll_depth</span>
+            <span style="font-family: monospace;">28.4M</span>
+            <span><div style="height: 6px; background: var(--mc-blue); width: 68%; border-radius: 3px;"></div></span>
+            <span style="color: var(--mc-success); font-family: monospace;">+1%</span>
+            <span>&#9635;</span>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 100px 120px 90px 30px; gap: 12px; font-size: 12px; padding: 7px 0; border-bottom: 1px dashed var(--mc-border); align-items: center;">
+            <span>component_dwell</span>
+            <span style="font-family: monospace;">19.7M</span>
+            <span><div style="height: 6px; background: var(--mc-blue); width: 47%; border-radius: 3px;"></div></span>
+            <span style="color: var(--mc-success); font-family: monospace;">+8%</span>
+            <span>&#9635;</span>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 100px 120px 90px 30px; gap: 12px; font-size: 12px; padding: 7px 0; border-bottom: 1px dashed var(--mc-border); align-items: center;">
+            <span>click_coord</span>
+            <span style="font-family: monospace;">11.2M</span>
+            <span><div style="height: 6px; background: var(--mc-blue); width: 27%; border-radius: 3px;"></div></span>
+            <span style="color: var(--mc-text-muted); font-family: monospace;">+0%</span>
+            <span>&#9635;</span>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 100px 120px 90px 30px; gap: 12px; font-size: 12px; padding: 7px 0; border-bottom: 1px dashed var(--mc-border); align-items: center;">
+            <span>web_vitals</span>
+            <span style="font-family: monospace;">8.9M</span>
+            <span><div style="height: 6px; background: var(--mc-blue); width: 21%; border-radius: 3px;"></div></span>
+            <span style="color: var(--mc-success); font-family: monospace;">+2%</span>
+            <span>&#9635;</span>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 100px 120px 90px 30px; gap: 12px; font-size: 12px; padding: 7px 0; align-items: center;">
+            <span>rage_click</span>
+            <span style="font-family: monospace;">48k</span>
+            <span><div style="height: 6px; background: var(--mc-warning); width: 2%; border-radius: 3px;"></div></span>
+            <span style="color: var(--mc-warning); font-family: monospace;">+14%</span>
+            <span>&#9888;</span>
+          </div>
+        </div>
+      </div>
+      <div class="screen-annotations">
+        <h4>Design Notes</h4>
+        <ul>
+          <li><strong>Dense metric grid is the whole point</strong> &mdash; this surface communicates "the system is working, nothing for you to touch" at a glance. It is diagnostic, not analytical. <em>(FR25, FR28)</em></li>
+          <li><strong>Status indicator dots per card</strong> &mdash; green = within SLO, amber = degraded, red = alert. One visual rule governs the whole screen.</li>
+          <li><strong>Left-to-right pipeline diagram</strong> &mdash; storefront beacon &rarr; edge validator &rarr; Kafka &rarr; ClickHouse. Mirrors the architecture in tech-spec-mvp.md. The expected filter ratio is called out explicitly so on-call engineers don't treat it as data loss.</li>
+          <li><strong>Withdrawal latency is first-class metric</strong> &mdash; FR47 requires immediate halt; we surface the p95 measurement as proof. 34ms is dramatically inside the "immediate" threshold.</li>
+          <li><strong>Event-type breakdown uses mini horizontal bars</strong> &mdash; share-of-volume is glanceable; anomalies (rage_click +14%) are color-flagged. <em>(FR22 foundation, FR27)</em></li>
+          <li><strong>No "last updated" timestamp on the whole page</strong> &mdash; everything is live. A timestamp would invite operators to refresh; the data already is real-time.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 3B — PCI boundary + alerts ============ -->
+  <div class="screen">
+    <div class="screen-header">
+      <h3>3B — PCI boundary compliance & recent alerts</h3>
+      <span class="tag">PCIBoundary + PipelineAlerts &middot; FR49</span>
+    </div>
+    <div class="screen-body">
+      <div>
+        <div class="section-title">PCI boundary enforcement checks</div>
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
+          <div class="boundary-card">
+            <h5>Checkout route exclusion</h5>
+            <div style="font-size: 12px; color: var(--mc-text-muted); line-height: 1.5; margin-bottom: 6px;">Beacon script blocks itself on route match: <code>/checkout/**</code>, <code>/payment/**</code>, <code>/cart/pay/**</code>.</div>
+            <div class="check-ok">&#10003; Active &middot; verified by synthetic probe every 5 min</div>
+          </div>
+          <div class="boundary-card">
+            <h5>Payment iframe exclusion</h5>
+            <div style="font-size: 12px; color: var(--mc-text-muted); line-height: 1.5; margin-bottom: 6px;">No collection inside Stripe / Adyen / Braintree iframes by origin match.</div>
+            <div class="check-ok">&#10003; Active &middot; CSP-enforced</div>
+          </div>
+          <div class="boundary-card">
+            <h5>Form field scrubber</h5>
+            <div style="font-size: 12px; color: var(--mc-text-muted); line-height: 1.5; margin-bottom: 6px;">All form values discarded at beacon. Only event_type and component_id survive.</div>
+            <div class="check-ok">&#10003; Active &middot; regex + allow-list</div>
+          </div>
+          <div class="boundary-card">
+            <h5>URL query PCI patterns</h5>
+            <div style="font-size: 12px; color: var(--mc-text-muted); line-height: 1.5; margin-bottom: 6px;">Query strings matching card-number, CVV, or tokenized-payment regex are dropped at edge.</div>
+            <div class="check-ok">&#10003; 0 matches last 30d</div>
+          </div>
+          <div class="boundary-card">
+            <h5>Behavioral events in /checkout path</h5>
+            <div style="font-size: 12px; color: var(--mc-text-muted); line-height: 1.5; margin-bottom: 6px;">Monitoring: any event escaping route exclusion fires PagerDuty.</div>
+            <div class="check-ok">&#10003; 0 events 30d</div>
+          </div>
+          <div class="boundary-card">
+            <h5>Quarterly PCI-DSS re-attestation</h5>
+            <div style="font-size: 12px; color: var(--mc-text-muted); line-height: 1.5; margin-bottom: 6px;">External QSA confirms boundary integrity every 90 days.</div>
+            <div class="check-ok">&#10003; Valid through 2026-07-15</div>
+          </div>
+        </div>
+
+        <div class="section-title">Recent pipeline alerts (30 day window)</div>
+        <div style="background: white; border: 1px solid var(--mc-border-strong); border-radius: var(--radius-md); overflow: hidden;">
+          <div style="display: grid; grid-template-columns: 130px 90px 1fr 90px 110px; gap: 12px; padding: 10px 14px; background: #fafbfc; border-bottom: 1px solid var(--mc-border); font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--mc-text-muted); font-weight: 600;">
+            <span>Time</span>
+            <span>Severity</span>
+            <span>Event</span>
+            <span>Duration</span>
+            <span>Status</span>
+          </div>
+          <div style="display: grid; grid-template-columns: 130px 90px 1fr 90px 110px; gap: 12px; padding: 10px 14px; border-bottom: 1px solid var(--mc-border); font-size: 12px; align-items: center;">
+            <span class="timestamp">2026-05-04 03:17</span>
+            <span><span class="status-pill processing"><span class="dot"></span> Warn</span></span>
+            <span>Ingest lag p99 exceeded 4s for 12 minutes during regional Kafka restart</span>
+            <span style="font-family: monospace;">12m</span>
+            <span><span class="status-pill done"><span class="dot"></span> Resolved</span></span>
+          </div>
+          <div style="display: grid; grid-template-columns: 130px 90px 1fr 90px 110px; gap: 12px; padding: 10px 14px; border-bottom: 1px solid var(--mc-border); font-size: 12px; align-items: center;">
+            <span class="timestamp">2026-04-29 18:42</span>
+            <span><span class="status-pill queued"><span class="dot"></span> Info</span></span>
+            <span>Consent coverage dropped below 90% after US-East consent banner UX change</span>
+            <span style="font-family: monospace;">4h</span>
+            <span><span class="status-pill done"><span class="dot"></span> Resolved</span></span>
+          </div>
+          <div style="display: grid; grid-template-columns: 130px 90px 1fr 90px 110px; gap: 12px; padding: 10px 14px; border-bottom: 1px solid var(--mc-border); font-size: 12px; align-items: center;">
+            <span class="timestamp">2026-04-22 11:08</span>
+            <span><span class="status-pill overdue"><span class="dot"></span> Critical</span></span>
+            <span>Edge validator rejection spike &middot; stale GeoIP CSP rule blocked 4% traffic</span>
+            <span style="font-family: monospace;">28m</span>
+            <span><span class="status-pill done"><span class="dot"></span> Resolved</span></span>
+          </div>
+          <div style="display: grid; grid-template-columns: 130px 90px 1fr 90px 110px; gap: 12px; padding: 10px 14px; border-bottom: 1px solid var(--mc-border); font-size: 12px; align-items: center;">
+            <span class="timestamp">2026-04-14 09:51</span>
+            <span><span class="status-pill processing"><span class="dot"></span> Warn</span></span>
+            <span>Rage-click event rate +28% on /product/*/reviews &mdash; flagged to ACI</span>
+            <span style="font-family: monospace;">&mdash;</span>
+            <span><span class="status-pill done"><span class="dot"></span> Auto-escalated</span></span>
+          </div>
+          <div style="display: grid; grid-template-columns: 130px 90px 1fr 90px 110px; gap: 12px; padding: 10px 14px; font-size: 12px; align-items: center;">
+            <span class="timestamp">2026-04-08 02:00</span>
+            <span><span class="status-pill queued"><span class="dot"></span> Info</span></span>
+            <span>Scheduled retention sweep completed &middot; 84.2M expired rows tombstoned</span>
+            <span style="font-family: monospace;">38m</span>
+            <span><span class="status-pill done"><span class="dot"></span> Completed</span></span>
+          </div>
+        </div>
+
+        <div class="section-title">Tenant isolation & data residency</div>
+        <div class="two-col">
+          <div class="boundary-card">
+            <h5>Row-level tenant isolation</h5>
+            <div style="font-size: 12px; color: var(--mc-text-muted); line-height: 1.55; margin-bottom: 8px;">Every ClickHouse query enforces <code>WHERE tenant_id = ?</code>. No query path exists that can cross tenants. The moat is per-tenant; it never leaks.</div>
+            <div class="check-ok">&#10003; Verified by 24 cross-tenant probe tests (daily)</div>
+          </div>
+          <div class="boundary-card">
+            <h5>Data residency: EU vs US</h5>
+            <div style="font-size: 12px; color: var(--mc-text-muted); line-height: 1.55; margin-bottom: 8px;">Tenant is provisioned to <strong>eu-west-1</strong>. All behavioral events pinned to EU region; no cross-region replication. Applies to both consent layers.</div>
+            <div class="check-ok">&#10003; Residency lock engaged &middot; matches Epic 6 DPA</div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-annotations">
+        <h4>Design Notes</h4>
+        <ul>
+          <li><strong>PCI boundary grid dominates the screen</strong> &mdash; six green-left-bordered cards lined up shouts "compliant." Any single card flipping to red (via the <code>.fail</code> modifier) becomes the page's strongest visual focus immediately. <em>(FR49)</em></li>
+          <li><strong>Synthetic probes referenced explicitly</strong> &mdash; checkout exclusion verified every 5 minutes, cross-tenant isolation verified 24 times daily. Proofs, not claims.</li>
+          <li><strong>Alerts use the same severity pill system</strong> as the consent audit and ACI inbox. Consistent severity language across the product.</li>
+          <li><strong>Rage-click auto-escalation</strong> &mdash; an info-severity pipeline alert that auto-hands off to ACI Analyst. This is the pipeline-to-insight bridge in action. <em>(FR23)</em></li>
+          <li><strong>Retention sweep shown as a routine alert</strong> &mdash; 84.2M rows tombstoned at 2am sweep. Normalizing the compliance work as "just how the system runs."</li>
+          <li><strong>Residency lock is a one-way door</strong> &mdash; once tenant is provisioned to EU, no admin action can move data to US. This is a hard constraint surfaced visibly. <em>(Epic 6 FR43)</em></li>
+          <li><strong>Quarterly re-attestation date visible</strong> &mdash; the QSA letter expiration is surfaced so admins see it before it lapses.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+</div>
+
+<div class="doc-footer">
+  Wireframes are intentionally low-fidelity — dashed borders and placeholder content indicate where customer-brand content will render. Epic 5 surfaces the behavioral data infrastructure that underpins Epic 8 (AI Experience Engine). Heatmap colors follow a blue-to-red intensity gradient; consent tracks use distinct accent colors to keep the two legal layers visually separable.
+</div>
+
+<script>
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      const target = tab.dataset.tab;
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('tab-' + target).classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+
+  // Heatmap toggle demo (Tab 1)
+  document.querySelectorAll('.heat-toggle').forEach(btn => {
+    btn.addEventListener('click', () => {
+      btn.classList.toggle('active');
+      const frame = btn.closest('.editor-frame');
+      if (!frame) return;
+      const overlay = frame.querySelector('.heat-overlay');
+      if (overlay) overlay.classList.toggle('hidden');
+    });
+  });
+
+  // Consent toggle demo (Tab 2)
+  document.querySelectorAll('.toggle-switch').forEach(sw => {
+    sw.addEventListener('click', () => sw.classList.toggle('on'));
+  });
+
+  // Panel tab switching (light demo)
+  document.querySelectorAll('.side-panel .panel-tab').forEach(pt => {
+    pt.addEventListener('click', () => {
+      const panel = pt.closest('.side-panel');
+      panel.querySelectorAll('.panel-tab').forEach(x => x.classList.remove('active'));
+      pt.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>

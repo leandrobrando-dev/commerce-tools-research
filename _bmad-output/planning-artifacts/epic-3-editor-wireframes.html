@@ -1,0 +1,1741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Epic 3 — Storefront Editor & Publishing — Wireframes</title>
+<style>
+  :root {
+    --mc-blue: #0066cc;
+    --mc-blue-wash: rgba(0, 102, 204, 0.08);
+    --mc-ai-tint: rgba(88, 28, 255, 0.08);
+    --mc-ai-accent: #5b21b6;
+    --mc-bg: #f5f7fa;
+    --mc-surface: #ffffff;
+    --mc-border: #e4e7eb;
+    --mc-border-strong: #cbd2d9;
+    --mc-text: #1f2933;
+    --mc-text-muted: #6b7280;
+    --mc-text-faint: #9aa5b1;
+    --mc-success: #16a34a;
+    --mc-success-bg: #ecfdf5;
+    --mc-warning: #d97706;
+    --mc-warning-bg: #fef3c7;
+    --mc-error: #dc2626;
+    --mc-error-bg: #fee2e2;
+    --mc-locked: #9aa5b1;
+    --mc-locked-bg: #f3f4f6;
+    --radius-sm: 4px;
+    --radius-md: 6px;
+    --radius-lg: 8px;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 2px 6px rgba(0,0,0,0.06);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 13px;
+    line-height: 1.5;
+    background: var(--mc-bg);
+    color: var(--mc-text);
+  }
+
+  code, .mono { font-family: 'SF Mono', 'Monaco', 'Consolas', monospace; font-size: 12px; }
+
+  /* ---------- Document header ---------- */
+  .doc-header {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: white;
+    padding: 24px 40px;
+  }
+  .doc-header h1 { font-size: 22px; font-weight: 600; margin-bottom: 6px; }
+  .doc-header p { font-size: 13px; opacity: 0.85; max-width: 900px; }
+  .doc-header .meta {
+    margin-top: 12px; display: flex; gap: 20px; font-size: 12px; opacity: 0.7;
+  }
+
+  /* ---------- Tab nav ---------- */
+  .tabs {
+    background: white;
+    border-bottom: 1px solid var(--mc-border);
+    display: flex;
+    padding: 0 40px;
+    gap: 32px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .tab {
+    padding: 14px 0;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    font-weight: 500;
+    font-size: 13px;
+    color: var(--mc-text-muted);
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .tab.active { border-bottom-color: var(--mc-blue); color: var(--mc-blue); }
+  .tab:hover { color: var(--mc-blue); }
+  .tab-num {
+    display: inline-block;
+    width: 18px; height: 18px;
+    background: var(--mc-border);
+    color: var(--mc-text-muted);
+    border-radius: 50%;
+    font-size: 11px;
+    text-align: center;
+    line-height: 18px;
+    font-weight: 600;
+  }
+  .tab.active .tab-num { background: var(--mc-blue); color: white; }
+
+  .tab-content { display: none; padding: 32px 40px 80px; }
+  .tab-content.active { display: block; }
+
+  /* ---------- Tab intro ---------- */
+  .tab-intro {
+    background: white;
+    border: 1px solid var(--mc-border);
+    border-left: 3px solid var(--mc-blue);
+    border-radius: var(--radius-md);
+    padding: 16px 20px;
+    margin-bottom: 28px;
+    max-width: 1100px;
+  }
+  .tab-intro h2 { font-size: 16px; margin-bottom: 6px; }
+  .tab-intro p { color: var(--mc-text-muted); font-size: 13px; }
+  .tab-intro .frs {
+    margin-top: 10px; display: flex; gap: 6px; flex-wrap: wrap;
+  }
+  .fr-chip {
+    background: var(--mc-blue-wash);
+    color: var(--mc-blue);
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 500;
+    font-family: 'SF Mono', 'Monaco', monospace;
+  }
+
+  /* ---------- Screen card ---------- */
+  .screen {
+    background: white;
+    border: 1px solid var(--mc-border);
+    border-radius: var(--radius-lg);
+    margin-bottom: 32px;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+  }
+  .screen-header {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--mc-border);
+    background: #fafbfc;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .screen-header h3 { font-size: 14px; font-weight: 600; }
+  .screen-header .tag {
+    font-family: 'SF Mono', monospace;
+    font-size: 11px;
+    color: var(--mc-text-muted);
+    background: white;
+    border: 1px solid var(--mc-border);
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+  .screen-body { padding: 24px; display: grid; grid-template-columns: 1fr 280px; gap: 24px; }
+  .screen-body.single { grid-template-columns: 1fr; }
+  .screen-annotations {
+    background: #fafbfc;
+    border: 1px solid var(--mc-border);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    font-size: 12px;
+  }
+  .screen-annotations h4 {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--mc-text-muted);
+    margin-bottom: 10px;
+  }
+  .screen-annotations ul { list-style: none; padding: 0; }
+  .screen-annotations li {
+    padding: 6px 0;
+    border-bottom: 1px dashed var(--mc-border);
+    color: var(--mc-text);
+    font-size: 12px;
+    line-height: 1.45;
+  }
+  .screen-annotations li:last-child { border-bottom: none; }
+  .screen-annotations li strong { color: var(--mc-blue); font-weight: 600; }
+
+  /* ---------- Editor frame (simulates Merchant Center shell) ---------- */
+  .editor-frame {
+    border: 1px solid var(--mc-border-strong);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background: var(--mc-bg);
+    display: grid;
+    grid-template-rows: 40px 36px 1fr;
+    height: 520px;
+    font-size: 12px;
+  }
+  .editor-topbar {
+    background: #1f2933;
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    gap: 20px;
+    font-size: 12px;
+  }
+  .editor-topbar .logo { font-weight: 600; letter-spacing: 0.3px; }
+  .editor-topbar .crumbs { opacity: 0.7; }
+  .editor-topbar .crumbs strong { color: white; opacity: 1; }
+  .editor-topbar .spacer { flex: 1; }
+  .editor-topbar .user {
+    width: 24px; height: 24px; border-radius: 50%;
+    background: var(--mc-blue); display: inline-flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 600;
+  }
+
+  .context-bar {
+    background: white;
+    border-bottom: 1px solid var(--mc-border);
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    gap: 8px;
+  }
+  .chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+    border: 1px solid var(--mc-border);
+    background: white;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .chip:hover { border-color: var(--mc-blue); color: var(--mc-blue); }
+  .chip.active { background: var(--mc-blue-wash); border-color: var(--mc-blue); color: var(--mc-blue); }
+  .chip.draft { background: var(--mc-warning-bg); border-color: var(--mc-warning); color: var(--mc-warning); }
+  .chip.live { background: var(--mc-success-bg); border-color: var(--mc-success); color: var(--mc-success); }
+  .chip .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  .context-bar .spacer { flex: 1; }
+  .context-bar .viewport-toggle {
+    display: flex; gap: 0; border: 1px solid var(--mc-border); border-radius: var(--radius-sm); overflow: hidden;
+  }
+  .context-bar .viewport-toggle button {
+    background: white; border: none; padding: 4px 10px; font-size: 11px; cursor: pointer;
+    color: var(--mc-text-muted); border-right: 1px solid var(--mc-border);
+  }
+  .context-bar .viewport-toggle button:last-child { border-right: none; }
+  .context-bar .viewport-toggle button.active { background: var(--mc-blue-wash); color: var(--mc-blue); font-weight: 500; }
+  .publish-btn {
+    background: var(--mc-blue); color: white; border: none;
+    padding: 5px 14px; border-radius: var(--radius-sm); font-size: 12px; font-weight: 500; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .publish-btn:hover { background: #0052a3; }
+  .publish-btn.disabled { background: var(--mc-border); color: var(--mc-text-faint); cursor: not-allowed; }
+
+  .editor-main { display: grid; grid-template-columns: 56px 1fr 300px; height: 100%; overflow: hidden; }
+  .nav-rail {
+    background: #fafbfc;
+    border-right: 1px solid var(--mc-border);
+    display: flex; flex-direction: column; align-items: center; padding: 12px 0; gap: 4px;
+  }
+  .nav-rail .nav-item {
+    width: 40px; height: 40px; border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; color: var(--mc-text-muted); cursor: pointer;
+    position: relative;
+  }
+  .nav-rail .nav-item:hover { background: white; color: var(--mc-blue); }
+  .nav-rail .nav-item.active { background: var(--mc-blue-wash); color: var(--mc-blue); }
+  .nav-rail .nav-item .label {
+    display: none; position: absolute; left: 48px; background: #1f2933; color: white;
+    padding: 4px 8px; border-radius: var(--radius-sm); font-size: 11px; white-space: nowrap;
+  }
+  .nav-rail .nav-item:hover .label { display: block; }
+
+  .canvas-wrap {
+    overflow: auto;
+    background:
+      linear-gradient(45deg, #f0f2f5 25%, transparent 25%),
+      linear-gradient(-45deg, #f0f2f5 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, #f0f2f5 75%),
+      linear-gradient(-45deg, transparent 75%, #f0f2f5 75%);
+    background-size: 16px 16px;
+    background-position: 0 0, 0 8px, 8px -8px, -8px 0;
+    padding: 20px;
+  }
+  .canvas {
+    background: white;
+    border: 1px solid var(--mc-border-strong);
+    border-radius: var(--radius-sm);
+    min-height: 100%;
+    padding: 16px;
+    display: flex; flex-direction: column; gap: 8px;
+    box-shadow: var(--shadow-md);
+  }
+  .canvas.tablet { max-width: 768px; margin: 0 auto; }
+  .canvas.mobile { max-width: 375px; margin: 0 auto; }
+  .canvas-section {
+    border: 1px dashed var(--mc-border-strong);
+    border-radius: var(--radius-sm);
+    padding: 14px;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.15s;
+    background: white;
+  }
+  .canvas-section:hover { border-color: var(--mc-blue); border-style: solid; }
+  .canvas-section.selected {
+    border: 2px solid var(--mc-blue);
+    box-shadow: 0 0 0 3px var(--mc-blue-wash);
+  }
+  .canvas-section.red-zone {
+    border-style: solid;
+    border-color: var(--mc-locked);
+    background: var(--mc-locked-bg);
+    cursor: not-allowed;
+  }
+  .canvas-section.red-zone:hover { border-color: var(--mc-locked); }
+  .canvas-section .sec-label {
+    position: absolute; top: -9px; left: 10px;
+    background: white; padding: 0 6px; font-size: 10px; color: var(--mc-text-muted);
+    font-family: 'SF Mono', monospace;
+  }
+  .canvas-section.selected .sec-label { color: var(--mc-blue); font-weight: 600; }
+  .canvas-section.red-zone .sec-label { color: var(--mc-locked); }
+  .canvas-section .sec-body {
+    display: flex; gap: 12px; align-items: center;
+  }
+  .canvas-section .placeholder {
+    height: 48px; background: #f0f2f5; border-radius: var(--radius-sm); flex: 1;
+    display: flex; align-items: center; justify-content: center; color: var(--mc-text-faint); font-size: 11px;
+  }
+  .canvas-section .lock-indicator {
+    position: absolute; top: 8px; right: 10px;
+    font-size: 11px; color: var(--mc-locked);
+  }
+  .canvas-section .eng-badge {
+    position: absolute; top: 8px; right: 10px;
+    background: var(--mc-success-bg); color: var(--mc-success);
+    font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 10px;
+  }
+
+  /* ---------- Right sidebar (property panel / AI panel) ---------- */
+  .side-panel {
+    background: white;
+    border-left: 1px solid var(--mc-border);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+  .side-panel .panel-tabs {
+    display: flex; border-bottom: 1px solid var(--mc-border); background: #fafbfc;
+  }
+  .side-panel .panel-tab {
+    flex: 1; padding: 10px 0; font-size: 11px; font-weight: 500; text-align: center; cursor: pointer;
+    color: var(--mc-text-muted); border-bottom: 2px solid transparent;
+  }
+  .side-panel .panel-tab.active { color: var(--mc-blue); border-bottom-color: var(--mc-blue); background: white; }
+  .side-panel .panel-body { padding: 14px; flex: 1; overflow-y: auto; }
+  .panel-empty {
+    color: var(--mc-text-faint); font-size: 12px; text-align: center; padding: 40px 20px;
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+  }
+  .panel-empty .icon { font-size: 28px; opacity: 0.4; }
+
+  .prop-group { margin-bottom: 18px; }
+  .prop-group h5 {
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.6px;
+    color: var(--mc-text-muted); margin-bottom: 8px; font-weight: 600;
+  }
+  .prop-row { margin-bottom: 10px; }
+  .prop-label { font-size: 11px; color: var(--mc-text-muted); margin-bottom: 3px; display: block; }
+  .prop-input {
+    width: 100%; padding: 6px 8px; border: 1px solid var(--mc-border);
+    border-radius: var(--radius-sm); font-size: 12px; background: white; font-family: inherit;
+  }
+  .prop-input:focus { outline: none; border-color: var(--mc-blue); box-shadow: 0 0 0 2px var(--mc-blue-wash); }
+  .prop-input.locked {
+    background: var(--mc-locked-bg); color: var(--mc-text-muted); cursor: not-allowed;
+  }
+  .governance-badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: var(--mc-locked-bg); color: var(--mc-text-muted);
+    padding: 2px 6px; border-radius: var(--radius-sm); font-size: 10px; font-weight: 500;
+  }
+
+  /* ---------- AI panel ---------- */
+  .ai-panel { display: flex; flex-direction: column; height: 100%; }
+  .ai-panel-header {
+    padding: 12px 14px;
+    background: var(--mc-ai-tint);
+    border-bottom: 1px solid var(--mc-border);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .ai-panel-header .ai-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--mc-ai-accent); }
+  .ai-panel-header h4 { font-size: 12px; color: var(--mc-ai-accent); font-weight: 600; }
+  .ai-convo { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+  .ai-msg {
+    padding: 8px 10px; border-radius: var(--radius-md); font-size: 12px; line-height: 1.45;
+  }
+  .ai-msg.user {
+    background: var(--mc-blue-wash); color: var(--mc-text); align-self: flex-end; max-width: 80%;
+  }
+  .ai-msg.ai {
+    background: var(--mc-ai-tint); color: var(--mc-text); align-self: flex-start; max-width: 90%;
+    border-left: 2px solid var(--mc-ai-accent);
+  }
+  .ai-reasoning-card {
+    background: white; border: 1px solid var(--mc-ai-accent); border-radius: var(--radius-md);
+    padding: 12px; font-size: 12px; margin-top: 4px;
+  }
+  .ai-reasoning-card h5 {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.4px;
+    color: var(--mc-ai-accent); margin-bottom: 8px; font-weight: 600;
+  }
+  .ai-reasoning-card ul { list-style: none; padding: 0; font-size: 11px; }
+  .ai-reasoning-card li { padding: 3px 0; color: var(--mc-text-muted); }
+  .ai-reasoning-card li::before { content: "→ "; color: var(--mc-ai-accent); }
+  .ai-reasoning-actions { display: flex; gap: 6px; margin-top: 10px; }
+  .btn-primary, .btn-ghost, .btn-danger {
+    padding: 5px 10px; border-radius: var(--radius-sm); font-size: 11px; font-weight: 500;
+    cursor: pointer; border: 1px solid transparent;
+  }
+  .btn-primary { background: var(--mc-ai-accent); color: white; }
+  .btn-ghost { background: white; color: var(--mc-text-muted); border-color: var(--mc-border); }
+  .btn-danger { background: white; color: var(--mc-error); border-color: var(--mc-border); }
+  .ai-input {
+    border-top: 1px solid var(--mc-border); padding: 10px;
+    display: flex; gap: 6px; background: white;
+  }
+  .ai-input input {
+    flex: 1; padding: 6px 8px; border: 1px solid var(--mc-border);
+    border-radius: var(--radius-sm); font-size: 12px;
+  }
+
+  /* ---------- Tooltip for Red Zone ---------- */
+  .locked-tooltip {
+    position: absolute;
+    top: -4px; left: 50%; transform: translate(-50%, -100%);
+    background: #1f2933; color: white;
+    padding: 8px 12px; border-radius: var(--radius-sm); font-size: 11px;
+    width: 220px; line-height: 1.4;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    z-index: 10;
+  }
+  .locked-tooltip::after {
+    content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+    border: 6px solid transparent; border-top-color: #1f2933;
+  }
+  .locked-tooltip strong { display: block; margin-bottom: 3px; color: white; }
+
+  /* ---------- Publish flow styles ---------- */
+  .publish-menu {
+    position: absolute; top: 34px; right: 0;
+    background: white; border: 1px solid var(--mc-border); border-radius: var(--radius-md);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12); width: 260px; padding: 6px;
+    z-index: 20;
+  }
+  .publish-menu .menu-item {
+    padding: 10px 12px; border-radius: var(--radius-sm); cursor: pointer;
+    display: flex; gap: 10px; align-items: flex-start;
+  }
+  .publish-menu .menu-item:hover { background: var(--mc-blue-wash); }
+  .publish-menu .menu-item .icon { font-size: 14px; margin-top: 1px; }
+  .publish-menu .menu-item .title { font-size: 12px; font-weight: 600; margin-bottom: 2px; }
+  .publish-menu .menu-item .desc { font-size: 11px; color: var(--mc-text-muted); line-height: 1.35; }
+
+  .modal-overlay {
+    position: absolute; inset: 0; background: rgba(31, 41, 51, 0.5);
+    display: flex; align-items: center; justify-content: center; z-index: 30;
+  }
+  .modal {
+    background: white; border-radius: var(--radius-lg); width: 500px; max-width: 90%;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2); overflow: hidden;
+  }
+  .modal-header {
+    padding: 16px 20px; border-bottom: 1px solid var(--mc-border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .modal-header h3 { font-size: 15px; }
+  .modal-body { padding: 20px; }
+  .modal-footer {
+    padding: 12px 20px; border-top: 1px solid var(--mc-border); background: #fafbfc;
+    display: flex; justify-content: flex-end; gap: 8px;
+  }
+
+  .check-item {
+    display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px dashed var(--mc-border); font-size: 12px;
+  }
+  .check-item:last-child { border-bottom: none; }
+  .check-item .check-icon {
+    width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 600; flex-shrink: 0;
+  }
+  .check-item.pass .check-icon { background: var(--mc-success-bg); color: var(--mc-success); }
+  .check-item.warn .check-icon { background: var(--mc-warning-bg); color: var(--mc-warning); }
+  .check-item.fail .check-icon { background: var(--mc-error-bg); color: var(--mc-error); }
+  .check-item .check-body { flex: 1; }
+  .check-item .check-title { font-weight: 600; font-size: 12px; margin-bottom: 2px; }
+  .check-item .check-desc { font-size: 11px; color: var(--mc-text-muted); line-height: 1.4; }
+
+  .audit-row {
+    display: grid; grid-template-columns: 100px 80px 1fr 100px 24px;
+    gap: 12px; padding: 10px 12px;
+    border-bottom: 1px solid var(--mc-border); font-size: 12px; align-items: center;
+  }
+  .audit-row.header {
+    background: #fafbfc; font-size: 10px; text-transform: uppercase;
+    letter-spacing: 0.5px; color: var(--mc-text-muted); font-weight: 600;
+  }
+  .audit-row:last-child { border-bottom: none; }
+  .audit-row .timestamp { font-family: 'SF Mono', monospace; font-size: 11px; color: var(--mc-text-muted); }
+  .audit-row .user-badge {
+    display: inline-flex; align-items: center; gap: 4px; font-size: 11px;
+  }
+  .audit-row .avatar-sm {
+    width: 18px; height: 18px; border-radius: 50%;
+    background: var(--mc-blue); color: white; font-size: 9px; font-weight: 600;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .audit-row .revert-btn {
+    font-size: 11px; color: var(--mc-text-muted); cursor: pointer;
+  }
+  .audit-row .revert-btn:hover { color: var(--mc-blue); }
+
+  /* ---------- Side-by-side preview ---------- */
+  .split-preview { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; height: 100%; }
+  .split-pane { display: flex; flex-direction: column; overflow: hidden; }
+  .split-pane-header {
+    background: #fafbfc; border: 1px solid var(--mc-border); border-bottom: none;
+    padding: 6px 10px; font-size: 11px; font-weight: 600;
+    display: flex; align-items: center; gap: 8px;
+    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  }
+  .split-pane .canvas-wrap {
+    border: 1px solid var(--mc-border); border-top: none;
+    border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+    flex: 1; padding: 12px;
+  }
+
+  /* ---------- Legend ---------- */
+  .legend {
+    margin-top: 12px; display: flex; gap: 16px; font-size: 11px; color: var(--mc-text-muted);
+    padding: 10px 14px; background: #fafbfc; border: 1px solid var(--mc-border); border-radius: var(--radius-md);
+    flex-wrap: wrap;
+  }
+  .legend-item { display: inline-flex; align-items: center; gap: 6px; }
+  .legend-swatch {
+    width: 14px; height: 14px; border-radius: 3px; display: inline-block;
+  }
+  .legend-swatch.green-zone { background: white; border: 1px dashed var(--mc-border-strong); }
+  .legend-swatch.selected { background: white; border: 2px solid var(--mc-blue); }
+  .legend-swatch.red-zone { background: var(--mc-locked-bg); border: 1px solid var(--mc-locked); }
+  .legend-swatch.ai-tint { background: var(--mc-ai-tint); border: 1px solid var(--mc-ai-accent); }
+
+  /* ---------- Footer ---------- */
+  .doc-footer {
+    background: white; border-top: 1px solid var(--mc-border);
+    padding: 20px 40px; font-size: 12px; color: var(--mc-text-muted); text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<div class="doc-header">
+  <h1>Epic 3 — Storefront Editor & Publishing Wireframes</h1>
+  <p>Business-operator editor surfaces for the commercetools Next-Gen Frontend. Wireframes follow the chosen UX direction: <strong>Merchant Center Native shell + expandable Split Studio AI panel</strong>. Annotations reference FRs from the PRD.</p>
+  <div class="meta">
+    <span>Author: Sally (UX)</span>
+    <span>Date: 2026-05-07</span>
+    <span>Status: Draft for review</span>
+    <span>Aligned to: ux-design-specification.md</span>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" data-tab="shell"><span class="tab-num">1</span> Editor Shell</div>
+  <div class="tab" data-tab="publish"><span class="tab-num">2</span> Publish & Governance</div>
+  <div class="tab" data-tab="preview"><span class="tab-num">3</span> Multi-Viewport & B2X Preview</div>
+</div>
+
+<!-- TAB 1 PLACEHOLDER -->
+<div id="tab-shell" class="tab-content active">
+
+  <div class="tab-intro">
+    <h2>1 — Editor Shell</h2>
+    <p>The default canvas + nav rail + context bar + property sidebar layout. This is the foundation every other Epic 3 screen builds on. Direction 1 (Merchant Center Native) as the baseline; the right sidebar transitions to the AI panel when operators invoke generation.</p>
+    <div class="frs">
+      <span class="fr-chip">FR1</span><span class="fr-chip">FR2</span><span class="fr-chip">FR3</span>
+      <span class="fr-chip">FR15</span><span class="fr-chip">FR33</span>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 1A — Default / Live Canvas ============ -->
+  <div class="screen">
+    <div class="screen-header">
+      <h3>1A — Default state: live canvas, no selection</h3>
+      <span class="tag">StorefrontCanvas (idle) + ContextBar + empty property sidebar</span>
+    </div>
+    <div class="screen-body">
+      <div class="editor-frame">
+        <div class="editor-topbar">
+          <span class="logo">commercetools</span>
+          <span class="crumbs">Tutorial › Storefront › <strong>Home</strong></span>
+          <span class="spacer"></span>
+          <span style="font-size:11px; opacity:0.6;">⌘K</span>
+          <span class="user">LP</span>
+        </div>
+        <div class="context-bar">
+          <span class="chip active"><span class="dot"></span> B2C</span>
+          <span class="chip">en-GB ▾</span>
+          <span class="chip">Guest ▾</span>
+          <span class="chip live"><span class="dot"></span> Live</span>
+          <span class="spacer"></span>
+          <div class="viewport-toggle">
+            <button class="active">🖥 Desktop</button>
+            <button>📱 Tablet</button>
+            <button>📱 Mobile</button>
+          </div>
+          <button class="publish-btn disabled">Publish ▾</button>
+        </div>
+        <div class="editor-main">
+          <div class="nav-rail">
+            <div class="nav-item active">📄<span class="label">Pages</span></div>
+            <div class="nav-item">🧩<span class="label">Components</span></div>
+            <div class="nav-item">🌿<span class="label">Branches</span></div>
+            <div class="nav-item">📊<span class="label">Heatmap</span></div>
+            <div class="nav-item">📜<span class="label">Audit log</span></div>
+            <div class="nav-item">⚙<span class="label">Settings</span></div>
+          </div>
+          <div class="canvas-wrap">
+            <div class="canvas">
+              <div class="canvas-section">
+                <span class="sec-label">HeroBanner</span>
+                <div class="sec-body">
+                  <div class="placeholder">Hero image + headline + CTA</div>
+                </div>
+              </div>
+              <div class="canvas-section">
+                <span class="sec-label">ProductGrid</span>
+                <div class="sec-body">
+                  <div class="placeholder">4-column product tiles</div>
+                </div>
+              </div>
+              <div class="canvas-section red-zone">
+                <span class="sec-label">PricingRules 🔒</span>
+                <span class="lock-indicator">🔒 Platform-managed</span>
+                <div class="sec-body">
+                  <div class="placeholder" style="color: var(--mc-locked);">Red Zone — pricing logic protected</div>
+                </div>
+              </div>
+              <div class="canvas-section">
+                <span class="sec-label">Newsletter</span>
+                <div class="sec-body">
+                  <div class="placeholder">Email signup block</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="side-panel">
+            <div class="panel-tabs">
+              <div class="panel-tab active">Properties</div>
+              <div class="panel-tab">✨ AI</div>
+            </div>
+            <div class="panel-body">
+              <div class="panel-empty">
+                <div class="icon">👆</div>
+                <div>Click any element on the canvas to edit its properties.</div>
+                <div style="font-size: 11px; margin-top: 10px;">Or switch to <strong>AI</strong> to describe a change in natural language.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-annotations">
+        <h4>Design Notes</h4>
+        <ul>
+          <li><strong>Canvas is the live truth</strong> — no edit-mode toggle. Operators see what their customers see, always. <em>(FR1)</em></li>
+          <li><strong>Context bar persists</strong> — B2X chip + locale + customer group + live/draft state always visible. Never more than one click to switch context. <em>(FR5)</em></li>
+          <li><strong>Publish disabled until changes exist</strong> — prevents accidental re-publishes. <em>(FR16)</em></li>
+          <li><strong>Nav rail icons only</strong> — 56px wide, tooltips on hover, matches Merchant Center density.</li>
+          <li><strong>Sidebar empty state educates</strong> — two entry points (click-to-edit vs AI) surfaced up front.</li>
+        </ul>
+      </div>
+    </div>
+    <div style="padding: 0 24px 20px;">
+      <div class="legend">
+        <span class="legend-item"><span class="legend-swatch green-zone"></span> Green Zone (editable)</span>
+        <span class="legend-item"><span class="legend-swatch selected"></span> Selected</span>
+        <span class="legend-item"><span class="legend-swatch red-zone"></span> Red Zone (platform-managed)</span>
+        <span class="legend-item"><span class="legend-swatch ai-tint"></span> AI interaction</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 1B — Element Selected ============ -->
+  <div class="screen">
+    <div class="screen-header">
+      <h3>1B — Element selected: property sidebar active</h3>
+      <span class="tag">StorefrontCanvas (element-selected) + Property sidebar with Green Zone fields</span>
+    </div>
+    <div class="screen-body">
+      <div class="editor-frame">
+        <div class="editor-topbar">
+          <span class="logo">commercetools</span>
+          <span class="crumbs">Tutorial › Storefront › <strong>Home</strong> › HeroBanner</span>
+          <span class="spacer"></span>
+          <span class="user">LP</span>
+        </div>
+        <div class="context-bar">
+          <span class="chip active"><span class="dot"></span> B2C</span>
+          <span class="chip">en-GB ▾</span>
+          <span class="chip">Guest ▾</span>
+          <span class="chip draft"><span class="dot"></span> 1 draft</span>
+          <span class="spacer"></span>
+          <div class="viewport-toggle">
+            <button class="active">🖥</button><button>📱</button><button>📱</button>
+          </div>
+          <button class="publish-btn">Publish ▾</button>
+        </div>
+        <div class="editor-main">
+          <div class="nav-rail">
+            <div class="nav-item active">📄</div>
+            <div class="nav-item">🧩</div>
+            <div class="nav-item">🌿</div>
+            <div class="nav-item">📊</div>
+            <div class="nav-item">📜</div>
+            <div class="nav-item">⚙</div>
+          </div>
+          <div class="canvas-wrap">
+            <div class="canvas">
+              <div class="canvas-section selected">
+                <span class="sec-label">HeroBanner ✎</span>
+                <span class="eng-badge">📈 Engagement 87</span>
+                <div class="sec-body">
+                  <div class="placeholder" style="background: var(--mc-blue-wash); color: var(--mc-blue);">Summer Collection — Shop now</div>
+                </div>
+              </div>
+              <div class="canvas-section">
+                <span class="sec-label">ProductGrid</span>
+                <div class="sec-body"><div class="placeholder">4-column product tiles</div></div>
+              </div>
+              <div class="canvas-section red-zone">
+                <span class="sec-label">PricingRules 🔒</span>
+                <span class="lock-indicator">🔒</span>
+                <div class="sec-body"><div class="placeholder" style="color: var(--mc-locked);">Red Zone</div></div>
+              </div>
+              <div class="canvas-section">
+                <span class="sec-label">Newsletter</span>
+                <div class="sec-body"><div class="placeholder">Email signup block</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="side-panel">
+            <div class="panel-tabs">
+              <div class="panel-tab active">Properties</div>
+              <div class="panel-tab">✨ AI</div>
+            </div>
+            <div class="panel-body">
+              <div class="prop-group">
+                <h5>HeroBanner</h5>
+                <div style="font-size: 11px; color: var(--mc-text-muted); margin-bottom: 10px;">
+                  Governed component — Green Zone
+                </div>
+              </div>
+              <div class="prop-group">
+                <h5>Content</h5>
+                <div class="prop-row">
+                  <label class="prop-label">Headline</label>
+                  <input class="prop-input" value="Summer Collection">
+                </div>
+                <div class="prop-row">
+                  <label class="prop-label">Subheadline</label>
+                  <input class="prop-input" value="New arrivals for the season">
+                </div>
+                <div class="prop-row">
+                  <label class="prop-label">CTA label</label>
+                  <input class="prop-input" value="Shop now">
+                </div>
+                <div class="prop-row">
+                  <label class="prop-label">CTA destination</label>
+                  <input class="prop-input" value="/collections/summer">
+                </div>
+              </div>
+              <div class="prop-group">
+                <h5>Media</h5>
+                <div class="prop-row">
+                  <label class="prop-label">Background image</label>
+                  <div style="border: 1px dashed var(--mc-border-strong); border-radius: var(--radius-sm); padding: 14px; text-align: center; font-size: 11px; color: var(--mc-text-muted);">
+                    📁 hero-summer-2026.jpg<br><span style="font-size: 10px;">Click to replace</span>
+                  </div>
+                </div>
+              </div>
+              <div class="prop-group">
+                <h5>Behavior</h5>
+                <div class="prop-row">
+                  <label class="prop-label">Link type <span class="governance-badge">🔒 Platform</span></label>
+                  <input class="prop-input locked" value="Internal collection" disabled>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-annotations">
+        <h4>Design Notes</h4>
+        <ul>
+          <li><strong>Selection affordance</strong> — blue border + soft halo; breadcrumb in topbar updates to component name.</li>
+          <li><strong>Green Zone editing</strong> — content, labels, destinations freely editable. <em>(FR3)</em></li>
+          <li><strong>Red Zone property visible but locked</strong> — "Link type" shown with GovernanceBadge rather than hidden, so operators understand the full schema. <em>(FR15)</em></li>
+          <li><strong>Engagement badge on hover/select</strong> — behavioral data dissolved into canvas, no separate analytics dashboard. Score 87 surfaces on HeroBanner selection.</li>
+          <li><strong>Draft chip in context bar</strong> — "1 draft" appears instantly on first edit; amber/warning styling, informational not alarming.</li>
+          <li><strong>No Save button</strong> — canvas is real-time; only Publish is explicit.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 1C — Red Zone Interaction ============ -->
+  <div class="screen">
+    <div class="screen-header">
+      <h3>1C — Red Zone component: locked tooltip on click</h3>
+      <span class="tag">ComponentSlot (Red Zone variant) — governance made legible, not punitive</span>
+    </div>
+    <div class="screen-body">
+      <div class="editor-frame">
+        <div class="editor-topbar">
+          <span class="logo">commercetools</span>
+          <span class="crumbs">Tutorial › Storefront › <strong>Home</strong></span>
+          <span class="spacer"></span>
+          <span class="user">LP</span>
+        </div>
+        <div class="context-bar">
+          <span class="chip active"><span class="dot"></span> B2C</span>
+          <span class="chip">en-GB ▾</span>
+          <span class="chip">Guest ▾</span>
+          <span class="chip draft"><span class="dot"></span> 1 draft</span>
+          <span class="spacer"></span>
+          <div class="viewport-toggle"><button class="active">🖥</button><button>📱</button><button>📱</button></div>
+          <button class="publish-btn">Publish ▾</button>
+        </div>
+        <div class="editor-main">
+          <div class="nav-rail">
+            <div class="nav-item active">📄</div>
+            <div class="nav-item">🧩</div>
+            <div class="nav-item">🌿</div>
+            <div class="nav-item">📊</div>
+            <div class="nav-item">📜</div>
+          </div>
+          <div class="canvas-wrap">
+            <div class="canvas">
+              <div class="canvas-section">
+                <span class="sec-label">HeroBanner</span>
+                <div class="sec-body"><div class="placeholder">Hero image + headline + CTA</div></div>
+              </div>
+              <div class="canvas-section">
+                <span class="sec-label">ProductGrid</span>
+                <div class="sec-body"><div class="placeholder">4-column product tiles</div></div>
+              </div>
+              <div class="canvas-section red-zone" style="position: relative;">
+                <div class="locked-tooltip">
+                  <strong>🔒 Platform-managed — PricingRules</strong>
+                  This component renders prices, tax rules, and currency formatting based on your commercetools project config. Changes happen in Merchant Center → Pricing.
+                  <div style="margin-top: 6px; color: #94a3b8;">Why locked? Prevents accidental pricing drift between storefront and ERP.</div>
+                </div>
+                <span class="sec-label">PricingRules 🔒</span>
+                <span class="lock-indicator">🔒 Platform-managed</span>
+                <div class="sec-body"><div class="placeholder" style="color: var(--mc-locked);">Red Zone — pricing logic</div></div>
+              </div>
+              <div class="canvas-section">
+                <span class="sec-label">Newsletter</span>
+                <div class="sec-body"><div class="placeholder">Email signup block</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="side-panel">
+            <div class="panel-tabs">
+              <div class="panel-tab active">Properties</div>
+              <div class="panel-tab">✨ AI</div>
+            </div>
+            <div class="panel-body">
+              <div class="panel-empty">
+                <div class="icon">🔒</div>
+                <div style="font-weight: 600; color: var(--mc-text); font-size: 12px;">Platform-managed component</div>
+                <div style="font-size: 11px;">PricingRules is maintained by the commerce engine. To change pricing logic, go to <strong>Merchant Center → Pricing</strong>.</div>
+                <a href="#" style="font-size: 11px; color: var(--mc-blue); margin-top: 8px;">Learn about Green / Red Zones →</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-annotations">
+        <h4>Design Notes</h4>
+        <ul>
+          <li><strong>No blocking error</strong> — click is acknowledged with explanation, not refused silently. Governance is informational. <em>(FR15)</em></li>
+          <li><strong>Tooltip explains</strong> <em>what</em> <strong>is managed, and</strong> <em>why</em> — "prevents pricing drift" builds trust in the boundary.</li>
+          <li><strong>Clear handoff path</strong> — tooltip names the actual tool (Merchant Center → Pricing) where the change belongs. No dead end.</li>
+          <li><strong>Muted styling</strong> — gray/locked visual language, never alarming red. Red is reserved for destructive actions.</li>
+          <li><strong>Sidebar mirrors the tooltip</strong> — reinforces the message + educational link for new operators.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 1D — AI Panel Active ============ -->
+  <div class="screen">
+    <div class="screen-header">
+      <h3>1D — AI panel active: reasoning card before canvas change</h3>
+      <span class="tag">AIPanel + AIReasoningCard — trust-earning pre-action transparency</span>
+    </div>
+    <div class="screen-body">
+      <div class="editor-frame">
+        <div class="editor-topbar">
+          <span class="logo">commercetools</span>
+          <span class="crumbs">Tutorial › Storefront › <strong>Home</strong></span>
+          <span class="spacer"></span>
+          <span class="user">LP</span>
+        </div>
+        <div class="context-bar">
+          <span class="chip active"><span class="dot"></span> B2C</span>
+          <span class="chip">en-GB ▾</span>
+          <span class="chip">Guest ▾</span>
+          <span class="chip live"><span class="dot"></span> Live</span>
+          <span class="spacer"></span>
+          <div class="viewport-toggle"><button class="active">🖥</button><button>📱</button><button>📱</button></div>
+          <button class="publish-btn disabled">Publish ▾</button>
+        </div>
+        <div class="editor-main">
+          <div class="nav-rail">
+            <div class="nav-item active">📄</div>
+            <div class="nav-item">🧩</div>
+            <div class="nav-item">🌿</div>
+            <div class="nav-item">📊</div>
+          </div>
+          <div class="canvas-wrap">
+            <div class="canvas">
+              <div class="canvas-section">
+                <span class="sec-label">HeroBanner</span>
+                <div class="sec-body"><div class="placeholder">Hero image + headline + CTA</div></div>
+              </div>
+              <div class="canvas-section">
+                <span class="sec-label">ProductGrid</span>
+                <div class="sec-body"><div class="placeholder">4-column product tiles</div></div>
+              </div>
+              <div class="canvas-section red-zone">
+                <span class="sec-label">PricingRules 🔒</span>
+                <div class="sec-body"><div class="placeholder" style="color: var(--mc-locked);">Red Zone</div></div>
+              </div>
+              <div style="border: 2px dashed var(--mc-ai-accent); border-radius: var(--radius-sm); padding: 14px; background: var(--mc-ai-tint); text-align: center; font-size: 11px; color: var(--mc-ai-accent); font-weight: 500;">
+                ⏳ Pending AI reasoning approval — canvas unchanged until you approve
+              </div>
+              <div class="canvas-section">
+                <span class="sec-label">Newsletter</span>
+                <div class="sec-body"><div class="placeholder">Email signup block</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="side-panel ai-panel">
+            <div class="ai-panel-header">
+              <span class="ai-dot"></span>
+              <h4>AI Assistant</h4>
+              <span class="spacer" style="flex:1;"></span>
+              <span style="font-size: 10px; color: var(--mc-text-muted); cursor: pointer;">✕</span>
+            </div>
+            <div class="ai-convo">
+              <div class="ai-msg user">Add a testimonials section after the product grid — use our top 3 verified B2C reviews.</div>
+              <div class="ai-msg ai">I can add a TestimonialsCarousel from your governed library. Here's my plan:</div>
+              <div class="ai-reasoning-card">
+                <h5>🧠 Reasoning — what I'll do</h5>
+                <ul>
+                  <li>Insert <code>TestimonialsCarousel</code> component after <code>ProductGrid</code></li>
+                  <li>Pull 3 verified B2C reviews from Contentful (rating ≥ 4.5)</li>
+                  <li>Locale: en-GB only — won't affect other markets</li>
+                  <li>Context: B2C only — hidden from B2B and dealer contexts</li>
+                  <li>Governance: all data reads from Green Zone schema; no Red Zone touched</li>
+                </ul>
+                <div class="ai-reasoning-actions">
+                  <button class="btn-primary">✓ Approve</button>
+                  <button class="btn-ghost">Edit plan</button>
+                  <button class="btn-danger">Cancel</button>
+                </div>
+              </div>
+            </div>
+            <div class="ai-input">
+              <input placeholder="Describe what you want to change...">
+              <button class="btn-primary">↑</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-annotations">
+        <h4>Design Notes</h4>
+        <ul>
+          <li><strong>AI NEVER changes canvas without approval</strong> — canvas shows a pending-approval placeholder where the insertion will land. <em>(FR33)</em></li>
+          <li><strong>Reasoning card is specific</strong> — names the exact component, data source, locale scope, and governance scope. Not generic "I'll add testimonials."</li>
+          <li><strong>Three actions always present</strong> — Approve / Edit plan / Cancel. No autopilot.</li>
+          <li><strong>AI scope stays in library</strong> — completions restricted to published component library; never invents components. <em>(FR33)</em></li>
+          <li><strong>AI tint is a lightweight language</strong> — low-opacity brand wash on the panel + pending placeholder. Never alarming.</li>
+          <li><strong>Panel replaces Properties, doesn't overlay</strong> — same 300px column, toggle-based. Single column preserves canvas real estate.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- TAB 2 PLACEHOLDER -->
+<div id="tab-publish" class="tab-content">
+
+  <div class="tab-intro">
+    <h2>2 — Publish & Governance</h2>
+    <p>The publish flow is the highest-stakes moment in the editor: it pushes changes to live production traffic. The UX must make it feel <em>deliberate, informed, and safe</em> — never a surprise. Pre-publish validation surfaces governance + accessibility issues before they reach customers. The audit log is immutable evidence of every publish.</p>
+    <div class="frs">
+      <span class="fr-chip">FR16</span><span class="fr-chip">FR17</span><span class="fr-chip">FR18</span>
+      <span class="fr-chip">FR19</span><span class="fr-chip">FR20</span><span class="fr-chip">FR51</span>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 2A — Publish Dropdown ============ -->
+  <div class="screen">
+    <div class="screen-header">
+      <h3>2A — Publish dropdown: three deployment options</h3>
+      <span class="tag">PublishAction — Publish now / Stage first / Create A/B variant</span>
+    </div>
+    <div class="screen-body">
+      <div class="editor-frame" style="position: relative; overflow: visible;">
+        <div class="editor-topbar">
+          <span class="logo">commercetools</span>
+          <span class="crumbs">Tutorial › Storefront › <strong>Home</strong></span>
+          <span class="spacer"></span>
+          <span class="user">LP</span>
+        </div>
+        <div class="context-bar" style="position: relative;">
+          <span class="chip active"><span class="dot"></span> B2C</span>
+          <span class="chip">en-GB ▾</span>
+          <span class="chip">Guest ▾</span>
+          <span class="chip draft"><span class="dot"></span> 3 drafts</span>
+          <span class="spacer"></span>
+          <div class="viewport-toggle"><button class="active">🖥</button><button>📱</button><button>📱</button></div>
+          <div style="position: relative;">
+            <button class="publish-btn">Publish ▾</button>
+            <div class="publish-menu">
+              <div class="menu-item">
+                <span class="icon">🚀</span>
+                <div>
+                  <div class="title">Publish now</div>
+                  <div class="desc">3 changes go live to B2C · en-GB. Atomic deployment — no partial state on live traffic.</div>
+                </div>
+              </div>
+              <div class="menu-item">
+                <span class="icon">🔗</span>
+                <div>
+                  <div class="title">Stage first</div>
+                  <div class="desc">Generate a shareable preview link. Review with stakeholders before going live.</div>
+                </div>
+              </div>
+              <div class="menu-item">
+                <span class="icon">🧪</span>
+                <div>
+                  <div class="title">Create A/B variant</div>
+                  <div class="desc">Routes to ACI experiment setup. Measure impact before full rollout.</div>
+                </div>
+              </div>
+              <div style="border-top: 1px solid var(--mc-border); margin: 4px 0;"></div>
+              <div class="menu-item" style="opacity: 0.7;">
+                <span class="icon">⏰</span>
+                <div>
+                  <div class="title">Schedule publish<span style="font-size: 10px; color: var(--mc-text-faint); font-weight: normal;"> · Phase 2</span></div>
+                  <div class="desc">Publish at a specific date and time. Optional feature flag gate.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="editor-main">
+          <div class="nav-rail">
+            <div class="nav-item active">📄</div>
+            <div class="nav-item">🧩</div>
+            <div class="nav-item">🌿</div>
+            <div class="nav-item">📊</div>
+            <div class="nav-item">📜</div>
+          </div>
+          <div class="canvas-wrap" style="filter: blur(1px); opacity: 0.6;">
+            <div class="canvas">
+              <div class="canvas-section"><span class="sec-label">HeroBanner</span><div class="sec-body"><div class="placeholder">...</div></div></div>
+              <div class="canvas-section"><span class="sec-label">ProductGrid</span><div class="sec-body"><div class="placeholder">...</div></div></div>
+              <div class="canvas-section red-zone"><span class="sec-label">PricingRules 🔒</span><div class="sec-body"><div class="placeholder">...</div></div></div>
+            </div>
+          </div>
+          <div class="side-panel">
+            <div class="panel-tabs">
+              <div class="panel-tab active">Properties</div>
+              <div class="panel-tab">✨ AI</div>
+            </div>
+            <div class="panel-body"><div class="panel-empty"><div class="icon">👆</div><div>Select an element</div></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-annotations">
+        <h4>Design Notes</h4>
+        <ul>
+          <li><strong>Three deployment modes, not one</strong> — matches Journey 1: operator chooses confidence level. <em>(FR16, FR17)</em></li>
+          <li><strong>Descriptions name concrete consequences</strong> — "3 changes go live to B2C · en-GB" beats "Publish successfully."</li>
+          <li><strong>Atomic deployment promised inline</strong> — "no partial state" reassures enterprise buyers. <em>(FR19)</em></li>
+          <li><strong>Phase 2 features shown muted</strong> — operators see the roadmap without clutter. Schedule publish hinted at.</li>
+          <li><strong>Draft count visible</strong> — "3 drafts" in context bar reinforces scope of what's about to ship.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 2B — Pre-Publish Validation Modal ============ -->
+  <div class="screen">
+    <div class="screen-header">
+      <h3>2B — Pre-publish validation: governance + accessibility check</h3>
+      <span class="tag">Validation modal — surfaces issues BEFORE publish confirmation</span>
+    </div>
+    <div class="screen-body">
+      <div class="editor-frame" style="position: relative; overflow: hidden;">
+        <div class="editor-topbar">
+          <span class="logo">commercetools</span>
+          <span class="crumbs">Tutorial › Storefront › <strong>Home</strong></span>
+          <span class="spacer"></span>
+          <span class="user">LP</span>
+        </div>
+        <div class="context-bar">
+          <span class="chip active"><span class="dot"></span> B2C</span>
+          <span class="chip">en-GB ▾</span>
+          <span class="chip draft"><span class="dot"></span> 3 drafts</span>
+          <span class="spacer"></span>
+          <div class="viewport-toggle"><button class="active">🖥</button><button>📱</button><button>📱</button></div>
+          <button class="publish-btn">Publish ▾</button>
+        </div>
+        <div class="editor-main">
+          <div class="nav-rail">
+            <div class="nav-item active">📄</div>
+            <div class="nav-item">🧩</div>
+          </div>
+          <div class="canvas-wrap"><div class="canvas"><div class="canvas-section"><span class="sec-label">HeroBanner</span><div class="sec-body"><div class="placeholder">...</div></div></div></div></div>
+          <div class="side-panel"><div class="panel-body"></div></div>
+        </div>
+        <div class="modal-overlay">
+          <div class="modal">
+            <div class="modal-header">
+              <h3>🔍 Pre-publish check — 3 changes</h3>
+              <span style="color: var(--mc-text-muted); cursor: pointer; font-size: 18px;">✕</span>
+            </div>
+            <div class="modal-body">
+              <div style="font-size: 11px; color: var(--mc-text-muted); margin-bottom: 12px;">
+                Target: <strong>B2C · en-GB · Production</strong>. Checks run automatically before every publish.
+              </div>
+
+              <div class="check-item pass">
+                <div class="check-icon">✓</div>
+                <div class="check-body">
+                  <div class="check-title">Governance compliance</div>
+                  <div class="check-desc">All changes stay within Green Zone. No Red Zone components modified. <strong style="color: var(--mc-blue);">FR18</strong></div>
+                </div>
+              </div>
+
+              <div class="check-item warn">
+                <div class="check-icon">!</div>
+                <div class="check-body">
+                  <div class="check-title">Accessibility — 2 warnings</div>
+                  <div class="check-desc">
+                    HeroBanner image missing alt text (WCAG 2.1 AA · 1.1.1). CTA contrast ratio 3.8:1 — below AA threshold for normal text.
+                    <div style="margin-top: 6px;"><a href="#" style="color: var(--mc-blue); font-size: 11px;">Review warnings →</a> · <strong style="color: var(--mc-blue);">FR51</strong></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="check-item pass">
+                <div class="check-icon">✓</div>
+                <div class="check-body">
+                  <div class="check-title">Component library versions</div>
+                  <div class="check-desc">All 3 modified components use current published library versions. No detached refs.</div>
+                </div>
+              </div>
+
+              <div class="check-item pass">
+                <div class="check-icon">✓</div>
+                <div class="check-body">
+                  <div class="check-title">B2X context rendering</div>
+                  <div class="check-desc">Changes scoped to B2C only — B2B and dealer contexts unaffected.</div>
+                </div>
+              </div>
+
+              <div class="check-item pass">
+                <div class="check-icon">✓</div>
+                <div class="check-body">
+                  <div class="check-title">Atomic deployment plan</div>
+                  <div class="check-desc">All 3 changes will deploy as a single transaction. Rollback available for 90 days. <strong style="color: var(--mc-blue);">FR19</strong></div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button class="btn-ghost">Fix warnings first</button>
+              <button class="btn-ghost">Cancel</button>
+              <button class="publish-btn">Publish anyway (2 warnings)</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-annotations">
+        <h4>Design Notes</h4>
+        <ul>
+          <li><strong>Non-blocking warnings</strong> — operator can publish with accessibility warnings but must consciously choose. Legal/brand teams can escalate to blocking in settings. <em>(FR51)</em></li>
+          <li><strong>Governance always passes or blocks, never warns</strong> — Red Zone enforcement is absolute. If you could click it, it's allowed.</li>
+          <li><strong>Each check cites its FR</strong> — builds enterprise trust; makes compliance audit-ready.</li>
+          <li><strong>Atomic deployment called out explicitly</strong> — "single transaction, rollback available for 90 days" is the enterprise deal-closer.</li>
+          <li><strong>"Fix warnings first"</strong> — a third action besides Publish and Cancel. Respects operators who take accessibility seriously without shaming those who don't.</li>
+          <li><strong>Publish button copy counts the warnings</strong> — "Publish anyway (2 warnings)" forces acknowledgment of what's being accepted.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 2C — Publish Confirmation + Success State ============ -->
+  <div class="screen">
+    <div class="screen-header">
+      <h3>2C — Post-publish confirmation: context-specific toast</h3>
+      <span class="tag">PublishAction (published state) — names affected contexts, never generic</span>
+    </div>
+    <div class="screen-body">
+      <div class="editor-frame" style="position: relative;">
+        <div class="editor-topbar">
+          <span class="logo">commercetools</span>
+          <span class="crumbs">Tutorial › Storefront › <strong>Home</strong></span>
+          <span class="spacer"></span>
+          <span class="user">LP</span>
+        </div>
+        <div class="context-bar">
+          <span class="chip active"><span class="dot"></span> B2C</span>
+          <span class="chip">en-GB ▾</span>
+          <span class="chip live"><span class="dot"></span> Live</span>
+          <span class="spacer"></span>
+          <div class="viewport-toggle"><button class="active">🖥</button><button>📱</button><button>📱</button></div>
+          <button class="publish-btn disabled">Publish ▾</button>
+        </div>
+        <div class="editor-main">
+          <div class="nav-rail">
+            <div class="nav-item active">📄</div>
+            <div class="nav-item">🧩</div>
+            <div class="nav-item">🌿</div>
+            <div class="nav-item">📊</div>
+            <div class="nav-item">📜</div>
+          </div>
+          <div class="canvas-wrap">
+            <div class="canvas">
+              <div class="canvas-section"><span class="sec-label">HeroBanner</span><div class="sec-body"><div class="placeholder">Summer Collection — Shop now</div></div></div>
+              <div class="canvas-section"><span class="sec-label">ProductGrid</span><div class="sec-body"><div class="placeholder">4-column product tiles</div></div></div>
+              <div class="canvas-section"><span class="sec-label">TestimonialsCarousel</span><div class="sec-body"><div class="placeholder" style="background: var(--mc-success-bg); color: var(--mc-success);">✓ Just published</div></div></div>
+              <div class="canvas-section red-zone"><span class="sec-label">PricingRules 🔒</span><div class="sec-body"><div class="placeholder" style="color: var(--mc-locked);">Red Zone</div></div></div>
+            </div>
+          </div>
+          <div class="side-panel"><div class="panel-body"></div></div>
+        </div>
+        <!-- Toast -->
+        <div style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: #1f2933; color: white; padding: 14px 18px; border-radius: var(--radius-md); box-shadow: 0 8px 24px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 14px; max-width: 540px;">
+          <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--mc-success); display: flex; align-items: center; justify-content: center; font-size: 14px;">✓</div>
+          <div style="flex: 1;">
+            <div style="font-size: 13px; font-weight: 600; margin-bottom: 2px;">Published to B2C · en-GB · DE/AT/CH — 3 changes live</div>
+            <div style="font-size: 11px; opacity: 0.75;">Deployed atomically · <a href="#" style="color: #93c5fd;">View audit entry</a> · <a href="#" style="color: #93c5fd;">Rollback</a></div>
+          </div>
+          <span style="font-size: 16px; cursor: pointer; opacity: 0.5;">✕</span>
+        </div>
+      </div>
+      <div class="screen-annotations">
+        <h4>Design Notes</h4>
+        <ul>
+          <li><strong>Toast names contexts specifically</strong> — "Published to B2C · en-GB · DE/AT/CH" not "Published successfully." Operator always knows exactly what went live. <em>(FR17)</em></li>
+          <li><strong>Published component pulses green briefly</strong> — "Just published" micro-confirmation on the canvas; fades after 3 seconds.</li>
+          <li><strong>Draft chip → Live chip</strong> — instant state transition in context bar.</li>
+          <li><strong>Publish button back to disabled</strong> — nothing to publish until next change.</li>
+          <li><strong>Audit + rollback inline in toast</strong> — both actions discoverable from the confirmation, not buried in a menu.</li>
+          <li><strong>No celebration here</strong> — this is the 100th publish. First publish gets the full FirstPublishCelebration treatment (Phase 2, Journey 3).</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 2D — Audit Log ============ -->
+  <div class="screen">
+    <div class="screen-header">
+      <h3>2D — Immutable publish audit log</h3>
+      <span class="tag">Audit log view — compliance-grade record of every publish</span>
+    </div>
+    <div class="screen-body">
+      <div class="editor-frame">
+        <div class="editor-topbar">
+          <span class="logo">commercetools</span>
+          <span class="crumbs">Tutorial › <strong>Audit log</strong></span>
+          <span class="spacer"></span>
+          <span class="user">LP</span>
+        </div>
+        <div class="context-bar">
+          <span class="chip">All contexts ▾</span>
+          <span class="chip">Last 30 days ▾</span>
+          <span class="chip">All users ▾</span>
+          <span class="spacer"></span>
+          <button class="btn-ghost" style="padding: 4px 10px; font-size: 11px;">⬇ Export CSV</button>
+        </div>
+        <div class="editor-main" style="grid-template-columns: 56px 1fr;">
+          <div class="nav-rail">
+            <div class="nav-item">📄</div>
+            <div class="nav-item">🧩</div>
+            <div class="nav-item">🌿</div>
+            <div class="nav-item">📊</div>
+            <div class="nav-item active">📜</div>
+          </div>
+          <div style="overflow-y: auto; background: white;">
+            <div class="audit-row header">
+              <div>Timestamp</div><div>User</div><div>Scope & changes</div><div>Status</div><div></div>
+            </div>
+            <div class="audit-row">
+              <div class="timestamp">05-07 14:22</div>
+              <div class="user-badge"><span class="avatar-sm">LP</span> Leandro</div>
+              <div>
+                <div style="font-size: 12px;">Added TestimonialsCarousel, updated HeroBanner headline (+1 more)</div>
+                <div style="font-size: 11px; color: var(--mc-text-muted); margin-top: 2px;">B2C · en-GB · 3 components · <span style="color: var(--mc-warning);">2 a11y warnings accepted</span></div>
+              </div>
+              <div><span class="chip live" style="font-size: 10px;"><span class="dot"></span> Live</span></div>
+              <div><span class="revert-btn" title="Rollback">⟲</span></div>
+            </div>
+            <div class="audit-row">
+              <div class="timestamp">05-07 11:08</div>
+              <div class="user-badge"><span class="avatar-sm" style="background: #7c3aed;">SM</span> Sasha M.</div>
+              <div>
+                <div style="font-size: 12px;">Launched Spring campaign landing page</div>
+                <div style="font-size: 11px; color: var(--mc-text-muted); margin-top: 2px;">B2C · all locales · 8 components · AI-assisted</div>
+              </div>
+              <div><span class="chip live" style="font-size: 10px;"><span class="dot"></span> Live</span></div>
+              <div><span class="revert-btn">⟲</span></div>
+            </div>
+            <div class="audit-row">
+              <div class="timestamp">05-06 16:45</div>
+              <div class="user-badge"><span class="avatar-sm" style="background: #dc2626;">RT</span> Rachel T.</div>
+              <div>
+                <div style="font-size: 12px;">Rolled back: B2B dealer portal product filter change</div>
+                <div style="font-size: 11px; color: var(--mc-text-muted); margin-top: 2px;">B2B · dealer · Reason: "Conversion dropped 18%. Reverting to prior."</div>
+              </div>
+              <div><span class="chip" style="font-size: 10px; background: var(--mc-error-bg); border-color: var(--mc-error); color: var(--mc-error);">⟲ Reverted</span></div>
+              <div></div>
+            </div>
+            <div class="audit-row">
+              <div class="timestamp">05-06 09:30</div>
+              <div class="user-badge"><span class="avatar-sm" style="background: #0891b2;">AI</span> AI agent</div>
+              <div>
+                <div style="font-size: 12px;">Applied CLV-tier personalization to ProductGrid</div>
+                <div style="font-size: 11px; color: var(--mc-text-muted); margin-top: 2px;">B2C · all markets · approved by Leandro · progressive 5% rollout</div>
+              </div>
+              <div><span class="chip" style="font-size: 10px; background: var(--mc-warning-bg); border-color: var(--mc-warning); color: var(--mc-warning);"><span class="dot"></span> 5% rollout</span></div>
+              <div><span class="revert-btn">⟲</span></div>
+            </div>
+            <div class="audit-row">
+              <div class="timestamp">05-05 13:17</div>
+              <div class="user-badge"><span class="avatar-sm" style="background: #7c3aed;">SM</span> Sasha M.</div>
+              <div>
+                <div style="font-size: 12px;">Staged: Checkout button copy test</div>
+                <div style="font-size: 11px; color: var(--mc-text-muted); margin-top: 2px;">B2C · en-GB · Preview link shared with 3 reviewers</div>
+              </div>
+              <div><span class="chip draft" style="font-size: 10px;"><span class="dot"></span> Staged</span></div>
+              <div><span class="revert-btn">⟲</span></div>
+            </div>
+            <div class="audit-row">
+              <div class="timestamp">05-05 10:02</div>
+              <div class="user-badge"><span class="avatar-sm">LP</span> Leandro</div>
+              <div>
+                <div style="font-size: 12px;">Initial storefront publish</div>
+                <div style="font-size: 11px; color: var(--mc-text-muted); margin-top: 2px;">B2C · all markets · 🎉 first publish</div>
+              </div>
+              <div><span class="chip live" style="font-size: 10px;"><span class="dot"></span> Live</span></div>
+              <div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-annotations">
+        <h4>Design Notes</h4>
+        <ul>
+          <li><strong>Immutable</strong> — rows cannot be edited or deleted, only appended. This is the compliance record. <em>(FR20)</em></li>
+          <li><strong>Human + AI actors both logged</strong> — AI agent appears as a distinct user with its own avatar; operators see full attribution.</li>
+          <li><strong>Rollback inline per row</strong> — 90-day rollback window surfaced as a single click. Reasons captured when provided.</li>
+          <li><strong>Warnings accepted recorded</strong> — "2 a11y warnings accepted" shown on the row so auditors see what was knowingly published.</li>
+          <li><strong>Scope granularity</strong> — each row names context(s), locale(s), and component count. Exportable to CSV for enterprise compliance workflows.</li>
+          <li><strong>Filter chips in context bar</strong> — reusing the same chip pattern from the editor maintains UI consistency.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- TAB 3 PLACEHOLDER -->
+<div id="tab-preview" class="tab-content">
+
+  <div class="tab-intro">
+    <h2>3 — Multi-Viewport & B2X Preview</h2>
+    <p>Operators need to see the effect of their changes across device sizes (desktop/tablet/mobile) and B2X rendering contexts (B2C/B2B/dealer) <em>before</em> publishing. Context preview is a primary operator affordance — never buried in settings. The B2XPreviewSplit component surfaces cross-context comparison as a deliberate pre-publish ritual.</p>
+    <div class="frs">
+      <span class="fr-chip">FR4</span><span class="fr-chip">FR5</span><span class="fr-chip">FR6</span>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 3A — Viewport Toggle (Interactive) ============ -->
+  <div class="screen">
+    <div class="screen-header">
+      <h3>3A — Viewport switcher: desktop / tablet / mobile <span style="font-size: 11px; color: var(--mc-text-muted); font-weight: normal;">(interactive — click to try)</span></h3>
+      <span class="tag">ContextBar viewport toggle — canvas resizes without losing state</span>
+    </div>
+    <div class="screen-body">
+      <div class="editor-frame">
+        <div class="editor-topbar">
+          <span class="logo">commercetools</span>
+          <span class="crumbs">Tutorial › Storefront › <strong>Home</strong></span>
+          <span class="spacer"></span>
+          <span class="user">LP</span>
+        </div>
+        <div class="context-bar">
+          <span class="chip active"><span class="dot"></span> B2C</span>
+          <span class="chip">en-GB ▾</span>
+          <span class="chip">Guest ▾</span>
+          <span class="chip draft"><span class="dot"></span> 2 drafts</span>
+          <span class="spacer"></span>
+          <div class="viewport-toggle">
+            <button class="active" data-viewport="desktop">🖥 Desktop</button>
+            <button data-viewport="tablet">📱 Tablet</button>
+            <button data-viewport="mobile">📱 Mobile</button>
+          </div>
+          <button class="publish-btn">Publish ▾</button>
+        </div>
+        <div class="editor-main">
+          <div class="nav-rail">
+            <div class="nav-item active">📄</div>
+            <div class="nav-item">🧩</div>
+            <div class="nav-item">🌿</div>
+            <div class="nav-item">📊</div>
+          </div>
+          <div class="canvas-wrap">
+            <div class="canvas">
+              <div class="canvas-section">
+                <span class="sec-label">HeroBanner</span>
+                <div class="sec-body"><div class="placeholder">Summer Collection — Shop now</div></div>
+              </div>
+              <div class="canvas-section">
+                <span class="sec-label">ProductGrid</span>
+                <div class="sec-body">
+                  <div class="placeholder" style="height: 72px;">
+                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; width: 100%; padding: 0 8px;">
+                      <div style="background: white; border: 1px solid var(--mc-border); height: 60px; border-radius: 3px;"></div>
+                      <div style="background: white; border: 1px solid var(--mc-border); height: 60px; border-radius: 3px;"></div>
+                      <div style="background: white; border: 1px solid var(--mc-border); height: 60px; border-radius: 3px;"></div>
+                      <div style="background: white; border: 1px solid var(--mc-border); height: 60px; border-radius: 3px;"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="canvas-section">
+                <span class="sec-label">TestimonialsCarousel</span>
+                <div class="sec-body"><div class="placeholder">3 testimonials — carousel</div></div>
+              </div>
+              <div class="canvas-section">
+                <span class="sec-label">Newsletter</span>
+                <div class="sec-body"><div class="placeholder">Email signup block</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="side-panel">
+            <div class="panel-tabs">
+              <div class="panel-tab active">Properties</div>
+              <div class="panel-tab">✨ AI</div>
+            </div>
+            <div class="panel-body">
+              <div style="font-size: 11px; color: var(--mc-text-muted); background: var(--mc-blue-wash); padding: 10px; border-radius: var(--radius-sm); margin-bottom: 12px;">
+                💡 <strong>Tip:</strong> Viewport changes are preview-only. Your layout rules still control the live rendering — this panel lets you verify before publish.
+              </div>
+              <div class="prop-group">
+                <h5>Viewport behavior</h5>
+                <div class="prop-row">
+                  <label class="prop-label">Desktop (≥1024px)</label>
+                  <div style="font-size: 11px; color: var(--mc-success);">✓ 4-column grid renders correctly</div>
+                </div>
+                <div class="prop-row">
+                  <label class="prop-label">Tablet (768–1023px)</label>
+                  <div style="font-size: 11px; color: var(--mc-success);">✓ Collapses to 2 columns</div>
+                </div>
+                <div class="prop-row">
+                  <label class="prop-label">Mobile (&lt;768px)</label>
+                  <div style="font-size: 11px; color: var(--mc-warning);">⚠ Testimonials text may truncate</div>
+                </div>
+              </div>
+              <div class="prop-group">
+                <h5>Mobile editor access <span class="fr-chip" style="font-size: 9px;">FR6</span></h5>
+                <div style="font-size: 11px; color: var(--mc-text-muted);">Full editor available on tablet and large-phone viewports. Quick-fix mode on small phones — edit text, swap images, publish.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-annotations">
+        <h4>Design Notes</h4>
+        <ul>
+          <li><strong>Viewport toggle is interactive here</strong> — click to resize the canvas above. Desktop → Tablet → Mobile. <em>(FR4)</em></li>
+          <li><strong>Draft state preserved across viewports</strong> — switching never discards unsaved work. Context bar stays constant.</li>
+          <li><strong>Per-viewport warnings surfaced in sidebar</strong> — "testimonials may truncate on mobile" appears before the operator hits publish. Proactive not reactive.</li>
+          <li><strong>Mobile editor mentioned explicitly</strong> — Epic 3 FR6 promises mobile access. Full editor on tablet+; quick-fix mode on phone (text edits, image swaps, publish).</li>
+          <li><strong>Canvas centers for tablet and mobile</strong> — operator sees the exact viewport width the customer will experience. No simulated device chrome needed for MLP.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 3B — Context Switcher Expanded ============ -->
+  <div class="screen">
+    <div class="screen-header">
+      <h3>3B — Context switcher: all B2X contexts with draft state per context</h3>
+      <span class="tag">ContextSwitcher — the cross-context operator nerve center</span>
+    </div>
+    <div class="screen-body">
+      <div class="editor-frame" style="position: relative; overflow: visible;">
+        <div class="editor-topbar">
+          <span class="logo">commercetools</span>
+          <span class="crumbs">Tutorial › Storefront › <strong>Home</strong></span>
+          <span class="spacer"></span>
+          <span class="user">LP</span>
+        </div>
+        <div class="context-bar" style="position: relative;">
+          <div style="position: relative;">
+            <span class="chip active"><span class="dot"></span> B2C ▾</span>
+            <!-- Expanded context menu -->
+            <div style="position: absolute; top: 28px; left: 0; background: white; border: 1px solid var(--mc-border); border-radius: var(--radius-md); box-shadow: 0 4px 16px rgba(0,0,0,0.12); width: 320px; padding: 8px; z-index: 30;">
+              <div style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--mc-text-muted); padding: 6px 8px; font-weight: 600;">Business context</div>
+              <div style="padding: 10px 8px; border-radius: var(--radius-sm); background: var(--mc-blue-wash); display: flex; align-items: center; gap: 10px; margin-bottom: 4px;">
+                <div style="width: 28px; height: 28px; border-radius: 50%; background: var(--mc-blue); color: white; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600;">B2C</div>
+                <div style="flex: 1;">
+                  <div style="font-size: 12px; font-weight: 600; color: var(--mc-blue);">B2C consumer ✓ active</div>
+                  <div style="font-size: 11px; color: var(--mc-text-muted);">2 drafts · en-GB · DE/AT/CH</div>
+                </div>
+                <span class="chip draft" style="font-size: 10px;"><span class="dot"></span> 2</span>
+              </div>
+              <div style="padding: 10px 8px; border-radius: var(--radius-sm); display: flex; align-items: center; gap: 10px; cursor: pointer; margin-bottom: 4px;">
+                <div style="width: 28px; height: 28px; border-radius: 50%; background: #7c3aed; color: white; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600;">B2B</div>
+                <div style="flex: 1;">
+                  <div style="font-size: 12px; font-weight: 600;">B2B wholesale</div>
+                  <div style="font-size: 11px; color: var(--mc-text-muted);">Live · account approval flow active</div>
+                </div>
+                <span class="chip live" style="font-size: 10px;"><span class="dot"></span> Live</span>
+              </div>
+              <div style="padding: 10px 8px; border-radius: var(--radius-sm); display: flex; align-items: center; gap: 10px; cursor: pointer; margin-bottom: 4px;">
+                <div style="width: 28px; height: 28px; border-radius: 50%; background: #dc2626; color: white; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600;">DP</div>
+                <div style="flex: 1;">
+                  <div style="font-size: 12px; font-weight: 600;">Dealer portal</div>
+                  <div style="font-size: 11px; color: var(--mc-text-muted);">Live · tiered pricing active</div>
+                </div>
+                <span class="chip live" style="font-size: 10px;"><span class="dot"></span> Live</span>
+              </div>
+              <div style="border-top: 1px solid var(--mc-border); margin: 6px 0;"></div>
+              <div style="padding: 8px; display: flex; gap: 6px;">
+                <button class="btn-ghost" style="flex: 1; font-size: 11px;">🔀 Side-by-side</button>
+                <button class="btn-primary" style="flex: 1; font-size: 11px;">✓ Apply to all contexts</button>
+              </div>
+            </div>
+          </div>
+          <span class="chip">en-GB ▾</span>
+          <span class="chip">Guest ▾</span>
+          <span class="chip draft"><span class="dot"></span> 2 drafts</span>
+          <span class="spacer"></span>
+          <div class="viewport-toggle"><button class="active">🖥</button><button>📱</button><button>📱</button></div>
+          <button class="publish-btn">Publish ▾</button>
+        </div>
+        <div class="editor-main">
+          <div class="nav-rail">
+            <div class="nav-item active">📄</div>
+            <div class="nav-item">🧩</div>
+            <div class="nav-item">🌿</div>
+          </div>
+          <div class="canvas-wrap" style="filter: blur(1px); opacity: 0.6;">
+            <div class="canvas">
+              <div class="canvas-section"><span class="sec-label">HeroBanner</span><div class="sec-body"><div class="placeholder">...</div></div></div>
+              <div class="canvas-section"><span class="sec-label">ProductGrid</span><div class="sec-body"><div class="placeholder">...</div></div></div>
+            </div>
+          </div>
+          <div class="side-panel"><div class="panel-body"></div></div>
+        </div>
+      </div>
+      <div class="screen-annotations">
+        <h4>Design Notes</h4>
+        <ul>
+          <li><strong>All contexts visible at once</strong> — B2C (active + 2 drafts), B2B (live), Dealer (live). Operator instantly sees where work is pending. <em>(FR5)</em></li>
+          <li><strong>Per-context draft state preserved independently</strong> — switching to B2B doesn't discard B2C drafts. Core ContextSwitcher behavior.</li>
+          <li><strong>Colored context avatars</strong> — B2C blue, B2B purple, Dealer red — consistent visual identity across the editor.</li>
+          <li><strong>Two power actions at the bottom</strong>: "Side-by-side" (opens B2XPreviewSplit — next screen), "Apply to all contexts" (broadcasts the current draft to all contexts, with confirmation).</li>
+          <li><strong>Context meta is descriptive</strong> — "account approval flow active" for B2B helps operators remember what's distinct about each context before editing.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 3C — Side-by-Side B2X Preview ============ -->
+  <div class="screen">
+    <div class="screen-header">
+      <h3>3C — Side-by-side: B2C vs B2B preview before publish</h3>
+      <span class="tag">B2XPreviewSplit — synchronized scrolling, per-context change indicators</span>
+    </div>
+    <div class="screen-body">
+      <div class="editor-frame" style="height: 600px;">
+        <div class="editor-topbar">
+          <span class="logo">commercetools</span>
+          <span class="crumbs">Tutorial › Storefront › Home › <strong>Side-by-side preview</strong></span>
+          <span class="spacer"></span>
+          <span class="user">LP</span>
+        </div>
+        <div class="context-bar">
+          <span class="chip" style="background: var(--mc-blue-wash); color: var(--mc-blue); border-color: var(--mc-blue);">🔀 Split preview</span>
+          <span class="chip">en-GB ▾</span>
+          <span class="chip draft"><span class="dot"></span> 2 drafts</span>
+          <span style="font-size: 11px; color: var(--mc-text-muted); margin-left: 8px;">↕ Synchronized scroll</span>
+          <span class="spacer"></span>
+          <button class="btn-ghost" style="padding: 4px 10px; font-size: 11px;">↩ Back to editor</button>
+          <button class="publish-btn">Publish ▾</button>
+        </div>
+        <div class="editor-main" style="grid-template-columns: 56px 1fr;">
+          <div class="nav-rail">
+            <div class="nav-item active">📄</div>
+            <div class="nav-item">🧩</div>
+          </div>
+          <div style="padding: 16px; background: var(--mc-bg);">
+            <div class="split-preview">
+              <div class="split-pane">
+                <div class="split-pane-header">
+                  <div style="width: 18px; height: 18px; border-radius: 50%; background: var(--mc-blue); color: white; display: inline-flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 600;">B2C</div>
+                  B2C consumer · en-GB
+                  <span class="spacer" style="flex: 1;"></span>
+                  <span class="chip draft" style="font-size: 10px;"><span class="dot"></span> 2 drafts</span>
+                </div>
+                <div class="canvas-wrap" style="padding: 14px;">
+                  <div class="canvas">
+                    <div class="canvas-section selected" style="box-shadow: none;">
+                      <span class="sec-label" style="color: var(--mc-blue);">HeroBanner · changed</span>
+                      <span style="position: absolute; top: 8px; right: 10px; background: var(--mc-warning-bg); color: var(--mc-warning); font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 10px;">Δ edited</span>
+                      <div class="sec-body"><div class="placeholder" style="background: var(--mc-blue-wash); color: var(--mc-blue);">Summer Collection — Shop now</div></div>
+                    </div>
+                    <div class="canvas-section">
+                      <span class="sec-label">ProductGrid</span>
+                      <div class="sec-body"><div class="placeholder">Consumer catalog · 120 products</div></div>
+                    </div>
+                    <div class="canvas-section selected" style="box-shadow: none;">
+                      <span class="sec-label" style="color: var(--mc-blue);">TestimonialsCarousel · new</span>
+                      <span style="position: absolute; top: 8px; right: 10px; background: var(--mc-success-bg); color: var(--mc-success); font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 10px;">＋ added</span>
+                      <div class="sec-body"><div class="placeholder">3 verified B2C reviews</div></div>
+                    </div>
+                    <div class="canvas-section red-zone">
+                      <span class="sec-label">PricingRules 🔒</span>
+                      <div class="sec-body"><div class="placeholder" style="color: var(--mc-locked);">Consumer pricing</div></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="split-pane">
+                <div class="split-pane-header">
+                  <div style="width: 18px; height: 18px; border-radius: 50%; background: #7c3aed; color: white; display: inline-flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 600;">B2B</div>
+                  B2B wholesale · en-GB
+                  <span class="spacer" style="flex: 1;"></span>
+                  <span class="chip live" style="font-size: 10px;"><span class="dot"></span> Live — unchanged</span>
+                </div>
+                <div class="canvas-wrap" style="padding: 14px;">
+                  <div class="canvas">
+                    <div class="canvas-section">
+                      <span class="sec-label">AccountDashboard</span>
+                      <div class="sec-body"><div class="placeholder">Approval queue · credit balance · reorder</div></div>
+                    </div>
+                    <div class="canvas-section">
+                      <span class="sec-label">ProductGrid</span>
+                      <div class="sec-body"><div class="placeholder">Wholesale catalog · tiered pricing</div></div>
+                    </div>
+                    <div class="canvas-section">
+                      <span class="sec-label">QuickOrder</span>
+                      <div class="sec-body"><div class="placeholder">SKU bulk entry form</div></div>
+                    </div>
+                    <div class="canvas-section red-zone">
+                      <span class="sec-label">PricingRules 🔒</span>
+                      <div class="sec-body"><div class="placeholder" style="color: var(--mc-locked);">Wholesale pricing + MOQ</div></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div style="margin-top: 14px; padding: 12px 16px; background: white; border: 1px solid var(--mc-border); border-radius: var(--radius-md); display: flex; align-items: center; gap: 16px; font-size: 12px;">
+              <div style="font-weight: 600;">🔍 Cross-context diff</div>
+              <div style="color: var(--mc-text-muted);">
+                <strong style="color: var(--mc-warning);">2 changes scoped to B2C only</strong> — B2B rendering unaffected. B2B uses different page layout (AccountDashboard, QuickOrder) per context schema.
+              </div>
+              <span class="spacer" style="flex: 1;"></span>
+              <button class="btn-ghost" style="font-size: 11px;">⬌ Apply to B2B too</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-annotations single">
+        <h4>Design Notes</h4>
+        <ul>
+          <li><strong>Synchronized scrolling</strong> — as operator scrolls the left pane, right pane follows. Cross-context comparison becomes visceral. <em>(B2XPreviewSplit component — Phase 2 per UX spec)</em></li>
+          <li><strong>Change badges per component</strong> — green "+ added" for new, amber "Δ edited" for modified. Unchanged components have no badge — attention goes where changes live.</li>
+          <li><strong>B2B and B2C use different components</strong> — B2C has TestimonialsCarousel, B2B has AccountDashboard and QuickOrder. Preview reflects the context schema, not just content.</li>
+          <li><strong>Cross-context diff panel at the bottom</strong> — summarizes scope in plain language. The "Apply to B2B too" button makes cross-context broadcast a deliberate one-click action.</li>
+          <li><strong>Red Zone rendering is context-aware</strong> — PricingRules shows "Consumer pricing" on B2C and "Wholesale pricing + MOQ" on B2B. Same component, different platform-managed behavior.</li>
+          <li><strong>Publish button remains at the top</strong> — operators can publish directly from split view, not forced back to the editor. Reduces friction at the decision moment.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="doc-footer">
+  Wireframes are intentionally low-fidelity — dashed borders and placeholder content indicate where customer-brand content will render. Final visual styling inherits commercetools Merchant Center design tokens.
+</div>
+
+<script>
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      const target = tab.dataset.tab;
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('tab-' + target).classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+
+  // Viewport toggle demo (Tab 3)
+  document.querySelectorAll('.viewport-toggle button[data-viewport]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const group = btn.closest('.viewport-toggle');
+      const target = btn.dataset.viewport;
+      const canvas = btn.closest('.editor-frame')?.querySelector('.canvas');
+      if (!canvas) return;
+      group.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      canvas.classList.remove('tablet', 'mobile');
+      if (target === 'tablet') canvas.classList.add('tablet');
+      if (target === 'mobile') canvas.classList.add('mobile');
+    });
+  });
+</script>
+</body>
+</html>

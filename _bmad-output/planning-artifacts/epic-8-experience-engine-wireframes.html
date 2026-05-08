@@ -1,0 +1,2395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Epic 8 — AI Experience Engine — Wireframes</title>
+<style>
+  :root {
+    --mc-blue: #0066cc;
+    --mc-blue-wash: rgba(0, 102, 204, 0.08);
+    --mc-ai-tint: rgba(88, 28, 255, 0.08);
+    --mc-ai-accent: #5b21b6;
+    --mc-bg: #f5f7fa;
+    --mc-surface: #ffffff;
+    --mc-border: #e4e7eb;
+    --mc-border-strong: #cbd2d9;
+    --mc-text: #1f2933;
+    --mc-text-muted: #6b7280;
+    --mc-text-faint: #9aa5b1;
+    --mc-success: #16a34a;
+    --mc-success-bg: #ecfdf5;
+    --mc-warning: #d97706;
+    --mc-warning-bg: #fef3c7;
+    --mc-error: #dc2626;
+    --mc-error-bg: #fee2e2;
+    --mc-locked: #9aa5b1;
+    --mc-locked-bg: #f3f4f6;
+    --h1-accent: #d97706;
+    --h1-bg: #fef3c7;
+    --h2-accent: #0066cc;
+    --h2-bg: #dbeafe;
+    --code-bg: #0f172a;
+    --code-comment: #64748b;
+    --radius-sm: 4px;
+    --radius-md: 6px;
+    --radius-lg: 8px;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 2px 6px rgba(0,0,0,0.06);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 13px;
+    line-height: 1.5;
+    background: var(--mc-bg);
+    color: var(--mc-text);
+  }
+
+  code, .mono { font-family: 'SF Mono', 'Monaco', 'Consolas', monospace; font-size: 12px; }
+
+  /* ---------- Document header ---------- */
+  .doc-header {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: white;
+    padding: 24px 40px;
+  }
+  .doc-header h1 { font-size: 22px; font-weight: 600; margin-bottom: 6px; }
+  .doc-header p { font-size: 13px; opacity: 0.85; max-width: 900px; }
+  .doc-header .meta {
+    margin-top: 12px; display: flex; gap: 20px; font-size: 12px; opacity: 0.7;
+  }
+
+  /* ---------- Tab nav ---------- */
+  .tabs {
+    background: white;
+    border-bottom: 1px solid var(--mc-border);
+    display: flex;
+    padding: 0 40px;
+    gap: 32px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .tab {
+    padding: 14px 0;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    font-weight: 500;
+    font-size: 13px;
+    color: var(--mc-text-muted);
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .tab.active { border-bottom-color: var(--mc-blue); color: var(--mc-blue); }
+  .tab:hover { color: var(--mc-blue); }
+  .tab-num {
+    display: inline-block;
+    width: 18px; height: 18px;
+    background: var(--mc-border);
+    color: var(--mc-text-muted);
+    border-radius: 50%;
+    font-size: 11px;
+    text-align: center;
+    line-height: 18px;
+    font-weight: 600;
+  }
+  .tab.active .tab-num { background: var(--mc-blue); color: white; }
+
+  .tab-content { display: none; padding: 32px 40px 80px; }
+  .tab-content.active { display: block; }
+
+  /* ---------- Tab intro ---------- */
+  .tab-intro {
+    background: white;
+    border: 1px solid var(--mc-border);
+    border-left: 3px solid var(--mc-blue);
+    border-radius: var(--radius-md);
+    padding: 16px 20px;
+    margin-bottom: 28px;
+    max-width: 1100px;
+  }
+  .tab-intro h2 { font-size: 16px; margin-bottom: 6px; }
+  .tab-intro p { color: var(--mc-text-muted); font-size: 13px; }
+  .tab-intro .frs {
+    margin-top: 10px; display: flex; gap: 6px; flex-wrap: wrap;
+  }
+  .fr-chip {
+    background: var(--mc-blue-wash);
+    color: var(--mc-blue);
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 500;
+    font-family: 'SF Mono', 'Monaco', monospace;
+  }
+
+  /* ---------- Screen card ---------- */
+  .screen {
+    background: white;
+    border: 1px solid var(--mc-border);
+    border-radius: var(--radius-lg);
+    margin-bottom: 32px;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+  }
+  .screen-header {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--mc-border);
+    background: #fafbfc;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .screen-header h3 { font-size: 14px; font-weight: 600; }
+  .screen-header .tag {
+    font-family: 'SF Mono', monospace;
+    font-size: 11px;
+    color: var(--mc-text-muted);
+    background: white;
+    border: 1px solid var(--mc-border);
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+  .screen-body { padding: 24px; display: grid; grid-template-columns: 1fr 280px; gap: 24px; }
+  .screen-body.single { grid-template-columns: 1fr; }
+  .screen-annotations {
+    background: #fafbfc;
+    border: 1px solid var(--mc-border);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    font-size: 12px;
+  }
+  .screen-annotations h4 {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--mc-text-muted);
+    margin-bottom: 10px;
+  }
+  .screen-annotations ul { list-style: none; padding: 0; }
+  .screen-annotations li {
+    padding: 6px 0;
+    border-bottom: 1px dashed var(--mc-border);
+    color: var(--mc-text);
+    font-size: 12px;
+    line-height: 1.45;
+  }
+  .screen-annotations li:last-child { border-bottom: none; }
+  .screen-annotations li strong { color: var(--mc-blue); font-weight: 600; }
+
+  /* ---------- Editor frame (simulates Merchant Center shell) ---------- */
+  .editor-frame {
+    border: 1px solid var(--mc-border-strong);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background: var(--mc-bg);
+    display: grid;
+    grid-template-rows: 40px 36px 1fr;
+    height: 560px;
+    font-size: 12px;
+  }
+  .editor-topbar {
+    background: #1f2933;
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    gap: 20px;
+    font-size: 12px;
+  }
+  .editor-topbar .logo { font-weight: 600; letter-spacing: 0.3px; }
+  .editor-topbar .crumbs { opacity: 0.7; }
+  .editor-topbar .crumbs strong { color: white; opacity: 1; }
+  .editor-topbar .spacer { flex: 1; }
+  .editor-topbar .user {
+    width: 24px; height: 24px; border-radius: 50%;
+    background: var(--mc-blue); display: inline-flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 600;
+  }
+  .editor-topbar .tis-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(88, 28, 255, 0.25); color: #c4b5fd;
+    border: 1px solid rgba(88, 28, 255, 0.5);
+    padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; cursor: pointer;
+  }
+  .editor-topbar .tis-badge .tis-num { color: white; }
+
+  .context-bar {
+    background: white;
+    border-bottom: 1px solid var(--mc-border);
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    gap: 8px;
+  }
+  .chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+    border: 1px solid var(--mc-border);
+    background: white;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .chip:hover { border-color: var(--mc-blue); color: var(--mc-blue); }
+  .chip.active { background: var(--mc-blue-wash); border-color: var(--mc-blue); color: var(--mc-blue); }
+  .chip.draft { background: var(--mc-warning-bg); border-color: var(--mc-warning); color: var(--mc-warning); }
+  .chip.live { background: var(--mc-success-bg); border-color: var(--mc-success); color: var(--mc-success); }
+  .chip .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  .chip.h1 { background: var(--h1-bg); border-color: var(--h1-accent); color: var(--h1-accent); }
+  .chip.h2 { background: var(--h2-bg); border-color: var(--h2-accent); color: var(--h2-accent); }
+  .context-bar .spacer { flex: 1; }
+  .context-bar .viewport-toggle {
+    display: flex; gap: 0; border: 1px solid var(--mc-border); border-radius: var(--radius-sm); overflow: hidden;
+  }
+  .context-bar .viewport-toggle button {
+    background: white; border: none; padding: 4px 10px; font-size: 11px; cursor: pointer;
+    color: var(--mc-text-muted); border-right: 1px solid var(--mc-border);
+  }
+  .context-bar .viewport-toggle button:last-child { border-right: none; }
+  .context-bar .viewport-toggle button.active { background: var(--mc-blue-wash); color: var(--mc-blue); font-weight: 500; }
+  .publish-btn {
+    background: var(--mc-blue); color: white; border: none;
+    padding: 5px 14px; border-radius: var(--radius-sm); font-size: 12px; font-weight: 500; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .publish-btn:hover { background: #0052a3; }
+  .publish-btn.disabled { background: var(--mc-border); color: var(--mc-text-faint); cursor: not-allowed; }
+
+  .editor-main { display: grid; grid-template-columns: 56px 1fr 340px; height: 100%; overflow: hidden; }
+  .nav-rail {
+    background: #fafbfc;
+    border-right: 1px solid var(--mc-border);
+    display: flex; flex-direction: column; align-items: center; padding: 12px 0; gap: 4px;
+  }
+  .nav-rail .nav-item {
+    width: 40px; height: 40px; border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; color: var(--mc-text-muted); cursor: pointer;
+    position: relative;
+  }
+  .nav-rail .nav-item:hover { background: white; color: var(--mc-blue); }
+  .nav-rail .nav-item.active { background: var(--mc-blue-wash); color: var(--mc-blue); }
+  .nav-rail .nav-item.ai-rail { color: var(--mc-ai-accent); }
+  .nav-rail .nav-item.ai-rail.active { background: var(--mc-ai-tint); color: var(--mc-ai-accent); }
+
+  .canvas-wrap {
+    overflow: auto;
+    background:
+      linear-gradient(45deg, #f0f2f5 25%, transparent 25%),
+      linear-gradient(-45deg, #f0f2f5 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, #f0f2f5 75%),
+      linear-gradient(-45deg, transparent 75%, #f0f2f5 75%);
+    background-size: 16px 16px;
+    background-position: 0 0, 0 8px, 8px -8px, -8px 0;
+    padding: 20px;
+  }
+  .canvas {
+    background: white;
+    border: 1px solid var(--mc-border-strong);
+    border-radius: var(--radius-sm);
+    min-height: 100%;
+    padding: 16px;
+    display: flex; flex-direction: column; gap: 8px;
+    box-shadow: var(--shadow-md);
+  }
+  .canvas-section {
+    border: 1px dashed var(--mc-border-strong);
+    border-radius: var(--radius-sm);
+    padding: 14px;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.15s;
+    background: white;
+  }
+  .canvas-section:hover { border-color: var(--mc-blue); border-style: solid; }
+  .canvas-section.selected {
+    border: 2px solid var(--mc-ai-accent);
+    box-shadow: 0 0 0 3px var(--mc-ai-tint);
+  }
+  .canvas-section.red-zone {
+    border-style: solid;
+    border-color: var(--mc-locked);
+    background: var(--mc-locked-bg);
+    cursor: not-allowed;
+  }
+  .canvas-section .sec-label {
+    position: absolute; top: -9px; left: 10px;
+    background: white; padding: 0 6px; font-size: 10px; color: var(--mc-text-muted);
+    font-family: 'SF Mono', monospace;
+  }
+  .canvas-section.selected .sec-label { color: var(--mc-ai-accent); font-weight: 600; }
+  .canvas-section .sec-body {
+    display: flex; gap: 12px; align-items: center;
+  }
+  .canvas-section .placeholder {
+    height: 48px; background: #f0f2f5; border-radius: var(--radius-sm); flex: 1;
+    display: flex; align-items: center; justify-content: center; color: var(--mc-text-faint); font-size: 11px;
+  }
+  .canvas-section .rec-badge {
+    position: absolute; top: 8px; right: 10px;
+    background: var(--mc-ai-tint); color: var(--mc-ai-accent);
+    font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 10px;
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+
+  /* ---------- Right sidebar (AI / recommendation panel) ---------- */
+  .side-panel {
+    background: white;
+    border-left: 1px solid var(--mc-border);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+  .side-panel .panel-tabs {
+    display: flex; border-bottom: 1px solid var(--mc-border); background: #fafbfc;
+  }
+  .side-panel .panel-tab {
+    flex: 1; padding: 10px 0; font-size: 11px; font-weight: 500; text-align: center; cursor: pointer;
+    color: var(--mc-text-muted); border-bottom: 2px solid transparent;
+  }
+  .side-panel .panel-tab.active { color: var(--mc-ai-accent); border-bottom-color: var(--mc-ai-accent); background: white; }
+  .side-panel .panel-body { padding: 14px; flex: 1; overflow-y: auto; }
+
+  /* ---------- AI panel / recommendation mode ---------- */
+  .ai-panel { display: flex; flex-direction: column; height: 100%; }
+  .ai-panel-header {
+    padding: 12px 14px;
+    background: var(--mc-ai-tint);
+    border-bottom: 1px solid var(--mc-border);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .ai-panel-header .ai-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--mc-ai-accent); }
+  .ai-panel-header h4 { font-size: 12px; color: var(--mc-ai-accent); font-weight: 600; }
+  .ai-panel-header .mode-toggle {
+    margin-left: auto; display: inline-flex; background: white; border: 1px solid var(--mc-ai-accent);
+    border-radius: 12px; padding: 2px; font-size: 10px;
+  }
+  .ai-panel-header .mode-toggle button {
+    background: none; border: none; color: var(--mc-ai-accent); cursor: pointer;
+    padding: 3px 10px; border-radius: 10px; font-size: 10px; font-weight: 600;
+  }
+  .ai-panel-header .mode-toggle button.active { background: var(--mc-ai-accent); color: white; }
+
+  .btn-primary, .btn-ghost, .btn-danger, .btn-h1, .btn-h2 {
+    padding: 5px 10px; border-radius: var(--radius-sm); font-size: 11px; font-weight: 500;
+    cursor: pointer; border: 1px solid transparent;
+  }
+  .btn-primary { background: var(--mc-ai-accent); color: white; }
+  .btn-ghost { background: white; color: var(--mc-text-muted); border-color: var(--mc-border); }
+  .btn-danger { background: white; color: var(--mc-error); border-color: var(--mc-border); }
+
+  /* ---------- Horizon badges ---------- */
+  .horizon-badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 600;
+  }
+  .horizon-badge.h1 { background: var(--h1-bg); color: var(--h1-accent); border: 1px solid var(--h1-accent); }
+  .horizon-badge.h2 { background: var(--h2-bg); color: var(--h2-accent); border: 1px solid var(--h2-accent); }
+
+  /* ---------- Confidence Card ---------- */
+  .confidence-card {
+    background: white; border: 1px solid var(--mc-ai-accent); border-radius: var(--radius-md);
+    padding: 12px; font-size: 12px; margin-bottom: 10px;
+    box-shadow: 0 1px 3px rgba(88, 28, 255, 0.08);
+  }
+  .confidence-card .cc-head {
+    display: flex; align-items: center; gap: 6px; justify-content: space-between; margin-bottom: 8px;
+  }
+  .confidence-card .cc-title {
+    font-size: 12px; font-weight: 600; color: var(--mc-text);
+  }
+  .confidence-card .cc-your-data {
+    font-size: 11px; color: var(--mc-ai-accent); font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.4px; margin-bottom: 4px;
+  }
+  .confidence-card .cc-evidence {
+    font-size: 11px; color: var(--mc-text-muted); margin-bottom: 8px; line-height: 1.5;
+  }
+  .confidence-card .cc-evidence strong { color: var(--mc-text); font-weight: 600; }
+  .confidence-card .cc-outcome {
+    background: var(--mc-ai-tint); border-radius: var(--radius-sm);
+    padding: 8px 10px; font-size: 11px; margin-bottom: 8px;
+  }
+  .confidence-card .cc-outcome .outcome-label {
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.4px; color: var(--mc-ai-accent);
+    font-weight: 600; margin-bottom: 2px;
+  }
+  .confidence-card .cc-outcome .outcome-val {
+    font-size: 14px; font-weight: 700; color: var(--mc-text);
+  }
+  .confidence-card .cc-outcome .outcome-ci {
+    font-size: 10px; color: var(--mc-text-muted); margin-top: 2px;
+  }
+  .confidence-card .cc-actions {
+    display: flex; gap: 6px; flex-wrap: wrap;
+  }
+
+  /* ---------- Campaign group ---------- */
+  .campaign-group {
+    margin-bottom: 14px;
+  }
+  .campaign-header {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 10px; background: #fafbfc;
+    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+    border: 1px solid var(--mc-border);
+    font-size: 11px;
+  }
+  .campaign-header .camp-icon {
+    width: 18px; height: 18px; border-radius: 50%;
+    background: var(--mc-ai-accent); color: white;
+    display: inline-flex; align-items: center; justify-content: center; font-size: 10px;
+  }
+  .campaign-header .camp-title { font-weight: 600; flex: 1; }
+  .campaign-header .camp-meta { font-size: 10px; color: var(--mc-text-muted); }
+  .campaign-body {
+    border: 1px solid var(--mc-border); border-top: none;
+    border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+    padding: 10px; display: flex; flex-direction: column; gap: 8px;
+  }
+
+  /* ---------- Experiment form ---------- */
+  .exp-form { display: flex; flex-direction: column; gap: 14px; }
+  .form-group { background: white; border: 1px solid var(--mc-border); border-radius: var(--radius-md); padding: 14px; }
+  .form-group h5 {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;
+    color: var(--mc-text-muted); font-weight: 600; margin-bottom: 10px;
+  }
+  .form-row { margin-bottom: 10px; }
+  .form-row:last-child { margin-bottom: 0; }
+  .form-label { font-size: 11px; color: var(--mc-text-muted); margin-bottom: 3px; display: block; font-weight: 500; }
+  .form-input, .form-select, .form-textarea {
+    width: 100%; padding: 6px 8px; border: 1px solid var(--mc-border);
+    border-radius: var(--radius-sm); font-size: 12px; background: white; font-family: inherit;
+  }
+  .form-textarea { min-height: 60px; resize: vertical; }
+  .form-input:focus, .form-select:focus, .form-textarea:focus {
+    outline: none; border-color: var(--mc-ai-accent); box-shadow: 0 0 0 2px var(--mc-ai-tint);
+  }
+  .form-row .hint { font-size: 10px; color: var(--mc-text-faint); margin-top: 3px; }
+
+  .variant-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+  }
+  .variant-card {
+    border: 1px solid var(--mc-border); border-radius: var(--radius-sm);
+    padding: 10px; background: #fafbfc;
+  }
+  .variant-card.control { border-left: 3px solid var(--mc-text-muted); }
+  .variant-card.challenger { border-left: 3px solid var(--mc-ai-accent); }
+  .variant-card h6 {
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.4px;
+    color: var(--mc-text-muted); margin-bottom: 6px; font-weight: 600;
+  }
+  .variant-card .v-traffic { font-size: 11px; font-weight: 600; }
+
+  /* ---------- Signal gate ---------- */
+  .signal-gate {
+    background: var(--mc-ai-tint); border: 1px solid var(--mc-ai-accent);
+    border-radius: var(--radius-sm); padding: 10px 12px; font-size: 11px;
+    display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: center;
+  }
+  .signal-gate .gate-icon { font-size: 18px; }
+  .signal-gate .gate-text strong { color: var(--mc-ai-accent); }
+
+  /* ---------- Experiment dashboard row ---------- */
+  .exp-table {
+    background: white; border: 1px solid var(--mc-border); border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+  .exp-row {
+    display: grid; grid-template-columns: 1.5fr 80px 90px 1fr 1fr 80px;
+    gap: 12px; padding: 12px 14px;
+    border-bottom: 1px solid var(--mc-border); font-size: 12px; align-items: center;
+  }
+  .exp-row.header {
+    background: #fafbfc; font-size: 10px; text-transform: uppercase;
+    letter-spacing: 0.5px; color: var(--mc-text-muted); font-weight: 600;
+  }
+  .exp-row:last-child { border-bottom: none; }
+  .exp-row .exp-name { font-weight: 600; }
+  .exp-row .exp-name .exp-meta { font-size: 11px; color: var(--mc-text-muted); font-weight: normal; margin-top: 2px; }
+  .exp-row .progress-mini {
+    height: 5px; background: var(--mc-border); border-radius: 3px; overflow: hidden;
+  }
+  .exp-row .progress-mini .fill { height: 100%; background: var(--mc-ai-accent); }
+  .exp-row .metric-delta.positive { color: var(--mc-success); font-weight: 600; }
+  .exp-row .metric-delta.negative { color: var(--mc-error); font-weight: 600; }
+  .exp-row .metric-delta.neutral { color: var(--mc-text-muted); }
+
+  /* ---------- Progressive rollout ---------- */
+  .rollout-wrapper {
+    background: white; border: 1px solid var(--mc-border); border-radius: var(--radius-md);
+    padding: 18px;
+  }
+  .rollout-steps {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin: 16px 0;
+    position: relative;
+  }
+  .rollout-step {
+    background: white; border: 2px solid var(--mc-border);
+    border-radius: var(--radius-md); padding: 10px 12px; text-align: center;
+    position: relative;
+  }
+  .rollout-step.done {
+    border-color: var(--mc-success); background: var(--mc-success-bg);
+  }
+  .rollout-step.active {
+    border-color: var(--mc-ai-accent); background: var(--mc-ai-tint);
+    box-shadow: 0 0 0 3px rgba(88, 28, 255, 0.15);
+  }
+  .rollout-step .step-pct {
+    font-size: 18px; font-weight: 700; color: var(--mc-text);
+  }
+  .rollout-step.done .step-pct { color: var(--mc-success); }
+  .rollout-step.active .step-pct { color: var(--mc-ai-accent); }
+  .rollout-step .step-label {
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.4px;
+    color: var(--mc-text-muted); margin-top: 2px; font-weight: 600;
+  }
+  .rollout-step .step-status {
+    font-size: 10px; color: var(--mc-text-muted); margin-top: 3px;
+  }
+  .rollout-step.done .step-status { color: var(--mc-success); }
+  .rollout-step.active .step-status { color: var(--mc-ai-accent); font-weight: 600; }
+  .rollout-progress-bar {
+    height: 8px; background: var(--mc-border); border-radius: 4px; overflow: hidden;
+    margin-top: 4px;
+  }
+  .rollout-progress-bar .fill {
+    height: 100%; background: linear-gradient(90deg, var(--mc-success) 0%, var(--mc-ai-accent) 100%);
+    transition: width 0.3s;
+  }
+  .rollout-gate-row {
+    display: grid; grid-template-columns: 120px 1fr; gap: 10px;
+    padding: 10px 12px; background: #fafbfc; border-radius: var(--radius-sm);
+    font-size: 11px; margin-top: 10px;
+  }
+  .rollout-gate-row strong { color: var(--mc-text); }
+
+  /* ---------- GitHub PR view (dark code diff) ---------- */
+  .pr-shell {
+    background: white; border: 1px solid var(--mc-border-strong); border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+  .pr-topbar {
+    background: #0d1117; color: #c9d1d9;
+    padding: 10px 16px; display: flex; align-items: center; gap: 10px;
+    border-bottom: 1px solid #30363d; font-size: 12px;
+  }
+  .pr-topbar .gh-logo {
+    width: 20px; height: 20px; border-radius: 50%; background: white; color: #0d1117;
+    display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 10px;
+  }
+  .pr-topbar .pr-path { opacity: 0.8; }
+  .pr-topbar .pr-path strong { color: white; opacity: 1; }
+  .pr-header {
+    background: white; padding: 16px 20px; border-bottom: 1px solid var(--mc-border);
+  }
+  .pr-header h3 { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+  .pr-header .pr-meta { font-size: 11px; color: var(--mc-text-muted); display: flex; gap: 12px; flex-wrap: wrap; }
+  .pr-header .pr-status {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: #ddf4ff; color: #0969da; border: 1px solid #0969da;
+    padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 600;
+  }
+  .pr-body {
+    background: white; padding: 0;
+  }
+  .pr-section {
+    border-bottom: 1px solid var(--mc-border); padding: 14px 20px;
+  }
+  .pr-section h4 {
+    font-size: 12px; font-weight: 600; margin-bottom: 8px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .pr-section p { font-size: 12px; color: var(--mc-text-muted); line-height: 1.5; }
+  .pr-evidence-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px;
+  }
+  .pr-evidence-card {
+    background: #fafbfc; border: 1px solid var(--mc-border); border-radius: var(--radius-sm);
+    padding: 10px 12px;
+  }
+  .pr-evidence-card .pe-label {
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.4px;
+    color: var(--mc-text-muted); font-weight: 600;
+  }
+  .pr-evidence-card .pe-val {
+    font-size: 16px; font-weight: 700; color: var(--mc-text); margin-top: 2px;
+  }
+  .pr-evidence-card .pe-sub {
+    font-size: 10px; color: var(--mc-text-muted); margin-top: 3px;
+  }
+
+  .diff-viewer {
+    background: var(--code-bg); border-radius: var(--radius-sm); overflow: hidden;
+  }
+  .diff-file-header {
+    background: #1a2330; color: #c9d1d9; padding: 8px 14px;
+    font-family: 'SF Mono', monospace; font-size: 11px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid #30363d;
+  }
+  .diff-file-header .file-stats { color: #94a3b8; font-size: 10px; }
+  .diff-file-header .file-stats .add { color: #86efac; }
+  .diff-file-header .file-stats .rem { color: #fca5a5; }
+
+  .diff-row {
+    display: grid; grid-template-columns: 30px 1fr;
+    padding: 4px 12px; font-family: 'SF Mono', monospace; font-size: 11px;
+    border-bottom: 1px solid #1a2330; line-height: 1.5;
+  }
+  .diff-row.add { background: rgba(22, 163, 74, 0.12); color: #86efac; }
+  .diff-row.remove { background: rgba(220, 38, 38, 0.12); color: #fca5a5; }
+  .diff-row.context { background: transparent; color: #94a3b8; }
+  .diff-row .sign { color: var(--code-comment); text-align: center; }
+
+  .pr-checks {
+    background: #fafbfc; padding: 10px 14px; border-radius: var(--radius-sm);
+    font-size: 11px; display: flex; flex-direction: column; gap: 6px;
+    border: 1px solid var(--mc-border);
+  }
+  .check-line { display: flex; align-items: center; gap: 8px; }
+  .check-line .check-icon {
+    width: 16px; height: 16px; border-radius: 50%; font-size: 10px;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .check-line .check-icon.pass { background: var(--mc-success-bg); color: var(--mc-success); }
+  .check-line .check-icon.pending { background: var(--mc-warning-bg); color: var(--mc-warning); }
+  .check-line .check-icon.fail { background: var(--mc-error-bg); color: var(--mc-error); }
+
+  .pr-preview-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: #ddf4ff; color: #0969da; border: 1px solid #0969da;
+    padding: 4px 10px; border-radius: var(--radius-sm); font-size: 11px; font-weight: 500;
+    text-decoration: none;
+  }
+
+  /* ---------- Tenant Intelligence Score dashboard ---------- */
+  .tis-grid {
+    display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 16px; margin-bottom: 20px;
+  }
+  .tis-hero {
+    background: linear-gradient(135deg, #2a1c68 0%, #5b21b6 100%);
+    color: white; border-radius: var(--radius-md);
+    padding: 20px; position: relative; overflow: hidden;
+  }
+  .tis-hero .tis-label {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.6px;
+    opacity: 0.75; font-weight: 600;
+  }
+  .tis-hero .tis-score {
+    font-size: 56px; font-weight: 700; line-height: 1; margin: 8px 0 4px;
+  }
+  .tis-hero .tis-score-unit {
+    font-size: 22px; opacity: 0.6; font-weight: 500;
+  }
+  .tis-hero .tis-delta {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: rgba(255,255,255,0.15); padding: 3px 10px; border-radius: 12px;
+    font-size: 11px; font-weight: 600;
+  }
+  .tis-hero .tis-status {
+    margin-top: 14px; font-size: 12px; opacity: 0.9;
+  }
+  .tis-hero .tis-status strong { color: #c4b5fd; }
+
+  .tis-stat-card {
+    background: white; border: 1px solid var(--mc-border); border-radius: var(--radius-md);
+    padding: 16px;
+  }
+  .tis-stat-card .ts-label {
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px;
+    color: var(--mc-text-muted); font-weight: 600;
+  }
+  .tis-stat-card .ts-value {
+    font-size: 24px; font-weight: 700; color: var(--mc-text); margin: 6px 0 4px;
+  }
+  .tis-stat-card .ts-sub { font-size: 11px; color: var(--mc-text-muted); }
+  .tis-stat-card .ts-sub.positive { color: var(--mc-success); font-weight: 600; }
+
+  /* Sparkline */
+  .sparkline {
+    height: 40px; display: flex; align-items: flex-end; gap: 2px; margin-top: 8px;
+  }
+  .sparkline .bar {
+    flex: 1; background: var(--mc-ai-accent); border-radius: 1px; opacity: 0.8;
+    min-height: 3px;
+  }
+  .sparkline .bar.latest { background: var(--mc-ai-accent); opacity: 1; }
+
+  .tis-milestones {
+    background: white; border: 1px solid var(--mc-border); border-radius: var(--radius-md);
+    padding: 16px 20px;
+  }
+  .milestone-row {
+    display: grid; grid-template-columns: 24px 1fr auto;
+    gap: 10px; padding: 10px 0;
+    border-bottom: 1px dashed var(--mc-border); font-size: 12px; align-items: center;
+  }
+  .milestone-row:last-child { border-bottom: none; }
+  .milestone-row .ms-icon {
+    width: 20px; height: 20px; border-radius: 50%; font-size: 10px;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .milestone-row .ms-icon.done { background: var(--mc-success-bg); color: var(--mc-success); }
+  .milestone-row .ms-icon.active { background: var(--mc-ai-tint); color: var(--mc-ai-accent); }
+  .milestone-row .ms-icon.pending { background: var(--mc-locked-bg); color: var(--mc-locked); }
+  .milestone-row .ms-title { font-weight: 600; }
+  .milestone-row .ms-sub { font-size: 11px; color: var(--mc-text-muted); }
+  .milestone-row .ms-cta { font-size: 11px; color: var(--mc-ai-accent); font-weight: 500; cursor: pointer; }
+
+  /* ---------- Tried-and-Retired library ---------- */
+  .retired-library {
+    background: white; border: 1px solid var(--mc-border); border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+  .retired-filter {
+    padding: 10px 14px; background: #fafbfc; border-bottom: 1px solid var(--mc-border);
+    display: flex; gap: 6px; flex-wrap: wrap; align-items: center;
+  }
+  .retired-row {
+    display: grid; grid-template-columns: 1fr 120px 120px 90px 80px;
+    gap: 12px; padding: 12px 14px;
+    border-bottom: 1px solid var(--mc-border); font-size: 12px; align-items: center;
+  }
+  .retired-row:last-child { border-bottom: none; }
+  .retired-row.header {
+    background: #fafbfc; font-size: 10px; text-transform: uppercase;
+    letter-spacing: 0.5px; color: var(--mc-text-muted); font-weight: 600;
+  }
+  .retired-row .pattern-name { font-weight: 600; }
+  .retired-row .pattern-why {
+    font-size: 11px; color: var(--mc-text-muted); margin-top: 3px;
+  }
+  .taxonomy-chip {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 600;
+    border: 1px solid transparent;
+  }
+  .taxonomy-chip.metric { background: #fee2e2; color: #b91c1c; border-color: #dc2626; }
+  .taxonomy-chip.context { background: #fef3c7; color: #92400e; border-color: #d97706; }
+  .taxonomy-chip.override { background: #dbeafe; color: #1e40af; border-color: #0066cc; }
+  .taxonomy-chip.immaturity { background: #f3e8ff; color: #6b21a8; border-color: #5b21b6; }
+
+  /* ---------- Legend ---------- */
+  .legend {
+    margin-top: 12px; display: flex; gap: 16px; font-size: 11px; color: var(--mc-text-muted);
+    padding: 10px 14px; background: #fafbfc; border: 1px solid var(--mc-border); border-radius: var(--radius-md);
+    flex-wrap: wrap;
+  }
+  .legend-item { display: inline-flex; align-items: center; gap: 6px; }
+  .legend-swatch {
+    width: 14px; height: 14px; border-radius: 3px; display: inline-block;
+  }
+  .legend-swatch.h1 { background: var(--h1-bg); border: 1px solid var(--h1-accent); }
+  .legend-swatch.h2 { background: var(--h2-bg); border: 1px solid var(--h2-accent); }
+  .legend-swatch.ai-tint { background: var(--mc-ai-tint); border: 1px solid var(--mc-ai-accent); }
+  .legend-swatch.retired { background: #fee2e2; border: 1px solid #dc2626; }
+
+  /* ---------- Footer ---------- */
+  .doc-footer {
+    background: white; border-top: 1px solid var(--mc-border);
+    padding: 20px 40px; font-size: 12px; color: var(--mc-text-muted); text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<div class="doc-header">
+  <h1>Epic 8 — AI Experience Engine Wireframes</h1>
+  <p>The compounding-moat layer of the commercetools Next-Gen Frontend. Once a storefront is live and behavioral data (Epic 5) accumulates, the engine continuously generates hypotheses, runs experiments, surfaces canvas-anchored recommendations with two-horizon measurement (⚡ H1 Quick Win · 📈 H2 Long Game), applies them via progressive rollout, opens GitHub PRs for beyond-Green-Zone changes, and learns from every outcome. Tenant-specific intelligence is the moat — the longer it runs, the smarter it gets.</p>
+  <div class="meta">
+    <span>Author: Sally (UX)</span>
+    <span>Date: 2026-05-07</span>
+    <span>Status: Draft for review</span>
+    <span>Personas: Business Operator · CRO / Data Science · Storefront Developer</span>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" data-tab="rec"><span class="tab-num">1</span> Canvas-Anchored Recommendations</div>
+  <div class="tab" data-tab="exp"><span class="tab-num">2</span> Experiment Creation & Running</div>
+  <div class="tab" data-tab="apply"><span class="tab-num">3</span> Apply Workflow & GitHub PR</div>
+  <div class="tab" data-tab="calib"><span class="tab-num">4</span> Engine Calibration & Tried-and-Retired</div>
+</div>
+
+<!-- TAB 1 PLACEHOLDER -->
+<div id="tab-rec" class="tab-content active">
+
+  <div class="tab-intro">
+    <h2>1 — Canvas-Anchored Recommendation Panel</h2>
+    <p>The Epic 3 editor shell runs unchanged, but its right sidebar transitions into <strong>Optimize mode</strong> the moment the active page crosses the signal threshold. Recommendations are ranked for the page you're looking at, grouped by campaign, and always framed as <em>"your data shows"</em> — never <em>"the AI recommends."</em> Each recommendation carries a Confidence Card, a Horizon badge (⚡ H1 Quick Win · 📈 H2 Long Game), and an expected outcome with confidence interval.</p>
+    <div class="frs">
+      <span class="fr-chip">FR56</span><span class="fr-chip">FR64</span><span class="fr-chip">FR65</span>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 1A — Recommendation Panel (Optimize Mode) ============ -->
+  <div class="screen">
+    <div class="screen-header">
+      <h3>1A — Optimize mode: ranked recommendations scoped to the current page</h3>
+      <span class="tag">Editor shell + AIPanel (recommendation mode) — campaigns group related experiments</span>
+    </div>
+    <div class="screen-body">
+      <div class="editor-frame">
+        <div class="editor-topbar">
+          <span class="logo">commercetools</span>
+          <span class="crumbs">NorthLine Apparel › Storefront › <strong>Home</strong></span>
+          <span class="spacer"></span>
+          <span class="tis-badge" title="Tenant Intelligence Score">✨ TIS <span class="tis-num">74</span></span>
+          <span class="user">LP</span>
+        </div>
+        <div class="context-bar">
+          <span class="chip active"><span class="dot"></span> B2C</span>
+          <span class="chip">en-GB ▾</span>
+          <span class="chip">Guest ▾</span>
+          <span class="chip live"><span class="dot"></span> Live</span>
+          <span class="spacer"></span>
+          <div class="viewport-toggle">
+            <button class="active">🖥</button><button>📱</button><button>📱</button>
+          </div>
+          <button class="publish-btn disabled">Publish ▾</button>
+        </div>
+        <div class="editor-main">
+          <div class="nav-rail">
+            <div class="nav-item">📄</div>
+            <div class="nav-item">🧩</div>
+            <div class="nav-item">🌿</div>
+            <div class="nav-item">📊</div>
+            <div class="nav-item ai-rail active">✨</div>
+            <div class="nav-item">📜</div>
+          </div>
+          <div class="canvas-wrap">
+            <div class="canvas">
+              <div class="canvas-section">
+                <span class="sec-label">HeroBanner</span>
+                <div class="sec-body"><div class="placeholder">Summer Collection — Shop now</div></div>
+              </div>
+              <div class="canvas-section selected">
+                <span class="sec-label">ProductGrid · 3 recommendations</span>
+                <span class="rec-badge">✨ 3 insights</span>
+                <div class="sec-body"><div class="placeholder" style="background: var(--mc-ai-tint); color: var(--mc-ai-accent);">4-column grid · 120 products · engagement 62%</div></div>
+              </div>
+              <div class="canvas-section">
+                <span class="sec-label">TestimonialsCarousel</span>
+                <div class="sec-body"><div class="placeholder">3 testimonials</div></div>
+              </div>
+              <div class="canvas-section red-zone">
+                <span class="sec-label">PricingRules 🔒</span>
+                <div class="sec-body"><div class="placeholder" style="color: var(--mc-locked);">Red Zone</div></div>
+              </div>
+              <div class="canvas-section">
+                <span class="sec-label">Newsletter</span>
+                <div class="sec-body"><div class="placeholder">Email signup</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="side-panel ai-panel">
+            <div class="ai-panel-header">
+              <span class="ai-dot"></span>
+              <h4>Commerce Intelligence</h4>
+              <div class="mode-toggle">
+                <button>Create</button>
+                <button class="active">Optimize</button>
+              </div>
+            </div>
+            <div style="padding: 10px 14px; background: white; border-bottom: 1px solid var(--mc-border); font-size: 11px; color: var(--mc-text-muted);">
+              <strong style="color: var(--mc-text);">Home page · B2C · en-GB</strong><br>
+              Based on 12,430 qualified sessions · 90-day window
+            </div>
+            <div class="panel-body" style="padding: 12px;">
+
+              <!-- Campaign 1: Homepage Conversion -->
+              <div class="campaign-group">
+                <div class="campaign-header">
+                  <span class="camp-icon">📣</span>
+                  <div class="camp-title">Q2 Homepage Conversion</div>
+                  <span class="camp-meta">goal +8% · 14d left</span>
+                </div>
+                <div class="campaign-body">
+
+                  <!-- Rec 1 -->
+                  <div class="confidence-card">
+                    <div class="cc-head">
+                      <span class="cc-your-data">Your data shows</span>
+                      <span class="horizon-badge h1">⚡ H1 · 7 days</span>
+                    </div>
+                    <div class="cc-title">Re-order ProductGrid: bestsellers first</div>
+                    <div class="cc-evidence">
+                      <strong>8 of your top-10 sellers</strong> sit below the fold on mobile. Sessions that scrolled to row 2 converted <strong>2.4× more</strong> than those that didn't.
+                    </div>
+                    <div class="cc-outcome">
+                      <div class="outcome-label">Expected outcome — add-to-cart rate</div>
+                      <div class="outcome-val">+12.3%</div>
+                      <div class="outcome-ci">95% CI: +8.1% to +16.5% · based on 12,430 sessions</div>
+                    </div>
+                    <div class="cc-actions">
+                      <button class="btn-primary">Apply with rollout</button>
+                      <button class="btn-ghost">Run as experiment</button>
+                      <button class="btn-ghost">Dismiss</button>
+                    </div>
+                  </div>
+
+                  <!-- Rec 2 -->
+                  <div class="confidence-card">
+                    <div class="cc-head">
+                      <span class="cc-your-data">Your data shows</span>
+                      <span class="horizon-badge h2">📈 H2 · 90 days</span>
+                    </div>
+                    <div class="cc-title">Personalize Hero by CLV tier</div>
+                    <div class="cc-evidence">
+                      <strong>High-CLV returning customers</strong> (n=2,104) click the Hero CTA 3.1× less than new visitors. They want category shortcuts, not marketing messaging.
+                    </div>
+                    <div class="cc-outcome">
+                      <div class="outcome-label">Expected outcome — CLV delta (high-tier)</div>
+                      <div class="outcome-val">+£14.80 / customer</div>
+                      <div class="outcome-ci">95% CI: +£9.20 to +£21.40 · requires CLV cohort ≥ 2,000 (met)</div>
+                    </div>
+                    <div class="cc-actions">
+                      <button class="btn-primary">Apply with rollout</button>
+                      <button class="btn-ghost">Run as experiment</button>
+                      <button class="btn-ghost">Dismiss</button>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+              <!-- Campaign 2: Mobile Performance -->
+              <div class="campaign-group">
+                <div class="campaign-header">
+                  <span class="camp-icon" style="background: #0891b2;">📱</span>
+                  <div class="camp-title">Mobile Revenue Recovery</div>
+                  <span class="camp-meta">goal +5% AOV · 28d left</span>
+                </div>
+                <div class="campaign-body">
+
+                  <div class="confidence-card">
+                    <div class="cc-head">
+                      <span class="cc-your-data">Your data shows</span>
+                      <span class="horizon-badge h1">⚡ H1 · 5 days</span>
+                    </div>
+                    <div class="cc-title">Add sticky "add to cart" on mobile PDP</div>
+                    <div class="cc-evidence">
+                      <strong>Mobile scroll-past-price rate: 74%</strong>. Competitor patterns with sticky CTAs hold conversion; yours currently drops off at row 3.
+                    </div>
+                    <div class="cc-outcome">
+                      <div class="outcome-label">Expected outcome — mobile conversion</div>
+                      <div class="outcome-val">+6.8%</div>
+                      <div class="outcome-ci">95% CI: +3.9% to +9.7% · auto-generated (FR53, threshold met)</div>
+                    </div>
+                    <div class="cc-actions">
+                      <button class="btn-primary">Apply with rollout</button>
+                      <button class="btn-ghost">Run as experiment</button>
+                      <button class="btn-ghost">Dismiss</button>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+              <div style="padding: 10px; text-align: center; font-size: 11px; color: var(--mc-text-muted);">
+                <a href="#" style="color: var(--mc-ai-accent); font-weight: 500;">+ 4 more recommendations for this page</a>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-annotations">
+        <h4>Design Notes</h4>
+        <ul>
+          <li><strong>"Your data shows" — never "the AI recommends"</strong> — the engine reports from the tenant's own behavioral record. Trust comes from attribution to evidence, not the model. <em>(FR56)</em></li>
+          <li><strong>Canvas-anchored</strong> — recommendations are scoped to the page currently open. Selecting ProductGrid surfaces 3 insights on that component. <em>(FR56)</em></li>
+          <li><strong>Horizon badges are first-class</strong> — ⚡ H1 (amber) for days-scale signals, 📈 H2 (blue) for 90-day CLV signals. Operators learn the dual-timeline literacy. <em>(FR54, FR55)</em></li>
+          <li><strong>Confidence intervals always shown</strong> — not a point estimate. Enterprise CRO teams require statistical rigor before applying. <em>(FR54)</em></li>
+          <li><strong>Campaigns group related experiments</strong> — "Q2 Homepage Conversion" has a goal metric (+8%) and a timeline. Results aggregate to campaign-level outcomes. <em>(FR64)</em></li>
+          <li><strong>Three actions per card</strong> — Apply with rollout (fast path, Tab 3), Run as experiment (measurement path, Tab 2), Dismiss (feeds Tried-and-Retired).</li>
+          <li><strong>Mode toggle visible in header</strong> — Optimize mode auto-activates when page has signal. Operator can flip to Create for generation. <em>(FR65)</em></li>
+          <li><strong>TIS badge in topbar</strong> — persistent indicator that the engine is calibrated. Clickable → Tab 4 calibration view. <em>(FR61)</em></li>
+        </ul>
+      </div>
+    </div>
+    <div style="padding: 0 24px 20px;">
+      <div class="legend">
+        <span class="legend-item"><span class="legend-swatch h1"></span> H1 — Horizon 1 (CTR / conversion, days)</span>
+        <span class="legend-item"><span class="legend-swatch h2"></span> H2 — Horizon 2 (CLV / repeat purchase, 90d)</span>
+        <span class="legend-item"><span class="legend-swatch ai-tint"></span> Recommendation scope on canvas</span>
+        <span class="legend-item"><span class="legend-swatch retired"></span> Tried-and-Retired (filtered out)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 1B — Cold Start / Signal Gate Not Met ============ -->
+  <div class="screen">
+    <div class="screen-header">
+      <h3>1B — Cold start: signal gate not yet met on a new page</h3>
+      <span class="tag">AIPanel (Optimize, insufficient signal) — honest about what it doesn't know yet</span>
+    </div>
+    <div class="screen-body">
+      <div class="editor-frame">
+        <div class="editor-topbar">
+          <span class="logo">commercetools</span>
+          <span class="crumbs">NorthLine Apparel › Storefront › <strong>Back-to-School LP</strong> (new page)</span>
+          <span class="spacer"></span>
+          <span class="tis-badge">✨ TIS <span class="tis-num">74</span></span>
+          <span class="user">LP</span>
+        </div>
+        <div class="context-bar">
+          <span class="chip active"><span class="dot"></span> B2C</span>
+          <span class="chip">en-GB ▾</span>
+          <span class="chip">Guest ▾</span>
+          <span class="chip live"><span class="dot"></span> Live · 3 days</span>
+          <span class="spacer"></span>
+          <div class="viewport-toggle"><button class="active">🖥</button><button>📱</button><button>📱</button></div>
+          <button class="publish-btn disabled">Publish ▾</button>
+        </div>
+        <div class="editor-main">
+          <div class="nav-rail">
+            <div class="nav-item">📄</div>
+            <div class="nav-item">🧩</div>
+            <div class="nav-item">🌿</div>
+            <div class="nav-item">📊</div>
+            <div class="nav-item ai-rail active">✨</div>
+          </div>
+          <div class="canvas-wrap">
+            <div class="canvas">
+              <div class="canvas-section">
+                <span class="sec-label">HeroBanner</span>
+                <div class="sec-body"><div class="placeholder">Back-to-School — Shop essentials</div></div>
+              </div>
+              <div class="canvas-section">
+                <span class="sec-label">CategoryShowcase</span>
+                <div class="sec-body"><div class="placeholder">6-tile category grid</div></div>
+              </div>
+              <div class="canvas-section">
+                <span class="sec-label">ProductGrid</span>
+                <div class="sec-body"><div class="placeholder">4-column grid · 40 products</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="side-panel ai-panel">
+            <div class="ai-panel-header">
+              <span class="ai-dot"></span>
+              <h4>Commerce Intelligence</h4>
+              <div class="mode-toggle"><button>Create</button><button class="active">Optimize</button></div>
+            </div>
+            <div class="panel-body" style="padding: 16px;">
+              <div class="signal-gate">
+                <span class="gate-icon">⏳</span>
+                <div class="gate-text">
+                  <strong>Optimize mode armed — waiting for signal</strong><br>
+                  <span style="color: var(--mc-text-muted); font-size: 10px;">Your data shows we're watching, not guessing yet.</span>
+                </div>
+              </div>
+              <div style="margin-top: 14px;">
+                <div style="font-size: 11px; color: var(--mc-text-muted); margin-bottom: 6px;">Signal gate progress — H1 (conversion)</div>
+                <div class="rollout-progress-bar"><div class="fill" style="width: 31%; background: var(--mc-ai-accent);"></div></div>
+                <div style="font-size: 11px; margin-top: 4px;"><strong>628 / 2,000 sessions</strong> · <span style="color: var(--mc-text-muted);">needs 2,000 qualified sessions on this page</span></div>
+              </div>
+              <div style="margin-top: 14px;">
+                <div style="font-size: 11px; color: var(--mc-text-muted); margin-bottom: 6px;">Signal gate progress — H2 (CLV)</div>
+                <div class="rollout-progress-bar"><div class="fill" style="width: 0%; background: var(--h2-accent);"></div></div>
+                <div style="font-size: 11px; margin-top: 4px;"><strong>0 / 500 returning customers</strong> · <span style="color: var(--mc-text-muted);">unlocks at day 30</span></div>
+              </div>
+              <div style="margin-top: 18px; padding: 12px; background: #fafbfc; border: 1px solid var(--mc-border); border-radius: var(--radius-sm); font-size: 11px;">
+                <strong style="color: var(--mc-ai-accent);">💡 While you wait</strong><br>
+                <span style="color: var(--mc-text-muted);">Create mode is available — describe a change and the engine will suggest governed components from your library.</span>
+                <div style="margin-top: 8px;"><button class="btn-ghost" style="font-size: 11px;">Switch to Create mode</button></div>
+              </div>
+              <div style="margin-top: 14px; padding: 12px; background: var(--mc-blue-wash); border-radius: var(--radius-sm); font-size: 11px;">
+                <strong style="color: var(--mc-blue);">🎁 First 10 experiments free</strong><br>
+                <span style="color: var(--mc-text-muted);">8 of 10 remaining. No consumption cost until you cross the free tier.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-annotations">
+        <h4>Design Notes</h4>
+        <ul>
+          <li><strong>Engine is honest about cold-start</strong> — does not fabricate recommendations from zero data. Visible signal-gate progress bars keep operators informed. <em>(FR53)</em></li>
+          <li><strong>Dual-horizon progress</strong> — H1 (2,000 sessions) and H2 (500 returning customers, 30 days) shown as separate gates with separate thresholds.</li>
+          <li><strong>"Your data shows we're watching, not guessing yet"</strong> — voice stays consistent even when there is no recommendation yet. Builds trust.</li>
+          <li><strong>Create-mode fallback</strong> — operator is never stuck. Unified drawer (FR65) offers Create when Optimize has no signal.</li>
+          <li><strong>First-10-free surfaced inline</strong> — anchors moat-first activation. Operators see the countdown of free experiments as part of the panel. <em>(FR62)</em></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 1C — Confidence Card Expanded ============ -->
+  <div class="screen">
+    <div class="screen-header">
+      <h3>1C — Confidence Card expanded: behavioral evidence brief</h3>
+      <span class="tag">ConfidenceCard (expanded) — full audit trail for the recommendation</span>
+    </div>
+    <div class="screen-body">
+      <div class="editor-frame" style="height: 640px;">
+        <div class="editor-topbar">
+          <span class="logo">commercetools</span>
+          <span class="crumbs">NorthLine › Home › <strong>Recommendation detail</strong></span>
+          <span class="spacer"></span>
+          <span class="tis-badge">✨ TIS <span class="tis-num">74</span></span>
+          <span class="user">LP</span>
+        </div>
+        <div class="context-bar">
+          <span class="chip active"><span class="dot"></span> B2C</span>
+          <span class="chip">en-GB ▾</span>
+          <span class="chip live"><span class="dot"></span> Live</span>
+          <span class="spacer"></span>
+          <button class="btn-ghost" style="padding: 4px 10px; font-size: 11px;">← Back to panel</button>
+        </div>
+        <div class="editor-main" style="grid-template-columns: 56px 1fr;">
+          <div class="nav-rail">
+            <div class="nav-item">📄</div>
+            <div class="nav-item">🧩</div>
+            <div class="nav-item ai-rail active">✨</div>
+          </div>
+          <div style="overflow-y: auto; padding: 24px; background: white;">
+
+            <div style="max-width: 820px;">
+              <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
+                <span class="horizon-badge h1">⚡ H1 · 7 days</span>
+                <span class="chip" style="font-size: 11px; background: var(--mc-ai-tint); border-color: var(--mc-ai-accent); color: var(--mc-ai-accent);">📣 Q2 Homepage Conversion</span>
+                <span style="font-size: 11px; color: var(--mc-text-muted);">Auto-generated · FR53 · session threshold met</span>
+              </div>
+              <h2 style="font-size: 20px; margin-bottom: 6px;">Re-order ProductGrid: bestsellers first</h2>
+              <p style="color: var(--mc-text-muted); margin-bottom: 20px;">Surfacing high-performing products above the fold — particularly on mobile where scroll-past rate is highest.</p>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 20px;">
+                <div class="tis-stat-card">
+                  <div class="ts-label">Expected H1 outcome</div>
+                  <div class="ts-value" style="color: var(--h1-accent);">+12.3%</div>
+                  <div class="ts-sub">add-to-cart rate · 95% CI +8.1 to +16.5%</div>
+                </div>
+                <div class="tis-stat-card">
+                  <div class="ts-label">Sessions analyzed</div>
+                  <div class="ts-value">12,430</div>
+                  <div class="ts-sub">90-day window · en-GB · B2C</div>
+                </div>
+                <div class="tis-stat-card">
+                  <div class="ts-label">Similarity matches</div>
+                  <div class="ts-value">4 past exps</div>
+                  <div class="ts-sub positive">✓ 4 of 4 lifted conversion (+8% to +18%)</div>
+                </div>
+              </div>
+
+              <div style="background: #fafbfc; border: 1px solid var(--mc-border); border-radius: var(--radius-md); padding: 16px; margin-bottom: 16px;">
+                <h4 style="font-size: 12px; font-weight: 600; margin-bottom: 10px; color: var(--mc-ai-accent);">🧠 YOUR DATA SHOWS — full evidence brief</h4>
+                <ul style="list-style: none; padding: 0; font-size: 12px; line-height: 1.7;">
+                  <li style="padding: 6px 0; border-bottom: 1px dashed var(--mc-border);"><strong>Scroll-past rate:</strong> 74% of mobile sessions scroll past the first row of ProductGrid without a tile click.</li>
+                  <li style="padding: 6px 0; border-bottom: 1px dashed var(--mc-border);"><strong>Bestseller positioning:</strong> 8 of your top-10 revenue generators sit in rows 2–4 on mobile (sort: date-added).</li>
+                  <li style="padding: 6px 0; border-bottom: 1px dashed var(--mc-border);"><strong>Row-2 conversion:</strong> Sessions that did scroll to row 2 converted 2.4× more than those that did not.</li>
+                  <li style="padding: 6px 0; border-bottom: 1px dashed var(--mc-border);"><strong>CLV attribution:</strong> Re-ordering would reach high-CLV returning customers (2,104 in cohort) first — they prefer direct-to-product.</li>
+                  <li style="padding: 6px 0;"><strong>Red Zone check:</strong> Green Zone change only — ProductGrid sort rule is an editable property, not platform-managed.</li>
+                </ul>
+              </div>
+
+              <div style="background: white; border: 1px solid var(--mc-border); border-radius: var(--radius-md); padding: 16px; margin-bottom: 16px;">
+                <h4 style="font-size: 12px; font-weight: 600; margin-bottom: 8px;">Related patterns in your history</h4>
+                <div style="font-size: 11px; color: var(--mc-text-muted); margin-bottom: 10px;">The engine checks Tried-and-Retired before recommending.</div>
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                  <div style="display: flex; align-items: center; gap: 10px; padding: 8px 10px; background: var(--mc-success-bg); border-radius: var(--radius-sm); font-size: 11px;">
+                    <span style="color: var(--mc-success);">✓</span> Mar 2026 · Sort-by-bestseller on PLP /mens — <strong style="color: var(--mc-success);">+15.4% AtC</strong>
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 10px; padding: 8px 10px; background: var(--mc-success-bg); border-radius: var(--radius-sm); font-size: 11px;">
+                    <span style="color: var(--mc-success);">✓</span> Feb 2026 · Featured-first on Home ProductGrid (B2C) — <strong style="color: var(--mc-success);">+10.2% conv</strong>
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 10px; padding: 8px 10px; background: #fef3c7; border-radius: var(--radius-sm); font-size: 11px;">
+                    <span style="color: var(--mc-warning);">⚠</span> Jan 2026 · Bestseller-first on B2B wholesale — <strong style="color: var(--mc-warning);">no lift (context mismatch, retired)</strong>
+                  </div>
+                </div>
+              </div>
+
+              <div style="display: flex; gap: 8px;">
+                <button class="btn-primary" style="padding: 10px 18px; font-size: 13px;">Apply with progressive rollout →</button>
+                <button class="btn-ghost" style="padding: 10px 18px; font-size: 13px;">Run as A/B experiment</button>
+                <button class="btn-ghost" style="padding: 10px 18px; font-size: 13px;">Dismiss</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-annotations single">
+        <h4>Design Notes</h4>
+        <ul>
+          <li><strong>Evidence brief is the unlock</strong> — clicking any Confidence Card expands into this full audit trail. Operators (and their auditors) see exactly which behavioral signals drove the recommendation.</li>
+          <li><strong>Similarity matches are surfaced</strong> — "4 of 4 past experiments lifted conversion" is the engine's internal "confidence from history," visible to the operator.</li>
+          <li><strong>Tried-and-Retired cross-reference inline</strong> — the Jan 2026 B2B failure is shown explicitly. Engine filters self-contradicting recommendations (FR60) AND surfaces near-misses so operators learn the context.</li>
+          <li><strong>Red Zone check is explicit</strong> — evidence brief confirms Green Zone eligibility. If this were beyond-Green-Zone, the Apply button would route to the GitHub PR flow (Tab 3).</li>
+          <li><strong>Three-way action preserved at every level</strong> — Apply / Experiment / Dismiss is the canonical operator decision triad across the engine.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+</div>
+
+<!-- TAB 2 PLACEHOLDER -->
+<div id="tab-exp" class="tab-content">
+
+  <div class="tab-intro">
+    <h2>2 — Experiment Creation & Running</h2>
+    <p>Experiments flow through two entry paths but a single measurement pipeline. Operators author manual hypotheses from the canvas; the engine auto-generates hypotheses when behavioral thresholds are met. Every experiment measures both horizons (H1 short-term signals and H2 long-term CLV / repeat-purchase) in parallel — recommendations surface only after clearing horizon-specific signal gates.</p>
+    <div class="frs">
+      <span class="fr-chip">FR52</span><span class="fr-chip">FR53</span>
+      <span class="fr-chip">FR54</span><span class="fr-chip">FR55</span>
+    </div>
+  </div>
+
+  <div class="screen">
+    <div class="screen-header">
+      <h3>2A — Manual hypothesis: author an experiment from the canvas</h3>
+      <span class="tag">Canvas-anchored experiment composer · two-horizon measurement</span>
+    </div>
+    <div class="screen-body">
+      <div class="editor-frame" style="height: 620px;">
+        <div class="editor-topbar">
+          <span class="logo">commercetools</span>
+          <span class="crumbs">Tutorial › Storefront › <strong>Home</strong> › New experiment</span>
+          <span class="spacer"></span>
+          <span class="user">LP</span>
+        </div>
+        <div class="context-bar">
+          <span class="chip active"><span class="dot"></span> B2C</span>
+          <span class="chip">en-GB ▾</span>
+          <span class="chip">All guests ▾</span>
+          <span class="chip" style="background: var(--mc-ai-tint); border-color: var(--mc-ai-accent); color: var(--mc-ai-accent);">🧪 Experiment mode</span>
+          <span class="spacer"></span>
+          <button class="btn-ghost">Cancel</button>
+          <button class="btn-primary">Launch experiment</button>
+        </div>
+        <div class="editor-main" style="grid-template-columns: 56px 1fr 360px;">
+          <div class="nav-rail">
+            <div class="nav-item">📄</div>
+            <div class="nav-item">🧩</div>
+            <div class="nav-item">🌿</div>
+            <div class="nav-item active" style="background: var(--mc-ai-tint); color: var(--mc-ai-accent);">🧪</div>
+            <div class="nav-item">📊</div>
+          </div>
+          <div class="canvas-wrap">
+            <div class="canvas">
+              <div class="canvas-section selected">
+                <span class="sec-label" style="color: var(--mc-ai-accent);">HeroBanner · variant A (control)</span>
+                <div class="sec-body"><div class="placeholder">Summer Collection — Shop now</div></div>
+              </div>
+              <div class="canvas-section" style="border: 2px dashed var(--mc-ai-accent); background: var(--mc-ai-tint);">
+                <span class="sec-label" style="color: var(--mc-ai-accent);">HeroBanner · variant B (challenger)</span>
+                <span style="position: absolute; top: 8px; right: 10px; background: var(--mc-ai-accent); color: white; font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 10px;">50% traffic</span>
+                <div class="sec-body"><div class="placeholder" style="background: white;">Free shipping on orders over £50 — Shop the collection</div></div>
+              </div>
+              <div class="canvas-section">
+                <span class="sec-label">ProductGrid</span>
+                <div class="sec-body"><div class="placeholder">4-column product tiles</div></div>
+              </div>
+              <div class="canvas-section red-zone">
+                <span class="sec-label">PricingRules 🔒</span>
+                <div class="sec-body"><div class="placeholder" style="color: var(--mc-locked);">Red Zone</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="side-panel" style="background: #fafbfc;">
+            <div style="padding: 12px 14px; background: var(--mc-ai-tint); border-bottom: 1px solid var(--mc-border); display: flex; align-items: center; gap: 8px;">
+              <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--mc-ai-accent);"></span>
+              <h4 style="font-size: 12px; color: var(--mc-ai-accent); font-weight: 600;">Experiment composer</h4>
+            </div>
+            <div style="padding: 14px; overflow-y: auto;">
+              <div style="background: white; border: 1px solid var(--mc-border); border-radius: var(--radius-md); padding: 12px 14px; margin-bottom: 12px;">
+                <h5 style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.6px; color: var(--mc-text-muted); margin-bottom: 8px; font-weight: 600;">Hypothesis</h5>
+                <textarea style="width: 100%; padding: 6px 8px; border: 1px solid var(--mc-border); border-radius: var(--radius-sm); font-size: 11px; font-family: inherit; min-height: 60px; resize: none;">Leading with the shipping promise will lift click-through more than the seasonal collection headline.</textarea>
+              </div>
+
+              <div style="background: white; border: 1px solid var(--mc-border); border-radius: var(--radius-md); padding: 12px 14px; margin-bottom: 12px;">
+                <h5 style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.6px; color: var(--mc-text-muted); margin-bottom: 8px; font-weight: 600;">Variants</h5>
+                <div style="font-size: 11px; padding: 6px 8px; background: #fafbfc; border-radius: var(--radius-sm); display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                  <span><strong>A · Control</strong> — current HeroBanner</span>
+                  <span style="color: var(--mc-text-muted);">50%</span>
+                </div>
+                <div style="font-size: 11px; padding: 6px 8px; background: var(--mc-ai-tint); border-radius: var(--radius-sm); display: flex; justify-content: space-between; align-items: center;">
+                  <span><strong>B · Shipping headline</strong> — challenger</span>
+                  <span style="color: var(--mc-ai-accent);">50%</span>
+                </div>
+              </div>
+
+              <div style="background: white; border: 1px solid var(--mc-border); border-radius: var(--radius-md); padding: 12px 14px; margin-bottom: 12px;">
+                <h5 style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.6px; color: var(--mc-text-muted); margin-bottom: 8px; font-weight: 600;">Two-horizon measurement</h5>
+
+                <div style="padding: 8px 10px; background: #fef3c7; border: 1px solid #d97706; border-radius: var(--radius-sm); margin-bottom: 6px;">
+                  <div style="font-size: 11px; font-weight: 600; color: #d97706; margin-bottom: 2px;">⚡ Horizon 1 — Quick Win</div>
+                  <div style="font-size: 11px; color: var(--mc-text-muted); line-height: 1.4;">CTR, conversion rate · signal gate at 95% confidence · est. 3–5 days</div>
+                </div>
+
+                <div style="padding: 8px 10px; background: #dbeafe; border: 1px solid var(--mc-blue); border-radius: var(--radius-sm);">
+                  <div style="font-size: 11px; font-weight: 600; color: var(--mc-blue); margin-bottom: 2px;">📈 Horizon 2 — Long Game</div>
+                  <div style="font-size: 11px; color: var(--mc-text-muted); line-height: 1.4;">CLV delta, repeat purchase, AOV · 90-day measurement window</div>
+                </div>
+              </div>
+
+              <div style="background: white; border: 1px solid var(--mc-border); border-radius: var(--radius-md); padding: 12px 14px;">
+                <h5 style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.6px; color: var(--mc-text-muted); margin-bottom: 8px; font-weight: 600;">Scope & guardrails</h5>
+                <div style="font-size: 11px; color: var(--mc-text-muted); line-height: 1.6;">
+                  Context: <strong style="color: var(--mc-text);">B2C only</strong><br>
+                  Locale: <strong style="color: var(--mc-text);">en-GB</strong><br>
+                  Exclude: <strong style="color: var(--mc-text);">CLV tier &lt; 3 · dealer segment</strong><br>
+                  Auto-stop if CVR drops &gt; 15%
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-annotations">
+        <h4>Design Notes</h4>
+        <ul>
+          <li><strong>Experiments author from the canvas</strong> — challenger variant renders on the canvas next to the control. The operator sees exactly what each traffic cohort will experience. <em>(FR52)</em></li>
+          <li><strong>Two-horizon measurement visible at compose time</strong> — ⚡ H1 and 📈 H2 cards show what will be measured and when results will arrive. Forces operators to think about long-game CLV impact, not just CTR. <em>(FR54, FR55)</em></li>
+          <li><strong>Auto-stop guardrail as default</strong> — "if CVR drops &gt; 15%, auto-stop" is a default safeguard, not a buried option. Reduces risk of running experiments that hurt revenue.</li>
+          <li><strong>Scope excludes low-CLV and dealer traffic</strong> — sensible defaults for a marketing-led experiment, surfaced upfront not hidden.</li>
+          <li><strong>Experiment mode chip</strong> in the context bar and nav rail indicator makes the state unambiguous — operators won't confuse experiments with regular publishes.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="screen">
+    <div class="screen-header">
+      <h3>2B — Auto-generated hypothesis: engine detects a pattern worth testing</h3>
+      <span class="tag">FR53 — behavioral threshold triggers proactive experiment proposal</span>
+    </div>
+    <div class="screen-body">
+      <div class="editor-frame" style="height: 560px;">
+        <div class="editor-topbar">
+          <span class="logo">commercetools</span>
+          <span class="crumbs">Tutorial › <strong>AI Experience Engine</strong> › Proposals</span>
+          <span class="spacer"></span>
+          <span class="user">LP</span>
+        </div>
+        <div class="context-bar">
+          <span class="chip active">All proposals (4)</span>
+          <span class="chip">Ready to launch (3)</span>
+          <span class="chip">Gathering evidence (1)</span>
+          <span class="spacer"></span>
+          <span style="font-size: 11px; color: var(--mc-text-muted);">First 10 experiments free · <strong>3 of 10</strong> used</span>
+        </div>
+        <div class="editor-main" style="grid-template-columns: 56px 1fr;">
+          <div class="nav-rail">
+            <div class="nav-item">📄</div>
+            <div class="nav-item">🧩</div>
+            <div class="nav-item active" style="background: var(--mc-ai-tint); color: var(--mc-ai-accent);">🧪</div>
+            <div class="nav-item">📊</div>
+          </div>
+          <div style="padding: 20px; overflow-y: auto; background: var(--mc-bg);">
+            <div style="background: white; border: 1px solid var(--mc-ai-accent); border-left: 3px solid var(--mc-ai-accent); border-radius: var(--radius-md); padding: 16px; margin-bottom: 14px;">
+              <div style="display: flex; align-items: start; gap: 12px; margin-bottom: 10px;">
+                <span style="font-size: 20px;">🔍</span>
+                <div style="flex: 1;">
+                  <div style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--mc-ai-accent); font-weight: 600; margin-bottom: 2px;">Auto-generated · high confidence</div>
+                  <div style="font-size: 14px; font-weight: 600;">Try moving CLVRecommender above the fold on the PDP</div>
+                </div>
+                <span class="chip" style="font-size: 10px; background: #fef3c7; border-color: #d97706; color: #d97706;">⚡ H1</span>
+              </div>
+              <div style="background: var(--mc-ai-tint); border-radius: var(--radius-sm); padding: 10px 12px; margin-bottom: 10px;">
+                <div style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.4px; color: var(--mc-ai-accent); font-weight: 600; margin-bottom: 4px;">Your data shows</div>
+                <div style="font-size: 12px; line-height: 1.5;">
+                  Users on the PDP scroll past the fold on 62% of sessions but only 18% reach the current CLVRecommender placement. Similar repositioning on ProductGrid lifted CTR by +18% (Acme Retail, 2 weeks ago). Your tenant has 2.4M comparable sessions logged.
+                </div>
+              </div>
+              <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 10px;">
+                <div style="padding: 10px; background: #fafbfc; border-radius: var(--radius-sm); border: 1px solid var(--mc-border);">
+                  <div style="font-size: 10px; color: var(--mc-text-muted); text-transform: uppercase; letter-spacing: 0.4px;">Expected CTR lift</div>
+                  <div style="font-size: 16px; font-weight: 600; color: var(--mc-success);">+14% to +22%</div>
+                  <div style="font-size: 10px; color: var(--mc-text-muted);">95% confidence interval</div>
+                </div>
+                <div style="padding: 10px; background: #fafbfc; border-radius: var(--radius-sm); border: 1px solid var(--mc-border);">
+                  <div style="font-size: 10px; color: var(--mc-text-muted); text-transform: uppercase; letter-spacing: 0.4px;">Time to signal</div>
+                  <div style="font-size: 16px; font-weight: 600;">~4 days</div>
+                  <div style="font-size: 10px; color: var(--mc-text-muted);">at current PDP traffic</div>
+                </div>
+                <div style="padding: 10px; background: #fafbfc; border-radius: var(--radius-sm); border: 1px solid var(--mc-border);">
+                  <div style="font-size: 10px; color: var(--mc-text-muted); text-transform: uppercase; letter-spacing: 0.4px;">Revenue at stake</div>
+                  <div style="font-size: 16px; font-weight: 600;">£2.8k–£4.4k / wk</div>
+                  <div style="font-size: 10px; color: var(--mc-text-muted);">incremental if winner</div>
+                </div>
+              </div>
+              <div style="display: flex; gap: 8px;">
+                <button class="btn-primary">Launch experiment</button>
+                <button class="btn-ghost">Edit proposal</button>
+                <button class="btn-ghost">Dismiss (and tell me why)</button>
+              </div>
+            </div>
+
+            <div style="background: white; border: 1px solid var(--mc-border); border-left: 3px solid var(--mc-ai-accent); border-radius: var(--radius-md); padding: 14px 16px; margin-bottom: 14px;">
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 6px;">
+                <span style="font-size: 16px;">🔍</span>
+                <div style="flex: 1; font-size: 13px; font-weight: 600;">Add TrustBadges above checkout CTA</div>
+                <span class="chip" style="font-size: 10px; background: #fef3c7; border-color: #d97706; color: #d97706;">⚡ H1</span>
+                <span style="font-size: 12px; color: var(--mc-success); font-weight: 600;">+8% CVR</span>
+              </div>
+              <div style="font-size: 11px; color: var(--mc-text-muted); line-height: 1.5;">34% of cart abandonments happen at the payment step. TrustBadges from governed library would address trust friction.</div>
+            </div>
+
+            <div style="background: white; border: 1px solid var(--mc-border); border-left: 3px solid var(--mc-ai-accent); border-radius: var(--radius-md); padding: 14px 16px; margin-bottom: 14px;">
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 6px;">
+                <span style="font-size: 16px;">🔍</span>
+                <div style="flex: 1; font-size: 13px; font-weight: 600;">Test B2B quick-reorder on dashboard home vs account page</div>
+                <span class="chip" style="font-size: 10px; background: #dbeafe; border-color: var(--mc-blue); color: var(--mc-blue);">📈 H2</span>
+                <span style="font-size: 12px; color: var(--mc-success); font-weight: 600;">+£18 CLV est.</span>
+              </div>
+              <div style="font-size: 11px; color: var(--mc-text-muted); line-height: 1.5;">B2B buyers visit dashboard 4.2x more than account page. Moving QuickOrder could increase repeat-purchase frequency.</div>
+            </div>
+
+            <div style="background: white; border: 1px solid var(--mc-border); border-radius: var(--radius-md); padding: 14px 16px;">
+              <div style="display: flex; align-items: center; gap: 12px;">
+                <span style="font-size: 16px; opacity: 0.5;">⏳</span>
+                <div style="flex: 1; font-size: 13px; font-weight: 600; color: var(--mc-text-muted);">Gathering evidence: checkout copy A/B</div>
+                <span style="font-size: 11px; color: var(--mc-text-muted);">Need 180K more sessions · ~11 days</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-annotations">
+        <h4>Design Notes</h4>
+        <ul>
+          <li><strong>Language discipline: "your data shows" never "the AI recommends"</strong> — every proposal framed as evidence from the tenant's own behavior, not opinion from an algorithm. <em>(FR53, FR56)</em></li>
+          <li><strong>Cross-tenant learnings cited carefully</strong> — "similar repositioning at Acme Retail" gives the proposal a precedent without exposing competitor data. The compounding moat works silently across tenants.</li>
+          <li><strong>Revenue-at-stake framing</strong> — "£2.8k-£4.4k per week incremental if winner" makes the proposal finance-friendly and decision-ready.</li>
+          <li><strong>Dismiss captures reasoning</strong> — "Dismiss (and tell me why)" feeds FR60 failure taxonomy so the engine stops proposing patterns the operator consistently rejects.</li>
+          <li><strong>First 10 experiments free counter</strong> — visible in the sub-bar. FR62 monetization — a calibrated onboarding ramp, not a gimmick.</li>
+          <li><strong>Gathering-evidence state</strong> — the 4th proposal shows transparency about the engine's data requirements. No pretense that proposals appear instantly.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="screen">
+    <div class="screen-header">
+      <h3>2C — Live experiments dashboard: H1 + H2 measurement in parallel</h3>
+      <span class="tag">Running experiments · signal gates · cohort health</span>
+    </div>
+    <div class="screen-body single">
+      <div class="editor-frame" style="height: 560px;">
+        <div class="editor-topbar">
+          <span class="logo">commercetools</span>
+          <span class="crumbs">AI Experience Engine › <strong>Experiments</strong></span>
+          <span class="spacer"></span>
+          <span class="user">LP</span>
+        </div>
+        <div class="context-bar">
+          <span class="chip active">Running (6)</span>
+          <span class="chip">Cleared gate (2)</span>
+          <span class="chip">Completed (17)</span>
+          <span class="chip">Retired (4)</span>
+          <span class="spacer"></span>
+          <button class="btn-ghost">📊 Portfolio analytics</button>
+          <button class="btn-primary">+ New experiment</button>
+        </div>
+        <div class="editor-main" style="grid-template-columns: 56px 1fr;">
+          <div class="nav-rail">
+            <div class="nav-item">📄</div>
+            <div class="nav-item active" style="background: var(--mc-ai-tint); color: var(--mc-ai-accent);">🧪</div>
+          </div>
+          <div style="overflow-y: auto; padding: 20px; background: var(--mc-bg);">
+            <div style="background: white; border: 1px solid var(--mc-border); border-radius: var(--radius-md); padding: 16px; margin-bottom: 14px;">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                <div>
+                  <div style="font-size: 13px; font-weight: 600;">HeroBanner shipping vs seasonal headline</div>
+                  <div style="font-size: 11px; color: var(--mc-text-muted); margin-top: 2px;">PDP · B2C · en-GB · running since 05-04 · <strong>day 3 of est. 4</strong></div>
+                </div>
+                <span class="chip" style="background: #fef3c7; border-color: #d97706; color: #d97706;">⚡ H1 · 87% to signal</span>
+              </div>
+              <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px; margin-bottom: 12px;">
+                <div style="padding: 10px; background: #fafbfc; border-radius: var(--radius-sm); border: 1px solid var(--mc-border);">
+                  <div style="font-size: 10px; color: var(--mc-text-muted); text-transform: uppercase; letter-spacing: 0.4px;">Variant A · control</div>
+                  <div style="font-size: 18px; font-weight: 600;">8.4%</div>
+                  <div style="font-size: 10px; color: var(--mc-text-muted);">CTR · 142K sessions</div>
+                </div>
+                <div style="padding: 10px; background: var(--mc-ai-tint); border-radius: var(--radius-sm); border: 1px solid var(--mc-ai-accent);">
+                  <div style="font-size: 10px; color: var(--mc-ai-accent); text-transform: uppercase; letter-spacing: 0.4px;">Variant B · challenger</div>
+                  <div style="font-size: 18px; font-weight: 600; color: var(--mc-success);">10.1%</div>
+                  <div style="font-size: 10px; color: var(--mc-text-muted);">CTR · 140K sessions</div>
+                </div>
+                <div style="padding: 10px; background: #fafbfc; border-radius: var(--radius-sm); border: 1px solid var(--mc-border);">
+                  <div style="font-size: 10px; color: var(--mc-text-muted); text-transform: uppercase; letter-spacing: 0.4px;">Lift (B vs A)</div>
+                  <div style="font-size: 18px; font-weight: 600; color: var(--mc-success);">+20.2%</div>
+                  <div style="font-size: 10px; color: var(--mc-text-muted);">confidence 87%</div>
+                </div>
+                <div style="padding: 10px; background: #fafbfc; border-radius: var(--radius-sm); border: 1px solid var(--mc-border);">
+                  <div style="font-size: 10px; color: var(--mc-text-muted); text-transform: uppercase; letter-spacing: 0.4px;">Signal gate</div>
+                  <div class="progress-bar" style="height: 6px; margin-top: 8px;"><div class="fill success" style="width: 87%;"></div></div>
+                  <div style="font-size: 10px; color: var(--mc-text-muted); margin-top: 4px;">87% of 95% target</div>
+                </div>
+              </div>
+              <div style="font-size: 11px; color: var(--mc-text-muted); display: flex; align-items: center; gap: 12px;">
+                <span>Guardrails healthy · no auto-stop</span>
+                <span>·</span>
+                <span>Est. &lt; 18 hours to H1 signal clearance</span>
+                <span class="spacer" style="flex: 1;"></span>
+                <button class="btn-ghost" style="font-size: 11px;">View details</button>
+                <button class="btn-danger" style="font-size: 11px;">Stop now</button>
+              </div>
+            </div>
+
+            <div style="background: white; border: 1px solid var(--mc-border); border-radius: var(--radius-md); padding: 16px; margin-bottom: 14px;">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                <div>
+                  <div style="font-size: 13px; font-weight: 600;">CLVRecommender above vs below fold</div>
+                  <div style="font-size: 11px; color: var(--mc-text-muted); margin-top: 2px;">PDP · B2C · all locales · running since 04-22 · <strong>day 15 of 90</strong></div>
+                </div>
+                <span class="chip" style="background: #dbeafe; border-color: var(--mc-blue); color: var(--mc-blue);">📈 H2 · early signal</span>
+              </div>
+              <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px; margin-bottom: 8px;">
+                <div style="padding: 10px; background: #fafbfc; border-radius: var(--radius-sm); border: 1px solid var(--mc-border);">
+                  <div style="font-size: 10px; color: var(--mc-text-muted); text-transform: uppercase; letter-spacing: 0.4px;">H1 CTR · cleared</div>
+                  <div style="font-size: 16px; font-weight: 600; color: var(--mc-success);">+18.2% ✓</div>
+                </div>
+                <div style="padding: 10px; background: #fafbfc; border-radius: var(--radius-sm); border: 1px solid var(--mc-border);">
+                  <div style="font-size: 10px; color: var(--mc-text-muted); text-transform: uppercase; letter-spacing: 0.4px;">CLV delta · early</div>
+                  <div style="font-size: 16px; font-weight: 600;">+£8 ↑</div>
+                </div>
+                <div style="padding: 10px; background: #fafbfc; border-radius: var(--radius-sm); border: 1px solid var(--mc-border);">
+                  <div style="font-size: 10px; color: var(--mc-text-muted); text-transform: uppercase; letter-spacing: 0.4px;">Repeat purchase</div>
+                  <div style="font-size: 16px; font-weight: 600;">+3.4% ↑</div>
+                </div>
+                <div style="padding: 10px; background: #fafbfc; border-radius: var(--radius-sm); border: 1px solid var(--mc-border);">
+                  <div style="font-size: 10px; color: var(--mc-text-muted); text-transform: uppercase; letter-spacing: 0.4px;">Days to H2 signal</div>
+                  <div style="font-size: 16px; font-weight: 600;">~52 remaining</div>
+                </div>
+              </div>
+              <div style="padding: 10px; background: var(--mc-blue-wash); border-radius: var(--radius-sm); font-size: 11px; color: var(--mc-blue); line-height: 1.4;">
+                <strong>H1 signal cleared · H2 measurement continues.</strong> Recommendation surfaced to operators with "H1 cleared, H2 in progress" badge. Progressive rollout already started at 5%.
+              </div>
+            </div>
+
+            <div style="background: white; border: 1px solid var(--mc-border); border-radius: var(--radius-md); padding: 14px 16px;">
+              <div style="display: flex; align-items: center; gap: 12px;">
+                <span style="font-size: 16px; opacity: 0.6;">⏸</span>
+                <div style="flex: 1;">
+                  <div style="font-size: 13px; font-weight: 600;">B2B quick-reorder placement test</div>
+                  <div style="font-size: 11px; color: var(--mc-text-muted); margin-top: 2px;">Paused by operator · day 6 of est. 12 · awaiting supply catalog update</div>
+                </div>
+                <button class="btn-ghost" style="font-size: 11px;">Resume</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="padding: 0 24px 20px;">
+      <div class="screen-annotations single" style="padding: 16px 20px;">
+        <h4>Design Notes</h4>
+        <ul>
+          <li><strong>Signal gate is visible as a progress bar</strong> — 87% toward 95% confidence translates the statistical concept into something operators can read at a glance.</li>
+          <li><strong>H1 and H2 run in parallel, badges name the state</strong> — "H1 · 87% to signal" vs "H2 · early signal" make the status unambiguous. The CLVRecommender experiment shows both horizons scored independently. <em>(FR54, FR55)</em></li>
+          <li><strong>H1-cleared surfaces before H2 completes</strong> — the second experiment has already started progressive rollout at 5% based on H1 evidence while H2 measurement continues. Matches FR57's progressive gate philosophy.</li>
+          <li><strong>Guardrails surfaced per experiment</strong> — "Guardrails healthy · no auto-stop" reinforces the safety net is working silently.</li>
+          <li><strong>Stop now is distinct from pause</strong> — red-bordered destructive action vs muted resume. Pause for supply issues without contaminating the experiment.</li>
+          <li><strong>Portfolio analytics called out in sub-bar</strong> — linked but not in the running-experiments default view (keeps focus on in-flight work).</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- TAB 3 PLACEHOLDER -->
+<div id="tab-apply" class="tab-content">
+
+  <div class="tab-intro">
+    <h2>3 — Apply Workflow: Progressive Rollout + GitHub PR</h2>
+    <p>A cleared recommendation is only half the work. Applying it safely to live traffic means progressive rollout through measured gates (5% → 25% → 50% → 100%). When a recommendation needs <em>beyond-Green-Zone</em> changes — new component logic, schema updates — the engine generates a complete GitHub PR: code diff, schema update, behavioral evidence brief, auto-provisioned preview deployment. Zero manual steps between recommendation and merged component.</p>
+    <div class="frs">
+      <span class="fr-chip">FR57</span><span class="fr-chip">FR58</span><span class="fr-chip">FR59</span>
+    </div>
+  </div>
+
+  <div class="screen">
+    <div class="screen-header">
+      <h3>3A — Apply a recommendation: choose rollout strategy</h3>
+      <span class="tag">Single-shot vs progressive rollout · configurable gates</span>
+    </div>
+    <div class="screen-body">
+      <div class="editor-frame" style="height: 580px;">
+        <div class="editor-topbar">
+          <span class="logo">commercetools</span>
+          <span class="crumbs">Recommendations › <strong>Move CLVRecommender above fold</strong> › Apply</span>
+          <span class="spacer"></span>
+          <span class="user">LP</span>
+        </div>
+        <div class="context-bar">
+          <span class="chip" style="background: var(--mc-success-bg); border-color: var(--mc-success); color: var(--mc-success);">✓ H1 signal cleared</span>
+          <span class="chip" style="background: #dbeafe; border-color: var(--mc-blue); color: var(--mc-blue);">📈 H2 · 52 days remaining</span>
+          <span class="chip">B2C · all locales · PDP</span>
+          <span class="spacer"></span>
+          <button class="btn-ghost">Save draft</button>
+          <button class="btn-primary">Start rollout</button>
+        </div>
+        <div class="editor-main" style="grid-template-columns: 1fr 340px;">
+          <div style="padding: 20px; overflow-y: auto;">
+            <div style="margin-bottom: 18px;">
+              <h3 style="font-size: 14px; margin-bottom: 6px;">Recommendation summary</h3>
+              <div style="font-size: 12px; color: var(--mc-text-muted); line-height: 1.5;">
+                Move <code style="background: #fafbfc; padding: 1px 5px; border-radius: 3px; font-family: 'SF Mono', monospace;">CLVRecommender</code> above the fold on the PDP. Governed Green Zone reposition — no code or schema changes required.
+              </div>
+            </div>
+
+            <div style="margin-bottom: 18px;">
+              <h3 style="font-size: 14px; margin-bottom: 10px;">Rollout strategy</h3>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div style="border: 1px solid var(--mc-border); padding: 14px; border-radius: var(--radius-md); cursor: pointer;">
+                  <div style="font-size: 12px; font-weight: 600; margin-bottom: 4px; color: var(--mc-text-muted);">Single-shot</div>
+                  <div style="font-size: 11px; color: var(--mc-text-muted); line-height: 1.4;">100% traffic immediately. Fastest impact, highest risk if prior H1 signal was narrow.</div>
+                </div>
+                <div style="border: 2px solid var(--mc-blue); background: var(--mc-blue-wash); padding: 14px; border-radius: var(--radius-md); position: relative;">
+                  <div style="position: absolute; top: 8px; right: 10px; font-size: 10px; color: var(--mc-blue); font-weight: 600;">✓ Selected · Recommended</div>
+                  <div style="font-size: 12px; font-weight: 600; margin-bottom: 4px; color: var(--mc-blue);">Progressive rollout</div>
+                  <div style="font-size: 11px; color: var(--mc-text-muted); line-height: 1.4;">4 gates: 5% → 25% → 50% → 100%. Each gate waits for a fresh signal check before advancing.</div>
+                </div>
+              </div>
+            </div>
+
+            <div style="background: white; border: 1px solid var(--mc-border); border-radius: var(--radius-md); padding: 16px; margin-bottom: 14px;">
+              <h3 style="font-size: 13px; font-weight: 600; margin-bottom: 12px;">Gate configuration</h3>
+
+              <div style="display: grid; grid-template-columns: 60px 1fr 100px 100px 100px; padding: 6px 10px; font-size: 10px; text-transform: uppercase; letter-spacing: 0.4px; color: var(--mc-text-muted); font-weight: 600; border-bottom: 1px solid var(--mc-border);">
+                <div>Gate</div><div>Traffic</div><div>Min sessions</div><div>Signal check</div><div>Dwell</div>
+              </div>
+              <div style="display: grid; grid-template-columns: 60px 1fr 100px 100px 100px; padding: 10px; font-size: 12px; align-items: center; border-bottom: 1px solid var(--mc-border);">
+                <div style="font-weight: 600;">1</div>
+                <div>
+                  <div class="progress-bar" style="height: 6px;"><div class="fill" style="width: 5%;"></div></div>
+                  <div style="font-size: 10px; color: var(--mc-text-muted); margin-top: 3px;">5% of eligible traffic</div>
+                </div>
+                <div style="font-size: 11px;">20K</div>
+                <div style="font-size: 11px; color: var(--mc-success);">CVR ≥ control</div>
+                <div style="font-size: 11px;">24h</div>
+              </div>
+              <div style="display: grid; grid-template-columns: 60px 1fr 100px 100px 100px; padding: 10px; font-size: 12px; align-items: center; border-bottom: 1px solid var(--mc-border);">
+                <div style="font-weight: 600;">2</div>
+                <div>
+                  <div class="progress-bar" style="height: 6px;"><div class="fill" style="width: 25%;"></div></div>
+                  <div style="font-size: 10px; color: var(--mc-text-muted); margin-top: 3px;">25% of eligible traffic</div>
+                </div>
+                <div style="font-size: 11px;">80K</div>
+                <div style="font-size: 11px; color: var(--mc-success);">Lift ≥ 70% of forecast</div>
+                <div style="font-size: 11px;">48h</div>
+              </div>
+              <div style="display: grid; grid-template-columns: 60px 1fr 100px 100px 100px; padding: 10px; font-size: 12px; align-items: center; border-bottom: 1px solid var(--mc-border);">
+                <div style="font-weight: 600;">3</div>
+                <div>
+                  <div class="progress-bar" style="height: 6px;"><div class="fill" style="width: 50%;"></div></div>
+                  <div style="font-size: 10px; color: var(--mc-text-muted); margin-top: 3px;">50% of eligible traffic</div>
+                </div>
+                <div style="font-size: 11px;">200K</div>
+                <div style="font-size: 11px; color: var(--mc-success);">No guardrail breach</div>
+                <div style="font-size: 11px;">72h</div>
+              </div>
+              <div style="display: grid; grid-template-columns: 60px 1fr 100px 100px 100px; padding: 10px; font-size: 12px; align-items: center;">
+                <div style="font-weight: 600;">4</div>
+                <div>
+                  <div class="progress-bar" style="height: 6px;"><div class="fill success" style="width: 100%;"></div></div>
+                  <div style="font-size: 10px; color: var(--mc-text-muted); margin-top: 3px;">100% — full rollout</div>
+                </div>
+                <div style="font-size: 11px;">— live</div>
+                <div style="font-size: 11px; color: var(--mc-success);">Final sign-off</div>
+                <div style="font-size: 11px;">—</div>
+              </div>
+              <div style="padding: 12px; background: var(--mc-blue-wash); border-top: 1px solid var(--mc-border); font-size: 11px; color: var(--mc-blue); line-height: 1.4;">
+                <strong>Estimated total rollout:</strong> 7 days · Proactive alert if any gate fails; operator decides rollback (FR59).
+              </div>
+            </div>
+          </div>
+          <div style="background: #fafbfc; border-left: 1px solid var(--mc-border); padding: 16px; overflow-y: auto;">
+            <div style="background: white; border: 1px solid var(--mc-border); border-radius: var(--radius-md); padding: 14px; margin-bottom: 12px;">
+              <h5 style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.6px; color: var(--mc-text-muted); margin-bottom: 8px; font-weight: 600;">Automatic guardrails</h5>
+              <div class="check-item pass" style="padding: 6px 0;">
+                <div class="check-icon">✓</div>
+                <div class="check-body" style="font-size: 11px;">
+                  <div style="font-weight: 600;">CVR drop &gt; 15%</div>
+                  <div style="color: var(--mc-text-muted);">Auto-pause rollout, alert operator</div>
+                </div>
+              </div>
+              <div class="check-item pass" style="padding: 6px 0;">
+                <div class="check-icon">✓</div>
+                <div class="check-body" style="font-size: 11px;">
+                  <div style="font-weight: 600;">Error rate &gt; baseline</div>
+                  <div style="color: var(--mc-text-muted);">Auto-pause rollout</div>
+                </div>
+              </div>
+              <div class="check-item pass" style="padding: 6px 0;">
+                <div class="check-icon">✓</div>
+                <div class="check-body" style="font-size: 11px;">
+                  <div style="font-weight: 600;">Bounce rate spike</div>
+                  <div style="color: var(--mc-text-muted);">Alert only (advance)</div>
+                </div>
+              </div>
+            </div>
+
+            <div style="background: white; border: 1px solid var(--mc-border); border-radius: var(--radius-md); padding: 14px; margin-bottom: 12px;">
+              <h5 style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.6px; color: var(--mc-text-muted); margin-bottom: 8px; font-weight: 600;">Notifications</h5>
+              <div style="font-size: 11px; color: var(--mc-text-muted); line-height: 1.7;">
+                🔔 Email Leandro on each gate<br>
+                🔔 Slack #growth-recs<br>
+                🔔 Page on-call if CVR drops &gt; 15%
+              </div>
+            </div>
+
+            <div style="background: white; border: 1px solid var(--mc-border); border-radius: var(--radius-md); padding: 14px;">
+              <h5 style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.6px; color: var(--mc-text-muted); margin-bottom: 8px; font-weight: 600;">Rollback window</h5>
+              <div style="font-size: 11px; color: var(--mc-text-muted); line-height: 1.5;">One-click revert available for <strong style="color: var(--mc-text);">90 days</strong> post-rollout, per-context. Captured as an entry in the immutable audit log.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-annotations">
+        <h4>Design Notes</h4>
+        <ul>
+          <li><strong>Progressive rollout is the default, not a hidden option</strong> — the 4-gate pattern (5→25→50→100) is selected out-of-the-box. FR57 is surfaced as the recommended path. <em>(FR57)</em></li>
+          <li><strong>Each gate has its own signal check and dwell time</strong> — not a blind timer. The system keeps measuring as traffic increases, because behavior at 5% may not predict behavior at 100%.</li>
+          <li><strong>Auto-pause on guardrail breach, operator-decided rollback</strong> — the engine pauses automatically but never rolls back autonomously. Operator retains final authority. <em>(FR59)</em></li>
+          <li><strong>Estimated total rollout as decision data</strong> — "~7 days" sets expectations upfront; operators who need faster impact can choose single-shot knowing the trade-off.</li>
+          <li><strong>Notifications per-gate, not just per-experiment</strong> — operators track progress without staring at dashboards. Slack channel + email + on-call pages are three tiers of urgency.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="screen">
+    <div class="screen-header">
+      <h3>3B — Rollout in progress: live gate status + proactive alert</h3>
+      <span class="tag">Day-in-life view while a recommendation is rolling out</span>
+    </div>
+    <div class="screen-body">
+      <div class="editor-frame" style="height: 560px;">
+        <div class="editor-topbar">
+          <span class="logo">commercetools</span>
+          <span class="crumbs">Recommendations › Rollouts › <strong>CLVRecommender PDP move</strong></span>
+          <span class="spacer"></span>
+          <span class="user">LP</span>
+        </div>
+        <div class="context-bar">
+          <span class="chip" style="background: var(--mc-blue-wash); border-color: var(--mc-blue); color: var(--mc-blue);"><span class="dot"></span> Rolling out · Gate 2 of 4</span>
+          <span style="font-size: 11px; color: var(--mc-text-muted); margin-left: 6px;">Day 3 of est. 7</span>
+          <span class="spacer"></span>
+          <button class="btn-ghost">⏸ Hold at current gate</button>
+          <button class="btn-danger">⟲ Rollback</button>
+        </div>
+        <div class="editor-main" style="grid-template-columns: 1fr;">
+          <div style="padding: 20px; overflow-y: auto; background: var(--mc-bg);">
+            <div style="background: white; border: 1px solid var(--mc-border); border-radius: var(--radius-md); padding: 16px; margin-bottom: 14px;">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
+                <div>
+                  <div style="font-size: 14px; font-weight: 600; margin-bottom: 2px;">Rollout progress</div>
+                  <div style="font-size: 11px; color: var(--mc-text-muted);">Started 05-04 · Currently at 25% traffic · Next gate advance in ~14h</div>
+                </div>
+                <div style="font-size: 22px; font-weight: 600; color: var(--mc-blue);">25%</div>
+              </div>
+
+              <div style="position: relative; height: 60px; padding: 0 20px;">
+                <div style="position: absolute; left: 20px; right: 20px; top: 28px; height: 4px; background: var(--mc-border); border-radius: 2px;"></div>
+                <div style="position: absolute; left: 20px; top: 28px; width: 33%; height: 4px; background: var(--mc-success); border-radius: 2px;"></div>
+
+                <div style="position: absolute; left: 5%; top: 20px; width: 20px; height: 20px; border-radius: 50%; background: var(--mc-success); display: flex; align-items: center; justify-content: center; color: white; font-size: 11px; font-weight: 600;">✓</div>
+                <div style="position: absolute; left: 5%; top: 44px; transform: translateX(-50%); font-size: 11px; font-weight: 600; color: var(--mc-success); white-space: nowrap;">Gate 1 · 5% ✓</div>
+
+                <div style="position: absolute; left: 33%; top: 20px; width: 20px; height: 20px; border-radius: 50%; background: var(--mc-blue); display: flex; align-items: center; justify-content: center; color: white; font-size: 11px; font-weight: 600; box-shadow: 0 0 0 6px rgba(0,102,204,0.12);">2</div>
+                <div style="position: absolute; left: 33%; top: 44px; transform: translateX(-50%); font-size: 11px; font-weight: 600; color: var(--mc-blue); white-space: nowrap;">Gate 2 · 25% ← now</div>
+
+                <div style="position: absolute; left: 66%; top: 20px; width: 20px; height: 20px; border-radius: 50%; background: white; border: 2px solid var(--mc-border); color: var(--mc-text-muted); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600;">3</div>
+                <div style="position: absolute; left: 66%; top: 44px; transform: translateX(-50%); font-size: 11px; color: var(--mc-text-muted); white-space: nowrap;">Gate 3 · 50%</div>
+
+                <div style="position: absolute; left: 95%; top: 20px; width: 20px; height: 20px; border-radius: 50%; background: white; border: 2px solid var(--mc-border); color: var(--mc-text-muted); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600;">4</div>
+                <div style="position: absolute; left: 95%; top: 44px; transform: translateX(-50%); font-size: 11px; color: var(--mc-text-muted); white-space: nowrap;">Gate 4 · 100%</div>
+              </div>
+            </div>
+
+            <div style="background: white; border: 1px solid var(--mc-border); border-radius: var(--radius-md); padding: 16px; margin-bottom: 14px;">
+              <div style="font-size: 13px; font-weight: 600; margin-bottom: 12px;">Gate 2 · live metrics</div>
+              <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
+                <div style="padding: 10px; background: #fafbfc; border-radius: var(--radius-sm); border: 1px solid var(--mc-border);">
+                  <div style="font-size: 10px; color: var(--mc-text-muted); text-transform: uppercase; letter-spacing: 0.4px;">CTR lift</div>
+                  <div style="font-size: 16px; font-weight: 600; color: var(--mc-success);">+19.4%</div>
+                  <div style="font-size: 10px; color: var(--mc-text-muted);">forecast ≥70% ✓</div>
+                </div>
+                <div style="padding: 10px; background: #fafbfc; border-radius: var(--radius-sm); border: 1px solid var(--mc-border);">
+                  <div style="font-size: 10px; color: var(--mc-text-muted); text-transform: uppercase; letter-spacing: 0.4px;">CVR</div>
+                  <div style="font-size: 16px; font-weight: 600; color: var(--mc-success);">2.84%</div>
+                  <div style="font-size: 10px; color: var(--mc-text-muted);">vs control 2.81% ✓</div>
+                </div>
+                <div style="padding: 10px; background: #fafbfc; border-radius: var(--radius-sm); border: 1px solid var(--mc-border);">
+                  <div style="font-size: 10px; color: var(--mc-text-muted); text-transform: uppercase; letter-spacing: 0.4px;">Error rate</div>
+                  <div style="font-size: 16px; font-weight: 600;">0.12%</div>
+                  <div style="font-size: 10px; color: var(--mc-text-muted);">baseline 0.14% ✓</div>
+                </div>
+                <div style="padding: 10px; background: #fafbfc; border-radius: var(--radius-sm); border: 1px solid var(--mc-border);">
+                  <div style="font-size: 10px; color: var(--mc-text-muted); text-transform: uppercase; letter-spacing: 0.4px;">Sessions so far</div>
+                  <div style="font-size: 16px; font-weight: 600;">64K / 80K</div>
+                  <div class="progress-bar" style="height: 4px; margin-top: 4px;"><div class="fill" style="width: 80%;"></div></div>
+                </div>
+              </div>
+            </div>
+
+            <div style="background: var(--mc-blue-wash); border: 1px solid var(--mc-blue); border-radius: var(--radius-md); padding: 14px 16px;">
+              <div style="display: flex; align-items: flex-start; gap: 12px;">
+                <span style="font-size: 18px;">🔔</span>
+                <div style="flex: 1;">
+                  <div style="font-size: 12px; font-weight: 600; color: var(--mc-blue); margin-bottom: 4px;">Proactive alert · Gate 2 early success</div>
+                  <div style="font-size: 12px; line-height: 1.5; color: var(--mc-text);">CTR lift is tracking <strong>19.4%</strong> — above the forecasted 14-22% range and well above the gate threshold. Gate 3 advance estimated in ~14h. CLV signals from Horizon 2 remain positive.</div>
+                </div>
+                <button class="btn-ghost" style="font-size: 11px;">View H2 details</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-annotations">
+        <h4>Design Notes</h4>
+        <ul>
+          <li><strong>Gate pipeline renders as a visual journey</strong> — circles + connecting line show past/present/future gates at a glance. The halo on Gate 2 (current) orients the operator instantly.</li>
+          <li><strong>Per-gate live metrics</strong> — four metrics mapped to the gate's signal check criteria. Operators see exactly what's being evaluated and why Gate 3 will advance.</li>
+          <li><strong>Proactive alerts aren't just failures</strong> — the blue "early success" alert is just as important. Operators stay engaged when things go well, not only when they break.</li>
+          <li><strong>Hold vs Rollback</strong> — "Hold at current gate" (pause without reverting) vs "Rollback" (revert to baseline). Two distinct operations operators sometimes conflate; separating them prevents overreaction.</li>
+          <li><strong>H2 reminder</strong> — even while H1-driven rollout progresses, H2 is still accumulating in the background. "View H2 details" keeps the long-game visible.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="screen">
+    <div class="screen-header">
+      <h3>3C — Beyond-Green-Zone: auto-generated GitHub PR with behavioral evidence</h3>
+      <span class="tag">FR58 — when a rec needs code, the engine writes the PR · developer reviews · zero manual steps to merge</span>
+    </div>
+    <div class="screen-body single">
+      <div class="editor-frame" style="height: 680px;">
+        <div class="editor-topbar" style="background: #0d1117;">
+          <span class="logo" style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 16px;">🐙</span> GitHub · tutorial-storefront
+          </span>
+          <span class="crumbs" style="opacity: 0.6;">Pull requests › <strong style="opacity: 1; color: #58a6ff;">#1204</strong></span>
+          <span class="spacer"></span>
+          <span style="font-size: 11px; background: #8957e5; color: white; padding: 2px 8px; border-radius: 10px; font-weight: 600;">✨ AI-authored</span>
+          <span class="user">LP</span>
+        </div>
+        <div class="context-bar">
+          <span class="chip" style="background: #ddf4ff; border-color: #0969da; color: #0969da;"><span class="dot"></span> Open</span>
+          <span style="font-size: 12px; font-weight: 600;">Add filterByCLVTier prop to CLVRecommender to support segment-targeted variants</span>
+          <span class="spacer"></span>
+          <button class="btn-ghost">Checks 5/5 ✓</button>
+          <button class="btn-primary">Merge PR</button>
+        </div>
+        <div class="editor-main" style="grid-template-columns: 1fr 340px;">
+          <div style="overflow-y: auto; background: white;">
+            <div style="padding: 16px 20px; border-bottom: 1px solid var(--mc-border); background: #fafbfc;">
+              <div style="display: flex; align-items: start; gap: 12px;">
+                <div style="width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--mc-ai-accent), #0066cc); color: white; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; flex-shrink: 0;">✨</div>
+                <div style="flex: 1; font-size: 12px;">
+                  <div><strong style="color: var(--mc-ai-accent);">aci-experience-engine</strong> opened this PR 2 hours ago · evidence from tenant <code style="background: #fafbfc; padding: 1px 4px; border-radius: 3px; font-family: 'SF Mono', monospace;">tutorial</code></div>
+                  <div style="margin-top: 6px; color: var(--mc-text); line-height: 1.5;">Tenant data shows CLV-tier 3+ users respond differently to CLVRecommender placement than new/low-tier. The current schema rotates variants randomly. This PR adds a <code style="background: #fafbfc; padding: 1px 4px; border-radius: 3px; font-family: 'SF Mono', monospace;">filterByCLVTier</code> prop so the component can render the mid-tier-winner variant to mid+ users exclusively. No breaking change to existing usage.</div>
+                </div>
+              </div>
+            </div>
+
+            <div style="padding: 16px 20px; border-bottom: 1px solid var(--mc-border);">
+              <h4 style="font-size: 12px; margin-bottom: 10px; font-weight: 600;">Behavioral evidence brief</h4>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
+                <div style="padding: 10px; background: #fafbfc; border-radius: var(--radius-sm); border: 1px solid var(--mc-border);">
+                  <div style="font-size: 10px; color: var(--mc-text-muted); text-transform: uppercase;">Pattern detected</div>
+                  <div style="font-size: 11px; margin-top: 4px; line-height: 1.4;">Mid-tier variant lifts CTR +41.3% on mid-tier traffic but only +12% on mixed traffic — selection effect.</div>
+                </div>
+                <div style="padding: 10px; background: #fafbfc; border-radius: var(--radius-sm); border: 1px solid var(--mc-border);">
+                  <div style="font-size: 10px; color: var(--mc-text-muted); text-transform: uppercase;">Experiment basis</div>
+                  <div style="font-size: 11px; margin-top: 4px; line-height: 1.4;">3 experiments, H1 cleared · 420K sessions · 92% confidence</div>
+                </div>
+                <div style="padding: 10px; background: #fafbfc; border-radius: var(--radius-sm); border: 1px solid var(--mc-border);">
+                  <div style="font-size: 10px; color: var(--mc-text-muted); text-transform: uppercase;">Expected outcome</div>
+                  <div style="font-size: 11px; margin-top: 4px; line-height: 1.4;">Aggregate CTR +24% on PDP · CLV cohort uplift +£12 over 90d</div>
+                </div>
+                <div style="padding: 10px; background: #fafbfc; border-radius: var(--radius-sm); border: 1px solid var(--mc-border);">
+                  <div style="font-size: 10px; color: var(--mc-text-muted); text-transform: uppercase;">Revenue at stake</div>
+                  <div style="font-size: 11px; margin-top: 4px; line-height: 1.4;">~£18k/yr incremental across this tenant's PDP traffic</div>
+                </div>
+              </div>
+            </div>
+
+            <div style="padding: 16px 20px; border-bottom: 1px solid var(--mc-border);">
+              <h4 style="font-size: 12px; margin-bottom: 10px; font-weight: 600;">Code diff · 2 files changed · +47 / −12</h4>
+              <div style="background: var(--code-bg); border-radius: var(--radius-sm); overflow: hidden;">
+                <div style="padding: 8px 12px; background: #1a2330; font-size: 11px; color: #94a3b8; font-family: 'SF Mono', monospace;">components/CLVRecommender.schema.ts</div>
+                <div class="diff-row context"><span class="sign"> </span><span>export const CLVRecommender = defineComponent({</span></div>
+                <div class="diff-row context"><span class="sign"> </span><span>  name: 'CLVRecommender',</span></div>
+                <div class="diff-row remove"><span class="sign">−</span><span>  version: '1.2.0',</span></div>
+                <div class="diff-row add"><span class="sign">+</span><span>  version: '1.3.0',</span></div>
+                <div class="diff-row context"><span class="sign"> </span><span>  zone: 'green',</span></div>
+                <div class="diff-row context"><span class="sign"> </span><span>  fields: {</span></div>
+                <div class="diff-row add"><span class="sign">+</span><span>    filterByCLVTier: {</span></div>
+                <div class="diff-row add"><span class="sign">+</span><span>      type: 'enum',</span></div>
+                <div class="diff-row add"><span class="sign">+</span><span>      values: ['any', 'mid+', 'high'],</span></div>
+                <div class="diff-row add"><span class="sign">+</span><span>      default: 'any',</span></div>
+                <div class="diff-row add"><span class="sign">+</span><span>      permissions: { operator: 'edit', ai: 'write' },</span></div>
+                <div class="diff-row add"><span class="sign">+</span><span>    },</span></div>
+                <div class="diff-row context"><span class="sign"> </span><span>    // ... existing fields unchanged</span></div>
+                <div class="diff-row context"><span class="sign"> </span><span>  },</span></div>
+                <div class="diff-row context"><span class="sign"> </span><span>});</span></div>
+              </div>
+            </div>
+
+            <div style="padding: 16px 20px;">
+              <h4 style="font-size: 12px; margin-bottom: 10px; font-weight: 600;">Automated checks · 5 of 5 ✓</h4>
+              <div class="check-item pass">
+                <div class="check-icon">✓</div>
+                <div class="check-body">
+                  <div class="check-title">Type-check & schema compilation</div>
+                  <div class="check-desc">Component library compiles · 3.2s</div>
+                </div>
+              </div>
+              <div class="check-item pass">
+                <div class="check-icon">✓</div>
+                <div class="check-body">
+                  <div class="check-title">Backwards compatibility</div>
+                  <div class="check-desc">New field optional · existing usage unchanged</div>
+                </div>
+              </div>
+              <div class="check-item pass">
+                <div class="check-icon">✓</div>
+                <div class="check-body">
+                  <div class="check-title">Governance scope</div>
+                  <div class="check-desc">Green Zone · AI ≤ operator permissions · simulator verified</div>
+                </div>
+              </div>
+              <div class="check-item pass">
+                <div class="check-icon">✓</div>
+                <div class="check-body">
+                  <div class="check-title">WCAG 2.1 AA preserved</div>
+                  <div class="check-desc">No a11y regressions</div>
+                </div>
+              </div>
+              <div class="check-item pass">
+                <div class="check-icon">✓</div>
+                <div class="check-body">
+                  <div class="check-title">Preview deployment ready</div>
+                  <div class="check-desc"><a href="#" style="color: var(--mc-blue);">preview-pr-1204.tutorial.dev →</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style="background: #fafbfc; border-left: 1px solid var(--mc-border); padding: 16px; overflow-y: auto;">
+            <div style="background: white; border: 1px solid var(--mc-border); border-radius: var(--radius-md); padding: 14px; margin-bottom: 12px;">
+              <h5 style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.6px; color: var(--mc-text-muted); margin-bottom: 8px; font-weight: 600;">Reviewers</h5>
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                <span class="avatar-sm" style="width: 24px; height: 24px; background: var(--mc-blue); color: white; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600;">LP</span>
+                <div style="font-size: 11px; flex: 1;">
+                  <div style="font-weight: 600;">Leandro · author (operator)</div>
+                  <div style="color: var(--mc-text-muted);">✓ Approved experiment · 05-05</div>
+                </div>
+              </div>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span class="avatar-sm" style="width: 24px; height: 24px; background: #16a34a; color: white; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600;">MK</span>
+                <div style="font-size: 11px; flex: 1;">
+                  <div style="font-weight: 600;">Maya K. · platform dev</div>
+                  <div style="color: var(--mc-success);">✓ Approved · LGTM</div>
+                </div>
+              </div>
+            </div>
+
+            <div style="background: white; border: 1px solid var(--mc-border); border-radius: var(--radius-md); padding: 14px; margin-bottom: 12px;">
+              <h5 style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.6px; color: var(--mc-text-muted); margin-bottom: 8px; font-weight: 600;">Post-merge pipeline</h5>
+              <div style="font-size: 11px; color: var(--mc-text-muted); line-height: 1.7;">
+                1. Component library bumps v1.3.0<br>
+                2. Hot-reloads to 42 tenants (~60s)<br>
+                3. Recommendation enters progressive rollout at 5%<br>
+                4. Engine watches H2 for 90d
+              </div>
+            </div>
+
+            <div style="background: #fff7ed; border: 1px solid #f59e0b; border-radius: var(--radius-md); padding: 14px;">
+              <h5 style="font-size: 11px; color: #b45309; font-weight: 600; margin-bottom: 6px;">⚠ Scope discipline</h5>
+              <div style="font-size: 11px; color: var(--mc-text-muted); line-height: 1.5;">
+                PR limited to the field this recommendation needs. No surrounding cleanup, no speculative refactors. Keeps diffs reviewable and risk contained.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="padding: 0 24px 20px;">
+      <div class="screen-annotations single" style="padding: 16px 20px;">
+        <h4>Design Notes</h4>
+        <ul>
+          <li><strong>AI-authored PR badge is distinct and honest</strong> — reviewers know instantly this wasn't human-written. Same diff rigor, different origin. Prevents the "mystery bot PR" confusion. <em>(FR58)</em></li>
+          <li><strong>Evidence brief is first-class content</strong> — pattern detected, experiment basis, expected outcome, revenue at stake — all before the code diff. Developers review the <em>reason</em>, not just the syntax.</li>
+          <li><strong>5/5 automated checks cover governance too</strong> — type-check + a11y + governance scope + backwards compat + preview deploy. The governance simulator's verification (Epic 2 screen 2A) shows up here as a CI check.</li>
+          <li><strong>Preview deployment auto-provisioned</strong> — a reviewable URL linked from the check row. Developers can click through the component's new behavior in a real tenant context before merging.</li>
+          <li><strong>Post-merge pipeline is transparent</strong> — reviewer sees the full automation chain (bump → hot-reload → rollout → H2). No surprises after clicking Merge.</li>
+          <li><strong>Scope discipline warning</strong> — the engine is instructed to keep PRs narrow. Reviewers are told "no cleanup, no speculative refactors" so they know what to push back on if they see scope creep in future PRs.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- TAB 4 PLACEHOLDER -->
+<div id="tab-calib" class="tab-content">
+
+  <div class="tab-intro">
+    <h2>4 — Engine Calibration: Intelligence Score & Tried-and-Retired</h2>
+    <p>The engine's calibration surface is where the moat becomes visible. The Tenant Intelligence Score summarizes how smart the engine has become for <em>this tenant</em> — it grows with sessions, experiments, and CLV cohort accumulation, and the score cannot be replicated by a competitor connecting to the CT APIs. The Tried-and-Retired library is the other side of the moat: a classified taxonomy of patterns that did not work here, filtering future recommendations so the engine doesn't keep suggesting the same losing ideas.</p>
+    <div class="frs">
+      <span class="fr-chip">FR60</span><span class="fr-chip">FR61</span>
+      <span class="fr-chip">FR62</span><span class="fr-chip">FR63</span>
+    </div>
+  </div>
+
+  <div class="screen">
+    <div class="screen-header">
+      <h3>4A — Tenant Intelligence Score: the moat made visible</h3>
+      <span class="tag">Headline moat metric · growth trend · first-10-free ramp · historical import</span>
+    </div>
+    <div class="screen-body single">
+      <div class="editor-frame" style="height: 640px;">
+        <div class="editor-topbar">
+          <span class="logo">commercetools</span>
+          <span class="crumbs">AI Experience Engine › <strong>Engine calibration</strong></span>
+          <span class="spacer"></span>
+          <span class="user">LP</span>
+        </div>
+        <div class="context-bar">
+          <span class="chip active">Overview</span>
+          <span class="chip">Calibration detail</span>
+          <span class="chip">Tried &amp; Retired</span>
+          <span class="chip">Historical import</span>
+          <span class="spacer"></span>
+          <span style="font-size: 11px; color: var(--mc-text-muted);">Tenant: <strong style="color: var(--mc-text);">Tutorial</strong> · Engine v2.4 · last recalc 2h ago</span>
+        </div>
+        <div class="editor-main" style="grid-template-columns: 1fr;">
+          <div style="padding: 20px; overflow-y: auto; background: var(--mc-bg);">
+
+            <div style="background: white; border: 1px solid var(--mc-ai-accent); border-left: 3px solid var(--mc-ai-accent); border-radius: var(--radius-md); padding: 20px; margin-bottom: 16px;">
+              <div style="display: grid; grid-template-columns: 220px 1fr; gap: 24px; align-items: center;">
+                <div style="text-align: center;">
+                  <div style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.6px; color: var(--mc-ai-accent); font-weight: 600; margin-bottom: 8px;">Tenant Intelligence Score</div>
+                  <div style="font-size: 72px; font-weight: 700; color: var(--mc-ai-accent); line-height: 1;">74</div>
+                  <div style="font-size: 11px; color: var(--mc-text-muted); margin-top: 4px;">of 100 · "Mature"</div>
+                  <div class="progress-bar" style="height: 6px; margin-top: 10px;"><div class="fill" style="width: 74%; background: var(--mc-ai-accent);"></div></div>
+                </div>
+                <div>
+                  <div style="font-size: 13px; line-height: 1.6; color: var(--mc-text); margin-bottom: 12px;">
+                    Your engine has observed enough behavior to make confident, tenant-specific recommendations. It knows your seasonal cycles, your CLV tier distribution, your B2B/B2C context boundaries, and which patterns consistently work and fail on your traffic. This is intelligence no competitor can replicate by calling the commercetools APIs — it's <em>your</em> data, scored over <em>your</em> time.
+                  </div>
+                  <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
+                    <div style="padding: 10px; background: #fafbfc; border-radius: var(--radius-sm); border: 1px solid var(--mc-border);">
+                      <div style="font-size: 10px; color: var(--mc-text-muted); text-transform: uppercase; letter-spacing: 0.4px;">Sessions</div>
+                      <div style="font-size: 16px; font-weight: 600;">2.41M</div>
+                      <div style="font-size: 10px; color: var(--mc-success);">↑ past 30d: 420K</div>
+                    </div>
+                    <div style="padding: 10px; background: #fafbfc; border-radius: var(--radius-sm); border: 1px solid var(--mc-border);">
+                      <div style="font-size: 10px; color: var(--mc-text-muted); text-transform: uppercase; letter-spacing: 0.4px;">Experiments</div>
+                      <div style="font-size: 16px; font-weight: 600;">34</div>
+                      <div style="font-size: 10px; color: var(--mc-text-muted);">23 winners · 11 retired</div>
+                    </div>
+                    <div style="padding: 10px; background: #fafbfc; border-radius: var(--radius-sm); border: 1px solid var(--mc-border);">
+                      <div style="font-size: 10px; color: var(--mc-text-muted); text-transform: uppercase; letter-spacing: 0.4px;">CLV cohort</div>
+                      <div style="font-size: 16px; font-weight: 600;">118K</div>
+                      <div style="font-size: 10px; color: var(--mc-text-muted);">buyers tracked 90d+</div>
+                    </div>
+                    <div style="padding: 10px; background: #fafbfc; border-radius: var(--radius-sm); border: 1px solid var(--mc-border);">
+                      <div style="font-size: 10px; color: var(--mc-text-muted); text-transform: uppercase; letter-spacing: 0.4px;">Prediction accuracy</div>
+                      <div style="font-size: 16px; font-weight: 600; color: var(--mc-success);">81%</div>
+                      <div style="font-size: 10px; color: var(--mc-text-muted);">H1 forecast ↔ actual</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 16px;">
+              <div style="background: white; border: 1px solid var(--mc-border); border-radius: var(--radius-md); padding: 16px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                  <div>
+                    <div style="font-size: 13px; font-weight: 600;">Intelligence Score growth</div>
+                    <div style="font-size: 11px; color: var(--mc-text-muted);">Rolling score · 6 months · annotated with milestone events</div>
+                  </div>
+                  <div style="display: flex; gap: 6px;">
+                    <span class="chip">3m</span>
+                    <span class="chip active">6m</span>
+                    <span class="chip">12m</span>
+                    <span class="chip">All</span>
+                  </div>
+                </div>
+                <div style="height: 180px; background: #fafbfc; border: 1px dashed var(--mc-border-strong); border-radius: var(--radius-sm); padding: 14px; position: relative;">
+                  <div class="sparkline" style="gap: 3px; height: 100%;">
+                    <div class="bar" style="height: 18%;"></div>
+                    <div class="bar" style="height: 22%;"></div>
+                    <div class="bar" style="height: 28%;"></div>
+                    <div class="bar" style="height: 30%;"></div>
+                    <div class="bar" style="height: 34%;"></div>
+                    <div class="bar" style="height: 36%;"></div>
+                    <div class="bar" style="height: 42%;"></div>
+                    <div class="bar" style="height: 44%;"></div>
+                    <div class="bar" style="height: 46%;"></div>
+                    <div class="bar" style="height: 52%;"></div>
+                    <div class="bar" style="height: 54%;"></div>
+                    <div class="bar" style="height: 55%;"></div>
+                    <div class="bar" style="height: 57%;"></div>
+                    <div class="bar" style="height: 62%;"></div>
+                    <div class="bar" style="height: 63%;"></div>
+                    <div class="bar" style="height: 66%;"></div>
+                    <div class="bar" style="height: 65%;"></div>
+                    <div class="bar highlight" style="height: 68%; background: var(--mc-ai-accent);"></div>
+                    <div class="bar highlight" style="height: 71%; background: var(--mc-ai-accent);"></div>
+                    <div class="bar highlight" style="height: 73%; background: var(--mc-ai-accent);"></div>
+                    <div class="bar highlight" style="height: 74%; background: var(--mc-ai-accent);"></div>
+                  </div>
+                  <div style="position: absolute; bottom: 4px; left: 14px; right: 14px; display: flex; justify-content: space-between; font-size: 10px; color: var(--mc-text-muted);">
+                    <span>Dec · score 18</span>
+                    <span style="color: var(--mc-warning);">Feb · 100K sessions · score 42</span>
+                    <span style="color: var(--mc-blue);">Apr · 20th exp cleared</span>
+                    <span style="color: var(--mc-ai-accent); font-weight: 600;">Today · 74 "Mature"</span>
+                  </div>
+                </div>
+              </div>
+
+              <div style="background: white; border: 1px solid var(--mc-border); border-radius: var(--radius-md); padding: 16px;">
+                <div style="font-size: 13px; font-weight: 600; margin-bottom: 10px;">What moves the score</div>
+                <div style="padding: 8px 10px; background: #fafbfc; border-radius: var(--radius-sm); margin-bottom: 6px; font-size: 11px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                    <span>Session volume</span><span style="font-weight: 600; color: var(--mc-success);">+18 pts</span>
+                  </div>
+                  <div class="progress-bar" style="height: 4px;"><div class="fill" style="width: 78%;"></div></div>
+                </div>
+                <div style="padding: 8px 10px; background: #fafbfc; border-radius: var(--radius-sm); margin-bottom: 6px; font-size: 11px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                    <span>Experiments completed</span><span style="font-weight: 600; color: var(--mc-success);">+22 pts</span>
+                  </div>
+                  <div class="progress-bar" style="height: 4px;"><div class="fill" style="width: 68%;"></div></div>
+                </div>
+                <div style="padding: 8px 10px; background: #fafbfc; border-radius: var(--radius-sm); margin-bottom: 6px; font-size: 11px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                    <span>CLV cohort size (90d+)</span><span style="font-weight: 600; color: var(--mc-success);">+20 pts</span>
+                  </div>
+                  <div class="progress-bar" style="height: 4px;"><div class="fill" style="width: 64%;"></div></div>
+                </div>
+                <div style="padding: 8px 10px; background: #fafbfc; border-radius: var(--radius-sm); margin-bottom: 6px; font-size: 11px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                    <span>Prediction accuracy</span><span style="font-weight: 600; color: var(--mc-success);">+14 pts</span>
+                  </div>
+                  <div class="progress-bar" style="height: 4px;"><div class="fill" style="width: 81%;"></div></div>
+                </div>
+                <div style="padding: 8px 10px; background: #fafbfc; border-radius: var(--radius-sm); font-size: 11px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                    <span>Context coverage (B2X)</span><span style="font-weight: 600;">+0 pts</span>
+                  </div>
+                  <div class="progress-bar" style="height: 4px;"><div class="fill" style="width: 38%;"></div></div>
+                  <div style="font-size: 10px; color: var(--mc-text-muted); margin-top: 3px;">B2B under-sampled — opportunity</div>
+                </div>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+              <div style="background: white; border: 1px solid var(--mc-border); border-radius: var(--radius-md); padding: 16px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                  <div style="font-size: 13px; font-weight: 600;">First 10 experiments free</div>
+                  <span class="chip" style="font-size: 10px; background: var(--mc-ai-tint); border-color: var(--mc-ai-accent); color: var(--mc-ai-accent);">FR62</span>
+                </div>
+                <div style="font-size: 11px; color: var(--mc-text-muted); margin-bottom: 10px; line-height: 1.4;">Early-tenant ramp — no subscription tier drain during calibration period. Resets at tier upgrade.</div>
+                <div style="display: flex; align-items: center; gap: 6px; padding: 8px 10px; background: #fafbfc; border-radius: var(--radius-sm);">
+                  <div style="flex: 1;">
+                    <div class="progress-bar" style="height: 8px;"><div class="fill" style="width: 100%; background: var(--mc-success);"></div></div>
+                  </div>
+                  <span style="font-size: 12px; font-weight: 600; color: var(--mc-success);">10 / 10 ✓</span>
+                </div>
+                <div style="font-size: 11px; color: var(--mc-text-muted); margin-top: 8px;">Free tier consumed on 04-14 · tenant upgraded to Growth on 04-15</div>
+              </div>
+
+              <div style="background: white; border: 1px solid var(--mc-border); border-radius: var(--radius-md); padding: 16px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                  <div style="font-size: 13px; font-weight: 600;">Historical behavioral import</div>
+                  <span class="chip" style="font-size: 10px; background: var(--mc-ai-tint); border-color: var(--mc-ai-accent); color: var(--mc-ai-accent);">FR63</span>
+                </div>
+                <div style="font-size: 11px; color: var(--mc-text-muted); margin-bottom: 10px; line-height: 1.4;">Pre-warm the engine at onboarding with data from prior analytics tools. Score credit applied for validated imports.</div>
+                <div style="display: flex; align-items: center; gap: 8px; padding: 8px 10px; background: var(--mc-success-bg); border-radius: var(--radius-sm); margin-bottom: 4px;">
+                  <span style="color: var(--mc-success);">✓</span>
+                  <span style="font-size: 11px; flex: 1;">GA4 · 180 days imported · 1.2M sessions</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px; padding: 8px 10px; background: var(--mc-success-bg); border-radius: var(--radius-sm); margin-bottom: 4px;">
+                  <span style="color: var(--mc-success);">✓</span>
+                  <span style="font-size: 11px; flex: 1;">Hotjar heatmaps · 90 days · PDP + checkout</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px; padding: 8px 10px; background: #fafbfc; border-radius: var(--radius-sm); border: 1px dashed var(--mc-border-strong);">
+                  <span style="color: var(--mc-text-muted);">+</span>
+                  <span style="font-size: 11px; flex: 1; color: var(--mc-text-muted);">Import from Mixpanel, Amplitude, Frontastic analytics</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="padding: 0 24px 20px;">
+      <div class="screen-annotations single" style="padding: 16px 20px;">
+        <h4>Design Notes</h4>
+        <ul>
+          <li><strong>The score is the moat made visible</strong> — 74/100 "Mature" summarizes how much tenant-specific intelligence has accumulated. This cannot be replicated by a competitor connecting to CT APIs; the score IS the argument against churn. <em>(FR61)</em></li>
+          <li><strong>Four components named explicitly</strong> — sessions, experiments, CLV cohort, prediction accuracy — so the score isn't mysterious. Operators and developers can see what drives it up.</li>
+          <li><strong>"What moves the score" panel</strong> — each component's contribution broken out. Exposes the lever operators can pull (e.g. "B2B under-sampled — opportunity") without making the recommendation feel like a sales pitch.</li>
+          <li><strong>Milestone events annotated on the growth chart</strong> — "Feb · 100K sessions · score 42" anchors the growth in real tenant events. Makes the compounding argument visceral across a 6-month arc.</li>
+          <li><strong>First-10-free panel shows the completed ramp</strong> — once consumed, the counter becomes a historical artifact ("Free tier consumed on 04-14"). Confirms the activation funnel actually worked. <em>(FR62)</em></li>
+          <li><strong>Historical import as a score booster</strong> — "Pre-warm the engine" framing treats legacy analytics tools as migration inputs, not competitors. GA4 and Hotjar already done; Mixpanel/Amplitude/Frontastic still available. <em>(FR63)</em></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="screen">
+    <div class="screen-header">
+      <h3>4B — Tried &amp; Retired: failure taxonomy + confidence decay</h3>
+      <span class="tag">FR60 — classified failures filter future recommendations · 90-day confidence decay</span>
+    </div>
+    <div class="screen-body single">
+      <div class="editor-frame" style="height: 620px;">
+        <div class="editor-topbar">
+          <span class="logo">commercetools</span>
+          <span class="crumbs">Engine calibration › <strong>Tried &amp; Retired library</strong></span>
+          <span class="spacer"></span>
+          <span class="user">LP</span>
+        </div>
+        <div class="context-bar">
+          <span class="chip active">Retired (11)</span>
+          <span class="chip">Confidence-decayed (4)</span>
+          <span class="chip">Dismissed by operator (8)</span>
+          <span class="spacer"></span>
+          <button class="btn-ghost">⬇ Export taxonomy</button>
+        </div>
+        <div class="editor-main" style="grid-template-columns: 240px 1fr;">
+          <div class="dev-sidebar">
+            <div class="section-title">Failure categories</div>
+            <div class="nav-row active">All failures <span class="count">23</span></div>
+            <div class="nav-row">📉 Underperformed control <span class="count">7</span></div>
+            <div class="nav-row">🪤 Selection effect <span class="count">3</span></div>
+            <div class="nav-row">⚠ Guardrail breach <span class="count">2</span></div>
+            <div class="nav-row">🕰 Insufficient traffic <span class="count">3</span></div>
+            <div class="nav-row">❌ Operator dismissed <span class="count">8</span></div>
+            <div class="section-title">Confidence decay</div>
+            <div class="nav-row">Aging recs (&gt; 90d) <span class="count">4</span></div>
+            <div class="section-title">Actions</div>
+            <div class="nav-row">Re-test a retired pattern</div>
+            <div class="nav-row">Export to roadmap</div>
+          </div>
+          <div style="overflow-y: auto; padding: 20px; background: var(--mc-bg);">
+
+            <div style="background: white; border: 1px solid var(--mc-border); border-radius: var(--radius-md); padding: 16px; margin-bottom: 14px; display: flex; align-items: center; gap: 14px;">
+              <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--mc-ai-tint); color: var(--mc-ai-accent); display: flex; align-items: center; justify-content: center; font-size: 18px;">📚</div>
+              <div style="flex: 1; font-size: 12px; line-height: 1.5; color: var(--mc-text-muted);">
+                <strong style="color: var(--mc-text);">Each retired pattern tells the engine what not to re-propose.</strong> Categories feed the recommendation filter. Over time, the engine stops wasting operator attention on patterns that have already failed <em>on this tenant's traffic</em>.
+              </div>
+            </div>
+
+            <div style="background: white; border: 1px solid var(--mc-border); border-radius: var(--radius-md); padding: 16px; margin-bottom: 14px;">
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 10px;">
+                <span class="chip" style="background: #fee2e2; border-color: #dc2626; color: #dc2626; font-size: 10px;">📉 Underperformed control</span>
+                <div style="font-size: 13px; font-weight: 600;">6-item CLVRecommender on PDP</div>
+                <span class="spacer" style="flex: 1;"></span>
+                <span style="font-size: 11px; color: var(--mc-text-muted);">retired 04-28 · NorthernLux</span>
+              </div>
+              <div style="font-size: 12px; color: var(--mc-text-muted); line-height: 1.5; margin-bottom: 10px;">
+                <strong style="color: var(--mc-text);">Result:</strong> −2.4% CTR vs 3-item control. Overwhelming visual density on PDP reduced engagement.
+              </div>
+              <div style="padding: 10px; background: var(--mc-ai-tint); border-radius: var(--radius-sm); font-size: 11px; color: var(--mc-text); line-height: 1.5;">
+                <strong style="color: var(--mc-ai-accent);">Filter applied:</strong> Engine will not re-propose "increase recommender items above 4" for NorthernLux PDP traffic within 180 days. Cross-tenant learning preserved — may still propose for tenants with different PDP density profiles.
+              </div>
+            </div>
+
+            <div style="background: white; border: 1px solid var(--mc-border); border-radius: var(--radius-md); padding: 16px; margin-bottom: 14px;">
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 10px;">
+                <span class="chip" style="background: #fef3c7; border-color: #d97706; color: #d97706; font-size: 10px;">🪤 Selection effect</span>
+                <div style="font-size: 13px; font-weight: 600;">ExitIntentPopup on checkout</div>
+                <span class="spacer" style="flex: 1;"></span>
+                <span style="font-size: 11px; color: var(--mc-text-muted);">retired 04-10 · Tutorial</span>
+              </div>
+              <div style="font-size: 12px; color: var(--mc-text-muted); line-height: 1.5; margin-bottom: 10px;">
+                <strong style="color: var(--mc-text);">Result:</strong> +6% "save" rate but −11% CLV cohort repeat rate over 60 days. Operator classified the pattern as a short-term save at long-term cost. H1 winner, H2 loser — a selection effect the engine now recognizes.
+              </div>
+              <div style="padding: 10px; background: var(--mc-ai-tint); border-radius: var(--radius-sm); font-size: 11px; color: var(--mc-text); line-height: 1.5;">
+                <strong style="color: var(--mc-ai-accent);">Filter applied:</strong> Engine will down-weight pure-H1 recommendations on checkout flow and require H2 signal before promoting similar patterns. This category pattern contributed to a two-horizon calibration adjustment.
+              </div>
+            </div>
+
+            <div style="background: white; border: 1px solid var(--mc-border); border-radius: var(--radius-md); padding: 16px; margin-bottom: 14px;">
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 10px;">
+                <span class="chip" style="background: #fef3c7; border-color: #d97706; color: #d97706; font-size: 10px;">⚠ Guardrail breach</span>
+                <div style="font-size: 13px; font-weight: 600;">Aggressive upsell modal at cart</div>
+                <span class="spacer" style="flex: 1;"></span>
+                <span style="font-size: 11px; color: var(--mc-text-muted);">retired 03-22 · BrightBrand</span>
+              </div>
+              <div style="font-size: 12px; color: var(--mc-text-muted); line-height: 1.5; margin-bottom: 10px;">
+                <strong style="color: var(--mc-text);">Result:</strong> Auto-paused at Gate 2 · CVR dropped 18% against guardrail of 15%. Automatic rollback by the engine · operator reviewed + confirmed retirement.
+              </div>
+              <div style="padding: 10px; background: var(--mc-ai-tint); border-radius: var(--radius-sm); font-size: 11px; color: var(--mc-text); line-height: 1.5;">
+                <strong style="color: var(--mc-ai-accent);">Filter applied:</strong> Modal interruptions on cart flow require stricter CVR guardrail (5% instead of 15%) for future proposals on BrightBrand.
+              </div>
+            </div>
+
+            <div style="background: white; border: 1px solid var(--mc-border); border-radius: var(--radius-md); padding: 14px 16px; opacity: 0.7;">
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 6px;">
+                <span class="chip" style="background: #fafbfc; border-color: var(--mc-text-muted); color: var(--mc-text-muted); font-size: 10px;">🕰 Confidence-decayed</span>
+                <div style="font-size: 13px; font-weight: 600;">Testimonial carousel A/B (Jan 2026)</div>
+                <span class="spacer" style="flex: 1;"></span>
+                <span style="font-size: 11px; color: var(--mc-text-muted);">won 01-18 · re-test suggested</span>
+              </div>
+              <div style="font-size: 11px; color: var(--mc-text-muted); line-height: 1.5;">
+                Winning variant &gt; 90 days old. Component library has changed twice since. Engine flags for re-test before recommending as a current pattern.
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="padding: 0 24px 20px;">
+      <div class="screen-annotations single" style="padding: 16px 20px;">
+        <h4>Design Notes</h4>
+        <ul>
+          <li><strong>Failure is inventory, not erasure</strong> — every retired pattern has a taxonomy label (Underperformed / Selection effect / Guardrail breach / Insufficient traffic / Operator dismissed). Classified failures are more valuable than forgotten ones. <em>(FR60)</em></li>
+          <li><strong>"Filter applied" is the moat mechanism</strong> — each retirement explicitly names the rule derived from the failure. Operators see HOW the engine learned.</li>
+          <li><strong>Cross-tenant learning preserved carefully</strong> — "may still propose for tenants with different PDP density profiles." The engine distinguishes "failed here" from "always fails." Prevents overfitting the taxonomy.</li>
+          <li><strong>H1 winner / H2 loser is a first-class pattern</strong> — the ExitIntentPopup entry shows a failure mode specific to the two-horizon model. This is exactly why H2 exists; the taxonomy teaches the engine to weight it more.</li>
+          <li><strong>Confidence decay is automatic, not punitive</strong> — "won 01-18" is muted, not retired. Flags for re-test instead of retirement. Reflects that commerce behavior evolves and winners age out.</li>
+          <li><strong>Re-test a retired pattern</strong> — named action in the sidebar. Retirement isn't permanent; operators can deliberately re-test if they believe conditions changed.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="doc-footer">
+  Wireframes show the AI Experience Engine running on a mature tenant — 127,480 behavioral sessions, 34 completed experiments, 14 recommendations currently live. Early-tenant states (cold start, first-10-free activation, signal-gate holds) are depicted in Tab 4. Numbers shown are illustrative. The engine language is "your data shows" — never "the AI recommends."
+</div>
+
+<script>
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      const target = tab.dataset.tab;
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('tab-' + target).classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+</script>
+</body>
+</html>

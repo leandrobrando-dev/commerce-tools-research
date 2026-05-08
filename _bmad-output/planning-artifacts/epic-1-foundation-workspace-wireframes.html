@@ -1,0 +1,2228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Epic 1 — Platform Foundation & Operator Workspace — Wireframes</title>
+<style>
+  :root {
+    --mc-blue: #0066cc;
+    --mc-blue-wash: rgba(0, 102, 204, 0.08);
+    --mc-ai-tint: rgba(88, 28, 255, 0.08);
+    --mc-ai-accent: #5b21b6;
+    --mc-bg: #f5f7fa;
+    --mc-surface: #ffffff;
+    --mc-border: #e4e7eb;
+    --mc-border-strong: #cbd2d9;
+    --mc-text: #1f2933;
+    --mc-text-muted: #6b7280;
+    --mc-text-faint: #9aa5b1;
+    --mc-success: #16a34a;
+    --mc-success-bg: #ecfdf5;
+    --mc-warning: #d97706;
+    --mc-warning-bg: #fef3c7;
+    --mc-error: #dc2626;
+    --mc-error-bg: #fee2e2;
+    --mc-locked: #9aa5b1;
+    --mc-locked-bg: #f3f4f6;
+    --radius-sm: 4px;
+    --radius-md: 6px;
+    --radius-lg: 8px;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 2px 6px rgba(0,0,0,0.06);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 13px;
+    line-height: 1.5;
+    background: var(--mc-bg);
+    color: var(--mc-text);
+  }
+
+  code, .mono { font-family: 'SF Mono', 'Monaco', 'Consolas', monospace; font-size: 12px; }
+
+  /* ---------- Document header ---------- */
+  .doc-header {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: white;
+    padding: 24px 40px;
+  }
+  .doc-header h1 { font-size: 22px; font-weight: 600; margin-bottom: 6px; }
+  .doc-header p { font-size: 13px; opacity: 0.85; max-width: 900px; }
+  .doc-header .meta {
+    margin-top: 12px; display: flex; gap: 20px; font-size: 12px; opacity: 0.7;
+  }
+
+  /* ---------- Tab nav ---------- */
+  .tabs {
+    background: white;
+    border-bottom: 1px solid var(--mc-border);
+    display: flex;
+    padding: 0 40px;
+    gap: 32px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .tab {
+    padding: 14px 0;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    font-weight: 500;
+    font-size: 13px;
+    color: var(--mc-text-muted);
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .tab.active { border-bottom-color: var(--mc-blue); color: var(--mc-blue); }
+  .tab:hover { color: var(--mc-blue); }
+  .tab-num {
+    display: inline-block;
+    width: 18px; height: 18px;
+    background: var(--mc-border);
+    color: var(--mc-text-muted);
+    border-radius: 50%;
+    font-size: 11px;
+    text-align: center;
+    line-height: 18px;
+    font-weight: 600;
+  }
+  .tab.active .tab-num { background: var(--mc-blue); color: white; }
+
+  .tab-content { display: none; padding: 32px 40px 80px; }
+  .tab-content.active { display: block; }
+
+  /* ---------- Tab intro ---------- */
+  .tab-intro {
+    background: white;
+    border: 1px solid var(--mc-border);
+    border-left: 3px solid var(--mc-blue);
+    border-radius: var(--radius-md);
+    padding: 16px 20px;
+    margin-bottom: 28px;
+    max-width: 1100px;
+  }
+  .tab-intro h2 { font-size: 16px; margin-bottom: 6px; }
+  .tab-intro p { color: var(--mc-text-muted); font-size: 13px; }
+  .tab-intro .frs {
+    margin-top: 10px; display: flex; gap: 6px; flex-wrap: wrap;
+  }
+  .fr-chip {
+    background: var(--mc-blue-wash);
+    color: var(--mc-blue);
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 500;
+    font-family: 'SF Mono', 'Monaco', monospace;
+  }
+
+  /* ---------- Screen card ---------- */
+  .screen {
+    background: white;
+    border: 1px solid var(--mc-border);
+    border-radius: var(--radius-lg);
+    margin-bottom: 32px;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+  }
+  .screen-header {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--mc-border);
+    background: #fafbfc;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .screen-header h3 { font-size: 14px; font-weight: 600; }
+  .screen-header .tag {
+    font-family: 'SF Mono', monospace;
+    font-size: 11px;
+    color: var(--mc-text-muted);
+    background: white;
+    border: 1px solid var(--mc-border);
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+  .screen-body { padding: 24px; display: grid; grid-template-columns: 1fr 280px; gap: 24px; }
+  .screen-body.single { grid-template-columns: 1fr; }
+  .screen-annotations {
+    background: #fafbfc;
+    border: 1px solid var(--mc-border);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    font-size: 12px;
+  }
+  .screen-annotations h4 {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--mc-text-muted);
+    margin-bottom: 10px;
+  }
+  .screen-annotations ul { list-style: none; padding: 0; }
+  .screen-annotations li {
+    padding: 6px 0;
+    border-bottom: 1px dashed var(--mc-border);
+    color: var(--mc-text);
+    font-size: 12px;
+    line-height: 1.45;
+  }
+  .screen-annotations li:last-child { border-bottom: none; }
+  .screen-annotations li strong { color: var(--mc-blue); font-weight: 600; }
+
+  /* ---------- Editor frame (simulates Merchant Center shell) ---------- */
+  .editor-frame {
+    border: 1px solid var(--mc-border-strong);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background: var(--mc-bg);
+    display: grid;
+    grid-template-rows: 40px 36px 1fr;
+    height: 520px;
+    font-size: 12px;
+  }
+  .editor-topbar {
+    background: #1f2933;
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    gap: 20px;
+    font-size: 12px;
+  }
+  .editor-topbar .logo { font-weight: 600; letter-spacing: 0.3px; }
+  .editor-topbar .crumbs { opacity: 0.7; }
+  .editor-topbar .crumbs strong { color: white; opacity: 1; }
+  .editor-topbar .spacer { flex: 1; }
+  .editor-topbar .user {
+    width: 24px; height: 24px; border-radius: 50%;
+    background: var(--mc-blue); display: inline-flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 600;
+  }
+
+  .context-bar {
+    background: white;
+    border-bottom: 1px solid var(--mc-border);
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    gap: 8px;
+  }
+  .chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+    border: 1px solid var(--mc-border);
+    background: white;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .chip:hover { border-color: var(--mc-blue); color: var(--mc-blue); }
+  .chip.active { background: var(--mc-blue-wash); border-color: var(--mc-blue); color: var(--mc-blue); }
+  .chip.draft { background: var(--mc-warning-bg); border-color: var(--mc-warning); color: var(--mc-warning); }
+  .chip.live { background: var(--mc-success-bg); border-color: var(--mc-success); color: var(--mc-success); }
+  .chip .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  .context-bar .spacer { flex: 1; }
+  .context-bar .viewport-toggle {
+    display: flex; gap: 0; border: 1px solid var(--mc-border); border-radius: var(--radius-sm); overflow: hidden;
+  }
+  .context-bar .viewport-toggle button {
+    background: white; border: none; padding: 4px 10px; font-size: 11px; cursor: pointer;
+    color: var(--mc-text-muted); border-right: 1px solid var(--mc-border);
+  }
+  .context-bar .viewport-toggle button:last-child { border-right: none; }
+  .context-bar .viewport-toggle button.active { background: var(--mc-blue-wash); color: var(--mc-blue); font-weight: 500; }
+  .publish-btn {
+    background: var(--mc-blue); color: white; border: none;
+    padding: 5px 14px; border-radius: var(--radius-sm); font-size: 12px; font-weight: 500; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .publish-btn:hover { background: #0052a3; }
+  .publish-btn.disabled { background: var(--mc-border); color: var(--mc-text-faint); cursor: not-allowed; }
+
+  .editor-main { display: grid; grid-template-columns: 56px 1fr 300px; height: 100%; overflow: hidden; }
+  .nav-rail {
+    background: #fafbfc;
+    border-right: 1px solid var(--mc-border);
+    display: flex; flex-direction: column; align-items: center; padding: 12px 0; gap: 4px;
+  }
+  .nav-rail .nav-item {
+    width: 40px; height: 40px; border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; color: var(--mc-text-muted); cursor: pointer;
+    position: relative;
+  }
+  .nav-rail .nav-item:hover { background: white; color: var(--mc-blue); }
+  .nav-rail .nav-item.active { background: var(--mc-blue-wash); color: var(--mc-blue); }
+  .nav-rail .nav-item .label {
+    display: none; position: absolute; left: 48px; background: #1f2933; color: white;
+    padding: 4px 8px; border-radius: var(--radius-sm); font-size: 11px; white-space: nowrap;
+  }
+  .nav-rail .nav-item:hover .label { display: block; }
+
+  .canvas-wrap {
+    overflow: auto;
+    background:
+      linear-gradient(45deg, #f0f2f5 25%, transparent 25%),
+      linear-gradient(-45deg, #f0f2f5 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, #f0f2f5 75%),
+      linear-gradient(-45deg, transparent 75%, #f0f2f5 75%);
+    background-size: 16px 16px;
+    background-position: 0 0, 0 8px, 8px -8px, -8px 0;
+    padding: 20px;
+  }
+  .canvas {
+    background: white;
+    border: 1px solid var(--mc-border-strong);
+    border-radius: var(--radius-sm);
+    min-height: 100%;
+    padding: 16px;
+    display: flex; flex-direction: column; gap: 8px;
+    box-shadow: var(--shadow-md);
+  }
+  .canvas.tablet { max-width: 768px; margin: 0 auto; }
+  .canvas.mobile { max-width: 375px; margin: 0 auto; }
+  .canvas-section {
+    border: 1px dashed var(--mc-border-strong);
+    border-radius: var(--radius-sm);
+    padding: 14px;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.15s;
+    background: white;
+  }
+  .canvas-section:hover { border-color: var(--mc-blue); border-style: solid; }
+  .canvas-section.selected {
+    border: 2px solid var(--mc-blue);
+    box-shadow: 0 0 0 3px var(--mc-blue-wash);
+  }
+  .canvas-section.red-zone {
+    border-style: solid;
+    border-color: var(--mc-locked);
+    background: var(--mc-locked-bg);
+    cursor: not-allowed;
+  }
+  .canvas-section.red-zone:hover { border-color: var(--mc-locked); }
+  .canvas-section .sec-label {
+    position: absolute; top: -9px; left: 10px;
+    background: white; padding: 0 6px; font-size: 10px; color: var(--mc-text-muted);
+    font-family: 'SF Mono', monospace;
+  }
+  .canvas-section.selected .sec-label { color: var(--mc-blue); font-weight: 600; }
+  .canvas-section.red-zone .sec-label { color: var(--mc-locked); }
+  .canvas-section .sec-body {
+    display: flex; gap: 12px; align-items: center;
+  }
+  .canvas-section .placeholder {
+    height: 48px; background: #f0f2f5; border-radius: var(--radius-sm); flex: 1;
+    display: flex; align-items: center; justify-content: center; color: var(--mc-text-faint); font-size: 11px;
+  }
+  .canvas-section .lock-indicator {
+    position: absolute; top: 8px; right: 10px;
+    font-size: 11px; color: var(--mc-locked);
+  }
+  .canvas-section .eng-badge {
+    position: absolute; top: 8px; right: 10px;
+    background: var(--mc-success-bg); color: var(--mc-success);
+    font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 10px;
+  }
+
+  /* ---------- Right sidebar (property panel / AI panel) ---------- */
+  .side-panel {
+    background: white;
+    border-left: 1px solid var(--mc-border);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+  .side-panel .panel-tabs {
+    display: flex; border-bottom: 1px solid var(--mc-border); background: #fafbfc;
+  }
+  .side-panel .panel-tab {
+    flex: 1; padding: 10px 0; font-size: 11px; font-weight: 500; text-align: center; cursor: pointer;
+    color: var(--mc-text-muted); border-bottom: 2px solid transparent;
+  }
+  .side-panel .panel-tab.active { color: var(--mc-blue); border-bottom-color: var(--mc-blue); background: white; }
+  .side-panel .panel-body { padding: 14px; flex: 1; overflow-y: auto; }
+  .panel-empty {
+    color: var(--mc-text-faint); font-size: 12px; text-align: center; padding: 40px 20px;
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+  }
+  .panel-empty .icon { font-size: 28px; opacity: 0.4; }
+
+  .prop-group { margin-bottom: 18px; }
+  .prop-group h5 {
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.6px;
+    color: var(--mc-text-muted); margin-bottom: 8px; font-weight: 600;
+  }
+  .prop-row { margin-bottom: 10px; }
+  .prop-label { font-size: 11px; color: var(--mc-text-muted); margin-bottom: 3px; display: block; }
+  .prop-input {
+    width: 100%; padding: 6px 8px; border: 1px solid var(--mc-border);
+    border-radius: var(--radius-sm); font-size: 12px; background: white; font-family: inherit;
+  }
+  .prop-input:focus { outline: none; border-color: var(--mc-blue); box-shadow: 0 0 0 2px var(--mc-blue-wash); }
+  .prop-input.locked {
+    background: var(--mc-locked-bg); color: var(--mc-text-muted); cursor: not-allowed;
+  }
+  .governance-badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: var(--mc-locked-bg); color: var(--mc-text-muted);
+    padding: 2px 6px; border-radius: var(--radius-sm); font-size: 10px; font-weight: 500;
+  }
+
+  /* ---------- AI panel ---------- */
+  .ai-panel { display: flex; flex-direction: column; height: 100%; }
+  .ai-panel-header {
+    padding: 12px 14px;
+    background: var(--mc-ai-tint);
+    border-bottom: 1px solid var(--mc-border);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .ai-panel-header .ai-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--mc-ai-accent); }
+  .ai-panel-header h4 { font-size: 12px; color: var(--mc-ai-accent); font-weight: 600; }
+  .ai-convo { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+  .ai-msg {
+    padding: 8px 10px; border-radius: var(--radius-md); font-size: 12px; line-height: 1.45;
+  }
+  .ai-msg.user {
+    background: var(--mc-blue-wash); color: var(--mc-text); align-self: flex-end; max-width: 80%;
+  }
+  .ai-msg.ai {
+    background: var(--mc-ai-tint); color: var(--mc-text); align-self: flex-start; max-width: 90%;
+    border-left: 2px solid var(--mc-ai-accent);
+  }
+  .ai-reasoning-card {
+    background: white; border: 1px solid var(--mc-ai-accent); border-radius: var(--radius-md);
+    padding: 12px; font-size: 12px; margin-top: 4px;
+  }
+  .ai-reasoning-card h5 {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.4px;
+    color: var(--mc-ai-accent); margin-bottom: 8px; font-weight: 600;
+  }
+  .ai-reasoning-card ul { list-style: none; padding: 0; font-size: 11px; }
+  .ai-reasoning-card li { padding: 3px 0; color: var(--mc-text-muted); }
+  .ai-reasoning-card li::before { content: "→ "; color: var(--mc-ai-accent); }
+  .ai-reasoning-actions { display: flex; gap: 6px; margin-top: 10px; }
+  .btn-primary, .btn-ghost, .btn-danger {
+    padding: 5px 10px; border-radius: var(--radius-sm); font-size: 11px; font-weight: 500;
+    cursor: pointer; border: 1px solid transparent;
+  }
+  .btn-primary { background: var(--mc-ai-accent); color: white; }
+  .btn-ghost { background: white; color: var(--mc-text-muted); border-color: var(--mc-border); }
+  .btn-danger { background: white; color: var(--mc-error); border-color: var(--mc-border); }
+  .ai-input {
+    border-top: 1px solid var(--mc-border); padding: 10px;
+    display: flex; gap: 6px; background: white;
+  }
+  .ai-input input {
+    flex: 1; padding: 6px 8px; border: 1px solid var(--mc-border);
+    border-radius: var(--radius-sm); font-size: 12px;
+  }
+
+  /* ---------- Tooltip for Red Zone ---------- */
+  .locked-tooltip {
+    position: absolute;
+    top: -4px; left: 50%; transform: translate(-50%, -100%);
+    background: #1f2933; color: white;
+    padding: 8px 12px; border-radius: var(--radius-sm); font-size: 11px;
+    width: 220px; line-height: 1.4;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    z-index: 10;
+  }
+  .locked-tooltip::after {
+    content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+    border: 6px solid transparent; border-top-color: #1f2933;
+  }
+  .locked-tooltip strong { display: block; margin-bottom: 3px; color: white; }
+
+  /* ---------- Publish flow styles ---------- */
+  .publish-menu {
+    position: absolute; top: 34px; right: 0;
+    background: white; border: 1px solid var(--mc-border); border-radius: var(--radius-md);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12); width: 260px; padding: 6px;
+    z-index: 20;
+  }
+  .publish-menu .menu-item {
+    padding: 10px 12px; border-radius: var(--radius-sm); cursor: pointer;
+    display: flex; gap: 10px; align-items: flex-start;
+  }
+  .publish-menu .menu-item:hover { background: var(--mc-blue-wash); }
+  .publish-menu .menu-item .icon { font-size: 14px; margin-top: 1px; }
+  .publish-menu .menu-item .title { font-size: 12px; font-weight: 600; margin-bottom: 2px; }
+  .publish-menu .menu-item .desc { font-size: 11px; color: var(--mc-text-muted); line-height: 1.35; }
+
+  .modal-overlay {
+    position: absolute; inset: 0; background: rgba(31, 41, 51, 0.5);
+    display: flex; align-items: center; justify-content: center; z-index: 30;
+  }
+  .modal {
+    background: white; border-radius: var(--radius-lg); width: 500px; max-width: 90%;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2); overflow: hidden;
+  }
+  .modal-header {
+    padding: 16px 20px; border-bottom: 1px solid var(--mc-border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .modal-header h3 { font-size: 15px; }
+  .modal-body { padding: 20px; }
+  .modal-footer {
+    padding: 12px 20px; border-top: 1px solid var(--mc-border); background: #fafbfc;
+    display: flex; justify-content: flex-end; gap: 8px;
+  }
+
+  .check-item {
+    display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px dashed var(--mc-border); font-size: 12px;
+  }
+  .check-item:last-child { border-bottom: none; }
+  .check-item .check-icon {
+    width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 600; flex-shrink: 0;
+  }
+  .check-item.pass .check-icon { background: var(--mc-success-bg); color: var(--mc-success); }
+  .check-item.warn .check-icon { background: var(--mc-warning-bg); color: var(--mc-warning); }
+  .check-item.fail .check-icon { background: var(--mc-error-bg); color: var(--mc-error); }
+  .check-item .check-body { flex: 1; }
+  .check-item .check-title { font-weight: 600; font-size: 12px; margin-bottom: 2px; }
+  .check-item .check-desc { font-size: 11px; color: var(--mc-text-muted); line-height: 1.4; }
+
+  .audit-row {
+    display: grid; grid-template-columns: 100px 80px 1fr 100px 24px;
+    gap: 12px; padding: 10px 12px;
+    border-bottom: 1px solid var(--mc-border); font-size: 12px; align-items: center;
+  }
+  .audit-row.header {
+    background: #fafbfc; font-size: 10px; text-transform: uppercase;
+    letter-spacing: 0.5px; color: var(--mc-text-muted); font-weight: 600;
+  }
+  .audit-row:last-child { border-bottom: none; }
+  .audit-row .timestamp { font-family: 'SF Mono', monospace; font-size: 11px; color: var(--mc-text-muted); }
+  .audit-row .user-badge {
+    display: inline-flex; align-items: center; gap: 4px; font-size: 11px;
+  }
+  .audit-row .avatar-sm {
+    width: 18px; height: 18px; border-radius: 50%;
+    background: var(--mc-blue); color: white; font-size: 9px; font-weight: 600;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .audit-row .revert-btn {
+    font-size: 11px; color: var(--mc-text-muted); cursor: pointer;
+  }
+  .audit-row .revert-btn:hover { color: var(--mc-blue); }
+
+  /* ---------- Side-by-side preview ---------- */
+  .split-preview { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; height: 100%; }
+  .split-pane { display: flex; flex-direction: column; overflow: hidden; }
+  .split-pane-header {
+    background: #fafbfc; border: 1px solid var(--mc-border); border-bottom: none;
+    padding: 6px 10px; font-size: 11px; font-weight: 600;
+    display: flex; align-items: center; gap: 8px;
+    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  }
+  .split-pane .canvas-wrap {
+    border: 1px solid var(--mc-border); border-top: none;
+    border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+    flex: 1; padding: 12px;
+  }
+
+  /* ---------- Legend ---------- */
+  .legend {
+    margin-top: 12px; display: flex; gap: 16px; font-size: 11px; color: var(--mc-text-muted);
+    padding: 10px 14px; background: #fafbfc; border: 1px solid var(--mc-border); border-radius: var(--radius-md);
+    flex-wrap: wrap;
+  }
+  .legend-item { display: inline-flex; align-items: center; gap: 6px; }
+  .legend-swatch {
+    width: 14px; height: 14px; border-radius: 3px; display: inline-block;
+  }
+  .legend-swatch.green-zone { background: white; border: 1px dashed var(--mc-border-strong); }
+  .legend-swatch.selected { background: white; border: 2px solid var(--mc-blue); }
+  .legend-swatch.red-zone { background: var(--mc-locked-bg); border: 1px solid var(--mc-locked); }
+  .legend-swatch.ai-tint { background: var(--mc-ai-tint); border: 1px solid var(--mc-ai-accent); }
+
+  /* ---------- Metric cards (workspace home) ---------- */
+  .metric-card {
+    background: white; border: 1px solid var(--mc-border); border-radius: var(--radius-md);
+    padding: 14px 16px; display: flex; flex-direction: column; gap: 4px;
+  }
+  .metric-card .metric-label {
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px;
+    color: var(--mc-text-muted); font-weight: 600;
+  }
+  .metric-card .metric-value {
+    font-size: 22px; font-weight: 600; color: var(--mc-text); line-height: 1.1;
+  }
+  .metric-card .metric-sub { font-size: 11px; color: var(--mc-text-muted); }
+  .metric-card.accent-blue { border-left: 3px solid var(--mc-blue); }
+  .metric-card.accent-amber { border-left: 3px solid var(--mc-warning); }
+  .metric-card.accent-green { border-left: 3px solid var(--mc-success); }
+  .metric-card.accent-ai { border-left: 3px solid var(--mc-ai-accent); }
+
+  /* ---------- Zone pill (consent / governance) ---------- */
+  .zone-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 10px; border-radius: 14px; font-size: 11px; font-weight: 500;
+    border: 1px solid var(--mc-border); background: white;
+  }
+  .zone-pill.eu { background: var(--mc-blue-wash); color: var(--mc-blue); border-color: var(--mc-blue); }
+  .zone-pill.us { background: #f5f0ff; color: var(--mc-ai-accent); border-color: var(--mc-ai-accent); }
+  .zone-pill.enabled { background: var(--mc-success-bg); color: var(--mc-success); border-color: var(--mc-success); }
+  .zone-pill.disabled { background: var(--mc-locked-bg); color: var(--mc-text-muted); border-color: var(--mc-border); }
+
+  /* ---------- Footer ---------- */
+  .doc-footer {
+    background: white; border-top: 1px solid var(--mc-border);
+    padding: 20px 40px; font-size: 12px; color: var(--mc-text-muted); text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<div class="doc-header">
+  <h1>Epic 1 — Platform Foundation & Operator Workspace Wireframes</h1>
+  <p>Foundation surfaces for the commercetools Next-Gen Frontend: project activation (Storefront Developer), the Operator Workspace home (Business Operator), and the Pages Manager. Direction follows the chosen UX: <strong>Merchant Center Native shell + expandable Split Studio AI panel</strong>. Epic 1 also activates behavioral collection (Epic 5) and ships the Epic 6 skeleton (SSO + data residency at procurement).</p>
+  <div class="meta">
+    <span>Author: Sally (UX)</span>
+    <span>Date: 2026-05-07</span>
+    <span>Status: Draft for review</span>
+    <span>Primary personas: Storefront Developer, Business Operator</span>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" data-tab="activation"><span class="tab-num">1</span> Tenant Activation & Project Connection</div>
+  <div class="tab" data-tab="workspace"><span class="tab-num">2</span> Operator Workspace (Home)</div>
+  <div class="tab" data-tab="pages"><span class="tab-num">3</span> Pages Manager</div>
+</div>
+
+<div id="tab-activation" class="tab-content active">
+  <div class="tab-intro">
+    <h2>1 — Tenant Activation & Project Connection</h2>
+    <p>First run. A Storefront Developer (with IT Admin sitting alongside) connects an existing commercetools project to the Next-Gen Frontend. This single flow is the procurement gate — SSO selection, data residency choice, and the behavioral-collection consent decision all happen here, because all three are legal/contractual decisions that cannot be retrofitted later. Once activation completes, the behavioral events pipeline is silently armed and the Operator Workspace is provisioned.</p>
+    <div class="frs">
+      <span class="fr-chip">FR34</span><span class="fr-chip">FR40</span><span class="fr-chip">FR42</span>
+      <span class="fr-chip">FR44</span><span class="fr-chip">FR25</span><span class="fr-chip">FR26</span>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 1A — Connect CT Project ============ -->
+  <div class="screen">
+    <div class="screen-header">
+      <h3>1A — Connect commercetools project: API credentials + region</h3>
+      <span class="tag">ProjectConnection wizard — step 1 of 4, developer-facing density</span>
+    </div>
+    <div class="screen-body">
+      <div class="editor-frame" style="height: 560px;">
+        <div class="editor-topbar">
+          <span class="logo">commercetools</span>
+          <span class="crumbs">Merchant Center › <strong>Next-Gen Frontend · Setup</strong></span>
+          <span class="spacer"></span>
+          <span style="font-size: 11px; opacity: 0.6;">Step 1 of 4</span>
+          <span class="user">LP</span>
+        </div>
+        <div class="context-bar">
+          <span class="chip active"><span class="dot"></span> Setup wizard</span>
+          <span class="chip">Storefront Developer</span>
+          <span class="spacer"></span>
+          <span style="font-size: 11px; color: var(--mc-text-muted);">Est. 6 min · credentials, residency, SSO, consent</span>
+        </div>
+        <div class="editor-main" style="grid-template-columns: 240px 1fr;">
+          <div style="background: #fafbfc; border-right: 1px solid var(--mc-border); padding: 18px 14px; font-size: 12px;">
+            <div style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.6px; color: var(--mc-text-muted); margin-bottom: 12px; font-weight: 600;">Activation steps</div>
+
+            <div style="display: flex; gap: 10px; padding: 8px 10px; border-radius: var(--radius-sm); background: var(--mc-blue-wash); margin-bottom: 4px;">
+              <div style="width: 20px; height: 20px; border-radius: 50%; background: var(--mc-blue); color: white; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600;">1</div>
+              <div style="flex: 1;">
+                <div style="font-weight: 600; color: var(--mc-blue);">Connect CT project</div>
+                <div style="font-size: 11px; color: var(--mc-text-muted);">API credentials + region</div>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 10px; padding: 8px 10px; border-radius: var(--radius-sm); margin-bottom: 4px;">
+              <div style="width: 20px; height: 20px; border-radius: 50%; background: var(--mc-border); color: var(--mc-text-muted); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600;">2</div>
+              <div style="flex: 1;">
+                <div style="font-weight: 500;">Data residency</div>
+                <div style="font-size: 11px; color: var(--mc-text-muted);">EU or US region</div>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 10px; padding: 8px 10px; border-radius: var(--radius-sm); margin-bottom: 4px;">
+              <div style="width: 20px; height: 20px; border-radius: 50%; background: var(--mc-border); color: var(--mc-text-muted); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600;">3</div>
+              <div style="flex: 1;">
+                <div style="font-weight: 500;">Identity & roles</div>
+                <div style="font-size: 11px; color: var(--mc-text-muted);">SSO (SAML/OIDC) + first admins</div>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 10px; padding: 8px 10px; border-radius: var(--radius-sm); margin-bottom: 4px;">
+              <div style="width: 20px; height: 20px; border-radius: 50%; background: var(--mc-border); color: var(--mc-text-muted); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600;">4</div>
+              <div style="flex: 1;">
+                <div style="font-weight: 500;">Behavioral collection</div>
+                <div style="font-size: 11px; color: var(--mc-text-muted);">ACI consent decision</div>
+              </div>
+            </div>
+
+            <div style="margin-top: 20px; padding: 10px; background: white; border: 1px dashed var(--mc-border-strong); border-radius: var(--radius-sm); font-size: 11px; color: var(--mc-text-muted);">
+              <strong style="color: var(--mc-text); font-size: 11px;">One-time setup</strong><br>
+              These choices shape your legal posture and cannot all be changed later. SSO + residency require re-provisioning.
+            </div>
+          </div>
+
+          <div style="padding: 28px 32px; overflow-y: auto; background: white;">
+            <h2 style="font-size: 18px; margin-bottom: 4px;">Connect your commercetools project</h2>
+            <p style="font-size: 13px; color: var(--mc-text-muted); margin-bottom: 22px;">Paste the API client credentials from Merchant Center → Developer Settings. The platform validates read access and reads your project region automatically.</p>
+
+            <div style="max-width: 560px; display: flex; flex-direction: column; gap: 14px;">
+              <div>
+                <label class="prop-label" style="font-size: 12px; font-weight: 500;">Project key</label>
+                <input class="prop-input" style="font-size: 13px; padding: 8px 10px;" value="tutorial-storefront-prod">
+                <div style="font-size: 11px; color: var(--mc-text-muted); margin-top: 4px;">Found in Merchant Center → Project settings</div>
+              </div>
+
+              <div>
+                <label class="prop-label" style="font-size: 12px; font-weight: 500;">Client ID</label>
+                <input class="prop-input" style="font-size: 13px; padding: 8px 10px; font-family: 'SF Mono', monospace;" value="Y8vBk4pQ-w2N7ZcXdRfT5sM9">
+              </div>
+
+              <div>
+                <label class="prop-label" style="font-size: 12px; font-weight: 500;">Client secret</label>
+                <input class="prop-input" type="password" style="font-size: 13px; padding: 8px 10px; font-family: 'SF Mono', monospace;" value="••••••••••••••••••••••••••••">
+                <div style="font-size: 11px; color: var(--mc-text-muted); margin-top: 4px;">Stored encrypted at rest. Scopes validated: <code>view_products</code>, <code>view_orders</code>, <code>manage_my_profile</code>.</div>
+              </div>
+
+              <div>
+                <label class="prop-label" style="font-size: 12px; font-weight: 500;">Project region <span class="governance-badge">detected</span></label>
+                <input class="prop-input locked" style="font-size: 13px; padding: 8px 10px;" value="europe-west1 (GCP · Belgium)" disabled>
+                <div style="font-size: 11px; color: var(--mc-text-muted); margin-top: 4px;">Auto-detected from CT project metadata. Storefront data residency is selected in step 2.</div>
+              </div>
+
+              <div style="padding: 14px 16px; background: var(--mc-success-bg); border: 1px solid var(--mc-success); border-radius: var(--radius-md); display: flex; gap: 12px; margin-top: 6px;">
+                <div style="width: 24px; height: 24px; border-radius: 50%; background: var(--mc-success); color: white; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600;">✓</div>
+                <div style="flex: 1; font-size: 12px;">
+                  <div style="font-weight: 600; color: var(--mc-success); margin-bottom: 2px;">Connection verified — 127 products, 4 categories, 2 stores detected</div>
+                  <div style="color: var(--mc-text-muted);">Project <code>tutorial-storefront-prod</code> responded with valid scopes. No API errors. Latency: 218ms to europe-west1.</div>
+                </div>
+              </div>
+
+              <div style="display: flex; gap: 10px; margin-top: 14px;">
+                <button class="btn-ghost" style="padding: 8px 16px; font-size: 13px;">Cancel setup</button>
+                <span class="spacer" style="flex: 1;"></span>
+                <button class="btn-ghost" style="padding: 8px 16px; font-size: 13px;">Test connection</button>
+                <button class="publish-btn" style="padding: 8px 18px; font-size: 13px;">Continue → Data residency</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-annotations">
+        <h4>Design Notes</h4>
+        <ul>
+          <li><strong>Wizard lives inside MC shell</strong> — same topbar, breadcrumb pattern, user avatar. Developers never leave Merchant Center. <em>(FR34)</em></li>
+          <li><strong>Four steps visible upfront</strong> — the sidebar makes the entire procurement gate transparent. No surprise "one more thing" later.</li>
+          <li><strong>Project region auto-detected, not selected</strong> — pulled from CT metadata. Prevents a mismatch between CT project region and storefront residency. Storefront residency is a separate step 2 decision.</li>
+          <li><strong>Live validation on credentials</strong> — "127 products, 4 categories, 2 stores detected" proves the connection works with the actual data, not just that auth succeeded.</li>
+          <li><strong>"One-time setup" caveat block</strong> — sets expectations honestly about what is and isn't reversible. SSO + residency require re-provisioning.</li>
+          <li><strong>Density matches Merchant Center developer surfaces</strong> — monospace font on IDs, concrete scope names, latency numbers. Operators never see this screen.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 1B — Data Residency + SSO + Consent ============ -->
+  <div class="screen">
+    <div class="screen-header">
+      <h3>1B — Data residency, SSO, and behavioral consent: the procurement gate</h3>
+      <span class="tag">ResidencySelector + SSOSelector + BehavioralConsentToggle — all three on one page</span>
+    </div>
+    <div class="screen-body">
+      <div class="editor-frame" style="height: 620px;">
+        <div class="editor-topbar">
+          <span class="logo">commercetools</span>
+          <span class="crumbs">Merchant Center › Next-Gen Frontend · Setup › <strong>Residency, SSO, Consent</strong></span>
+          <span class="spacer"></span>
+          <span style="font-size: 11px; opacity: 0.6;">Steps 2–4 of 4</span>
+          <span class="user">LP</span>
+        </div>
+        <div class="context-bar">
+          <span class="chip active"><span class="dot"></span> Setup wizard</span>
+          <span class="chip">Storefront Developer</span>
+          <span class="chip">IT Admin co-reviewer</span>
+          <span class="spacer"></span>
+          <span style="font-size: 11px; color: var(--mc-text-muted);">⚠ Legal & contractual decisions — review with your DPO</span>
+        </div>
+        <div class="editor-main" style="grid-template-columns: 1fr;">
+          <div style="padding: 24px 32px; overflow-y: auto; background: white; display: flex; flex-direction: column; gap: 22px;">
+
+            <!-- Step 2: Data residency -->
+            <div style="border: 1px solid var(--mc-border); border-radius: var(--radius-md); overflow: hidden;">
+              <div style="padding: 14px 18px; background: #fafbfc; border-bottom: 1px solid var(--mc-border); display: flex; align-items: center; gap: 10px;">
+                <div style="width: 22px; height: 22px; border-radius: 50%; background: var(--mc-blue); color: white; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600;">2</div>
+                <div style="flex: 1;">
+                  <div style="font-size: 13px; font-weight: 600;">Data residency</div>
+                  <div style="font-size: 11px; color: var(--mc-text-muted);">Where behavioral, tenant config, and AI Experience Engine data is stored — <strong>cannot be changed after activation without re-provisioning</strong>. <em>(FR44)</em></div>
+                </div>
+              </div>
+              <div style="padding: 18px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px;" data-region-toggle>
+                <button style="border: 2px solid var(--mc-blue); background: var(--mc-blue-wash); border-radius: var(--radius-md); padding: 16px; text-align: left; cursor: pointer; font-family: inherit;" class="active">
+                  <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                    <span class="zone-pill eu">🇪🇺 EU region</span>
+                    <span style="font-size: 11px; color: var(--mc-success);">✓ Recommended for EU-based tenants</span>
+                  </div>
+                  <div style="font-size: 12px; font-weight: 600; margin-bottom: 4px;">europe-west1 · Belgium (GCP)</div>
+                  <div style="font-size: 11px; color: var(--mc-text-muted); line-height: 1.5;">
+                    GDPR-native. Data stays within EU at rest and in transit. ClickHouse behavioral store, Postgres tenant config, and Neon preview branches all pinned to EU-WEST. SCCs not required.
+                  </div>
+                </button>
+                <button style="border: 1px solid var(--mc-border); background: white; border-radius: var(--radius-md); padding: 16px; text-align: left; cursor: pointer; font-family: inherit;">
+                  <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                    <span class="zone-pill us">🇺🇸 US region</span>
+                  </div>
+                  <div style="font-size: 12px; font-weight: 600; margin-bottom: 4px;">us-east4 · Virginia (GCP)</div>
+                  <div style="font-size: 11px; color: var(--mc-text-muted); line-height: 1.5;">
+                    For US-headquartered tenants or those with primary US customer base. EU-US Data Privacy Framework applies; SCCs auto-generated for EU data subjects.
+                  </div>
+                </button>
+              </div>
+              <div style="padding: 10px 18px; background: var(--mc-warning-bg); border-top: 1px solid var(--mc-warning); font-size: 11px; color: var(--mc-warning); display: flex; gap: 8px; align-items: flex-start;">
+                <span>⚠</span>
+                <div>
+                  <strong>Residency is a provisioning-time choice.</strong> Switching regions later requires a full tenant re-provision — behavioral history does not transfer (the moat starts fresh). Align this choice with your DPA before continuing.
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 3: SSO -->
+            <div style="border: 1px solid var(--mc-border); border-radius: var(--radius-md); overflow: hidden;">
+              <div style="padding: 14px 18px; background: #fafbfc; border-bottom: 1px solid var(--mc-border); display: flex; align-items: center; gap: 10px;">
+                <div style="width: 22px; height: 22px; border-radius: 50%; background: var(--mc-blue); color: white; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600;">3</div>
+                <div style="flex: 1;">
+                  <div style="font-size: 13px; font-weight: 600;">Identity & single sign-on</div>
+                  <div style="font-size: 11px; color: var(--mc-text-muted);">MC session auth is already active — this adds enterprise SSO for governed role assignment. Full SCIM/OIDC in Epic 6. <em>(FR40, FR42)</em></div>
+                </div>
+              </div>
+              <div style="padding: 18px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
+                <div style="border: 1px solid var(--mc-border); border-radius: var(--radius-md); padding: 14px; cursor: pointer;">
+                  <div style="font-size: 13px; font-weight: 600; margin-bottom: 4px;">🔐 MC session auth only</div>
+                  <div style="font-size: 11px; color: var(--mc-text-muted); line-height: 1.5;">Default. Users sign in through Merchant Center; no additional IdP required. Suitable for CT-only shops.</div>
+                  <div style="margin-top: 8px;"><span class="zone-pill enabled">✓ Active now</span></div>
+                </div>
+                <div style="border: 2px solid var(--mc-blue); background: var(--mc-blue-wash); border-radius: var(--radius-md); padding: 14px; cursor: pointer;">
+                  <div style="font-size: 13px; font-weight: 600; margin-bottom: 4px; color: var(--mc-blue);">🏢 SAML 2.0</div>
+                  <div style="font-size: 11px; color: var(--mc-text-muted); line-height: 1.5;">Okta, Azure AD, Ping, Auth0. Upload SP metadata; we issue signing cert. IdP-initiated or SP-initiated.</div>
+                  <div style="margin-top: 8px;"><span class="zone-pill" style="background: var(--mc-blue-wash); color: var(--mc-blue); border-color: var(--mc-blue);">● Selected</span></div>
+                </div>
+                <div style="border: 1px solid var(--mc-border); border-radius: var(--radius-md); padding: 14px; cursor: pointer;">
+                  <div style="font-size: 13px; font-weight: 600; margin-bottom: 4px;">🔗 OIDC</div>
+                  <div style="font-size: 11px; color: var(--mc-text-muted); line-height: 1.5;">Generic OIDC provider. Configure discovery URL + client credentials; we handle the handshake.</div>
+                  <div style="margin-top: 8px;"><span class="zone-pill disabled">Available</span></div>
+                </div>
+              </div>
+              <div style="padding: 14px 18px; background: #fafbfc; border-top: 1px solid var(--mc-border); display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: end;">
+                <div>
+                  <label class="prop-label" style="font-size: 11px; font-weight: 500;">SAML metadata URL</label>
+                  <input class="prop-input" style="font-size: 12px; font-family: 'SF Mono', monospace;" value="https://okta.tutorial.com/app/xyz/sso/saml/metadata">
+                </div>
+                <div>
+                  <label class="prop-label" style="font-size: 11px; font-weight: 500;">First IT Admin email</label>
+                  <input class="prop-input" style="font-size: 12px;" value="it-admin@tutorial.com">
+                  <div style="font-size: 10px; color: var(--mc-text-muted); margin-top: 2px;">Receives the DPA + activation receipt</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 4: Behavioral consent -->
+            <div style="border: 1px solid var(--mc-ai-accent); border-radius: var(--radius-md); overflow: hidden; background: var(--mc-ai-tint);">
+              <div style="padding: 14px 18px; background: white; border-bottom: 1px solid var(--mc-border); display: flex; align-items: center; gap: 10px;">
+                <div style="width: 22px; height: 22px; border-radius: 50%; background: var(--mc-ai-accent); color: white; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600;">4</div>
+                <div style="flex: 1;">
+                  <div style="font-size: 13px; font-weight: 600;">Behavioral collection — activate the AI moat</div>
+                  <div style="font-size: 11px; color: var(--mc-text-muted);">Controls whether the platform begins collecting anonymized behavioral events the moment your CT project is connected. Required for AI Experience Engine (Epic 8) downstream. <em>(FR25, FR26)</em></div>
+                </div>
+              </div>
+              <div style="padding: 18px;">
+                <div style="display: flex; gap: 14px; align-items: flex-start; padding: 14px; background: white; border: 1px solid var(--mc-ai-accent); border-radius: var(--radius-md);">
+                  <div style="width: 38px; height: 22px; border-radius: 12px; background: var(--mc-ai-accent); position: relative; flex-shrink: 0;">
+                    <div style="position: absolute; top: 2px; right: 2px; width: 18px; height: 18px; border-radius: 50%; background: white;"></div>
+                  </div>
+                  <div style="flex: 1;">
+                    <div style="font-size: 13px; font-weight: 600; margin-bottom: 4px; color: var(--mc-ai-accent);">Enable behavioral collection at activation</div>
+                    <div style="font-size: 11px; color: var(--mc-text-muted); line-height: 1.5; margin-bottom: 10px;">
+                      When you go live, the platform will silently begin ingesting anonymized session events (scroll, click, cart interaction) to ClickHouse. <strong>End-consumer cookie consent is always required at the storefront</strong> — this setting does not override GDPR; it arms the pipeline so the moat starts accumulating from day one.
+                    </div>
+                    <div style="display: flex; gap: 8px; font-size: 11px;">
+                      <span class="zone-pill enabled">✓ Aggregate behavioral (recommended)</span>
+                      <span class="zone-pill disabled">Identity-linked (CLV tier) — requires consumer opt-in</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div style="margin-top: 14px; padding: 12px 14px; background: white; border: 1px dashed var(--mc-border-strong); border-radius: var(--radius-sm); font-size: 11px; color: var(--mc-text-muted); line-height: 1.5;">
+                  <strong style="color: var(--mc-text);">What this doesn't do:</strong> does not enable PII collection, does not override storefront consent banner, does not bypass PCI boundary (checkout flows stay untracked — FR49). <strong style="color: var(--mc-text);">What this does do:</strong> provisions the ClickHouse schema, wires the events SDK into the MC Custom Application, and starts the 13-month retention clock the moment the first event lands (FR28).
+                </div>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 10px; margin-top: 6px;">
+              <button class="btn-ghost" style="padding: 8px 16px; font-size: 13px;">← Back</button>
+              <span class="spacer" style="flex: 1;"></span>
+              <button class="btn-ghost" style="padding: 8px 16px; font-size: 13px;">Download DPA draft</button>
+              <button class="publish-btn" style="padding: 8px 18px; font-size: 13px;">Activate tenant →</button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <div class="screen-annotations">
+        <h4>Design Notes</h4>
+        <ul>
+          <li><strong>Three legal decisions collapsed into one page</strong> — residency, SSO, behavioral consent are all contractual at activation time. Splitting them across screens makes it too easy to defer or misalign. <em>(FR40, FR44, FR26)</em></li>
+          <li><strong>Residency warning is prominent, not buried</strong> — amber bar explicitly names the consequence: "behavioral history does not transfer." The moat narrative is honest.</li>
+          <li><strong>SSO selection ships a real skeleton</strong> — SAML + OIDC are selectable; MC session auth stays available. Epic 6 full SCIM/governance comes later but the procurement gate works today. <em>(FR40)</em></li>
+          <li><strong>Behavioral consent is violet-tinted, not alarming</strong> — it's an AI-era decision framed as "arm the moat" rather than a legal warning. The fine print clarifies the PCI/consent boundaries explicitly.</li>
+          <li><strong>DPO cue in context bar</strong> — "Legal & contractual decisions — review with your DPO" warns IT Admins this isn't a developer-only click-through.</li>
+          <li><strong>Activate button copy is deliberate</strong> — "Activate tenant →" not "Finish." The moment of commitment is named.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 1C — Post-activation receipt + CLI handoff ============ -->
+  <div class="screen">
+    <div class="screen-header">
+      <h3>1C — Activation complete: receipt, moat starts, developer handoff</h3>
+      <span class="tag">ActivationReceipt + Epic 5 pipeline live + CLI instructions for component library bootstrap</span>
+    </div>
+    <div class="screen-body">
+      <div class="editor-frame" style="height: 560px;">
+        <div class="editor-topbar">
+          <span class="logo">commercetools</span>
+          <span class="crumbs">Merchant Center › Next-Gen Frontend · <strong>Activation complete</strong></span>
+          <span class="spacer"></span>
+          <span class="user">LP</span>
+        </div>
+        <div class="context-bar">
+          <span class="chip live"><span class="dot"></span> Tenant live</span>
+          <span class="chip" style="background: var(--mc-ai-tint); color: var(--mc-ai-accent); border-color: var(--mc-ai-accent);"><span class="dot"></span> Behavioral collection armed</span>
+          <span class="chip eu" style="display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 500; border: 1px solid var(--mc-blue); background: var(--mc-blue-wash); color: var(--mc-blue);">🇪🇺 EU-WEST1</span>
+          <span class="spacer"></span>
+          <button class="publish-btn" style="padding: 5px 14px;">Go to Operator Workspace →</button>
+        </div>
+        <div class="editor-main" style="grid-template-columns: 1fr;">
+          <div style="padding: 24px 32px; overflow-y: auto; background: white;">
+
+            <div style="display: flex; gap: 16px; align-items: flex-start; padding: 20px; background: var(--mc-success-bg); border: 1px solid var(--mc-success); border-radius: var(--radius-md); margin-bottom: 22px;">
+              <div style="width: 42px; height: 42px; border-radius: 50%; background: var(--mc-success); color: white; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 600; flex-shrink: 0;">✓</div>
+              <div style="flex: 1;">
+                <div style="font-size: 16px; font-weight: 600; color: var(--mc-success); margin-bottom: 4px;">Tenant activated — Tutorial (tutorial-storefront-prod)</div>
+                <div style="font-size: 12px; color: var(--mc-text); line-height: 1.5;">
+                  Your Next-Gen Frontend tenant is live in EU-WEST1. MC session auth + SAML SSO (Okta) are active. Behavioral collection is armed and will begin ingesting events the moment your storefront goes live. The DPA has been emailed to <strong>it-admin@tutorial.com</strong>.
+                </div>
+              </div>
+              <div style="text-align: right; font-size: 11px; color: var(--mc-text-muted);">
+                Activation ID<br>
+                <code style="font-size: 11px; color: var(--mc-text);">act_7kQmR2Xp9L</code>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px;">
+              <div class="metric-card accent-blue">
+                <span class="metric-label">Region</span>
+                <span class="metric-value" style="font-size: 16px;">EU-WEST1</span>
+                <span class="metric-sub">Belgium · GCP</span>
+              </div>
+              <div class="metric-card accent-green">
+                <span class="metric-label">SSO</span>
+                <span class="metric-value" style="font-size: 16px;">SAML 2.0</span>
+                <span class="metric-sub">Okta · 1 admin provisioned</span>
+              </div>
+              <div class="metric-card accent-ai">
+                <span class="metric-label">Behavioral collection</span>
+                <span class="metric-value" style="font-size: 16px;">Armed</span>
+                <span class="metric-sub">13-month retention · aggregate</span>
+              </div>
+              <div class="metric-card accent-amber">
+                <span class="metric-label">Next milestone</span>
+                <span class="metric-value" style="font-size: 16px;">Library</span>
+                <span class="metric-sub">Bootstrap component library</span>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 360px; gap: 20px;">
+              <div>
+                <h3 style="font-size: 14px; font-weight: 600; margin-bottom: 10px;">Developer handoff — bootstrap your component library</h3>
+                <p style="font-size: 12px; color: var(--mc-text-muted); margin-bottom: 14px;">The Operator Workspace is ready, but there are no pages or components yet. Install the CLI, scaffold a library from your existing Frontastic/Next.js codebase (or start fresh), and publish via the Developer Console (Epic 2).</p>
+
+                <div style="background: #1f2933; color: #e6e6e6; border-radius: var(--radius-md); padding: 16px; font-family: 'SF Mono', monospace; font-size: 12px; line-height: 1.7;">
+                  <div style="color: #6b7280;"># 1. Install the CLI</div>
+                  <div>$ npm i -g @commercetools/ngf-cli</div>
+                  <div style="margin-top: 10px; color: #6b7280;"># 2. Login with your SSO</div>
+                  <div>$ ngf auth login --tenant tutorial</div>
+                  <div style="margin-top: 10px; color: #6b7280;"># 3. Scaffold the library from an existing codebase</div>
+                  <div>$ ngf scaffold --from ./frontastic-src --out ./ngf-library</div>
+                  <div style="margin-top: 10px; color: #6b7280;"># 4. Open the Developer Console → Component Library</div>
+                  <div>$ ngf console open</div>
+                </div>
+
+                <div style="margin-top: 14px; padding: 12px 14px; background: var(--mc-blue-wash); border-radius: var(--radius-sm); font-size: 12px; color: var(--mc-text); display: flex; gap: 10px; align-items: flex-start;">
+                  <span style="color: var(--mc-blue);">💡</span>
+                  <div>
+                    <strong>Behavioral events started flowing at 14:22:06 UTC</strong> — even before your first page publishes. The platform ingests a null baseline so the AI Experience Engine has a zero-point when real traffic arrives.
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <h3 style="font-size: 14px; font-weight: 600; margin-bottom: 10px;">What's next</h3>
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                  <div style="display: flex; gap: 10px; padding: 12px; border: 1px solid var(--mc-border); border-radius: var(--radius-sm);">
+                    <div style="width: 26px; height: 26px; border-radius: 50%; background: var(--mc-blue-wash); color: var(--mc-blue); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600;">1</div>
+                    <div style="flex: 1; font-size: 12px;">
+                      <strong>Build the component library</strong> (Epic 2)<br>
+                      <span style="color: var(--mc-text-muted); font-size: 11px;">Developer Console · Green/Red Zones · 30–90 min</span>
+                    </div>
+                  </div>
+                  <div style="display: flex; gap: 10px; padding: 12px; border: 1px solid var(--mc-border); border-radius: var(--radius-sm);">
+                    <div style="width: 26px; height: 26px; border-radius: 50%; background: var(--mc-blue-wash); color: var(--mc-blue); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600;">2</div>
+                    <div style="flex: 1; font-size: 12px;">
+                      <strong>Operators build the storefront</strong> (Epic 3)<br>
+                      <span style="color: var(--mc-text-muted); font-size: 11px;">Canvas editor · Workspace is ready for them</span>
+                    </div>
+                  </div>
+                  <div style="display: flex; gap: 10px; padding: 12px; border: 1px solid var(--mc-border); border-radius: var(--radius-sm);">
+                    <div style="width: 26px; height: 26px; border-radius: 50%; background: var(--mc-blue-wash); color: var(--mc-blue); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600;">3</div>
+                    <div style="flex: 1; font-size: 12px;">
+                      <strong>AI Experience Engine unlocks</strong> (Epic 8)<br>
+                      <span style="color: var(--mc-text-muted); font-size: 11px;">After ~2,000 qualified sessions · 10 free experiments</span>
+                    </div>
+                  </div>
+                  <div style="display: flex; gap: 10px; padding: 12px; border: 1px dashed var(--mc-border); border-radius: var(--radius-sm); opacity: 0.7;">
+                    <div style="width: 26px; height: 26px; border-radius: 50%; background: var(--mc-border); color: var(--mc-text-muted); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600;">4</div>
+                    <div style="flex: 1; font-size: 12px;">
+                      <strong>Finish Epic 6 provisioning</strong><br>
+                      <span style="color: var(--mc-text-muted); font-size: 11px;">SCIM + multi-brand + usage dashboard · when ready</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <div class="screen-annotations">
+        <h4>Design Notes</h4>
+        <ul>
+          <li><strong>The moat starts before the UI</strong> — the receipt explicitly calls out "Behavioral events started flowing at 14:22:06 UTC." This is Epic 5 infrastructure activating inside Epic 1. <em>(FR25)</em></li>
+          <li><strong>Metric cards summarize the entire procurement gate</strong> — region, SSO, behavioral, next milestone. Legal/IT can screenshot this for their records.</li>
+          <li><strong>Activation ID shown monospace</strong> — support reference, audit trail. Enterprise trust signal.</li>
+          <li><strong>CLI block is the real handoff</strong> — developers need to scaffold the component library (Epic 2) before operators can do anything. The wizard doesn't pretend this step is optional.</li>
+          <li><strong>"What's next" roadmap</strong> — shows the epic sequence without BMad jargon. Step 4 (Epic 6 full) is muted so IT Admins see where to return later without feeling behind.</li>
+          <li><strong>Go to Operator Workspace button in context bar</strong> — the CTA for the Business Operator is always one click away even while the developer is absorbing the receipt.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="tab-workspace" class="tab-content">
+  <div class="tab-intro">
+    <h2>2 — Operator Workspace (Home)</h2>
+    <p>Where the Business Operator lands after logging into the Next-Gen Frontend. Warm, approachable, skimmable. Surfaces draft work that needs attention, publish status, AI suggestions from the governed library, behavioral signals that arrived overnight, and the onboarding checklist while the tenant is still young. This is the day-to-day home — more dashboard than editor, but with every card a deep link into Epic 3/4/8 surfaces.</p>
+    <div class="frs">
+      <span class="fr-chip">FR1</span><span class="fr-chip">FR22</span><span class="fr-chip">FR42</span>
+      <span class="fr-chip">FR56</span><span class="fr-chip">FR61</span>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 2A — Workspace Home (First Run / Young Tenant) ============ -->
+  <div class="screen">
+    <div class="screen-header">
+      <h3>2A — Workspace Home: young tenant with onboarding checklist</h3>
+      <span class="tag">OperatorWorkspace (first-7-days state) — onboarding + zero-state cards</span>
+    </div>
+    <div class="screen-body">
+      <div class="editor-frame" style="height: 640px;">
+        <div class="editor-topbar">
+          <span class="logo">commercetools</span>
+          <span class="crumbs">Tutorial › <strong>Storefront · Workspace</strong></span>
+          <span class="spacer"></span>
+          <span style="font-size: 11px; opacity: 0.6;">⌘K</span>
+          <span class="user">SM</span>
+        </div>
+        <div class="context-bar">
+          <span class="chip active"><span class="dot"></span> B2C</span>
+          <span class="chip">en-GB ▾</span>
+          <span class="chip">Guest ▾</span>
+          <span class="chip" style="background: var(--mc-ai-tint); color: var(--mc-ai-accent); border-color: var(--mc-ai-accent);"><span class="dot"></span> Intelligence: calibrating</span>
+          <span class="spacer"></span>
+          <span style="font-size: 11px; color: var(--mc-text-muted);">Day 3 of 14 onboarding window</span>
+          <button class="publish-btn" style="padding: 5px 14px;">+ New page</button>
+        </div>
+        <div class="editor-main" style="grid-template-columns: 56px 1fr;">
+          <div class="nav-rail">
+            <div class="nav-item active">🏠<span class="label">Workspace</span></div>
+            <div class="nav-item">📄<span class="label">Pages</span></div>
+            <div class="nav-item">🧩<span class="label">Components</span></div>
+            <div class="nav-item">🌿<span class="label">Branches</span></div>
+            <div class="nav-item">📊<span class="label">Heatmap</span></div>
+            <div class="nav-item">📜<span class="label">Audit log</span></div>
+            <div class="nav-item">⚙<span class="label">Settings</span></div>
+          </div>
+          <div style="padding: 24px 32px; overflow-y: auto; background: var(--mc-bg);">
+
+            <!-- Greeting -->
+            <div style="display: flex; align-items: flex-end; gap: 16px; margin-bottom: 20px;">
+              <div>
+                <div style="font-size: 20px; font-weight: 600; margin-bottom: 2px;">Good morning, Sasha</div>
+                <div style="font-size: 12px; color: var(--mc-text-muted);">Thursday, 7 May 2026 · Your storefront is 3 days old — the moat is just starting to form</div>
+              </div>
+              <span class="spacer" style="flex: 1;"></span>
+              <button class="btn-ghost" style="padding: 6px 12px;">↷ Jump to editor</button>
+            </div>
+
+            <!-- Top metric strip -->
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px;">
+              <div class="metric-card accent-blue">
+                <span class="metric-label">Pages</span>
+                <span class="metric-value">4</span>
+                <span class="metric-sub">1 live · 2 draft · 1 staged</span>
+              </div>
+              <div class="metric-card accent-amber">
+                <span class="metric-label">Draft changes</span>
+                <span class="metric-value">7</span>
+                <span class="metric-sub">across 2 pages · oldest 2d</span>
+              </div>
+              <div class="metric-card accent-green">
+                <span class="metric-label">Published (last 7d)</span>
+                <span class="metric-value">3</span>
+                <span class="metric-sub">0 rollbacks · 1 a11y warning</span>
+              </div>
+              <div class="metric-card accent-ai">
+                <span class="metric-label">Tenant intelligence</span>
+                <span class="metric-value" style="color: var(--mc-ai-accent);">12%</span>
+                <span class="metric-sub">Calibrating · 210/2000 sessions</span>
+              </div>
+            </div>
+
+            <!-- Two-column main -->
+            <div style="display: grid; grid-template-columns: 1fr 340px; gap: 20px;">
+
+              <!-- Left column: drafts, recent activity, AI suggestions -->
+              <div style="display: flex; flex-direction: column; gap: 16px;">
+
+                <!-- Draft changes card -->
+                <div style="background: white; border: 1px solid var(--mc-border); border-radius: var(--radius-md); overflow: hidden;">
+                  <div style="padding: 12px 16px; border-bottom: 1px solid var(--mc-border); display: flex; align-items: center; gap: 10px;">
+                    <h3 style="font-size: 13px; font-weight: 600;">✏ Draft changes needing attention</h3>
+                    <span class="chip draft" style="font-size: 10px;"><span class="dot"></span> 7 drafts</span>
+                    <span class="spacer" style="flex: 1;"></span>
+                    <a href="#" style="font-size: 11px; color: var(--mc-blue);">View all →</a>
+                  </div>
+                  <div>
+                    <div style="padding: 12px 16px; border-bottom: 1px solid var(--mc-border); display: flex; align-items: center; gap: 12px;">
+                      <div style="width: 32px; height: 32px; border-radius: var(--radius-sm); background: var(--mc-warning-bg); display: flex; align-items: center; justify-content: center; font-size: 14px;">📄</div>
+                      <div style="flex: 1;">
+                        <div style="font-size: 13px; font-weight: 500;">Home · Summer Collection launch</div>
+                        <div style="font-size: 11px; color: var(--mc-text-muted);">3 draft changes · last edited 2h ago by Sasha · B2C · en-GB</div>
+                      </div>
+                      <span class="chip draft" style="font-size: 10px;"><span class="dot"></span> 3</span>
+                      <button class="btn-ghost" style="font-size: 11px;">Open in editor →</button>
+                    </div>
+                    <div style="padding: 12px 16px; border-bottom: 1px solid var(--mc-border); display: flex; align-items: center; gap: 12px;">
+                      <div style="width: 32px; height: 32px; border-radius: var(--radius-sm); background: var(--mc-warning-bg); display: flex; align-items: center; justify-content: center; font-size: 14px;">📄</div>
+                      <div style="flex: 1;">
+                        <div style="font-size: 13px; font-weight: 500;">Product listing · Men's shoes</div>
+                        <div style="font-size: 11px; color: var(--mc-text-muted);">4 draft changes · last edited yesterday by Leandro · B2C · en-GB</div>
+                      </div>
+                      <span class="chip draft" style="font-size: 10px;"><span class="dot"></span> 4</span>
+                      <button class="btn-ghost" style="font-size: 11px;">Open →</button>
+                    </div>
+                    <div style="padding: 12px 16px; display: flex; align-items: center; gap: 12px; background: var(--mc-warning-bg);">
+                      <div style="width: 32px; height: 32px; border-radius: var(--radius-sm); background: white; display: flex; align-items: center; justify-content: center; font-size: 14px;">⚠</div>
+                      <div style="flex: 1;">
+                        <div style="font-size: 12px; font-weight: 500; color: var(--mc-warning);">Staged 2 days ago · "Checkout button copy test"</div>
+                        <div style="font-size: 11px; color: var(--mc-text-muted);">Preview link shared with 3 reviewers · no feedback yet. Publish or discard?</div>
+                      </div>
+                      <button class="btn-ghost" style="font-size: 11px;">Resolve →</button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Recent activity -->
+                <div style="background: white; border: 1px solid var(--mc-border); border-radius: var(--radius-md); overflow: hidden;">
+                  <div style="padding: 12px 16px; border-bottom: 1px solid var(--mc-border); display: flex; align-items: center; gap: 10px;">
+                    <h3 style="font-size: 13px; font-weight: 600;">🕒 Recent activity</h3>
+                    <span class="spacer" style="flex: 1;"></span>
+                    <a href="#" style="font-size: 11px; color: var(--mc-blue);">Open audit log →</a>
+                  </div>
+                  <div>
+                    <div style="padding: 10px 16px; border-bottom: 1px solid var(--mc-border); display: flex; align-items: center; gap: 10px; font-size: 12px;">
+                      <div class="avatar-sm" style="background: var(--mc-blue);">LP</div>
+                      <div style="flex: 1;">
+                        <strong>Leandro</strong> published HeroBanner copy change to B2C · en-GB
+                      </div>
+                      <span style="color: var(--mc-text-muted); font-size: 11px;">2h ago</span>
+                    </div>
+                    <div style="padding: 10px 16px; border-bottom: 1px solid var(--mc-border); display: flex; align-items: center; gap: 10px; font-size: 12px;">
+                      <div class="avatar-sm" style="background: var(--mc-ai-accent);">SM</div>
+                      <div style="flex: 1;">
+                        <strong>Sasha</strong> created draft "Summer Collection launch" on Home
+                      </div>
+                      <span style="color: var(--mc-text-muted); font-size: 11px;">Today 09:14</span>
+                    </div>
+                    <div style="padding: 10px 16px; border-bottom: 1px solid var(--mc-border); display: flex; align-items: center; gap: 10px; font-size: 12px;">
+                      <div class="avatar-sm" style="background: #0891b2;">AI</div>
+                      <div style="flex: 1;">
+                        <strong>AI agent</strong> collected 218 behavioral sessions overnight · threshold 2,000
+                      </div>
+                      <span style="color: var(--mc-text-muted); font-size: 11px;">Today 06:00</span>
+                    </div>
+                    <div style="padding: 10px 16px; display: flex; align-items: center; gap: 10px; font-size: 12px;">
+                      <div class="avatar-sm" style="background: var(--mc-success);">IT</div>
+                      <div style="flex: 1;">
+                        <strong>IT Admin</strong> invited 2 new Brand Editors (pending acceptance)
+                      </div>
+                      <span style="color: var(--mc-text-muted); font-size: 11px;">Yesterday</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- AI suggestions card (muted / calibrating) -->
+                <div style="background: white; border: 1px solid var(--mc-ai-accent); border-radius: var(--radius-md); overflow: hidden;">
+                  <div style="padding: 12px 16px; background: var(--mc-ai-tint); border-bottom: 1px solid var(--mc-border); display: flex; align-items: center; gap: 10px;">
+                    <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--mc-ai-accent);"></span>
+                    <h3 style="font-size: 13px; font-weight: 600; color: var(--mc-ai-accent);">✨ AI suggestions from your library</h3>
+                    <span class="spacer" style="flex: 1;"></span>
+                    <span style="font-size: 11px; color: var(--mc-text-muted);">Uses components only from your published library</span>
+                  </div>
+                  <div style="padding: 14px 16px;">
+                    <div style="padding: 12px; border: 1px solid var(--mc-border); border-radius: var(--radius-sm); margin-bottom: 10px; display: flex; gap: 12px; align-items: flex-start;">
+                      <div style="width: 28px; height: 28px; border-radius: var(--radius-sm); background: var(--mc-ai-tint); color: var(--mc-ai-accent); display: flex; align-items: center; justify-content: center; font-size: 14px;">💡</div>
+                      <div style="flex: 1;">
+                        <div style="font-size: 12px; font-weight: 600; margin-bottom: 2px;">Your Home page is missing a TestimonialsCarousel</div>
+                        <div style="font-size: 11px; color: var(--mc-text-muted); line-height: 1.5;">Operators on similar catalogs (home + hero + grid pattern) typically see 4–7% conversion lift with a testimonials section after the grid. Your library has a governed <code>TestimonialsCarousel</code> component ready.</div>
+                        <div style="margin-top: 8px; display: flex; gap: 6px;">
+                          <button class="btn-primary" style="font-size: 11px;">Preview in editor</button>
+                          <button class="btn-ghost" style="font-size: 11px;">Dismiss</button>
+                        </div>
+                      </div>
+                    </div>
+                    <div style="padding: 12px; border: 1px solid var(--mc-border); border-radius: var(--radius-sm); display: flex; gap: 12px; align-items: flex-start; opacity: 0.75;">
+                      <div style="width: 28px; height: 28px; border-radius: var(--radius-sm); background: var(--mc-locked-bg); color: var(--mc-text-muted); display: flex; align-items: center; justify-content: center; font-size: 14px;">🔒</div>
+                      <div style="flex: 1;">
+                        <div style="font-size: 12px; font-weight: 500; margin-bottom: 2px;">Optimize recommendations unlock in ~1,790 sessions</div>
+                        <div style="font-size: 11px; color: var(--mc-text-muted); line-height: 1.5;">Canvas-anchored behavioral recommendations (FR56) activate once your tenant reaches 2,000 qualified sessions. You're 210 in. Keep shipping — the moat compounds.</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- Right column: onboarding checklist + team -->
+              <div style="display: flex; flex-direction: column; gap: 16px;">
+
+                <!-- Onboarding checklist -->
+                <div style="background: white; border: 1px solid var(--mc-border); border-left: 3px solid var(--mc-ai-accent); border-radius: var(--radius-md); overflow: hidden;">
+                  <div style="padding: 12px 14px; border-bottom: 1px solid var(--mc-border);">
+                    <h3 style="font-size: 13px; font-weight: 600;">🎯 First 14 days</h3>
+                    <div style="font-size: 11px; color: var(--mc-text-muted); margin-top: 2px;">4 of 7 complete · dismiss when ready</div>
+                    <div style="height: 4px; background: var(--mc-border); border-radius: 2px; margin-top: 8px; overflow: hidden;">
+                      <div style="width: 57%; height: 100%; background: var(--mc-ai-accent);"></div>
+                    </div>
+                  </div>
+                  <div style="padding: 6px 0;">
+                    <div class="check-item pass" style="padding: 8px 14px; border: none;">
+                      <div class="check-icon">✓</div>
+                      <div class="check-body">
+                        <div class="check-title">Activate tenant</div>
+                        <div class="check-desc">EU-WEST1 · SAML SSO · 3 days ago</div>
+                      </div>
+                    </div>
+                    <div class="check-item pass" style="padding: 8px 14px; border: none;">
+                      <div class="check-icon">✓</div>
+                      <div class="check-body">
+                        <div class="check-title">Publish first component library</div>
+                        <div class="check-desc">18 components · 3 Red Zone</div>
+                      </div>
+                    </div>
+                    <div class="check-item pass" style="padding: 8px 14px; border: none;">
+                      <div class="check-icon">✓</div>
+                      <div class="check-body">
+                        <div class="check-title">Invite Brand Editors</div>
+                        <div class="check-desc">2 pending · 1 accepted</div>
+                      </div>
+                    </div>
+                    <div class="check-item pass" style="padding: 8px 14px; border: none;">
+                      <div class="check-icon">✓</div>
+                      <div class="check-body">
+                        <div class="check-title">Ship first page</div>
+                        <div class="check-desc">Home · Live to B2C · en-GB</div>
+                      </div>
+                    </div>
+                    <div class="check-item warn" style="padding: 8px 14px; border: none;">
+                      <div class="check-icon">→</div>
+                      <div class="check-body">
+                        <div class="check-title">Add B2B context</div>
+                        <div class="check-desc"><a href="#" style="color: var(--mc-blue);">Configure B2B rendering →</a></div>
+                      </div>
+                    </div>
+                    <div class="check-item warn" style="padding: 8px 14px; border: none;">
+                      <div class="check-icon">→</div>
+                      <div class="check-body">
+                        <div class="check-title">Run first experiment</div>
+                        <div class="check-desc">Unlocks at 2,000 sessions · 210 so far</div>
+                      </div>
+                    </div>
+                    <div class="check-item warn" style="padding: 8px 14px; border: none;">
+                      <div class="check-icon">→</div>
+                      <div class="check-body">
+                        <div class="check-title">Finish Epic 6 provisioning</div>
+                        <div class="check-desc">SCIM + usage dashboard (IT Admin)</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Team -->
+                <div style="background: white; border: 1px solid var(--mc-border); border-radius: var(--radius-md); overflow: hidden;">
+                  <div style="padding: 12px 14px; border-bottom: 1px solid var(--mc-border); display: flex; align-items: center; gap: 10px;">
+                    <h3 style="font-size: 13px; font-weight: 600;">👥 Team in this workspace</h3>
+                    <span class="spacer" style="flex: 1;"></span>
+                    <a href="#" style="font-size: 11px; color: var(--mc-blue);">Invite →</a>
+                  </div>
+                  <div style="padding: 10px 14px; display: flex; flex-direction: column; gap: 8px; font-size: 12px;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                      <div class="avatar-sm" style="background: var(--mc-ai-accent); width: 24px; height: 24px;">SM</div>
+                      <div style="flex: 1;">Sasha Martinez <span style="color: var(--mc-text-muted); font-size: 11px;">· Business Operator (you)</span></div>
+                      <span class="chip live" style="font-size: 10px;"><span class="dot"></span></span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                      <div class="avatar-sm" style="background: var(--mc-blue); width: 24px; height: 24px;">LP</div>
+                      <div style="flex: 1;">Leandro Palazzo <span style="color: var(--mc-text-muted); font-size: 11px;">· Brand Publisher</span></div>
+                      <span style="font-size: 10px; color: var(--mc-text-muted);">2h ago</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                      <div class="avatar-sm" style="background: var(--mc-success); width: 24px; height: 24px;">IT</div>
+                      <div style="flex: 1;">Isabel Tavares <span style="color: var(--mc-text-muted); font-size: 11px;">· IT Admin</span></div>
+                      <span style="font-size: 10px; color: var(--mc-text-muted);">Yesterday</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px; opacity: 0.6;">
+                      <div class="avatar-sm" style="background: var(--mc-border); color: var(--mc-text-muted); width: 24px; height: 24px;">?</div>
+                      <div style="flex: 1;">2 invites pending <span style="color: var(--mc-text-muted); font-size: 11px;">· Brand Editor</span></div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-annotations">
+        <h4>Design Notes</h4>
+        <ul>
+          <li><strong>Greeting is human</strong> — "Good morning, Sasha" + "your storefront is 3 days old — the moat is just starting to form" localizes the moat language to something an operator can feel proud of without jargon.</li>
+          <li><strong>Four top metrics frame the day</strong> — Pages / Draft changes / Published last 7d / Tenant intelligence. Every card deep-links. <em>(FR22, FR61)</em></li>
+          <li><strong>Drafts card pulls attention where it's needed</strong> — stale staged content (2 days, no feedback) gets a warm amber bar, not a red alarm.</li>
+          <li><strong>Recent activity includes the AI agent</strong> — "collected 218 behavioral sessions overnight" reminds operators the moat is working silently. Matches Epic 3 audit log pattern.</li>
+          <li><strong>AI suggestions card is honest about calibration</strong> — first tile is actionable (a library completion), second is a muted "Optimize unlocks in 1,790 sessions." Never promises what the engine can't yet deliver. <em>(FR56)</em></li>
+          <li><strong>Onboarding checklist progresses visually</strong> — violet bar matches the AI accent; 4 of 7 complete. Never forces dismissal; users close when ready.</li>
+          <li><strong>Team card surfaces invite status</strong> — "2 invites pending" is a gentle nag to the IT Admin without being a red alert. <em>(FR42)</em></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 2B — Workspace Home (Mature Tenant) ============ -->
+  <div class="screen">
+    <div class="screen-header">
+      <h3>2B — Workspace Home: mature tenant state (post-onboarding, live recommendations)</h3>
+      <span class="tag">OperatorWorkspace (mature state) — onboarding dismissed, AI Experience Engine live</span>
+    </div>
+    <div class="screen-body">
+      <div class="editor-frame" style="height: 620px;">
+        <div class="editor-topbar">
+          <span class="logo">commercetools</span>
+          <span class="crumbs">Tutorial › <strong>Storefront · Workspace</strong></span>
+          <span class="spacer"></span>
+          <span class="user">SM</span>
+        </div>
+        <div class="context-bar">
+          <span class="chip active"><span class="dot"></span> B2C</span>
+          <span class="chip">en-GB ▾</span>
+          <span class="chip">Guest ▾</span>
+          <span class="chip" style="background: var(--mc-ai-tint); color: var(--mc-ai-accent); border-color: var(--mc-ai-accent);"><span class="dot"></span> Intelligence 68% · high confidence</span>
+          <span class="spacer"></span>
+          <button class="publish-btn" style="padding: 5px 14px;">+ New page</button>
+        </div>
+        <div class="editor-main" style="grid-template-columns: 56px 1fr;">
+          <div class="nav-rail">
+            <div class="nav-item active">🏠</div>
+            <div class="nav-item">📄</div>
+            <div class="nav-item">🧩</div>
+            <div class="nav-item">🌿</div>
+            <div class="nav-item">📊</div>
+            <div class="nav-item">📜</div>
+          </div>
+          <div style="padding: 24px 32px; overflow-y: auto; background: var(--mc-bg);">
+
+            <div style="display: flex; align-items: flex-end; gap: 16px; margin-bottom: 20px;">
+              <div>
+                <div style="font-size: 20px; font-weight: 600; margin-bottom: 2px;">Thursday, 7 May</div>
+                <div style="font-size: 12px; color: var(--mc-text-muted);">14 pages live · 43k sessions last 7 days · 4 experiments in flight · CLV cohort 2,140 customers</div>
+              </div>
+              <span class="spacer" style="flex: 1;"></span>
+              <button class="btn-ghost" style="padding: 6px 12px;">↷ Jump to editor</button>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px;">
+              <div class="metric-card accent-blue">
+                <span class="metric-label">Pages live</span>
+                <span class="metric-value">14</span>
+                <span class="metric-sub">↑ 2 this month · 0 broken</span>
+              </div>
+              <div class="metric-card accent-amber">
+                <span class="metric-label">Drafts / staged</span>
+                <span class="metric-value">5 / 1</span>
+                <span class="metric-sub">No blockers · 1 needs review</span>
+              </div>
+              <div class="metric-card accent-green">
+                <span class="metric-label">Engagement (7d avg)</span>
+                <span class="metric-value">72</span>
+                <span class="metric-sub">↑ 6 vs prior week</span>
+              </div>
+              <div class="metric-card accent-ai">
+                <span class="metric-label">Experiments running</span>
+                <span class="metric-value" style="color: var(--mc-ai-accent);">4</span>
+                <span class="metric-sub">2 Quick Win · 2 Long Game</span>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 340px; gap: 20px;">
+
+              <div style="display: flex; flex-direction: column; gap: 16px;">
+
+                <!-- Top AI recommendation (live engine) -->
+                <div style="background: white; border: 1px solid var(--mc-ai-accent); border-radius: var(--radius-md); overflow: hidden;">
+                  <div style="padding: 12px 16px; background: var(--mc-ai-tint); border-bottom: 1px solid var(--mc-border); display: flex; align-items: center; gap: 10px;">
+                    <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--mc-ai-accent);"></span>
+                    <h3 style="font-size: 13px; font-weight: 600; color: var(--mc-ai-accent);">🎯 Top recommendation from your data</h3>
+                    <span class="spacer" style="flex: 1;"></span>
+                    <span style="font-size: 11px; color: var(--mc-text-muted);">Refreshed 14 min ago</span>
+                  </div>
+                  <div style="padding: 16px;">
+                    <div style="display: flex; gap: 14px; align-items: flex-start; margin-bottom: 10px;">
+                      <div style="padding: 4px 8px; background: var(--mc-warning-bg); color: var(--mc-warning); font-size: 10px; font-weight: 600; border-radius: 10px;">⚡ QUICK WIN</div>
+                      <div style="padding: 4px 8px; background: var(--mc-success-bg); color: var(--mc-success); font-size: 10px; font-weight: 600; border-radius: 10px;">95% confidence</div>
+                      <div style="padding: 4px 8px; background: var(--mc-ai-tint); color: var(--mc-ai-accent); font-size: 10px; font-weight: 600; border-radius: 10px;">B2C · en-GB only</div>
+                    </div>
+                    <div style="font-size: 14px; font-weight: 600; margin-bottom: 6px;">Move CTA above the fold on Men's Shoes listing</div>
+                    <div style="font-size: 12px; color: var(--mc-text-muted); line-height: 1.55; margin-bottom: 12px;">
+                      Your session data shows 68% of en-GB B2C visitors scroll past the CTA before engaging. Moving it above the fold matched a similar pattern in 12 prior experiments across your library. <strong style="color: var(--mc-text);">Expected lift: +4.2% add-to-cart (95% CI: +2.8% to +5.6%)</strong>.
+                    </div>
+                    <div style="display: flex; gap: 8px;">
+                      <button class="btn-primary">Apply with 5% rollout</button>
+                      <button class="btn-ghost">Open in editor</button>
+                      <button class="btn-ghost">Dismiss</button>
+                      <span class="spacer" style="flex: 1;"></span>
+                      <a href="#" style="font-size: 11px; color: var(--mc-blue); align-self: center;">3 more recommendations →</a>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Draft changes -->
+                <div style="background: white; border: 1px solid var(--mc-border); border-radius: var(--radius-md); overflow: hidden;">
+                  <div style="padding: 12px 16px; border-bottom: 1px solid var(--mc-border); display: flex; align-items: center; gap: 10px;">
+                    <h3 style="font-size: 13px; font-weight: 600;">✏ Draft changes</h3>
+                    <span class="chip draft" style="font-size: 10px;"><span class="dot"></span> 5</span>
+                    <span class="spacer" style="flex: 1;"></span>
+                    <a href="#" style="font-size: 11px; color: var(--mc-blue);">View all →</a>
+                  </div>
+                  <div>
+                    <div style="padding: 10px 16px; border-bottom: 1px solid var(--mc-border); display: flex; align-items: center; gap: 12px;">
+                      <div style="width: 28px; height: 28px; border-radius: var(--radius-sm); background: var(--mc-warning-bg); display: flex; align-items: center; justify-content: center; font-size: 12px;">📄</div>
+                      <div style="flex: 1;">
+                        <div style="font-size: 12px; font-weight: 500;">Home · Summer Collection launch</div>
+                        <div style="font-size: 11px; color: var(--mc-text-muted);">3 changes · 2h ago · B2C</div>
+                      </div>
+                      <span class="chip draft" style="font-size: 10px;"><span class="dot"></span> 3</span>
+                    </div>
+                    <div style="padding: 10px 16px; border-bottom: 1px solid var(--mc-border); display: flex; align-items: center; gap: 12px;">
+                      <div style="width: 28px; height: 28px; border-radius: var(--radius-sm); background: var(--mc-warning-bg); display: flex; align-items: center; justify-content: center; font-size: 12px;">📄</div>
+                      <div style="flex: 1;">
+                        <div style="font-size: 12px; font-weight: 500;">Men's shoes · CTA copy test</div>
+                        <div style="font-size: 11px; color: var(--mc-text-muted);">2 changes · yesterday · B2C</div>
+                      </div>
+                      <span class="chip draft" style="font-size: 10px;"><span class="dot"></span> 2</span>
+                    </div>
+                    <div style="padding: 10px 16px; display: flex; align-items: center; gap: 12px;">
+                      <div style="width: 28px; height: 28px; border-radius: var(--radius-sm); background: var(--mc-ai-tint); color: var(--mc-ai-accent); display: flex; align-items: center; justify-content: center; font-size: 12px;">🔗</div>
+                      <div style="flex: 1;">
+                        <div style="font-size: 12px; font-weight: 500;">B2B dealer page · stakeholder review</div>
+                        <div style="font-size: 11px; color: var(--mc-text-muted);">Staged · shared with 3 reviewers · 1 comment</div>
+                      </div>
+                      <span class="chip" style="font-size: 10px; background: var(--mc-ai-tint); color: var(--mc-ai-accent); border-color: var(--mc-ai-accent);"><span class="dot"></span> Staged</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Behavioral highlights -->
+                <div style="background: white; border: 1px solid var(--mc-border); border-radius: var(--radius-md); overflow: hidden;">
+                  <div style="padding: 12px 16px; border-bottom: 1px solid var(--mc-border); display: flex; align-items: center; gap: 10px;">
+                    <h3 style="font-size: 13px; font-weight: 600;">📈 Behavioral highlights · last 7 days</h3>
+                    <span class="spacer" style="flex: 1;"></span>
+                    <a href="#" style="font-size: 11px; color: var(--mc-blue);">Open heatmap →</a>
+                  </div>
+                  <div style="padding: 12px 16px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; font-size: 12px;">
+                    <div>
+                      <div style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--mc-text-muted); font-weight: 600; margin-bottom: 4px;">Highest engagement</div>
+                      <div style="font-weight: 600;">Home · HeroBanner</div>
+                      <div style="color: var(--mc-success); font-size: 11px;">↑ 92 score · +7 WoW</div>
+                    </div>
+                    <div>
+                      <div style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--mc-text-muted); font-weight: 600; margin-bottom: 4px;">Biggest drop-off</div>
+                      <div style="font-weight: 600;">Men's shoes · ProductGrid</div>
+                      <div style="color: var(--mc-warning); font-size: 11px;">↓ 34% exit rate · +4 WoW</div>
+                    </div>
+                    <div>
+                      <div style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--mc-text-muted); font-weight: 600; margin-bottom: 4px;">Mobile vs desktop</div>
+                      <div style="font-weight: 600;">63% mobile traffic</div>
+                      <div style="color: var(--mc-text-muted); font-size: 11px;">15% lower engagement on mobile</div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- Right column: tenant intelligence + experiments -->
+              <div style="display: flex; flex-direction: column; gap: 16px;">
+
+                <!-- Tenant Intelligence Score -->
+                <div style="background: linear-gradient(135deg, #f5f0ff 0%, #fafbfc 100%); border: 1px solid var(--mc-ai-accent); border-radius: var(--radius-md); padding: 16px;">
+                  <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--mc-ai-accent); font-weight: 600; margin-bottom: 4px;">🧠 Tenant Intelligence Score</div>
+                  <div style="font-size: 36px; font-weight: 600; color: var(--mc-ai-accent); line-height: 1.1;">68%</div>
+                  <div style="font-size: 11px; color: var(--mc-text-muted); margin-bottom: 12px;">High confidence · recommendations active</div>
+                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 11px;">
+                    <div>
+                      <div style="color: var(--mc-text-muted);">Sessions collected</div>
+                      <div style="font-weight: 600;">43,281</div>
+                    </div>
+                    <div>
+                      <div style="color: var(--mc-text-muted);">Experiments completed</div>
+                      <div style="font-weight: 600;">11</div>
+                    </div>
+                    <div>
+                      <div style="color: var(--mc-text-muted);">CLV cohort size</div>
+                      <div style="font-weight: 600;">2,140</div>
+                    </div>
+                    <div>
+                      <div style="color: var(--mc-text-muted);">Prediction accuracy</div>
+                      <div style="font-weight: 600;">78%</div>
+                    </div>
+                  </div>
+                  <a href="#" style="font-size: 11px; color: var(--mc-ai-accent); margin-top: 10px; display: inline-block;">How is this calculated? →</a>
+                </div>
+
+                <!-- Experiments in flight -->
+                <div style="background: white; border: 1px solid var(--mc-border); border-radius: var(--radius-md); overflow: hidden;">
+                  <div style="padding: 12px 14px; border-bottom: 1px solid var(--mc-border); display: flex; align-items: center; gap: 10px;">
+                    <h3 style="font-size: 13px; font-weight: 600;">🧪 Experiments in flight</h3>
+                    <span class="chip" style="font-size: 10px; background: var(--mc-ai-tint); color: var(--mc-ai-accent); border-color: var(--mc-ai-accent);"><span class="dot"></span> 4</span>
+                  </div>
+                  <div style="padding: 10px 14px; display: flex; flex-direction: column; gap: 10px; font-size: 12px;">
+                    <div style="padding: 10px; border: 1px solid var(--mc-border); border-radius: var(--radius-sm);">
+                      <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+                        <span style="padding: 2px 6px; background: var(--mc-warning-bg); color: var(--mc-warning); font-size: 10px; font-weight: 600; border-radius: 8px;">⚡ Quick Win</span>
+                        <span style="font-size: 10px; color: var(--mc-text-muted);">25% traffic</span>
+                      </div>
+                      <div style="font-weight: 500;">Hero CTA contrast · B2C</div>
+                      <div style="color: var(--mc-success); font-size: 11px;">+3.1% CTR · day 4 of 7</div>
+                    </div>
+                    <div style="padding: 10px; border: 1px solid var(--mc-border); border-radius: var(--radius-sm);">
+                      <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+                        <span style="padding: 2px 6px; background: var(--mc-ai-tint); color: var(--mc-ai-accent); font-size: 10px; font-weight: 600; border-radius: 8px;">📈 Long Game</span>
+                        <span style="font-size: 10px; color: var(--mc-text-muted);">50% traffic</span>
+                      </div>
+                      <div style="font-weight: 500;">CLV-variant hero for repeat buyers</div>
+                      <div style="color: var(--mc-text-muted); font-size: 11px;">Measuring CLV delta · day 32 of 90</div>
+                    </div>
+                    <a href="#" style="font-size: 11px; color: var(--mc-blue); text-align: center; padding: 4px;">View all experiments →</a>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-annotations">
+        <h4>Design Notes</h4>
+        <ul>
+          <li><strong>Same shell, different density</strong> — onboarding checklist gone, intelligence score takes its place in the right rail. Progressive disclosure from young → mature tenant. <em>(FR61)</em></li>
+          <li><strong>Top AI recommendation is the hero card</strong> — replaces "draft changes" as the priority surface once the engine is producing real recommendations. <em>(FR56)</em></li>
+          <li><strong>"Your data shows" language, not "AI thinks"</strong> — recommendation copy attributes the insight to the operator's own session data. Confidence card principle from Epic 8.</li>
+          <li><strong>Expected lift is specific with a confidence interval</strong> — "+4.2% add-to-cart (95% CI: +2.8% to +5.6%)" builds trust. Never just "we recommend this."</li>
+          <li><strong>Apply with 5% rollout is the primary action</strong> — progressive rollout is the default, not full-blast. Matches FR57 safety-first framing.</li>
+          <li><strong>Experiments card previews Epic 8 surface</strong> — Quick Win/Long Game badges already in use; operators navigate deeper from here.</li>
+          <li><strong>Greeting personalized but less onboarding-centric</strong> — "Thursday, 7 May" + "43k sessions last 7 days" treats the operator as a veteran.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="tab-pages" class="tab-content">
+  <div class="tab-intro">
+    <h2>3 — Pages Manager</h2>
+    <p>The list/grid surface operators land on when they click into "Pages" from the nav rail. Every storefront page — live, draft, or staged — with its status, last-edited metadata, engagement signal, and B2X context scope. Filtering is built around the B2X × locale × customer-group axes operators already navigate in the editor context bar. Includes a grid view, a table view, and the "New page" flow. Governance is visible throughout (which pages reference Red Zone components, who last touched them).</p>
+    <div class="frs">
+      <span class="fr-chip">FR1</span><span class="fr-chip">FR5</span><span class="fr-chip">FR15</span>
+      <span class="fr-chip">FR22</span><span class="fr-chip">FR42</span>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 3A — Pages Manager: Grid view ============ -->
+  <div class="screen">
+    <div class="screen-header">
+      <h3>3A — Pages Manager: grid view with status, engagement, and B2X context</h3>
+      <span class="tag">PagesManager (grid) — cards surface engagement badges + publish state</span>
+    </div>
+    <div class="screen-body">
+      <div class="editor-frame" style="height: 620px;">
+        <div class="editor-topbar">
+          <span class="logo">commercetools</span>
+          <span class="crumbs">Tutorial › Storefront › <strong>Pages</strong></span>
+          <span class="spacer"></span>
+          <span style="font-size: 11px; opacity: 0.6;">⌘K</span>
+          <span class="user">SM</span>
+        </div>
+        <div class="context-bar">
+          <span class="chip active"><span class="dot"></span> All contexts</span>
+          <span class="chip">All locales</span>
+          <span class="chip">All statuses</span>
+          <span class="spacer"></span>
+          <div class="viewport-toggle">
+            <button class="active">▦ Grid</button>
+            <button>☰ Table</button>
+          </div>
+          <button class="publish-btn" style="padding: 5px 14px;">+ New page</button>
+        </div>
+        <div class="editor-main" style="grid-template-columns: 240px 1fr;">
+
+          <!-- Left filters -->
+          <div style="background: #fafbfc; border-right: 1px solid var(--mc-border); padding: 18px 14px; overflow-y: auto;">
+            <input class="prop-input" placeholder="🔍 Search pages..." style="margin-bottom: 16px; font-size: 12px;">
+
+            <div class="prop-group">
+              <h5>Business context</h5>
+              <div style="display: flex; flex-direction: column; gap: 4px;">
+                <label style="display: flex; align-items: center; gap: 8px; font-size: 12px; cursor: pointer;">
+                  <input type="checkbox" checked> <span style="color: var(--mc-blue); font-weight: 500;">●</span> B2C consumer <span style="color: var(--mc-text-muted); font-size: 11px;">(9)</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 8px; font-size: 12px; cursor: pointer;">
+                  <input type="checkbox" checked> <span style="color: var(--mc-ai-accent); font-weight: 500;">●</span> B2B wholesale <span style="color: var(--mc-text-muted); font-size: 11px;">(3)</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 8px; font-size: 12px; cursor: pointer;">
+                  <input type="checkbox" checked> <span style="color: var(--mc-error); font-weight: 500;">●</span> Dealer portal <span style="color: var(--mc-text-muted); font-size: 11px;">(2)</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="prop-group">
+              <h5>Status</h5>
+              <div style="display: flex; flex-direction: column; gap: 4px;">
+                <label style="display: flex; align-items: center; gap: 8px; font-size: 12px; cursor: pointer;">
+                  <input type="checkbox" checked> <span class="chip live" style="font-size: 10px;"><span class="dot"></span> Live</span> <span style="color: var(--mc-text-muted); font-size: 11px;">(8)</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 8px; font-size: 12px; cursor: pointer;">
+                  <input type="checkbox" checked> <span class="chip draft" style="font-size: 10px;"><span class="dot"></span> Draft</span> <span style="color: var(--mc-text-muted); font-size: 11px;">(4)</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 8px; font-size: 12px; cursor: pointer;">
+                  <input type="checkbox" checked> <span class="chip" style="font-size: 10px; background: var(--mc-ai-tint); color: var(--mc-ai-accent); border-color: var(--mc-ai-accent);"><span class="dot"></span> Staged</span> <span style="color: var(--mc-text-muted); font-size: 11px;">(2)</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="prop-group">
+              <h5>Locale</h5>
+              <div style="display: flex; flex-direction: column; gap: 4px;">
+                <label style="display: flex; align-items: center; gap: 8px; font-size: 12px; cursor: pointer;">
+                  <input type="checkbox" checked> en-GB <span style="color: var(--mc-text-muted); font-size: 11px;">(14)</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 8px; font-size: 12px; cursor: pointer;">
+                  <input type="checkbox"> de-DE <span style="color: var(--mc-text-muted); font-size: 11px;">(6)</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 8px; font-size: 12px; cursor: pointer;">
+                  <input type="checkbox"> fr-FR <span style="color: var(--mc-text-muted); font-size: 11px;">(5)</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="prop-group">
+              <h5>Engagement</h5>
+              <div style="display: flex; flex-direction: column; gap: 4px; font-size: 12px;">
+                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                  <input type="radio" name="eng"> High (80+)
+                </label>
+                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                  <input type="radio" name="eng"> Mid (50–79)
+                </label>
+                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                  <input type="radio" name="eng"> Needs attention (&lt;50)
+                </label>
+                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                  <input type="radio" name="eng" checked> All
+                </label>
+              </div>
+            </div>
+
+            <div class="prop-group">
+              <h5>Governance</h5>
+              <label style="display: flex; align-items: center; gap: 8px; font-size: 12px; cursor: pointer;">
+                <input type="checkbox"> 🔒 Contains Red Zone components
+              </label>
+            </div>
+
+            <button class="btn-ghost" style="width: 100%; padding: 8px; font-size: 12px; margin-top: 8px;">↻ Reset filters</button>
+          </div>
+
+          <!-- Grid of page cards -->
+          <div style="padding: 20px 24px; overflow-y: auto; background: var(--mc-bg);">
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 14px; font-size: 12px; color: var(--mc-text-muted);">
+              <strong style="color: var(--mc-text);">14 pages</strong> · 8 live · 4 draft · 2 staged
+              <span class="spacer" style="flex: 1;"></span>
+              <span>Sort:</span>
+              <button class="btn-ghost" style="font-size: 11px;">Last edited ▾</button>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+
+              <!-- Card 1: Home -->
+              <div style="background: white; border: 1px solid var(--mc-border); border-radius: var(--radius-md); overflow: hidden; cursor: pointer; transition: all 0.15s;">
+                <div style="height: 120px; background: linear-gradient(135deg, var(--mc-blue-wash) 0%, #e0edff 100%); display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--mc-blue); position: relative; border-bottom: 1px solid var(--mc-border);">
+                  <span style="padding: 10px 14px; background: white; border: 1px dashed var(--mc-blue); border-radius: var(--radius-sm);">HeroBanner + ProductGrid preview</span>
+                  <span style="position: absolute; top: 8px; right: 8px;" class="eng-badge">📈 92</span>
+                </div>
+                <div style="padding: 12px 14px;">
+                  <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+                    <div style="font-size: 13px; font-weight: 600; flex: 1;">Home</div>
+                    <span class="chip live" style="font-size: 10px;"><span class="dot"></span> Live</span>
+                  </div>
+                  <div style="font-size: 11px; color: var(--mc-text-muted); margin-bottom: 8px;">/ · B2C · en-GB</div>
+                  <div style="display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--mc-text-muted);">
+                    <div class="avatar-sm" style="width: 18px; height: 18px; background: var(--mc-blue);">LP</div>
+                    <span>Leandro · 2h ago</span>
+                    <span class="spacer" style="flex: 1;"></span>
+                    <span title="Red Zone reference">🔒 1</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 2: Men's shoes -->
+              <div style="background: white; border: 1px solid var(--mc-warning); border-radius: var(--radius-md); overflow: hidden; cursor: pointer;">
+                <div style="height: 120px; background: var(--mc-warning-bg); display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--mc-warning); position: relative; border-bottom: 1px solid var(--mc-warning);">
+                  <span style="padding: 10px 14px; background: white; border: 1px dashed var(--mc-warning); border-radius: var(--radius-sm);">4-column product grid preview</span>
+                  <span style="position: absolute; top: 8px; right: 8px; background: white; color: var(--mc-warning); font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 10px; border: 1px solid var(--mc-warning);">📈 54</span>
+                </div>
+                <div style="padding: 12px 14px;">
+                  <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+                    <div style="font-size: 13px; font-weight: 600; flex: 1;">Men's shoes · listing</div>
+                    <span class="chip draft" style="font-size: 10px;"><span class="dot"></span> 2 drafts</span>
+                  </div>
+                  <div style="font-size: 11px; color: var(--mc-text-muted); margin-bottom: 8px;">/mens/shoes · B2C · en-GB</div>
+                  <div style="display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--mc-text-muted);">
+                    <div class="avatar-sm" style="width: 18px; height: 18px; background: var(--mc-ai-accent);">SM</div>
+                    <span>Sasha · yesterday</span>
+                    <span class="spacer" style="flex: 1;"></span>
+                    <span title="Red Zone reference">🔒 2</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 3: Summer Collection (staged) -->
+              <div style="background: white; border: 1px solid var(--mc-ai-accent); border-radius: var(--radius-md); overflow: hidden; cursor: pointer;">
+                <div style="height: 120px; background: var(--mc-ai-tint); display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--mc-ai-accent); position: relative; border-bottom: 1px solid var(--mc-ai-accent);">
+                  <span style="padding: 10px 14px; background: white; border: 1px dashed var(--mc-ai-accent); border-radius: var(--radius-sm);">Campaign landing preview</span>
+                  <span style="position: absolute; top: 8px; right: 8px; background: white; color: var(--mc-ai-accent); font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 10px; border: 1px solid var(--mc-ai-accent);">🔗 Staged</span>
+                </div>
+                <div style="padding: 12px 14px;">
+                  <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+                    <div style="font-size: 13px; font-weight: 600; flex: 1;">Summer Collection</div>
+                    <span class="chip" style="font-size: 10px; background: var(--mc-ai-tint); color: var(--mc-ai-accent); border-color: var(--mc-ai-accent);"><span class="dot"></span> Staged</span>
+                  </div>
+                  <div style="font-size: 11px; color: var(--mc-text-muted); margin-bottom: 8px;">/collections/summer · B2C · en-GB</div>
+                  <div style="display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--mc-text-muted);">
+                    <div class="avatar-sm" style="width: 18px; height: 18px; background: var(--mc-ai-accent);">SM</div>
+                    <span>Sasha · 2d ago · preview shared</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 4: Women's bags -->
+              <div style="background: white; border: 1px solid var(--mc-border); border-radius: var(--radius-md); overflow: hidden; cursor: pointer;">
+                <div style="height: 120px; background: var(--mc-success-bg); display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--mc-success); position: relative; border-bottom: 1px solid var(--mc-border);">
+                  <span style="padding: 10px 14px; background: white; border: 1px dashed var(--mc-success); border-radius: var(--radius-sm);">Product listing preview</span>
+                  <span style="position: absolute; top: 8px; right: 8px;" class="eng-badge">📈 78</span>
+                </div>
+                <div style="padding: 12px 14px;">
+                  <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+                    <div style="font-size: 13px; font-weight: 600; flex: 1;">Women's bags · listing</div>
+                    <span class="chip live" style="font-size: 10px;"><span class="dot"></span> Live</span>
+                  </div>
+                  <div style="font-size: 11px; color: var(--mc-text-muted); margin-bottom: 8px;">/womens/bags · B2C · en-GB, de-DE</div>
+                  <div style="display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--mc-text-muted);">
+                    <div class="avatar-sm" style="width: 18px; height: 18px; background: var(--mc-blue);">LP</div>
+                    <span>Leandro · 3d ago</span>
+                    <span class="spacer" style="flex: 1;"></span>
+                    <span title="Red Zone reference">🔒 2</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 5: B2B Dealer Portal -->
+              <div style="background: white; border: 1px solid var(--mc-border); border-radius: var(--radius-md); overflow: hidden; cursor: pointer;">
+                <div style="height: 120px; background: #f5f0ff; display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--mc-ai-accent); position: relative; border-bottom: 1px solid var(--mc-border);">
+                  <span style="padding: 10px 14px; background: white; border: 1px dashed var(--mc-ai-accent); border-radius: var(--radius-sm);">AccountDashboard + QuickOrder</span>
+                  <span style="position: absolute; top: 8px; right: 8px;" class="eng-badge">📈 81</span>
+                  <div style="position: absolute; top: 8px; left: 8px; width: 24px; height: 24px; border-radius: 50%; background: var(--mc-ai-accent); color: white; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600;">B2B</div>
+                </div>
+                <div style="padding: 12px 14px;">
+                  <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+                    <div style="font-size: 13px; font-weight: 600; flex: 1;">Wholesale account home</div>
+                    <span class="chip live" style="font-size: 10px;"><span class="dot"></span> Live</span>
+                  </div>
+                  <div style="font-size: 11px; color: var(--mc-text-muted); margin-bottom: 8px;">/b2b · B2B · en-GB</div>
+                  <div style="display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--mc-text-muted);">
+                    <div class="avatar-sm" style="width: 18px; height: 18px; background: var(--mc-blue);">LP</div>
+                    <span>Leandro · 5d ago</span>
+                    <span class="spacer" style="flex: 1;"></span>
+                    <span title="Red Zone reference">🔒 3</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 6: Dealer pricing -->
+              <div style="background: white; border: 1px solid var(--mc-border); border-radius: var(--radius-md); overflow: hidden; cursor: pointer;">
+                <div style="height: 120px; background: #fef2f2; display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--mc-error); position: relative; border-bottom: 1px solid var(--mc-border);">
+                  <span style="padding: 10px 14px; background: white; border: 1px dashed var(--mc-error); border-radius: var(--radius-sm);">TieredPricingTable preview</span>
+                  <span style="position: absolute; top: 8px; right: 8px;" class="eng-badge">📈 69</span>
+                  <div style="position: absolute; top: 8px; left: 8px; width: 24px; height: 24px; border-radius: 50%; background: var(--mc-error); color: white; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600;">DP</div>
+                </div>
+                <div style="padding: 12px 14px;">
+                  <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+                    <div style="font-size: 13px; font-weight: 600; flex: 1;">Dealer pricing page</div>
+                    <span class="chip live" style="font-size: 10px;"><span class="dot"></span> Live</span>
+                  </div>
+                  <div style="font-size: 11px; color: var(--mc-text-muted); margin-bottom: 8px;">/dealer/pricing · Dealer · en-GB</div>
+                  <div style="display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--mc-text-muted);">
+                    <div class="avatar-sm" style="width: 18px; height: 18px; background: #dc2626;">RT</div>
+                    <span>Rachel · 1w ago</span>
+                    <span class="spacer" style="flex: 1;"></span>
+                    <span title="Red Zone reference">🔒 4</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- New page CTA as final grid cell -->
+            <div style="margin-top: 16px; padding: 24px; border: 2px dashed var(--mc-border-strong); border-radius: var(--radius-md); text-align: center; color: var(--mc-text-muted); background: white; cursor: pointer;">
+              <div style="font-size: 24px; margin-bottom: 6px;">+</div>
+              <div style="font-size: 13px; font-weight: 500; color: var(--mc-text);">Create a new page</div>
+              <div style="font-size: 11px;">Blank canvas · from template · AI-scaffolded from existing page (Epic 4)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-annotations">
+        <h4>Design Notes</h4>
+        <ul>
+          <li><strong>Grid cards are at-a-glance scannable</strong> — thumbnail preview, title, URL, context chip, status chip, last-edited avatar, Red Zone count. One line per concern.</li>
+          <li><strong>Status is encoded both by border and chip</strong> — amber border for draft, violet border for staged, neutral for live. Redundant encoding for accessibility.</li>
+          <li><strong>Engagement badge lives on the preview</strong> — score 54 (needs attention) shown warm-amber, 92 (high) shown green. Same language as Epic 3 canvas. <em>(FR22)</em></li>
+          <li><strong>B2X context avatars on non-B2C cards</strong> — B2B (violet) and Dealer (red) mini-avatars sit in the preview top-left so operators never mistake which context a card represents. <em>(FR5)</em></li>
+          <li><strong>Red Zone count is surfaced per page</strong> — "🔒 3" tells operators which pages depend on platform-managed components before they start editing. <em>(FR15)</em></li>
+          <li><strong>Filter sidebar mirrors the editor context bar</strong> — same B2X × locale × status axes. Zero conceptual translation between surfaces.</li>
+          <li><strong>"Create new page" tile is the empty final cell</strong> — inline CTA instead of a modal. Hints at template + AI paths (Epic 4).</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 3B — Pages Manager: Table view ============ -->
+  <div class="screen">
+    <div class="screen-header">
+      <h3>3B — Pages Manager: table view for bulk operations and dense review</h3>
+      <span class="tag">PagesManager (table) — operators who manage 50+ pages, sort + bulk select</span>
+    </div>
+    <div class="screen-body">
+      <div class="editor-frame" style="height: 580px;">
+        <div class="editor-topbar">
+          <span class="logo">commercetools</span>
+          <span class="crumbs">Tutorial › Storefront › <strong>Pages</strong></span>
+          <span class="spacer"></span>
+          <span class="user">SM</span>
+        </div>
+        <div class="context-bar">
+          <span class="chip active"><span class="dot"></span> B2C only</span>
+          <span class="chip">en-GB ▾</span>
+          <span class="chip">All statuses</span>
+          <span class="chip" style="background: var(--mc-warning-bg); border-color: var(--mc-warning); color: var(--mc-warning);">3 selected</span>
+          <span class="spacer"></span>
+          <button class="btn-ghost" style="font-size: 11px; padding: 4px 10px;">⬇ Export CSV</button>
+          <div class="viewport-toggle">
+            <button>▦ Grid</button>
+            <button class="active">☰ Table</button>
+          </div>
+          <button class="publish-btn" style="padding: 5px 14px;">+ New page</button>
+        </div>
+        <div class="editor-main" style="grid-template-columns: 56px 1fr;">
+          <div class="nav-rail">
+            <div class="nav-item">🏠</div>
+            <div class="nav-item active">📄</div>
+            <div class="nav-item">🧩</div>
+            <div class="nav-item">🌿</div>
+            <div class="nav-item">📊</div>
+            <div class="nav-item">📜</div>
+          </div>
+          <div style="overflow-y: auto; background: white;">
+
+            <!-- Bulk actions bar -->
+            <div style="padding: 10px 16px; background: var(--mc-warning-bg); border-bottom: 1px solid var(--mc-warning); display: flex; align-items: center; gap: 10px; font-size: 12px;">
+              <span style="color: var(--mc-warning); font-weight: 600;">⚠ 3 pages selected</span>
+              <span class="spacer" style="flex: 1;"></span>
+              <button class="btn-ghost" style="font-size: 11px;">Stage selected</button>
+              <button class="btn-ghost" style="font-size: 11px;">Archive</button>
+              <button class="btn-ghost" style="font-size: 11px;">Duplicate</button>
+              <button class="btn-ghost" style="font-size: 11px;">Bulk publish →</button>
+            </div>
+
+            <!-- Table header -->
+            <div style="display: grid; grid-template-columns: 32px 2fr 100px 100px 120px 80px 80px 40px; gap: 12px; padding: 10px 16px; background: #fafbfc; border-bottom: 1px solid var(--mc-border); font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--mc-text-muted); font-weight: 600; align-items: center;">
+              <div><input type="checkbox" checked></div>
+              <div>Page</div>
+              <div>Status</div>
+              <div>Context</div>
+              <div>Last edited</div>
+              <div style="text-align: right;">Engagement</div>
+              <div style="text-align: center;">🔒 RZ</div>
+              <div></div>
+            </div>
+
+            <!-- Row 1 -->
+            <div style="display: grid; grid-template-columns: 32px 2fr 100px 100px 120px 80px 80px 40px; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--mc-border); font-size: 12px; align-items: center; background: var(--mc-warning-bg);">
+              <div><input type="checkbox" checked></div>
+              <div>
+                <div style="font-weight: 600;">Home</div>
+                <div style="font-size: 11px; color: var(--mc-text-muted); font-family: 'SF Mono', monospace;">/</div>
+              </div>
+              <div><span class="chip live" style="font-size: 10px;"><span class="dot"></span> Live</span></div>
+              <div><span style="color: var(--mc-blue); font-weight: 500;">B2C</span> · en-GB</div>
+              <div>
+                <div class="user-badge"><div class="avatar-sm">LP</div> 2h ago</div>
+              </div>
+              <div style="text-align: right;"><span style="color: var(--mc-success); font-weight: 600;">92</span></div>
+              <div style="text-align: center; color: var(--mc-locked);">1</div>
+              <div><span style="cursor: pointer; color: var(--mc-text-muted);">⋯</span></div>
+            </div>
+
+            <!-- Row 2 -->
+            <div style="display: grid; grid-template-columns: 32px 2fr 100px 100px 120px 80px 80px 40px; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--mc-border); font-size: 12px; align-items: center; background: var(--mc-warning-bg);">
+              <div><input type="checkbox" checked></div>
+              <div>
+                <div style="font-weight: 600;">Men's shoes · listing</div>
+                <div style="font-size: 11px; color: var(--mc-text-muted); font-family: 'SF Mono', monospace;">/mens/shoes</div>
+              </div>
+              <div><span class="chip draft" style="font-size: 10px;"><span class="dot"></span> 2 drafts</span></div>
+              <div><span style="color: var(--mc-blue); font-weight: 500;">B2C</span> · en-GB</div>
+              <div>
+                <div class="user-badge"><div class="avatar-sm" style="background: var(--mc-ai-accent);">SM</div> yesterday</div>
+              </div>
+              <div style="text-align: right;"><span style="color: var(--mc-warning); font-weight: 600;">54</span></div>
+              <div style="text-align: center; color: var(--mc-locked);">2</div>
+              <div><span style="cursor: pointer; color: var(--mc-text-muted);">⋯</span></div>
+            </div>
+
+            <!-- Row 3 -->
+            <div style="display: grid; grid-template-columns: 32px 2fr 100px 100px 120px 80px 80px 40px; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--mc-border); font-size: 12px; align-items: center; background: var(--mc-warning-bg);">
+              <div><input type="checkbox" checked></div>
+              <div>
+                <div style="font-weight: 600;">Summer Collection</div>
+                <div style="font-size: 11px; color: var(--mc-text-muted); font-family: 'SF Mono', monospace;">/collections/summer</div>
+              </div>
+              <div><span class="chip" style="font-size: 10px; background: var(--mc-ai-tint); color: var(--mc-ai-accent); border-color: var(--mc-ai-accent);"><span class="dot"></span> Staged</span></div>
+              <div><span style="color: var(--mc-blue); font-weight: 500;">B2C</span> · en-GB</div>
+              <div>
+                <div class="user-badge"><div class="avatar-sm" style="background: var(--mc-ai-accent);">SM</div> 2d ago</div>
+              </div>
+              <div style="text-align: right; color: var(--mc-text-faint);">—</div>
+              <div style="text-align: center; color: var(--mc-locked);">1</div>
+              <div><span style="cursor: pointer; color: var(--mc-text-muted);">⋯</span></div>
+            </div>
+
+            <!-- Row 4 -->
+            <div style="display: grid; grid-template-columns: 32px 2fr 100px 100px 120px 80px 80px 40px; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--mc-border); font-size: 12px; align-items: center;">
+              <div><input type="checkbox"></div>
+              <div>
+                <div style="font-weight: 600;">Women's bags · listing</div>
+                <div style="font-size: 11px; color: var(--mc-text-muted); font-family: 'SF Mono', monospace;">/womens/bags</div>
+              </div>
+              <div><span class="chip live" style="font-size: 10px;"><span class="dot"></span> Live</span></div>
+              <div><span style="color: var(--mc-blue); font-weight: 500;">B2C</span> · en-GB, de-DE</div>
+              <div>
+                <div class="user-badge"><div class="avatar-sm">LP</div> 3d ago</div>
+              </div>
+              <div style="text-align: right;"><span style="color: var(--mc-success); font-weight: 600;">78</span></div>
+              <div style="text-align: center; color: var(--mc-locked);">2</div>
+              <div><span style="cursor: pointer; color: var(--mc-text-muted);">⋯</span></div>
+            </div>
+
+            <!-- Row 5 -->
+            <div style="display: grid; grid-template-columns: 32px 2fr 100px 100px 120px 80px 80px 40px; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--mc-border); font-size: 12px; align-items: center;">
+              <div><input type="checkbox"></div>
+              <div>
+                <div style="font-weight: 600;">Product detail · running shoes</div>
+                <div style="font-size: 11px; color: var(--mc-text-muted); font-family: 'SF Mono', monospace;">/p/:sku · dynamic template</div>
+              </div>
+              <div><span class="chip live" style="font-size: 10px;"><span class="dot"></span> Live</span></div>
+              <div><span style="color: var(--mc-blue); font-weight: 500;">B2C</span> · en-GB</div>
+              <div>
+                <div class="user-badge"><div class="avatar-sm">LP</div> 4d ago</div>
+              </div>
+              <div style="text-align: right;"><span style="color: var(--mc-success); font-weight: 600;">85</span></div>
+              <div style="text-align: center; color: var(--mc-locked);">3</div>
+              <div><span style="cursor: pointer; color: var(--mc-text-muted);">⋯</span></div>
+            </div>
+
+            <!-- Row 6 -->
+            <div style="display: grid; grid-template-columns: 32px 2fr 100px 100px 120px 80px 80px 40px; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--mc-border); font-size: 12px; align-items: center;">
+              <div><input type="checkbox"></div>
+              <div>
+                <div style="font-weight: 600;">Checkout</div>
+                <div style="font-size: 11px; color: var(--mc-text-muted); font-family: 'SF Mono', monospace;">/checkout · <span style="color: var(--mc-error); font-weight: 600;">PCI boundary</span></div>
+              </div>
+              <div><span class="chip live" style="font-size: 10px;"><span class="dot"></span> Live</span></div>
+              <div><span style="color: var(--mc-blue); font-weight: 500;">B2C</span> · all locales</div>
+              <div>
+                <div class="user-badge"><div class="avatar-sm" style="background: var(--mc-locked);">—</div> Platform</div>
+              </div>
+              <div style="text-align: right; color: var(--mc-text-faint);">—</div>
+              <div style="text-align: center; color: var(--mc-locked); font-weight: 600;">🔒 All</div>
+              <div><span style="cursor: not-allowed; color: var(--mc-locked);">🔒</span></div>
+            </div>
+
+            <!-- Row 7 -->
+            <div style="display: grid; grid-template-columns: 32px 2fr 100px 100px 120px 80px 80px 40px; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--mc-border); font-size: 12px; align-items: center;">
+              <div><input type="checkbox"></div>
+              <div>
+                <div style="font-weight: 600;">Wholesale account home</div>
+                <div style="font-size: 11px; color: var(--mc-text-muted); font-family: 'SF Mono', monospace;">/b2b</div>
+              </div>
+              <div><span class="chip live" style="font-size: 10px;"><span class="dot"></span> Live</span></div>
+              <div><span style="color: var(--mc-ai-accent); font-weight: 500;">B2B</span> · en-GB</div>
+              <div>
+                <div class="user-badge"><div class="avatar-sm">LP</div> 5d ago</div>
+              </div>
+              <div style="text-align: right;"><span style="color: var(--mc-success); font-weight: 600;">81</span></div>
+              <div style="text-align: center; color: var(--mc-locked);">3</div>
+              <div><span style="cursor: pointer; color: var(--mc-text-muted);">⋯</span></div>
+            </div>
+
+            <!-- Row 8 -->
+            <div style="display: grid; grid-template-columns: 32px 2fr 100px 100px 120px 80px 80px 40px; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--mc-border); font-size: 12px; align-items: center;">
+              <div><input type="checkbox"></div>
+              <div>
+                <div style="font-weight: 600;">Dealer pricing page</div>
+                <div style="font-size: 11px; color: var(--mc-text-muted); font-family: 'SF Mono', monospace;">/dealer/pricing</div>
+              </div>
+              <div><span class="chip live" style="font-size: 10px;"><span class="dot"></span> Live</span></div>
+              <div><span style="color: var(--mc-error); font-weight: 500;">Dealer</span> · en-GB</div>
+              <div>
+                <div class="user-badge"><div class="avatar-sm" style="background: #dc2626;">RT</div> 1w ago</div>
+              </div>
+              <div style="text-align: right;"><span style="color: var(--mc-success); font-weight: 600;">69</span></div>
+              <div style="text-align: center; color: var(--mc-locked);">4</div>
+              <div><span style="cursor: pointer; color: var(--mc-text-muted);">⋯</span></div>
+            </div>
+
+            <!-- Footer paging -->
+            <div style="padding: 12px 16px; display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--mc-text-muted);">
+              <span>Showing 1–8 of 14</span>
+              <span class="spacer" style="flex: 1;"></span>
+              <button class="btn-ghost" style="font-size: 11px;">‹ Prev</button>
+              <button class="btn-ghost" style="font-size: 11px;">Next ›</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-annotations">
+        <h4>Design Notes</h4>
+        <ul>
+          <li><strong>Table view is the power operator surface</strong> — keyboard-navigable, sortable, bulk-selectable. For operators managing 50+ pages across brands.</li>
+          <li><strong>Bulk actions bar appears contextually</strong> — amber strip with "3 pages selected" + Stage / Archive / Duplicate / Bulk publish. Mirrors MC patterns.</li>
+          <li><strong>Checkout row is explicitly PCI-boundary marked</strong> — "Platform" author + 🔒 All + not-allowed cursor. Operator understands this page isn't theirs to edit. <em>(FR15, FR49)</em></li>
+          <li><strong>Dynamic template rows named clearly</strong> — "/p/:sku · dynamic template" tells operators they're editing one template that renders for many SKUs.</li>
+          <li><strong>B2X context shown as inline colored label</strong> — blue B2C / violet B2B / red Dealer — same color identity as Epic 3's context switcher.</li>
+          <li><strong>Engagement column uses color thresholds</strong> — green ≥70, amber 50–69, red &lt;50. Staged rows show "—" (no data yet).</li>
+          <li><strong>Last-edited shows avatar + relative time</strong> — Platform-authored pages (checkout) explicit, not mysterious.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 3C — New Page flow ============ -->
+  <div class="screen">
+    <div class="screen-header">
+      <h3>3C — New page: blank, template, or AI-scaffolded (entry to Epic 4)</h3>
+      <span class="tag">NewPageModal — three paths, governance baked in from the start</span>
+    </div>
+    <div class="screen-body">
+      <div class="editor-frame" style="height: 560px; position: relative;">
+        <div class="editor-topbar">
+          <span class="logo">commercetools</span>
+          <span class="crumbs">Tutorial › Storefront › <strong>Pages</strong> › New</span>
+          <span class="spacer"></span>
+          <span class="user">SM</span>
+        </div>
+        <div class="context-bar">
+          <span class="chip active"><span class="dot"></span> All contexts</span>
+          <span class="chip">en-GB</span>
+          <span class="spacer"></span>
+          <div class="viewport-toggle"><button class="active">▦ Grid</button><button>☰ Table</button></div>
+          <button class="publish-btn" style="padding: 5px 14px;">+ New page</button>
+        </div>
+        <div class="editor-main" style="grid-template-columns: 56px 1fr; filter: blur(1px); opacity: 0.6;">
+          <div class="nav-rail"><div class="nav-item active">📄</div></div>
+          <div style="padding: 20px; background: var(--mc-bg);"></div>
+        </div>
+
+        <!-- Modal overlay -->
+        <div class="modal-overlay">
+          <div class="modal" style="width: 680px;">
+            <div class="modal-header">
+              <h3>Create a new page</h3>
+              <span style="color: var(--mc-text-muted); cursor: pointer; font-size: 18px;">✕</span>
+            </div>
+            <div class="modal-body" style="padding: 22px;">
+
+              <div style="font-size: 12px; color: var(--mc-text-muted); margin-bottom: 16px;">Choose how you want to start. You can always refactor later — Green Zone governance applies regardless of the starting path.</div>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 22px;">
+
+                <div style="border: 2px solid var(--mc-blue); background: var(--mc-blue-wash); border-radius: var(--radius-md); padding: 14px; cursor: pointer;">
+                  <div style="font-size: 20px; margin-bottom: 8px;">📄</div>
+                  <div style="font-size: 13px; font-weight: 600; margin-bottom: 4px; color: var(--mc-blue);">Blank canvas</div>
+                  <div style="font-size: 11px; color: var(--mc-text-muted); line-height: 1.5;">Start empty. Drag components from your governed library onto the canvas.</div>
+                  <div style="margin-top: 8px;"><span class="zone-pill" style="background: var(--mc-blue-wash); color: var(--mc-blue); border-color: var(--mc-blue);">● Selected</span></div>
+                </div>
+
+                <div style="border: 1px solid var(--mc-border); border-radius: var(--radius-md); padding: 14px; cursor: pointer;">
+                  <div style="font-size: 20px; margin-bottom: 8px;">📋</div>
+                  <div style="font-size: 13px; font-weight: 600; margin-bottom: 4px;">From template</div>
+                  <div style="font-size: 11px; color: var(--mc-text-muted); line-height: 1.5;">Start from a governed template — 6 available (product listing, campaign, landing, etc.).</div>
+                </div>
+
+                <div style="border: 1px solid var(--mc-ai-accent); background: var(--mc-ai-tint); border-radius: var(--radius-md); padding: 14px; cursor: pointer;">
+                  <div style="font-size: 20px; margin-bottom: 8px;">✨</div>
+                  <div style="font-size: 13px; font-weight: 600; margin-bottom: 4px; color: var(--mc-ai-accent);">AI-scaffold from existing <span style="font-size: 10px; color: var(--mc-text-muted); font-weight: normal;">Epic 4</span></div>
+                  <div style="font-size: 11px; color: var(--mc-text-muted); line-height: 1.5;">Paste a URL or upload HTML — AI maps it to your library components and scaffolds a page.</div>
+                </div>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px;">
+                <div>
+                  <label class="prop-label" style="font-size: 12px; font-weight: 500;">Page name</label>
+                  <input class="prop-input" style="font-size: 13px; padding: 8px 10px;" placeholder="Autumn Collection">
+                </div>
+                <div>
+                  <label class="prop-label" style="font-size: 12px; font-weight: 500;">URL path</label>
+                  <input class="prop-input" style="font-size: 13px; padding: 8px 10px; font-family: 'SF Mono', monospace;" value="/collections/autumn">
+                </div>
+              </div>
+
+              <div style="margin-bottom: 14px;">
+                <label class="prop-label" style="font-size: 12px; font-weight: 500; margin-bottom: 6px;">Business context</label>
+                <div style="display: flex; gap: 8px;">
+                  <label style="display: flex; align-items: center; gap: 6px; padding: 6px 10px; border: 2px solid var(--mc-blue); background: var(--mc-blue-wash); border-radius: var(--radius-sm); cursor: pointer; font-size: 12px;">
+                    <input type="checkbox" checked> <span style="color: var(--mc-blue); font-weight: 500;">B2C consumer</span>
+                  </label>
+                  <label style="display: flex; align-items: center; gap: 6px; padding: 6px 10px; border: 1px solid var(--mc-border); border-radius: var(--radius-sm); cursor: pointer; font-size: 12px;">
+                    <input type="checkbox"> B2B wholesale
+                  </label>
+                  <label style="display: flex; align-items: center; gap: 6px; padding: 6px 10px; border: 1px solid var(--mc-border); border-radius: var(--radius-sm); cursor: pointer; font-size: 12px;">
+                    <input type="checkbox"> Dealer portal
+                  </label>
+                </div>
+                <div style="font-size: 11px; color: var(--mc-text-muted); margin-top: 6px;">You can scope this page to one or more contexts. Changes to each context are drafted independently.</div>
+              </div>
+
+              <div>
+                <label class="prop-label" style="font-size: 12px; font-weight: 500; margin-bottom: 6px;">Locales</label>
+                <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                  <span class="chip active" style="padding: 4px 10px;">en-GB ✓</span>
+                  <span class="chip" style="padding: 4px 10px;">+ de-DE</span>
+                  <span class="chip" style="padding: 4px 10px;">+ fr-FR</span>
+                  <span class="chip" style="padding: 4px 10px;">+ Add locale</span>
+                </div>
+              </div>
+
+              <div style="margin-top: 16px; padding: 12px 14px; background: #fafbfc; border: 1px dashed var(--mc-border-strong); border-radius: var(--radius-sm); font-size: 11px; color: var(--mc-text-muted); line-height: 1.5;">
+                <strong style="color: var(--mc-text);">Governance on day one:</strong> This page will only render components from your published library. Red Zone components (checkout, pricing, tax) will be auto-included per context schema and aren't operator-editable. Accessibility warnings will surface at publish time (FR51).
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button class="btn-ghost">Cancel</button>
+              <button class="publish-btn">Create page →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-annotations">
+        <h4>Design Notes</h4>
+        <ul>
+          <li><strong>Three starting paths, honestly labeled</strong> — blank / template / AI-scaffold. AI path is marked "Epic 4" so operators see what's available now vs. later, without hiding it.</li>
+          <li><strong>B2X context is a first-class choice, not an afterthought</strong> — operators commit to scope before they start drafting. Prevents accidental cross-context pollution. <em>(FR5)</em></li>
+          <li><strong>Locale chips are additive</strong> — "+ de-DE" shows future locales as discoverable one-click options, not a dropdown.</li>
+          <li><strong>Governance preamble in the dashed-border box</strong> — reinforces that Red Zone enforcement and a11y warnings apply from the first save, not just at publish. <em>(FR15, FR51)</em></li>
+          <li><strong>Modal is the right pattern here</strong> — this is a quick decision, not a workflow. Wizard is overkill for a new page; full canvas comes after "Create page →".</li>
+          <li><strong>AI-scaffold tile violet-tinted</strong> — signals the Commerce Intelligence Drawer handoff without looking punitive.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="doc-footer">
+  Wireframes are intentionally low-fidelity — dashed borders and placeholder content indicate where customer-brand content will render. Final visual styling inherits commercetools Merchant Center design tokens. Epic 1 establishes the procurement gate (SSO + data residency), activates behavioral collection from day one, and ships the workspace shell operators live in day-to-day.
+</div>
+
+<script>
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      const target = tab.dataset.tab;
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('tab-' + target).classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+
+  // Region toggle demo (Tab 1 data residency)
+  document.querySelectorAll('[data-region-toggle] button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const group = btn.closest('[data-region-toggle]');
+      group.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>

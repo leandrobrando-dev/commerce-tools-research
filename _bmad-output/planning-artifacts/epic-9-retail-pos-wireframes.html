@@ -1,0 +1,1532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Epic 9 — Physical Retail POS (Partnership-Accelerated) — Wireframes</title>
+<style>
+  :root {
+    --mc-blue: #0066cc;
+    --mc-blue-wash: rgba(0, 102, 204, 0.08);
+    --mc-ai-tint: rgba(88, 28, 255, 0.08);
+    --mc-ai-accent: #5b21b6;
+    --mc-bg: #f5f7fa;
+    --mc-surface: #ffffff;
+    --mc-border: #e4e7eb;
+    --mc-border-strong: #cbd2d9;
+    --mc-text: #1f2933;
+    --mc-text-muted: #6b7280;
+    --mc-text-faint: #9aa5b1;
+    --mc-success: #16a34a;
+    --mc-success-bg: #ecfdf5;
+    --mc-warning: #d97706;
+    --mc-warning-bg: #fef3c7;
+    --mc-error: #dc2626;
+    --mc-error-bg: #fee2e2;
+    --mc-locked: #9aa5b1;
+    --mc-locked-bg: #f3f4f6;
+    /* POS-specific tokens — higher contrast, larger targets */
+    --pos-bg: #0f172a;
+    --pos-surface: #1e293b;
+    --pos-surface-hi: #334155;
+    --pos-text: #f8fafc;
+    --pos-text-dim: #94a3b8;
+    --pos-accent: #3b82f6;
+    --pos-success: #22c55e;
+    --radius-sm: 4px;
+    --radius-md: 6px;
+    --radius-lg: 8px;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 2px 6px rgba(0,0,0,0.06);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 13px; line-height: 1.5;
+    background: var(--mc-bg); color: var(--mc-text);
+  }
+  code, .mono { font-family: 'SF Mono', 'Monaco', 'Consolas', monospace; font-size: 12px; }
+
+  /* Doc header */
+  .doc-header {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: white; padding: 24px 40px;
+  }
+  .doc-header h1 { font-size: 22px; font-weight: 600; margin-bottom: 6px; }
+  .doc-header p { font-size: 13px; opacity: 0.85; max-width: 900px; }
+  .doc-header .meta { margin-top: 12px; display: flex; gap: 20px; font-size: 12px; opacity: 0.7; }
+
+  /* Tabs */
+  .tabs {
+    background: white; border-bottom: 1px solid var(--mc-border);
+    display: flex; padding: 0 40px; gap: 32px; position: sticky; top: 0; z-index: 100;
+  }
+  .tab {
+    padding: 14px 0; cursor: pointer; border-bottom: 3px solid transparent;
+    font-weight: 500; font-size: 13px; color: var(--mc-text-muted);
+    transition: all 0.2s ease; display: flex; align-items: center; gap: 8px;
+  }
+  .tab.active { border-bottom-color: var(--mc-blue); color: var(--mc-blue); }
+  .tab:hover { color: var(--mc-blue); }
+  .tab-num {
+    display: inline-block; width: 18px; height: 18px;
+    background: var(--mc-border); color: var(--mc-text-muted);
+    border-radius: 50%; font-size: 11px; text-align: center; line-height: 18px; font-weight: 600;
+  }
+  .tab.active .tab-num { background: var(--mc-blue); color: white; }
+
+  .tab-content { display: none; padding: 32px 40px 80px; }
+  .tab-content.active { display: block; }
+
+  /* Intro */
+  .tab-intro {
+    background: white; border: 1px solid var(--mc-border);
+    border-left: 3px solid var(--mc-blue);
+    border-radius: var(--radius-md); padding: 16px 20px; margin-bottom: 28px; max-width: 1100px;
+  }
+  .tab-intro h2 { font-size: 16px; margin-bottom: 6px; }
+  .tab-intro p { color: var(--mc-text-muted); font-size: 13px; }
+  .tab-intro .frs { margin-top: 10px; display: flex; gap: 6px; flex-wrap: wrap; }
+  .fr-chip {
+    background: var(--mc-blue-wash); color: var(--mc-blue);
+    padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 500;
+    font-family: 'SF Mono', 'Monaco', monospace;
+  }
+
+  /* Screen card */
+  .screen {
+    background: white; border: 1px solid var(--mc-border);
+    border-radius: var(--radius-lg); margin-bottom: 32px; overflow: hidden;
+    box-shadow: var(--shadow-sm);
+  }
+  .screen-header {
+    padding: 14px 20px; border-bottom: 1px solid var(--mc-border); background: #fafbfc;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .screen-header h3 { font-size: 14px; font-weight: 600; }
+  .screen-header .tag {
+    font-family: 'SF Mono', monospace; font-size: 11px; color: var(--mc-text-muted);
+    background: white; border: 1px solid var(--mc-border);
+    padding: 2px 8px; border-radius: 10px;
+  }
+  .screen-body { padding: 24px; display: grid; grid-template-columns: 1fr 280px; gap: 24px; }
+  .screen-body.single { grid-template-columns: 1fr; }
+  .screen-annotations {
+    background: #fafbfc; border: 1px solid var(--mc-border);
+    border-radius: var(--radius-md); padding: 16px; font-size: 12px;
+  }
+  .screen-annotations h4 {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;
+    color: var(--mc-text-muted); margin-bottom: 10px;
+  }
+  .screen-annotations ul { list-style: none; padding: 0; }
+  .screen-annotations li {
+    padding: 6px 0; border-bottom: 1px dashed var(--mc-border);
+    font-size: 12px; line-height: 1.45;
+  }
+  .screen-annotations li:last-child { border-bottom: none; }
+  .screen-annotations li strong { color: var(--mc-blue); font-weight: 600; }
+
+  /* chip + buttons (shared with Epic 3) */
+  .chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 500;
+    border: 1px solid var(--mc-border); background: white;
+  }
+  .chip .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  .chip.active { background: var(--mc-blue-wash); border-color: var(--mc-blue); color: var(--mc-blue); }
+  .chip.live { background: var(--mc-success-bg); border-color: var(--mc-success); color: var(--mc-success); }
+  .chip.warn { background: var(--mc-warning-bg); border-color: var(--mc-warning); color: var(--mc-warning); }
+  .btn-primary, .btn-ghost, .btn-danger {
+    padding: 5px 12px; border-radius: var(--radius-sm); font-size: 12px; font-weight: 500;
+    cursor: pointer; border: 1px solid transparent; display: inline-flex; align-items: center; gap: 6px;
+    font-family: inherit;
+  }
+  .btn-primary { background: var(--mc-blue); color: white; }
+  .btn-ghost { background: white; color: var(--mc-text-muted); border-color: var(--mc-border); }
+  .btn-danger { background: white; color: var(--mc-error); border-color: var(--mc-border); }
+
+  /* check-item */
+  .check-item {
+    display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px dashed var(--mc-border); font-size: 12px;
+  }
+  .check-item:last-child { border-bottom: none; }
+  .check-item .check-icon {
+    width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 600; flex-shrink: 0;
+  }
+  .check-item.pass .check-icon { background: var(--mc-success-bg); color: var(--mc-success); }
+  .check-item.warn .check-icon { background: var(--mc-warning-bg); color: var(--mc-warning); }
+  .check-item.fail .check-icon { background: var(--mc-error-bg); color: var(--mc-error); }
+  .check-item .check-title { font-weight: 600; font-size: 12px; margin-bottom: 2px; }
+  .check-item .check-desc { font-size: 11px; color: var(--mc-text-muted); line-height: 1.4; }
+
+  .metric-card {
+    background: white; border: 1px solid var(--mc-border);
+    border-radius: var(--radius-md); padding: 14px;
+  }
+  .metric-card .label {
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px;
+    color: var(--mc-text-muted); font-weight: 600; margin-bottom: 6px;
+  }
+  .metric-card .value { font-size: 20px; font-weight: 600; color: var(--mc-text); }
+  .metric-card .trend { font-size: 11px; margin-top: 4px; }
+  .metric-card .trend.up { color: var(--mc-success); }
+  .metric-card .trend.down { color: var(--mc-error); }
+  .metric-card .trend.flat { color: var(--mc-text-muted); }
+  .metric-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+
+  .progress-bar { height: 6px; background: var(--mc-border); border-radius: 3px; overflow: hidden; }
+  .progress-bar .fill { height: 100%; background: var(--mc-blue); }
+  .progress-bar .fill.success { background: var(--mc-success); }
+
+  /* ============ POS-specific frame ============ */
+  .pos-frame {
+    border: 1px solid var(--mc-border-strong); border-radius: var(--radius-md);
+    overflow: hidden; background: var(--pos-bg); color: var(--pos-text);
+    display: grid; grid-template-rows: 48px 1fr; height: 620px;
+    font-size: 14px;
+  }
+  .pos-topbar {
+    background: var(--pos-surface); border-bottom: 1px solid var(--pos-surface-hi);
+    display: flex; align-items: center; padding: 0 20px; gap: 16px;
+  }
+  .pos-topbar .store {
+    font-weight: 600; font-size: 14px; letter-spacing: 0.2px;
+  }
+  .pos-topbar .associate { font-size: 12px; color: var(--pos-text-dim); }
+  .pos-topbar .spacer { flex: 1; }
+  .pos-topbar .chip {
+    background: var(--pos-surface-hi); border-color: var(--pos-surface-hi); color: var(--pos-text); font-size: 11px;
+  }
+  .pos-topbar .chip.live { background: rgba(34, 197, 94, 0.15); border-color: var(--pos-success); color: var(--pos-success); }
+
+  .pos-main { display: grid; grid-template-columns: 1.6fr 1fr; gap: 0; overflow: hidden; }
+  .pos-left { padding: 20px; overflow-y: auto; background: var(--pos-bg); }
+  .pos-right {
+    background: var(--pos-surface); border-left: 1px solid var(--pos-surface-hi);
+    display: flex; flex-direction: column; overflow: hidden;
+  }
+
+  /* POS Search */
+  .pos-search {
+    background: var(--pos-surface); border: 1px solid var(--pos-surface-hi);
+    border-radius: var(--radius-md); padding: 14px 16px; margin-bottom: 16px;
+    display: flex; align-items: center; gap: 10px; font-size: 16px;
+  }
+  .pos-search input {
+    flex: 1; background: transparent; border: none; color: var(--pos-text); font-size: 16px; outline: none;
+  }
+  .pos-search .shortcut {
+    font-family: 'SF Mono', monospace; font-size: 11px; color: var(--pos-text-dim);
+    background: var(--pos-surface-hi); padding: 2px 6px; border-radius: 3px;
+  }
+
+  /* POS action grid (big tap targets) */
+  .pos-action-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 18px;
+  }
+  .pos-action-btn {
+    background: var(--pos-surface); border: 1px solid var(--pos-surface-hi);
+    border-radius: var(--radius-md); padding: 18px 12px; text-align: center; cursor: pointer;
+    color: var(--pos-text); font-size: 13px; font-weight: 500; min-height: 80px;
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+  }
+  .pos-action-btn:hover { background: var(--pos-surface-hi); border-color: var(--pos-accent); }
+  .pos-action-btn .icon { font-size: 22px; }
+  .pos-action-btn.primary { background: var(--pos-accent); border-color: var(--pos-accent); color: white; }
+  .pos-action-btn.success { background: var(--pos-success); border-color: var(--pos-success); color: white; }
+
+  /* Product tiles */
+  .pos-product-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .pos-product-tile {
+    background: var(--pos-surface); border: 1px solid var(--pos-surface-hi);
+    border-radius: var(--radius-md); padding: 12px; cursor: pointer;
+    min-height: 100px;
+  }
+  .pos-product-tile:hover { border-color: var(--pos-accent); background: var(--pos-surface-hi); }
+  .pos-product-tile .placeholder {
+    height: 50px; background: var(--pos-surface-hi); border-radius: var(--radius-sm);
+    margin-bottom: 8px; display: flex; align-items: center; justify-content: center;
+    color: var(--pos-text-dim); font-size: 10px;
+  }
+  .pos-product-tile .name { font-size: 12px; font-weight: 600; margin-bottom: 2px; }
+  .pos-product-tile .price { font-size: 13px; color: var(--pos-success); font-weight: 600; }
+  .pos-product-tile .stock { font-size: 10px; color: var(--pos-text-dim); margin-top: 4px; }
+
+  /* Cart */
+  .pos-cart-header {
+    padding: 16px; border-bottom: 1px solid var(--pos-surface-hi);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .pos-cart-header h3 { font-size: 14px; font-weight: 600; }
+  .pos-cart-header .count {
+    background: var(--pos-accent); color: white; padding: 2px 8px; border-radius: 10px;
+    font-size: 11px; font-weight: 600;
+  }
+  .pos-cart-items { flex: 1; overflow-y: auto; padding: 8px; }
+  .pos-cart-item {
+    padding: 12px; border-radius: var(--radius-sm); margin-bottom: 6px;
+    background: var(--pos-surface-hi);
+  }
+  .pos-cart-item .item-name { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+  .pos-cart-item .item-meta { font-size: 11px; color: var(--pos-text-dim); }
+  .pos-cart-item .item-row {
+    display: flex; align-items: center; gap: 8px; margin-top: 6px;
+  }
+  .qty-btn {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--pos-bg); color: var(--pos-text); border: 1px solid var(--pos-surface-hi);
+    font-size: 14px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
+  }
+  .qty-btn:hover { background: var(--pos-accent); border-color: var(--pos-accent); }
+  .item-qty { font-size: 14px; font-weight: 600; min-width: 20px; text-align: center; }
+  .item-price { margin-left: auto; font-size: 14px; font-weight: 600; color: var(--pos-text); }
+
+  .pos-cart-totals {
+    border-top: 1px solid var(--pos-surface-hi); padding: 14px 16px;
+    background: var(--pos-surface);
+  }
+  .pos-total-row {
+    display: flex; justify-content: space-between; padding: 4px 0; font-size: 13px;
+  }
+  .pos-total-row.grand {
+    border-top: 1px solid var(--pos-surface-hi); padding-top: 8px; margin-top: 6px;
+    font-size: 18px; font-weight: 700;
+  }
+  .pos-total-row.grand .label { color: var(--pos-text); }
+  .pos-total-row.grand .amount { color: var(--pos-success); }
+
+  .pos-tender-btn {
+    width: 100%; padding: 16px; background: var(--pos-success); color: white;
+    border: none; border-radius: var(--radius-md); font-size: 16px; font-weight: 600;
+    cursor: pointer; margin-top: 8px;
+  }
+  .pos-tender-btn:disabled { background: var(--pos-surface-hi); color: var(--pos-text-dim); cursor: not-allowed; }
+
+  /* Customer panel */
+  .pos-customer {
+    background: var(--pos-surface); border: 1px solid var(--pos-surface-hi);
+    border-radius: var(--radius-md); padding: 14px 16px; margin-bottom: 12px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .pos-customer .avatar {
+    width: 44px; height: 44px; border-radius: 50%; background: var(--pos-accent);
+    display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 16px; color: white;
+  }
+  .pos-customer .name { font-size: 14px; font-weight: 600; }
+  .pos-customer .meta { font-size: 11px; color: var(--pos-text-dim); }
+  .pos-customer .loyalty {
+    background: var(--mc-ai-tint); color: #c4b5fd; padding: 4px 10px;
+    border-radius: 12px; font-size: 11px; font-weight: 600; margin-left: auto;
+  }
+
+  /* Payment modal */
+  .pos-modal-overlay {
+    position: absolute; inset: 0; background: rgba(15, 23, 42, 0.85);
+    display: flex; align-items: center; justify-content: center; z-index: 30;
+  }
+  .pos-modal {
+    background: var(--pos-surface); color: var(--pos-text);
+    border-radius: var(--radius-lg); width: 420px; max-width: 90%;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4); overflow: hidden;
+    border: 1px solid var(--pos-surface-hi);
+  }
+  .pos-modal-header { padding: 16px 20px; border-bottom: 1px solid var(--pos-surface-hi); }
+  .pos-modal-body { padding: 20px; }
+
+  /* Keypad */
+  .pos-keypad {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;
+  }
+  .keypad-btn {
+    background: var(--pos-surface-hi); color: var(--pos-text);
+    border: none; padding: 16px; border-radius: var(--radius-md);
+    font-size: 18px; font-weight: 600; cursor: pointer; font-family: inherit;
+  }
+  .keypad-btn:hover { background: var(--pos-accent); }
+
+  /* Dev frame (for Tab 2 & 3 — admin surfaces) */
+  .dev-frame {
+    border: 1px solid var(--mc-border-strong); border-radius: var(--radius-md);
+    overflow: hidden; background: var(--mc-bg);
+    display: grid; grid-template-rows: 40px 36px 1fr;
+    height: 600px; font-size: 12px;
+  }
+  .dev-topbar {
+    background: #1f2933; color: white;
+    display: flex; align-items: center; padding: 0 16px; gap: 20px; font-size: 12px;
+  }
+  .dev-topbar .logo { font-weight: 600; }
+  .dev-topbar .crumbs { opacity: 0.7; }
+  .dev-topbar .crumbs strong { color: white; opacity: 1; }
+  .dev-topbar .spacer { flex: 1; }
+  .dev-topbar .user {
+    width: 24px; height: 24px; border-radius: 50%; background: var(--mc-blue);
+    display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600;
+  }
+
+  .sub-bar {
+    background: white; border-bottom: 1px solid var(--mc-border);
+    display: flex; align-items: center; padding: 0 12px; gap: 8px;
+  }
+  .sub-bar .spacer { flex: 1; }
+  .sub-bar .chip.live { background: var(--mc-success-bg); border-color: var(--mc-success); color: var(--mc-success); }
+  .sub-bar .chip.warn { background: var(--mc-warning-bg); border-color: var(--mc-warning); color: var(--mc-warning); }
+  .sub-bar .chip.fail { background: var(--mc-error-bg); border-color: var(--mc-error); color: var(--mc-error); }
+
+  .dev-main { display: grid; grid-template-columns: 200px 1fr; height: 100%; overflow: hidden; }
+  .dev-sidebar {
+    background: #fafbfc; border-right: 1px solid var(--mc-border);
+    padding: 14px 0; overflow-y: auto;
+  }
+  .dev-sidebar .section-title {
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.6px;
+    color: var(--mc-text-muted); padding: 8px 16px; font-weight: 600;
+  }
+  .dev-sidebar .nav-row {
+    padding: 6px 16px; font-size: 12px; display: flex; align-items: center; gap: 8px;
+    cursor: pointer; color: var(--mc-text); border-left: 2px solid transparent;
+  }
+  .dev-sidebar .nav-row:hover { background: white; }
+  .dev-sidebar .nav-row.active { background: white; border-left-color: var(--mc-blue); color: var(--mc-blue); font-weight: 500; }
+  .dev-sidebar .nav-row .count { margin-left: auto; color: var(--mc-text-faint); font-size: 10px; }
+
+  /* Unified timeline */
+  .timeline {
+    position: relative; padding-left: 32px;
+  }
+  .timeline::before {
+    content: ''; position: absolute; left: 11px; top: 4px; bottom: 4px;
+    width: 2px; background: var(--mc-border);
+  }
+  .timeline-event {
+    position: relative; padding: 10px 0 14px 0;
+  }
+  .timeline-event::before {
+    content: ''; position: absolute; left: -28px; top: 14px;
+    width: 12px; height: 12px; border-radius: 50%;
+    background: white; border: 2px solid var(--mc-border);
+  }
+  .timeline-event.online::before { border-color: var(--mc-blue); background: var(--mc-blue-wash); }
+  .timeline-event.instore::before { border-color: var(--mc-success); background: var(--mc-success-bg); }
+  .timeline-event.loyalty::before { border-color: var(--mc-ai-accent); background: var(--mc-ai-tint); }
+  .timeline-event .event-head {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 4px;
+  }
+  .timeline-event .event-title { font-size: 12px; font-weight: 600; }
+  .timeline-event .event-date { font-size: 11px; color: var(--mc-text-muted); margin-left: auto; }
+  .timeline-event .event-channel {
+    font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 10px;
+  }
+  .timeline-event.online .event-channel { background: var(--mc-blue-wash); color: var(--mc-blue); }
+  .timeline-event.instore .event-channel { background: var(--mc-success-bg); color: var(--mc-success); }
+  .timeline-event.loyalty .event-channel { background: var(--mc-ai-tint); color: var(--mc-ai-accent); }
+  .timeline-event .event-meta { font-size: 11px; color: var(--mc-text-muted); }
+
+  /* Footer */
+  .doc-footer {
+    background: white; border-top: 1px solid var(--mc-border);
+    padding: 20px 40px; font-size: 12px; color: var(--mc-text-muted); text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<div class="doc-header">
+  <h1>Epic 9 — Physical Retail POS (Partnership-Accelerated) Wireframes</h1>
+  <p>In-store point-of-sale surfaces for the commercetools Next-Gen Frontend. Partnership-accelerated approach: <strong>the platform owns commerce logic, the vendor owns fiscal compliance</strong>. EU fiscal printer regulations across 20+ country regimes are impossible to own in-house — the vendor integration covers them so unified commerce can still deliver. This file matches the visual language of Epics 2 and 3 for admin surfaces, with a distinct high-contrast dark theme for the POS interface itself.</p>
+  <div class="meta">
+    <span>Author: Sally (UX)</span>
+    <span>Date: 2026-05-07</span>
+    <span>Status: Draft for review</span>
+    <span>Personas: In-store Associate, Store Manager, IT Admin</span>
+    <span>Approach: Partnership-accelerated · Vendor owns fiscal compliance</span>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" data-tab="pos"><span class="tab-num">1</span> Associate POS Interface</div>
+  <div class="tab" data-tab="unified"><span class="tab-num">2</span> Unified Customer & Inventory</div>
+  <div class="tab" data-tab="fiscal"><span class="tab-num">3</span> Fiscal Compliance & Vendor Integration</div>
+</div>
+
+<div id="tab-pos" class="tab-content active">
+
+  <div class="tab-intro">
+    <h2>1 — Associate POS Interface</h2>
+    <p>Touch-first transaction surface designed for the counter: high contrast for bright store lighting, large tap targets, minimal cognitive load under queue pressure. Three states tell the operational story: idle (shift ready), mid-transaction (building a cart), and payment (fiscal receipt issued). The associate authenticates with a badge or PIN, scans products or selects them visually, and completes payment via split tender when needed.</p>
+    <div class="frs">
+      <span class="fr-chip">Epic 9 scope</span>
+      <span class="fr-chip">Touch-first POS</span>
+      <span class="fr-chip">Unified commerce handoff</span>
+    </div>
+  </div>
+
+  <!-- Screen 1A — Idle state -->
+  <div class="screen">
+    <div class="screen-header">
+      <h3>1A — Idle state: shift started, ready for the first customer</h3>
+      <span class="tag">Associate authenticated · till configured · first customer queue</span>
+    </div>
+    <div class="screen-body">
+      <div class="pos-frame">
+        <div class="pos-topbar">
+          <span class="store">🏬 Regent Street · London · Till 02</span>
+          <span class="chip live"><span class="dot"></span> Online</span>
+          <span class="chip">Fiscal device OK</span>
+          <span class="spacer"></span>
+          <span class="associate">👤 Maya K. · Sales Associate · shift started 09:45</span>
+          <button class="btn-ghost" style="background: var(--pos-surface-hi); border-color: var(--pos-surface-hi); color: var(--pos-text);">Lock till</button>
+        </div>
+        <div class="pos-main">
+          <div class="pos-left">
+            <div class="pos-search">
+              <span style="font-size: 20px;">🔍</span>
+              <input placeholder="Scan or search — SKU, barcode, product name" readonly>
+              <span class="shortcut">⌨ F1 · scan focus</span>
+            </div>
+
+            <div class="pos-action-grid">
+              <div class="pos-action-btn primary">
+                <span class="icon">📷</span>
+                <div>Scan barcode</div>
+              </div>
+              <div class="pos-action-btn">
+                <span class="icon">🧑</span>
+                <div>Look up customer</div>
+              </div>
+              <div class="pos-action-btn">
+                <span class="icon">🎁</span>
+                <div>Apply promo</div>
+              </div>
+              <div class="pos-action-btn">
+                <span class="icon">↩</span>
+                <div>Returns & exchange</div>
+              </div>
+            </div>
+
+            <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.6px; color: var(--pos-text-dim); font-weight: 600; margin-bottom: 10px;">Frequently sold · this store</div>
+            <div class="pos-product-grid">
+              <div class="pos-product-tile">
+                <div class="placeholder">(product image)</div>
+                <div class="name">Linen Shirt · Navy · M</div>
+                <div class="price">£79.00</div>
+                <div class="stock">● 12 in stock</div>
+              </div>
+              <div class="pos-product-tile">
+                <div class="placeholder">(product image)</div>
+                <div class="name">Wool Trousers · Grey · 32</div>
+                <div class="price">£129.00</div>
+                <div class="stock">● 4 in stock</div>
+              </div>
+              <div class="pos-product-tile">
+                <div class="placeholder">(product image)</div>
+                <div class="name">Canvas Belt · Tan</div>
+                <div class="price">£45.00</div>
+                <div class="stock">● 18 in stock</div>
+              </div>
+              <div class="pos-product-tile">
+                <div class="placeholder">(product image)</div>
+                <div class="name">Cotton Tee · White · L</div>
+                <div class="price">£35.00</div>
+                <div class="stock" style="color: var(--mc-warning);">● Low · 2 left</div>
+              </div>
+              <div class="pos-product-tile">
+                <div class="placeholder">(product image)</div>
+                <div class="name">Leather Loafer · Brown · 42</div>
+                <div class="price">£185.00</div>
+                <div class="stock">● 7 in stock</div>
+              </div>
+              <div class="pos-product-tile">
+                <div class="placeholder">(product image)</div>
+                <div class="name">Silk Tie · Burgundy</div>
+                <div class="price">£65.00</div>
+                <div class="stock">● 9 in stock</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pos-right">
+            <div class="pos-cart-header">
+              <h3>Transaction · empty</h3>
+              <span style="font-size: 11px; color: var(--pos-text-dim);">0 items</span>
+            </div>
+            <div class="pos-cart-items">
+              <div style="padding: 60px 20px; text-align: center; color: var(--pos-text-dim);">
+                <div style="font-size: 40px; opacity: 0.4; margin-bottom: 10px;">🛒</div>
+                <div style="font-size: 14px; margin-bottom: 6px; color: var(--pos-text);">Ready for the first scan</div>
+                <div style="font-size: 11px;">Scan a barcode, tap a product, or look up a customer to begin.</div>
+              </div>
+            </div>
+            <div style="padding: 14px 16px; border-top: 1px solid var(--pos-surface-hi); background: var(--pos-surface);">
+              <div style="font-size: 11px; color: var(--pos-text-dim); line-height: 1.6;">
+                Till float · <strong style="color: var(--pos-text);">£150.00</strong><br>
+                Transactions so far · <strong style="color: var(--pos-text);">0</strong><br>
+                Shift auto-closes at 20:00
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-annotations">
+        <h4>Design Notes</h4>
+        <ul>
+          <li><strong>High contrast dark theme for store lighting</strong> — retail floors are brightly lit; a light UI on a counter tablet washes out. Dark chrome + bright product tiles reduce glare.</li>
+          <li><strong>Four primary actions are the whole mental model</strong> — Scan · Customer · Promo · Returns. Everything else is secondary. No menus to navigate during a transaction.</li>
+          <li><strong>Frequently-sold surfaces first</strong> — the store's top SKUs appear as tap-to-add tiles. Associates who can't find a barcode can still ring up quickly.</li>
+          <li><strong>Stock visibility inline</strong> — "● 12 in stock" / "● Low · 2 left" appears on every tile. Prevents over-promise. The green/amber dot is reusable with low cognitive load.</li>
+          <li><strong>Scan-focus keyboard shortcut (F1)</strong> — for stores with barcode guns, the scanner input must never lose focus. Named explicitly so associates trained on other POS systems feel at home.</li>
+          <li><strong>Shift context in the right panel</strong> — float, transactions, auto-close time. Visible without intruding on the cart area.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen 1B — Mid-transaction -->
+  <div class="screen">
+    <div class="screen-header">
+      <h3>1B — Mid-transaction: cart with items, customer identified, online context joined</h3>
+      <span class="tag">Unified commerce lookup surfaces loyalty tier and online order history</span>
+    </div>
+    <div class="screen-body">
+      <div class="pos-frame">
+        <div class="pos-topbar">
+          <span class="store">🏬 Regent Street · Till 02</span>
+          <span class="chip live"><span class="dot"></span> Online</span>
+          <span class="spacer"></span>
+          <span class="associate">👤 Maya K.</span>
+          <button class="btn-ghost" style="background: var(--pos-surface-hi); border-color: var(--pos-surface-hi); color: var(--pos-text);">Lock till</button>
+        </div>
+        <div class="pos-main">
+          <div class="pos-left">
+            <div class="pos-customer">
+              <div class="avatar">JR</div>
+              <div style="flex: 1;">
+                <div class="name">Juniper Reyes</div>
+                <div class="meta">juniper.r@example.co.uk · 4th visit this store · also shops online</div>
+              </div>
+              <div class="loyalty">★ Gold · 8,420 pts</div>
+            </div>
+
+            <div class="pos-search">
+              <span style="font-size: 20px;">🔍</span>
+              <input placeholder="Scan next item or search" readonly>
+              <span class="shortcut">⌨ F1</span>
+            </div>
+
+            <div style="background: var(--mc-ai-tint); border: 1px solid var(--mc-ai-accent); border-radius: var(--radius-md); padding: 12px 14px; margin-bottom: 16px; display: flex; align-items: center; gap: 10px;">
+              <span style="font-size: 20px;">✨</span>
+              <div style="flex: 1; font-size: 12px; color: var(--pos-text); line-height: 1.4;">
+                <strong style="color: #c4b5fd;">Cross-channel signal</strong> — Juniper added a <em>Leather Weekender Bag (£240)</em> to her online wishlist last week. In stock here. Offer as add-on?
+              </div>
+              <button class="btn-primary" style="background: var(--mc-ai-accent); border-color: var(--mc-ai-accent);">Add to cart</button>
+              <button class="btn-ghost" style="background: var(--pos-surface-hi); border-color: var(--pos-surface-hi); color: var(--pos-text);">Dismiss</button>
+            </div>
+
+            <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.6px; color: var(--pos-text-dim); font-weight: 600; margin-bottom: 10px;">Frequently paired with cart items</div>
+            <div class="pos-product-grid">
+              <div class="pos-product-tile">
+                <div class="placeholder">(image)</div>
+                <div class="name">Linen Shirt · Navy · L</div>
+                <div class="price">£79.00</div>
+                <div class="stock">● 8 in stock</div>
+              </div>
+              <div class="pos-product-tile">
+                <div class="placeholder">(image)</div>
+                <div class="name">Pocket Square · Navy</div>
+                <div class="price">£28.00</div>
+                <div class="stock">● 22 in stock</div>
+              </div>
+              <div class="pos-product-tile">
+                <div class="placeholder">(image)</div>
+                <div class="name">Leather Belt · Brown</div>
+                <div class="price">£95.00</div>
+                <div class="stock">● 5 in stock</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pos-right">
+            <div class="pos-cart-header">
+              <h3>Transaction</h3>
+              <span class="count">3 items</span>
+            </div>
+            <div class="pos-cart-items">
+              <div class="pos-cart-item">
+                <div class="item-name">Wool Trousers · Grey · 32</div>
+                <div class="item-meta">SKU 78512 · tax £21.50</div>
+                <div class="item-row">
+                  <button class="qty-btn">−</button>
+                  <span class="item-qty">1</span>
+                  <button class="qty-btn">+</button>
+                  <span class="item-price">£129.00</span>
+                </div>
+              </div>
+              <div class="pos-cart-item">
+                <div class="item-name">Linen Shirt · Navy · M</div>
+                <div class="item-meta">SKU 45231 · tax £13.17</div>
+                <div class="item-row">
+                  <button class="qty-btn">−</button>
+                  <span class="item-qty">1</span>
+                  <button class="qty-btn">+</button>
+                  <span class="item-price">£79.00</span>
+                </div>
+              </div>
+              <div class="pos-cart-item">
+                <div class="item-name">Silk Tie · Burgundy</div>
+                <div class="item-meta">SKU 39014 · tax £10.83</div>
+                <div class="item-row">
+                  <button class="qty-btn">−</button>
+                  <span class="item-qty">1</span>
+                  <button class="qty-btn">+</button>
+                  <span class="item-price">£65.00</span>
+                </div>
+              </div>
+            </div>
+            <div class="pos-cart-totals">
+              <div class="pos-total-row"><span>Subtotal</span><span>£273.00</span></div>
+              <div class="pos-total-row"><span>Tax (VAT 20%)</span><span>£45.50</span></div>
+              <div class="pos-total-row" style="color: var(--pos-text-dim);"><span>Gold discount 10%</span><span>−£27.30</span></div>
+              <div class="pos-total-row grand"><span class="label">Total</span><span class="amount">£291.20</span></div>
+              <button class="pos-tender-btn">Proceed to payment →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-annotations">
+        <h4>Design Notes</h4>
+        <ul>
+          <li><strong>Customer panel is the unified-commerce payoff</strong> — "4th visit this store · also shops online" and the loyalty tier come from the unified customer record that online shares with in-store. Associates see the whole relationship, not just today's visit.</li>
+          <li><strong>Cross-channel signal card</strong> — an AI-tinted card surfaces the online wishlist in the physical moment. "In stock here" closes the online-to-offline loop. One tap to Add to cart, no typing.</li>
+          <li><strong>Frequently-paired products react to the cart</strong> — "frequently-paired with cart items" retitles the lower grid once items are added. Helps associates upsell without memorizing pairings.</li>
+          <li><strong>Item meta shows tax per line</strong> — for markets where VAT or sales tax is itemized on receipts, per-item tax is visible during the transaction. Reduces receipt confusion.</li>
+          <li><strong>Loyalty discount applied automatically</strong> — Juniper's Gold tier 10% discount shows as a separate line. Never a surprise at total reveal.</li>
+          <li><strong>Tap targets are 28px minimum</strong> — qty −/+ buttons scale to finger-first interaction. Keyboard shortcuts available for associates who prefer them.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen 1C — Payment confirmed -->
+  <div class="screen">
+    <div class="screen-header">
+      <h3>1C — Payment confirmed: fiscal receipt issued by vendor device</h3>
+      <span class="tag">Split tender supported · fiscal receipt provably issued · multi-channel delivery</span>
+    </div>
+    <div class="screen-body">
+      <div class="pos-frame" style="position: relative;">
+        <div class="pos-topbar">
+          <span class="store">🏬 Regent Street · Till 02</span>
+          <span class="chip live"><span class="dot"></span> Online</span>
+          <span class="spacer"></span>
+          <span class="associate">👤 Maya K.</span>
+        </div>
+        <div class="pos-main" style="filter: blur(1px); opacity: 0.6;">
+          <div class="pos-left">
+            <div class="pos-customer">
+              <div class="avatar">JR</div>
+              <div style="flex: 1;"><div class="name">Juniper Reyes</div><div class="meta">Gold tier</div></div>
+            </div>
+          </div>
+          <div class="pos-right">
+            <div class="pos-cart-header"><h3>Transaction</h3><span class="count">3 items</span></div>
+            <div class="pos-cart-items">
+              <div class="pos-cart-item"><div class="item-name">Wool Trousers</div></div>
+              <div class="pos-cart-item"><div class="item-name">Linen Shirt</div></div>
+              <div class="pos-cart-item"><div class="item-name">Silk Tie</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pos-modal-overlay">
+          <div class="pos-modal" style="width: 500px;">
+            <div class="pos-modal-header">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <div style="width: 36px; height: 36px; border-radius: 50%; background: var(--pos-success); display: flex; align-items: center; justify-content: center; font-size: 18px;">✓</div>
+                <div>
+                  <div style="font-size: 16px; font-weight: 600;">Payment complete · £291.20</div>
+                  <div style="font-size: 11px; color: var(--pos-text-dim);">Transaction #TXN-2026050713201 · 14:32:14</div>
+                </div>
+              </div>
+            </div>
+            <div class="pos-modal-body">
+              <div style="background: var(--pos-bg); border: 1px solid var(--pos-surface-hi); border-radius: var(--radius-md); padding: 14px 16px; margin-bottom: 14px;">
+                <div style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--pos-text-dim); font-weight: 600; margin-bottom: 8px;">Tender · split</div>
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 6px 0; font-size: 13px;">
+                  <span>💳 Card · Visa ··4892</span>
+                  <strong>£200.00</strong>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 6px 0; font-size: 13px;">
+                  <span>🎁 Gift card · GC-8822</span>
+                  <strong>£50.00</strong>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 6px 0; font-size: 13px;">
+                  <span>💷 Cash</span>
+                  <strong>£41.20</strong>
+                </div>
+              </div>
+
+              <div style="background: var(--pos-bg); border: 1px solid var(--pos-success); border-radius: var(--radius-md); padding: 12px 14px; margin-bottom: 14px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <span style="font-size: 16px;">🧾</span>
+                  <div style="flex: 1;">
+                    <div style="font-size: 12px; font-weight: 600; color: var(--pos-success);">Fiscal receipt issued ✓</div>
+                    <div style="font-size: 11px; color: var(--pos-text-dim); line-height: 1.4; margin-top: 2px;">
+                      Vendor fiscal device · GB-HMRC compliant · signature <span style="font-family: 'SF Mono', monospace;">a7c82…4f91</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div style="margin-bottom: 8px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--pos-text-dim); font-weight: 600;">Send receipt</div>
+              <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px;">
+                <button class="pos-action-btn" style="min-height: 60px; padding: 12px;">
+                  <span style="font-size: 18px;">🖨</span>
+                  <div style="font-size: 11px;">Print</div>
+                </button>
+                <button class="pos-action-btn primary" style="min-height: 60px; padding: 12px;">
+                  <span style="font-size: 18px;">✉</span>
+                  <div style="font-size: 11px;">Email · juniper.r@…</div>
+                </button>
+                <button class="pos-action-btn" style="min-height: 60px; padding: 12px;">
+                  <span style="font-size: 18px;">📱</span>
+                  <div style="font-size: 11px;">SMS</div>
+                </button>
+              </div>
+
+              <div style="background: var(--mc-ai-tint); border: 1px solid var(--mc-ai-accent); border-radius: var(--radius-md); padding: 10px 12px; font-size: 11px; color: var(--pos-text); line-height: 1.4;">
+                <strong style="color: #c4b5fd;">Loyalty earned:</strong> +291 points (Gold tier). Now at 8,711 pts · 1,289 to Platinum.
+              </div>
+            </div>
+            <div style="padding: 12px 20px; border-top: 1px solid var(--pos-surface-hi); background: var(--pos-surface-hi); display: flex; justify-content: flex-end; gap: 8px;">
+              <button class="btn-ghost" style="background: var(--pos-bg); border-color: var(--pos-surface-hi); color: var(--pos-text); padding: 10px 16px; font-size: 13px;">Print & new sale</button>
+              <button class="btn-primary" style="padding: 10px 18px; font-size: 13px;">Done · next customer</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-annotations">
+        <h4>Design Notes</h4>
+        <ul>
+          <li><strong>Fiscal receipt is provably issued, not just promised</strong> — the vendor device signature appears in the confirmation. GB-HMRC compliant callout names the country regime. This is the partnership-accelerated promise made visible in-UX.</li>
+          <li><strong>Split tender is first-class, not a workaround</strong> — three lines (card + gift card + cash) is a common real-world pattern. Shown directly, not hidden behind a "more payment methods" overflow.</li>
+          <li><strong>Receipt delivery is a choice, not a default</strong> — Print / Email / SMS as three large buttons. Email is pre-filled with the customer's email (if identified). GDPR-friendly: no data sent without explicit action.</li>
+          <li><strong>Loyalty feedback is immediate</strong> — "+291 points" and "1,289 to Platinum" told at the moment of payment, not deferred to a next-visit email. Encourages repeat purchase narrative at the counter.</li>
+          <li><strong>"Print & new sale" is a distinct path</strong> — busy counters often print and rush. A shortcut that auto-advances to the next transaction respects the operational reality.</li>
+          <li><strong>Transaction ID format is traceable</strong> — <code>TXN-2026050713201</code> embeds date + till + sequence. Associates can read it back for exchange/returns without system lookup.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div id="tab-unified" class="tab-content">
+
+  <div class="tab-intro">
+    <h2>2 — Unified Customer & Inventory</h2>
+    <p>The structural promise of unified commerce is that online and in-store converge into one customer record and one inventory pool. Store Managers need to <em>see</em> that convergence to operate against it — a shopper's full online+offline history, store-level performance relative to e-commerce, and inventory visibility across channels (click-and-collect, ship-from-store, BOPIS returns). This tab designs the Store Manager's primary working surfaces.</p>
+    <div class="frs">
+      <span class="fr-chip">Epic 9 scope</span>
+      <span class="fr-chip">Unified customer record</span>
+      <span class="fr-chip">Cross-channel inventory</span>
+    </div>
+  </div>
+
+  <!-- Screen 2A — Unified customer record -->
+  <div class="screen">
+    <div class="screen-header">
+      <h3>2A — Unified customer: online + in-store history on one timeline</h3>
+      <span class="tag">Same customer, both channels · loyalty balance is a single running total</span>
+    </div>
+    <div class="screen-body single">
+      <div class="dev-frame" style="height: 640px;">
+        <div class="dev-topbar">
+          <span class="logo">commercetools</span>
+          <span class="crumbs">Store Manager › Customers › <strong>Juniper Reyes</strong></span>
+          <span class="spacer"></span>
+          <span class="user">SG</span>
+        </div>
+        <div class="sub-bar">
+          <span class="chip">Profile</span>
+          <span class="chip active">Timeline</span>
+          <span class="chip">Loyalty</span>
+          <span class="chip">Returns</span>
+          <span class="chip">Communications</span>
+          <span class="spacer"></span>
+          <button class="btn-ghost">Message customer</button>
+          <button class="btn-primary">Book styling appointment</button>
+        </div>
+        <div class="dev-main" style="grid-template-columns: 300px 1fr;">
+          <div class="dev-sidebar" style="padding: 20px;">
+            <div style="display: flex; flex-direction: column; align-items: center; text-align: center; margin-bottom: 18px;">
+              <div style="width: 72px; height: 72px; border-radius: 50%; background: var(--mc-blue); color: white; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 600; margin-bottom: 10px;">JR</div>
+              <div style="font-size: 15px; font-weight: 600;">Juniper Reyes</div>
+              <div style="font-size: 11px; color: var(--mc-text-muted);">juniper.r@example.co.uk</div>
+              <div style="margin-top: 8px; padding: 4px 12px; background: var(--mc-ai-tint); color: var(--mc-ai-accent); border-radius: 12px; font-size: 11px; font-weight: 600;">★ Gold · 8,711 pts</div>
+            </div>
+            <div style="font-size: 11px; line-height: 1.8;">
+              <div style="padding: 8px 0; border-bottom: 1px solid var(--mc-border); display: flex; justify-content: space-between;">
+                <span style="color: var(--mc-text-muted);">Member since</span><strong>Mar 2024</strong>
+              </div>
+              <div style="padding: 8px 0; border-bottom: 1px solid var(--mc-border); display: flex; justify-content: space-between;">
+                <span style="color: var(--mc-text-muted);">Lifetime value</span><strong style="color: var(--mc-success);">£4,287</strong>
+              </div>
+              <div style="padding: 8px 0; border-bottom: 1px solid var(--mc-border); display: flex; justify-content: space-between;">
+                <span style="color: var(--mc-text-muted);">Online orders</span><strong>11</strong>
+              </div>
+              <div style="padding: 8px 0; border-bottom: 1px solid var(--mc-border); display: flex; justify-content: space-between;">
+                <span style="color: var(--mc-text-muted);">In-store visits</span><strong>8</strong>
+              </div>
+              <div style="padding: 8px 0; border-bottom: 1px solid var(--mc-border); display: flex; justify-content: space-between;">
+                <span style="color: var(--mc-text-muted);">Home store</span><strong>Regent St.</strong>
+              </div>
+              <div style="padding: 8px 0; border-bottom: 1px solid var(--mc-border); display: flex; justify-content: space-between;">
+                <span style="color: var(--mc-text-muted);">Prefers</span><strong>In-store pickup</strong>
+              </div>
+              <div style="padding: 8px 0;">
+                <div style="color: var(--mc-text-muted); margin-bottom: 4px;">Size profile</div>
+                <div style="font-size: 11px;">Shirt M · Trousers 32 · Shoe 42</div>
+              </div>
+            </div>
+          </div>
+          <div style="padding: 20px; overflow-y: auto;">
+            <h3 style="font-size: 14px; margin-bottom: 14px;">Unified activity timeline · last 12 months</h3>
+
+            <div class="timeline">
+              <div class="timeline-event instore">
+                <div class="event-head">
+                  <span class="event-channel">🏬 In-store</span>
+                  <span class="event-title">Purchase · Regent Street · Till 02</span>
+                  <span class="event-date">Today 14:32</span>
+                </div>
+                <div class="event-meta">Wool Trousers + Linen Shirt + Silk Tie · £291.20 · split tender · <strong>+291 pts</strong></div>
+              </div>
+              <div class="timeline-event online">
+                <div class="event-head">
+                  <span class="event-channel">🌐 Online</span>
+                  <span class="event-title">Added to wishlist</span>
+                  <span class="event-date">Apr 29</span>
+                </div>
+                <div class="event-meta">Leather Weekender Bag · £240 · <em>in stock at Regent Street</em> · surfaced in-store today</div>
+              </div>
+              <div class="timeline-event online">
+                <div class="event-head">
+                  <span class="event-channel">🌐 Online</span>
+                  <span class="event-title">Order #RN-8842 · shipped</span>
+                  <span class="event-date">Apr 18</span>
+                </div>
+                <div class="event-meta">Cashmere Sweater · £195 · ship-from-store (Regent St.) · <strong>+195 pts</strong></div>
+              </div>
+              <div class="timeline-event instore">
+                <div class="event-head">
+                  <span class="event-channel">🏬 In-store</span>
+                  <span class="event-title">Purchase · Regent Street · Till 01</span>
+                  <span class="event-date">Apr 02</span>
+                </div>
+                <div class="event-meta">Leather Loafer 42 + Canvas Belt · £230.00 · card · <strong>+230 pts</strong></div>
+              </div>
+              <div class="timeline-event loyalty">
+                <div class="event-head">
+                  <span class="event-channel">★ Loyalty</span>
+                  <span class="event-title">Promoted to Gold tier</span>
+                  <span class="event-date">Apr 02</span>
+                </div>
+                <div class="event-meta">Crossed 5,000 LTV · 10% discount unlocked across both channels</div>
+              </div>
+              <div class="timeline-event online">
+                <div class="event-head">
+                  <span class="event-channel">🌐 Online</span>
+                  <span class="event-title">BOPIS return · Order #RN-8711</span>
+                  <span class="event-date">Mar 22</span>
+                </div>
+                <div class="event-meta">Returned at Regent Street · Wool Scarf · £65 refunded · fiscal credit note issued</div>
+              </div>
+              <div class="timeline-event instore">
+                <div class="event-head">
+                  <span class="event-channel">🏬 In-store</span>
+                  <span class="event-title">Styling appointment · 45 min</span>
+                  <span class="event-date">Mar 08</span>
+                </div>
+                <div class="event-meta">With Maya K. · no purchase · notes: "prefers minimalist palette, open to tailored denim"</div>
+              </div>
+              <div class="timeline-event online">
+                <div class="event-head">
+                  <span class="event-channel">🌐 Online</span>
+                  <span class="event-title">Order #RN-8102 · delivered</span>
+                  <span class="event-date">Feb 14</span>
+                </div>
+                <div class="event-meta">Cotton Tee (3 colors) + Pocket Squares · £145 · <strong>+145 pts</strong></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="padding: 0 24px 20px;">
+      <div class="screen-annotations single" style="padding: 16px 20px;">
+        <h4>Design Notes</h4>
+        <ul>
+          <li><strong>Timeline interleaves channels</strong> — today's in-store purchase sits above last week's online wishlist addition, above last month's ship-from-store order. The channel badge is prefixed, but time is the primary axis.</li>
+          <li><strong>Loyalty events are first-class</strong> — "Promoted to Gold tier" is a distinct event type (violet accent) so managers see lifecycle milestones without hunting.</li>
+          <li><strong>Sidebar facts establish the relationship shape</strong> — "Home store: Regent St." + "Prefers: In-store pickup" + "Size profile" are the three facts that let a store manager prepare for a visit.</li>
+          <li><strong>Fiscal credit note for returns</strong> — the Mar 22 BOPIS return entry names the credit note issuance. Partnership-accelerated fiscal compliance includes credit notes, not just receipts.</li>
+          <li><strong>Appointment notes inline</strong> — styling appointment notes ("prefers minimalist palette") give the next associate an immediate advantage without requiring them to dig.</li>
+          <li><strong>Points earned per transaction</strong> — visible on every purchase event. Makes the loyalty math auditable at a glance.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen 2B — Cross-channel inventory -->
+  <div class="screen">
+    <div class="screen-header">
+      <h3>2B — Cross-channel inventory: this store in context of the network</h3>
+      <span class="tag">Single inventory pool · per-channel visibility · fulfillment routing</span>
+    </div>
+    <div class="screen-body single">
+      <div class="dev-frame" style="height: 620px;">
+        <div class="dev-topbar">
+          <span class="logo">commercetools</span>
+          <span class="crumbs">Store Manager · Regent Street › <strong>Inventory & fulfillment</strong></span>
+          <span class="spacer"></span>
+          <span class="user">SG</span>
+        </div>
+        <div class="sub-bar">
+          <span class="chip active">Stock</span>
+          <span class="chip">Click &amp; collect (7)</span>
+          <span class="chip">Ship from store (2)</span>
+          <span class="chip">BOPIS returns (4)</span>
+          <span class="chip">Transfers in/out</span>
+          <span class="spacer"></span>
+          <button class="btn-ghost">⬇ Export CSV</button>
+          <button class="btn-primary">Request transfer</button>
+        </div>
+        <div class="dev-main" style="grid-template-columns: 1fr;">
+          <div style="padding: 20px; overflow-y: auto;">
+            <div class="metric-grid" style="margin-bottom: 18px;">
+              <div class="metric-card">
+                <div class="label">In-store SKUs</div>
+                <div class="value">2,143</div>
+                <div class="trend flat">across 24 categories</div>
+              </div>
+              <div class="metric-card">
+                <div class="label">Network stock (other stores)</div>
+                <div class="value">46,211</div>
+                <div class="trend flat">12 stores · GB region</div>
+              </div>
+              <div class="metric-card">
+                <div class="label">Online fulfillment capacity</div>
+                <div class="value">128 / 200</div>
+                <div class="trend flat">daily ship-from-store quota</div>
+              </div>
+              <div class="metric-card" style="border-color: var(--mc-warning); background: var(--mc-warning-bg);">
+                <div class="label">Low-stock alerts</div>
+                <div class="value" style="color: var(--mc-warning);">17</div>
+                <div class="trend" style="color: var(--mc-warning);">review &amp; transfer</div>
+              </div>
+            </div>
+
+            <h3 style="font-size: 14px; margin-bottom: 10px;">Channel-aware inventory · top movers this week</h3>
+            <div style="background: white; border: 1px solid var(--mc-border); border-radius: var(--radius-md); overflow: hidden;">
+              <div style="display: grid; grid-template-columns: 2fr 110px 110px 110px 110px 120px; padding: 10px 14px; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--mc-text-muted); font-weight: 600; border-bottom: 1px solid var(--mc-border); background: #fafbfc;">
+                <div>SKU</div><div>This store</div><div>Network</div><div>Online res.</div><div>C&amp;C queue</div><div>Action</div>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 2fr 110px 110px 110px 110px 120px; padding: 12px 14px; font-size: 12px; align-items: center; border-bottom: 1px solid var(--mc-border);">
+                <div>
+                  <div style="font-weight: 600;">Cotton Tee · White · L</div>
+                  <div style="font-size: 10px; color: var(--mc-text-muted);">SKU 22801</div>
+                </div>
+                <div style="color: var(--mc-warning); font-weight: 600;">● 2 left</div>
+                <div>● 840</div>
+                <div style="color: var(--mc-text-muted);">14 res.</div>
+                <div style="color: var(--mc-text-muted);">3 pending</div>
+                <div><button class="btn-ghost" style="font-size: 11px; padding: 3px 8px;">Pull from Mayfair</button></div>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 2fr 110px 110px 110px 110px 120px; padding: 12px 14px; font-size: 12px; align-items: center; border-bottom: 1px solid var(--mc-border);">
+                <div>
+                  <div style="font-weight: 600;">Leather Weekender Bag</div>
+                  <div style="font-size: 10px; color: var(--mc-text-muted);">SKU 89140 · wishlist hotspot</div>
+                </div>
+                <div>● 4</div>
+                <div>● 18 network</div>
+                <div style="color: var(--mc-success);">8 wishlists</div>
+                <div style="color: var(--mc-text-muted);">1 pending</div>
+                <div><button class="btn-ghost" style="font-size: 11px; padding: 3px 8px;">Promote in-store</button></div>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 2fr 110px 110px 110px 110px 120px; padding: 12px 14px; font-size: 12px; align-items: center; border-bottom: 1px solid var(--mc-border);">
+                <div>
+                  <div style="font-weight: 600;">Wool Trousers · Grey · 32</div>
+                  <div style="font-size: 10px; color: var(--mc-text-muted);">SKU 78512</div>
+                </div>
+                <div>● 3</div>
+                <div>● 210</div>
+                <div style="color: var(--mc-text-muted);">22 res.</div>
+                <div style="color: var(--mc-text-muted);">2 pending</div>
+                <div style="color: var(--mc-success); font-size: 11px;">— ideal</div>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 2fr 110px 110px 110px 110px 120px; padding: 12px 14px; font-size: 12px; align-items: center; border-bottom: 1px solid var(--mc-border);">
+                <div>
+                  <div style="font-weight: 600;">Canvas Belt · Tan</div>
+                  <div style="font-size: 10px; color: var(--mc-text-muted);">SKU 33112</div>
+                </div>
+                <div>● 18</div>
+                <div>● 420</div>
+                <div style="color: var(--mc-text-muted);">6 res.</div>
+                <div style="color: var(--mc-text-muted);">—</div>
+                <div style="font-size: 11px; color: var(--mc-text-muted);">ship-from-store eligible</div>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 2fr 110px 110px 110px 110px 120px; padding: 12px 14px; font-size: 12px; align-items: center;">
+                <div>
+                  <div style="font-weight: 600;">Silk Tie · Burgundy</div>
+                  <div style="font-size: 10px; color: var(--mc-text-muted);">SKU 39014</div>
+                </div>
+                <div>● 9</div>
+                <div>● 75</div>
+                <div style="color: var(--mc-text-muted);">3 res.</div>
+                <div style="color: var(--mc-text-muted);">—</div>
+                <div style="font-size: 11px; color: var(--mc-text-muted);">healthy</div>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 18px;">
+              <div style="background: white; border: 1px solid var(--mc-border); border-radius: var(--radius-md); padding: 14px 16px;">
+                <div style="font-size: 12px; font-weight: 600; margin-bottom: 10px;">Click &amp; collect queue · ready for pickup</div>
+                <div style="font-size: 12px; padding: 8px 0; border-bottom: 1px dashed var(--mc-border);">
+                  Order <strong>#RN-9013</strong> · Juniper Reyes · 2 items · <span style="color: var(--mc-success);">ready since 13:50</span>
+                </div>
+                <div style="font-size: 12px; padding: 8px 0; border-bottom: 1px dashed var(--mc-border);">
+                  Order <strong>#RN-9015</strong> · T. Patel · 1 item · <span style="color: var(--mc-success);">ready since 14:10</span>
+                </div>
+                <div style="font-size: 12px; padding: 8px 0;">
+                  Order <strong>#RN-9021</strong> · L. Iwobi · 3 items · <span style="color: var(--mc-warning);">prep in progress · ~12 min</span>
+                </div>
+              </div>
+              <div style="background: white; border: 1px solid var(--mc-border); border-radius: var(--radius-md); padding: 14px 16px;">
+                <div style="font-size: 12px; font-weight: 600; margin-bottom: 10px;">Today's ship-from-store</div>
+                <div style="font-size: 12px; padding: 8px 0; border-bottom: 1px dashed var(--mc-border);">
+                  <strong>32</strong> packed · picked up by DPD 11:30
+                </div>
+                <div style="font-size: 12px; padding: 8px 0; border-bottom: 1px dashed var(--mc-border);">
+                  <strong>96</strong> queued for afternoon pickup
+                </div>
+                <div style="font-size: 12px; padding: 8px 0;">
+                  Capacity: <strong>128 of 200 daily</strong> · 64% utilized
+                  <div class="progress-bar" style="height: 4px; margin-top: 6px;"><div class="fill" style="width: 64%;"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="padding: 0 24px 20px;">
+      <div class="screen-annotations single" style="padding: 16px 20px;">
+        <h4>Design Notes</h4>
+        <ul>
+          <li><strong>This store is one node on the network, not an island</strong> — "This store" and "Network" columns side by side make the relationship obvious. Store managers see that a low stock here doesn't mean a lost sale elsewhere.</li>
+          <li><strong>Wishlist signals drive retail decisions</strong> — "Leather Weekender Bag · wishlist hotspot · 8 wishlists online" with a "Promote in-store" action connects online intent to offline merchandising.</li>
+          <li><strong>Transfer from named stores</strong> — "Pull from Mayfair" is one tap. The system already knows which sibling store has the stock closest to the target SKU and gap.</li>
+          <li><strong>Ship-from-store capacity as a daily budget</strong> — 128/200 with a progress bar. Managers see when they're near capacity and can throttle online routing if their staff is stretched.</li>
+          <li><strong>C&amp;C queue timing visible</strong> — "ready since 13:50" counts real wait time. When customers arrive, staff knows exactly how long an order has been waiting.</li>
+          <li><strong>Low-stock alert card is pattern-friendly</strong> — the warning-tinted metric card is the same component used elsewhere in admin surfaces. Managers recognize it from other contexts.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div id="tab-fiscal" class="tab-content">
+
+  <div class="tab-intro">
+    <h2>3 — Fiscal Compliance & Vendor Integration</h2>
+    <p>The partnership-accelerated approach makes a clear boundary: <strong>the platform owns commerce, the vendor owns fiscal compliance</strong>. EU fiscal printer regulations across 20+ country regimes (Italy's RT registers, Germany's TSE, Poland's KSeF, France's NF-525, etc.) are impossible to own in-house without years of specialization. The vendor integration surface gives IT Admins visibility into per-store certification status, vendor SLA health, and the audit trail that regulators demand — without forcing the platform team to become fiscal-law experts.</p>
+    <div class="frs">
+      <span class="fr-chip">Epic 9 scope</span>
+      <span class="fr-chip">Vendor partnership</span>
+      <span class="fr-chip">Fiscal compliance</span>
+    </div>
+  </div>
+
+  <!-- Screen 3A — Per-store compliance status -->
+  <div class="screen">
+    <div class="screen-header">
+      <h3>3A — Per-store fiscal compliance: 14 stores across 5 country regimes</h3>
+      <span class="tag">Cert status · next audit · vendor device health · country-regime coverage</span>
+    </div>
+    <div class="screen-body single">
+      <div class="dev-frame" style="height: 620px;">
+        <div class="dev-topbar">
+          <span class="logo">commercetools</span>
+          <span class="crumbs">IT Admin › <strong>Fiscal compliance</strong></span>
+          <span class="spacer"></span>
+          <span class="user">DS</span>
+        </div>
+        <div class="sub-bar">
+          <span class="chip active">All stores (14)</span>
+          <span class="chip live"><span class="dot"></span> Compliant (12)</span>
+          <span class="chip warn"><span class="dot"></span> Cert expiring (1)</span>
+          <span class="chip" style="background: var(--mc-error-bg); border-color: var(--mc-error); color: var(--mc-error);"><span class="dot"></span> Attention (1)</span>
+          <span class="spacer"></span>
+          <button class="btn-ghost">Export audit pack</button>
+          <button class="btn-primary">Contact vendor</button>
+        </div>
+        <div class="dev-main" style="grid-template-columns: 220px 1fr;">
+          <div class="dev-sidebar">
+            <div class="section-title">Country regime</div>
+            <div class="nav-row active">All regimes <span class="count">5</span></div>
+            <div class="nav-row">🇬🇧 GB · HMRC MTD <span class="count">6</span></div>
+            <div class="nav-row">🇩🇪 DE · TSE (KassenSichV) <span class="count">3</span></div>
+            <div class="nav-row">🇮🇹 IT · RT Register <span class="count">2</span></div>
+            <div class="nav-row">🇫🇷 FR · NF-525 <span class="count">2</span></div>
+            <div class="nav-row">🇵🇱 PL · KSeF <span class="count">1</span></div>
+            <div class="section-title">Status</div>
+            <div class="nav-row">Compliant <span class="count">12</span></div>
+            <div class="nav-row">Cert expiring &lt;30d <span class="count">1</span></div>
+            <div class="nav-row">Attention required <span class="count">1</span></div>
+          </div>
+          <div style="padding: 20px; overflow-y: auto;">
+            <div style="background: white; border: 1px solid var(--mc-border); border-radius: var(--radius-md); overflow: hidden; margin-bottom: 16px;">
+              <div style="display: grid; grid-template-columns: 1.4fr 90px 1fr 130px 120px 100px; padding: 10px 14px; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--mc-text-muted); font-weight: 600; border-bottom: 1px solid var(--mc-border); background: #fafbfc;">
+                <div>Store</div><div>Regime</div><div>Vendor cert #</div><div>Last audit</div><div>Next check</div><div>Status</div>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1.4fr 90px 1fr 130px 120px 100px; padding: 12px 14px; font-size: 12px; align-items: center; border-bottom: 1px solid var(--mc-border);">
+                <div>
+                  <div style="font-weight: 600;">Regent Street · London</div>
+                  <div style="font-size: 11px; color: var(--mc-text-muted);">Till 01 · Till 02 · Till 03</div>
+                </div>
+                <div>🇬🇧 GB</div>
+                <div style="font-family: 'SF Mono', monospace; font-size: 11px;">HMRC-MTD-2024-88142</div>
+                <div style="font-size: 11px;">2026-04-14 ✓</div>
+                <div style="font-size: 11px; color: var(--mc-text-muted);">2026-07-14</div>
+                <div><span class="chip live" style="font-size: 10px;"><span class="dot"></span> Compliant</span></div>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1.4fr 90px 1fr 130px 120px 100px; padding: 12px 14px; font-size: 12px; align-items: center; border-bottom: 1px solid var(--mc-border);">
+                <div>
+                  <div style="font-weight: 600;">Mayfair · London</div>
+                  <div style="font-size: 11px; color: var(--mc-text-muted);">Till 01 · Till 02</div>
+                </div>
+                <div>🇬🇧 GB</div>
+                <div style="font-family: 'SF Mono', monospace; font-size: 11px;">HMRC-MTD-2024-88151</div>
+                <div style="font-size: 11px;">2026-04-14 ✓</div>
+                <div style="font-size: 11px; color: var(--mc-text-muted);">2026-07-14</div>
+                <div><span class="chip live" style="font-size: 10px;"><span class="dot"></span> Compliant</span></div>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1.4fr 90px 1fr 130px 120px 100px; padding: 12px 14px; font-size: 12px; align-items: center; border-bottom: 1px solid var(--mc-border);">
+                <div>
+                  <div style="font-weight: 600;">Mitte · Berlin</div>
+                  <div style="font-size: 11px; color: var(--mc-text-muted);">Till 01 · Till 02 · Till 03 · Till 04</div>
+                </div>
+                <div>🇩🇪 DE</div>
+                <div style="font-family: 'SF Mono', monospace; font-size: 11px;">TSE-DE-BSI-2023-44182</div>
+                <div style="font-size: 11px;">2026-03-22 ✓</div>
+                <div style="font-size: 11px; color: var(--mc-text-muted);">2026-06-22</div>
+                <div><span class="chip live" style="font-size: 10px;"><span class="dot"></span> Compliant</span></div>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1.4fr 90px 1fr 130px 120px 100px; padding: 12px 14px; font-size: 12px; align-items: center; border-bottom: 1px solid var(--mc-border); background: var(--mc-warning-bg);">
+                <div>
+                  <div style="font-weight: 600;">Prenzlauer · Berlin</div>
+                  <div style="font-size: 11px; color: var(--mc-text-muted);">Till 01 · Till 02</div>
+                </div>
+                <div>🇩🇪 DE</div>
+                <div style="font-family: 'SF Mono', monospace; font-size: 11px;">TSE-DE-BSI-2023-44201</div>
+                <div style="font-size: 11px;">2026-04-02 ✓</div>
+                <div style="font-size: 11px; color: var(--mc-warning); font-weight: 600;">2026-05-30 · 23d</div>
+                <div><span class="chip warn" style="font-size: 10px;"><span class="dot"></span> Expiring</span></div>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1.4fr 90px 1fr 130px 120px 100px; padding: 12px 14px; font-size: 12px; align-items: center; border-bottom: 1px solid var(--mc-border);">
+                <div>
+                  <div style="font-weight: 600;">Brera · Milan</div>
+                  <div style="font-size: 11px; color: var(--mc-text-muted);">Till 01 · Till 02</div>
+                </div>
+                <div>🇮🇹 IT</div>
+                <div style="font-family: 'SF Mono', monospace; font-size: 11px;">RT-IT-AE-2025-09872</div>
+                <div style="font-size: 11px;">2026-04-28 ✓</div>
+                <div style="font-size: 11px; color: var(--mc-text-muted);">2026-07-28</div>
+                <div><span class="chip live" style="font-size: 10px;"><span class="dot"></span> Compliant</span></div>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1.4fr 90px 1fr 130px 120px 100px; padding: 12px 14px; font-size: 12px; align-items: center; border-bottom: 1px solid var(--mc-border); background: var(--mc-error-bg);">
+                <div>
+                  <div style="font-weight: 600;">Via Roma · Milan</div>
+                  <div style="font-size: 11px; color: var(--mc-error);">Till 02 · device offline since 09:14</div>
+                </div>
+                <div>🇮🇹 IT</div>
+                <div style="font-family: 'SF Mono', monospace; font-size: 11px; color: var(--mc-error);">RT-IT-AE-2025-09880 ⚠</div>
+                <div style="font-size: 11px;">2026-04-28 ✓</div>
+                <div style="font-size: 11px;">—</div>
+                <div><span class="chip" style="font-size: 10px; background: var(--mc-error-bg); border-color: var(--mc-error); color: var(--mc-error);"><span class="dot"></span> Attention</span></div>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1.4fr 90px 1fr 130px 120px 100px; padding: 12px 14px; font-size: 12px; align-items: center; border-bottom: 1px solid var(--mc-border);">
+                <div>
+                  <div style="font-weight: 600;">Le Marais · Paris</div>
+                  <div style="font-size: 11px; color: var(--mc-text-muted);">Till 01 · Till 02</div>
+                </div>
+                <div>🇫🇷 FR</div>
+                <div style="font-family: 'SF Mono', monospace; font-size: 11px;">NF525-FR-AFNOR-22-7714</div>
+                <div style="font-size: 11px;">2026-03-15 ✓</div>
+                <div style="font-size: 11px; color: var(--mc-text-muted);">2026-06-15</div>
+                <div><span class="chip live" style="font-size: 10px;"><span class="dot"></span> Compliant</span></div>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1.4fr 90px 1fr 130px 120px 100px; padding: 12px 14px; font-size: 12px; align-items: center;">
+                <div>
+                  <div style="font-weight: 600;">Mokotów · Warsaw</div>
+                  <div style="font-size: 11px; color: var(--mc-text-muted);">Till 01</div>
+                </div>
+                <div>🇵🇱 PL</div>
+                <div style="font-family: 'SF Mono', monospace; font-size: 11px;">KSeF-PL-MF-2025-11223</div>
+                <div style="font-size: 11px;">2026-04-19 ✓</div>
+                <div style="font-size: 11px; color: var(--mc-text-muted);">2026-07-19</div>
+                <div><span class="chip live" style="font-size: 10px;"><span class="dot"></span> Compliant</span></div>
+              </div>
+            </div>
+
+            <div style="background: var(--mc-error-bg); border: 1px solid var(--mc-error); border-radius: var(--radius-md); padding: 14px 16px;">
+              <div style="display: flex; align-items: flex-start; gap: 12px;">
+                <span style="font-size: 20px;">⚠</span>
+                <div style="flex: 1;">
+                  <div style="font-size: 13px; font-weight: 600; color: var(--mc-error); margin-bottom: 4px;">Via Roma Till 02 · fiscal device offline 09:14 CET</div>
+                  <div style="font-size: 12px; color: var(--mc-text); line-height: 1.5; margin-bottom: 8px;">Store has switched Till 02 to cash-only mode. POS refuses fiscal-required transactions until the vendor device reconnects. Vendor (FiscalPrintersGmbH) ticket <strong>#FP-88421</strong> opened automatically · engineer dispatched, ETA 14:00.</div>
+                  <div style="display: flex; gap: 8px;">
+                    <button class="btn-ghost">View vendor ticket</button>
+                    <button class="btn-ghost">Message store manager</button>
+                    <button class="btn-danger">Escalate</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="padding: 0 24px 20px;">
+      <div class="screen-annotations single" style="padding: 16px 20px;">
+        <h4>Design Notes</h4>
+        <ul>
+          <li><strong>Country regime is named, not buried</strong> — "HMRC MTD" / "TSE (KassenSichV)" / "NF-525" etc. IT Admins don't need to know the regulations, but seeing the regime name + cert number proves the platform knows.</li>
+          <li><strong>Monospaced cert numbers</strong> — these are regulator-auditable identifiers. Copyable, unambiguous, same format everywhere.</li>
+          <li><strong>Cert expiring alert with 30-day window</strong> — the amber row for Prenzlauer is visible in the sort order, not hidden in a filter. "23d" remaining is the decision-relevant number.</li>
+          <li><strong>Device offline ≠ cert expired</strong> — Via Roma's offline device is a different failure mode. Till has switched to cash-only (vendor-dictated fallback) and a support ticket was opened automatically. The store keeps operating within fiscal law, at reduced capacity.</li>
+          <li><strong>Vendor ticket number surfaced, not hidden behind a link</strong> — #FP-88421 is the contract of the partnership: IT Admin never opens a ticket manually for fiscal issues; the integration does it for them.</li>
+          <li><strong>Export audit pack</strong> — one button to generate the evidence regulators ask for. Cert PDFs + audit log + device signatures bundled.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen 3B — Vendor integration health -->
+  <div class="screen">
+    <div class="screen-header">
+      <h3>3B — Vendor integration health: SLA, coverage, ticket volume</h3>
+      <span class="tag">Platform owns commerce · vendor owns fiscal compliance · boundary made legible</span>
+    </div>
+    <div class="screen-body single">
+      <div class="dev-frame" style="height: 580px;">
+        <div class="dev-topbar">
+          <span class="logo">commercetools</span>
+          <span class="crumbs">IT Admin › Fiscal compliance › <strong>Vendor · FiscalPrintersGmbH</strong></span>
+          <span class="spacer"></span>
+          <span class="user">DS</span>
+        </div>
+        <div class="sub-bar">
+          <span class="chip active">Vendor overview</span>
+          <span class="chip">SLA history</span>
+          <span class="chip">Regime coverage</span>
+          <span class="chip">Tickets</span>
+          <span class="chip">Contract</span>
+          <span class="spacer"></span>
+          <button class="btn-ghost">Vendor support portal ↗</button>
+          <button class="btn-primary">Renew contract</button>
+        </div>
+        <div class="dev-main" style="grid-template-columns: 1fr;">
+          <div style="padding: 20px; overflow-y: auto;">
+            <div style="background: white; border: 1px solid var(--mc-border); border-left: 3px solid var(--mc-blue); border-radius: var(--radius-md); padding: 18px 20px; margin-bottom: 16px;">
+              <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; align-items: center;">
+                <div>
+                  <div style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.6px; color: var(--mc-text-muted); font-weight: 600;">Fiscal vendor</div>
+                  <div style="font-size: 18px; font-weight: 700; margin-top: 4px;">FiscalPrintersGmbH</div>
+                  <div style="font-size: 11px; color: var(--mc-text-muted); margin-top: 4px;">Berlin, DE · partnership since 2024</div>
+                </div>
+                <div>
+                  <div style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.6px; color: var(--mc-text-muted); font-weight: 600;">Contract SLA</div>
+                  <div style="font-size: 16px; font-weight: 600; margin-top: 4px; color: var(--mc-success);">99.8% uptime</div>
+                  <div style="font-size: 11px; color: var(--mc-text-muted); margin-top: 4px;">2h on-site response · 24/7 phone</div>
+                </div>
+                <div>
+                  <div style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.6px; color: var(--mc-text-muted); font-weight: 600;">Contract renewal</div>
+                  <div style="font-size: 16px; font-weight: 600; margin-top: 4px;">2027-01-14</div>
+                  <div style="font-size: 11px; color: var(--mc-text-muted); margin-top: 4px;">243 days remaining</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="metric-grid" style="margin-bottom: 18px;">
+              <div class="metric-card">
+                <div class="label">Uptime · 30d</div>
+                <div class="value">99.94%</div>
+                <div class="trend up">↑ above SLA · 99.8%</div>
+              </div>
+              <div class="metric-card">
+                <div class="label">Active devices</div>
+                <div class="value">23</div>
+                <div class="trend flat">22 online · 1 offline</div>
+              </div>
+              <div class="metric-card">
+                <div class="label">Tickets · 30d</div>
+                <div class="value">4</div>
+                <div class="trend flat">3 resolved · 1 open</div>
+              </div>
+              <div class="metric-card">
+                <div class="label">Avg. response</div>
+                <div class="value">37 min</div>
+                <div class="trend up">↑ vs SLA 2h</div>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+              <div style="background: white; border: 1px solid var(--mc-border); border-radius: var(--radius-md); padding: 16px;">
+                <h4 style="font-size: 13px; font-weight: 600; margin-bottom: 12px;">Regime coverage included in contract</h4>
+                <div style="font-size: 12px;">
+                  <div style="padding: 8px 0; border-bottom: 1px dashed var(--mc-border); display: flex; justify-content: space-between;">
+                    <span>🇬🇧 GB · HMRC MTD</span><span style="color: var(--mc-success);">✓ active · 6 stores</span>
+                  </div>
+                  <div style="padding: 8px 0; border-bottom: 1px dashed var(--mc-border); display: flex; justify-content: space-between;">
+                    <span>🇩🇪 DE · TSE (KassenSichV)</span><span style="color: var(--mc-success);">✓ active · 3 stores</span>
+                  </div>
+                  <div style="padding: 8px 0; border-bottom: 1px dashed var(--mc-border); display: flex; justify-content: space-between;">
+                    <span>🇮🇹 IT · RT Register (corrispettivi)</span><span style="color: var(--mc-success);">✓ active · 2 stores</span>
+                  </div>
+                  <div style="padding: 8px 0; border-bottom: 1px dashed var(--mc-border); display: flex; justify-content: space-between;">
+                    <span>🇫🇷 FR · NF-525</span><span style="color: var(--mc-success);">✓ active · 2 stores</span>
+                  </div>
+                  <div style="padding: 8px 0; border-bottom: 1px dashed var(--mc-border); display: flex; justify-content: space-between;">
+                    <span>🇵🇱 PL · KSeF</span><span style="color: var(--mc-success);">✓ active · 1 store</span>
+                  </div>
+                  <div style="padding: 8px 0; border-bottom: 1px dashed var(--mc-border); display: flex; justify-content: space-between;">
+                    <span>🇪🇸 ES · TicketBAI</span><span style="color: var(--mc-text-muted);">available · not yet deployed</span>
+                  </div>
+                  <div style="padding: 8px 0; display: flex; justify-content: space-between;">
+                    <span>🇵🇹 PT · AT (SAF-T PT)</span><span style="color: var(--mc-text-muted);">available · not yet deployed</span>
+                  </div>
+                </div>
+                <div style="margin-top: 12px; padding: 10px; background: var(--mc-blue-wash); border-radius: var(--radius-sm); font-size: 11px; color: var(--mc-blue); line-height: 1.5;">
+                  <strong>20+ country regimes available under partnership.</strong> Adding a new country requires store provisioning, not a platform engineering effort.
+                </div>
+              </div>
+
+              <div style="background: white; border: 1px solid var(--mc-border); border-radius: var(--radius-md); padding: 16px;">
+                <h4 style="font-size: 13px; font-weight: 600; margin-bottom: 12px;">Recent tickets</h4>
+                <div style="font-size: 12px;">
+                  <div style="padding: 10px 0; border-bottom: 1px solid var(--mc-border);">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
+                      <strong>#FP-88421 · Via Roma Till 02 offline</strong>
+                      <span class="chip" style="font-size: 10px; background: var(--mc-warning-bg); border-color: var(--mc-warning); color: var(--mc-warning);">Open · ETA 14:00</span>
+                    </div>
+                    <div style="font-size: 11px; color: var(--mc-text-muted);">Opened 09:14 · auto-dispatched · engineer en route</div>
+                  </div>
+                  <div style="padding: 10px 0; border-bottom: 1px solid var(--mc-border);">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
+                      <strong>#FP-88342 · Mitte cert renewal</strong>
+                      <span class="chip" style="font-size: 10px; background: var(--mc-success-bg); border-color: var(--mc-success); color: var(--mc-success);">Resolved</span>
+                    </div>
+                    <div style="font-size: 11px; color: var(--mc-text-muted);">2026-04-28 · TSE cert rotated on schedule · no downtime</div>
+                  </div>
+                  <div style="padding: 10px 0; border-bottom: 1px solid var(--mc-border);">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
+                      <strong>#FP-88120 · Regent Till 03 printhead</strong>
+                      <span class="chip" style="font-size: 10px; background: var(--mc-success-bg); border-color: var(--mc-success); color: var(--mc-success);">Resolved</span>
+                    </div>
+                    <div style="font-size: 11px; color: var(--mc-text-muted);">2026-04-14 · printhead swapped · 32 min downtime · within SLA</div>
+                  </div>
+                  <div style="padding: 10px 0;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
+                      <strong>#FP-87998 · Le Marais firmware</strong>
+                      <span class="chip" style="font-size: 10px; background: var(--mc-success-bg); border-color: var(--mc-success); color: var(--mc-success);">Resolved</span>
+                    </div>
+                    <div style="font-size: 11px; color: var(--mc-text-muted);">2026-03-15 · NF-525 firmware update · overnight window · no user impact</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div style="background: white; border: 1px solid var(--mc-border); border-radius: var(--radius-md); padding: 16px;">
+              <h4 style="font-size: 13px; font-weight: 600; margin-bottom: 12px;">Integration boundary · who owns what</h4>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                <div style="padding: 14px; background: var(--mc-blue-wash); border-radius: var(--radius-md); border: 1px solid var(--mc-blue);">
+                  <div style="font-size: 12px; font-weight: 700; color: var(--mc-blue); margin-bottom: 8px;">🟦 commercetools Platform owns</div>
+                  <ul style="list-style: none; padding: 0; font-size: 12px; line-height: 1.8;">
+                    <li>· Commerce logic (cart, pricing, promotions, loyalty)</li>
+                    <li>· Unified customer &amp; inventory</li>
+                    <li>· POS UI + associate workflows</li>
+                    <li>· Receipt content + delivery (email/SMS/print)</li>
+                    <li>· Audit log of platform events</li>
+                    <li>· Integration APIs to vendor device</li>
+                  </ul>
+                </div>
+                <div style="padding: 14px; background: #f1f5f9; border-radius: var(--radius-md); border: 1px solid var(--mc-border-strong);">
+                  <div style="font-size: 12px; font-weight: 700; color: var(--mc-text); margin-bottom: 8px;">🤝 Vendor (FiscalPrintersGmbH) owns</div>
+                  <ul style="list-style: none; padding: 0; font-size: 12px; line-height: 1.8;">
+                    <li>· Country regime certifications (20+ regimes)</li>
+                    <li>· Fiscal device hardware + firmware</li>
+                    <li>· Signed fiscal receipts (regulator-grade)</li>
+                    <li>· Credit note issuance for returns</li>
+                    <li>· Cert rotation, audit filings, regulatory updates</li>
+                    <li>· Hardware support + on-site response</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="padding: 0 24px 20px;">
+      <div class="screen-annotations single" style="padding: 16px 20px;">
+        <h4>Design Notes</h4>
+        <ul>
+          <li><strong>Integration boundary made explicit as a split panel</strong> — "Platform owns" vs "Vendor owns" side by side. Every conversation with an auditor or a frustrated store manager can reference this boundary instead of re-explaining.</li>
+          <li><strong>SLA visible as a headline promise + current state</strong> — contract SLA (99.8%) against actual 30d uptime (99.94%). Over-performing looks different from meeting the minimum.</li>
+          <li><strong>Regime coverage names what's available</strong> — ES and PT shown as "available · not yet deployed." When the retailer expands to Spain, adding fiscal support is store provisioning, not a six-month engineering project.</li>
+          <li><strong>"20+ country regimes available under partnership"</strong> — stated plainly as the headline value of the partnership. This one sentence is the argument against building fiscal compliance in-house.</li>
+          <li><strong>Vendor tickets embedded, not external-only</strong> — IT Admins see ticket status without leaving the console. Deep-link to the vendor portal is available but not required.</li>
+          <li><strong>"Renew contract" as a first-class button</strong> — surfaced 243 days before expiry. Contract management is visible, not discovered through procurement emails a month before renewal.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="doc-footer">
+  The POS frame uses a distinct dark-mode high-contrast treatment appropriate to store-floor lighting and tap-first interaction. Admin surfaces (Tabs 2 and 3) inherit commercetools Merchant Center design tokens for consistency with the rest of the platform.
+</div>
+
+<script>
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      const target = tab.dataset.tab;
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('tab-' + target).classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+</script>
+</body>
+</html>

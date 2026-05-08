@@ -1,0 +1,2056 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Epic 6 — Enterprise Administration & Compliance — Wireframes</title>
+<style>
+  :root {
+    --mc-blue: #0066cc;
+    --mc-blue-wash: rgba(0, 102, 204, 0.08);
+    --mc-ai-tint: rgba(88, 28, 255, 0.08);
+    --mc-ai-accent: #5b21b6;
+    --mc-bg: #f5f7fa;
+    --mc-surface: #ffffff;
+    --mc-border: #e4e7eb;
+    --mc-border-strong: #cbd2d9;
+    --mc-text: #1f2933;
+    --mc-text-muted: #6b7280;
+    --mc-text-faint: #9aa5b1;
+    --mc-success: #16a34a;
+    --mc-success-bg: #ecfdf5;
+    --mc-warning: #d97706;
+    --mc-warning-bg: #fef3c7;
+    --mc-error: #dc2626;
+    --mc-error-bg: #fee2e2;
+    --mc-locked: #9aa5b1;
+    --mc-locked-bg: #f3f4f6;
+    --radius-sm: 4px;
+    --radius-md: 6px;
+    --radius-lg: 8px;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 2px 6px rgba(0,0,0,0.06);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 13px;
+    line-height: 1.5;
+    background: var(--mc-bg);
+    color: var(--mc-text);
+  }
+
+  code, .mono { font-family: 'SF Mono', 'Monaco', 'Consolas', monospace; font-size: 12px; }
+
+  /* ---------- Document header ---------- */
+  .doc-header {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: white;
+    padding: 24px 40px;
+  }
+  .doc-header h1 { font-size: 22px; font-weight: 600; margin-bottom: 6px; }
+  .doc-header p { font-size: 13px; opacity: 0.85; max-width: 900px; }
+  .doc-header .meta {
+    margin-top: 12px; display: flex; gap: 20px; font-size: 12px; opacity: 0.7;
+  }
+
+  /* ---------- Tab nav ---------- */
+  .tabs {
+    background: white;
+    border-bottom: 1px solid var(--mc-border);
+    display: flex;
+    padding: 0 40px;
+    gap: 32px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .tab {
+    padding: 14px 0;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    font-weight: 500;
+    font-size: 13px;
+    color: var(--mc-text-muted);
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .tab.active { border-bottom-color: var(--mc-blue); color: var(--mc-blue); }
+  .tab:hover { color: var(--mc-blue); }
+  .tab-num {
+    display: inline-block;
+    width: 18px; height: 18px;
+    background: var(--mc-border);
+    color: var(--mc-text-muted);
+    border-radius: 50%;
+    font-size: 11px;
+    text-align: center;
+    line-height: 18px;
+    font-weight: 600;
+  }
+  .tab.active .tab-num { background: var(--mc-blue); color: white; }
+
+  .tab-content { display: none; padding: 32px 40px 80px; }
+  .tab-content.active { display: block; }
+
+  /* ---------- Tab intro ---------- */
+  .tab-intro {
+    background: white;
+    border: 1px solid var(--mc-border);
+    border-left: 3px solid var(--mc-blue);
+    border-radius: var(--radius-md);
+    padding: 16px 20px;
+    margin-bottom: 28px;
+    max-width: 1100px;
+  }
+  .tab-intro h2 { font-size: 16px; margin-bottom: 6px; }
+  .tab-intro p { color: var(--mc-text-muted); font-size: 13px; }
+  .tab-intro .frs {
+    margin-top: 10px; display: flex; gap: 6px; flex-wrap: wrap;
+  }
+  .fr-chip {
+    background: var(--mc-blue-wash);
+    color: var(--mc-blue);
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 500;
+    font-family: 'SF Mono', 'Monaco', monospace;
+  }
+
+  /* ---------- Screen card ---------- */
+  .screen {
+    background: white;
+    border: 1px solid var(--mc-border);
+    border-radius: var(--radius-lg);
+    margin-bottom: 32px;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+  }
+  .screen-header {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--mc-border);
+    background: #fafbfc;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .screen-header h3 { font-size: 14px; font-weight: 600; }
+  .screen-header .tag {
+    font-family: 'SF Mono', monospace;
+    font-size: 11px;
+    color: var(--mc-text-muted);
+    background: white;
+    border: 1px solid var(--mc-border);
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+  .screen-body { padding: 24px; display: grid; grid-template-columns: 1fr 280px; gap: 24px; }
+  .screen-body.single { grid-template-columns: 1fr; }
+  .screen-annotations {
+    background: #fafbfc;
+    border: 1px solid var(--mc-border);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    font-size: 12px;
+  }
+  .screen-annotations h4 {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--mc-text-muted);
+    margin-bottom: 10px;
+  }
+  .screen-annotations ul { list-style: none; padding: 0; }
+  .screen-annotations li {
+    padding: 6px 0;
+    border-bottom: 1px dashed var(--mc-border);
+    color: var(--mc-text);
+    font-size: 12px;
+    line-height: 1.45;
+  }
+  .screen-annotations li:last-child { border-bottom: none; }
+  .screen-annotations li strong { color: var(--mc-blue); font-weight: 600; }
+
+  /* ---------- Admin console dev-frame ---------- */
+  .dev-frame {
+    border: 1px solid var(--mc-border-strong);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background: var(--mc-bg);
+    display: grid;
+    grid-template-rows: 40px 36px 1fr;
+    height: 620px;
+    font-size: 12px;
+  }
+  .dev-topbar {
+    background: #1f2933;
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    gap: 20px;
+    font-size: 12px;
+  }
+  .dev-topbar .logo { font-weight: 600; letter-spacing: 0.3px; }
+  .dev-topbar .crumbs { opacity: 0.7; }
+  .dev-topbar .crumbs strong { color: white; opacity: 1; }
+  .dev-topbar .spacer { flex: 1; }
+  .dev-topbar .cmd-k {
+    background: rgba(255,255,255,0.08); padding: 3px 10px; border-radius: var(--radius-sm);
+    font-size: 11px; opacity: 0.8; font-family: 'SF Mono', monospace;
+  }
+  .dev-topbar .user {
+    width: 24px; height: 24px; border-radius: 50%;
+    background: var(--mc-blue); display: inline-flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 600;
+  }
+  .dev-topbar .residency-chip {
+    background: rgba(22, 163, 74, 0.18); color: #86efac;
+    padding: 3px 8px; border-radius: var(--radius-sm);
+    font-size: 10px; font-family: 'SF Mono', monospace; font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+
+  .sub-bar {
+    background: white; border-bottom: 1px solid var(--mc-border);
+    display: flex; align-items: center; padding: 0 12px; gap: 8px;
+  }
+  .chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 500;
+    border: 1px solid var(--mc-border); background: white; cursor: pointer;
+    transition: all 0.15s;
+  }
+  .chip:hover { border-color: var(--mc-blue); color: var(--mc-blue); }
+  .chip.active { background: var(--mc-blue-wash); border-color: var(--mc-blue); color: var(--mc-blue); }
+  .chip.draft { background: var(--mc-warning-bg); border-color: var(--mc-warning); color: var(--mc-warning); }
+  .chip.live { background: var(--mc-success-bg); border-color: var(--mc-success); color: var(--mc-success); }
+  .chip.error { background: var(--mc-error-bg); border-color: var(--mc-error); color: var(--mc-error); }
+  .chip.muted { background: var(--mc-locked-bg); border-color: var(--mc-border); color: var(--mc-text-muted); }
+  .chip .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  .sub-bar .spacer { flex: 1; }
+
+  .btn-primary, .btn-ghost, .btn-danger {
+    padding: 5px 12px; border-radius: var(--radius-sm); font-size: 12px; font-weight: 500;
+    cursor: pointer; border: 1px solid transparent; display: inline-flex; align-items: center; gap: 6px;
+    font-family: inherit;
+  }
+  .btn-primary { background: var(--mc-blue); color: white; }
+  .btn-primary:hover { background: #0052a3; }
+  .btn-ghost { background: white; color: var(--mc-text-muted); border-color: var(--mc-border); }
+  .btn-danger { background: white; color: var(--mc-error); border-color: var(--mc-border); }
+
+  .dev-main {
+    display: grid; grid-template-columns: 220px 1fr;
+    height: 100%; overflow: hidden;
+  }
+  .dev-main.with-right {
+    grid-template-columns: 220px 1fr 300px;
+  }
+  .dev-sidebar {
+    background: #fafbfc; border-right: 1px solid var(--mc-border);
+    padding: 14px 0; overflow-y: auto;
+  }
+  .dev-sidebar .section-title {
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.6px;
+    color: var(--mc-text-muted); padding: 8px 16px; font-weight: 600;
+  }
+  .dev-sidebar .nav-row {
+    padding: 7px 16px; font-size: 12px; display: flex; align-items: center; gap: 8px;
+    cursor: pointer; color: var(--mc-text); border-left: 2px solid transparent;
+  }
+  .dev-sidebar .nav-row:hover { background: white; }
+  .dev-sidebar .nav-row.active { background: white; border-left-color: var(--mc-blue); color: var(--mc-blue); font-weight: 500; }
+  .dev-sidebar .nav-row .count { margin-left: auto; color: var(--mc-text-faint); font-size: 10px; }
+  .dev-sidebar .nav-row .status-dot {
+    width: 6px; height: 6px; border-radius: 50%; margin-left: auto;
+  }
+  .dev-sidebar .nav-row .status-dot.ok { background: var(--mc-success); }
+  .dev-sidebar .nav-row .status-dot.warn { background: var(--mc-warning); }
+  .dev-sidebar .nav-row .status-dot.off { background: var(--mc-locked); }
+
+  .dev-content {
+    background: white; overflow-y: auto; padding: 20px;
+  }
+  .dev-content.dense { padding: 16px 20px; }
+  .dev-rightpanel {
+    background: #fafbfc; border-left: 1px solid var(--mc-border);
+    overflow-y: auto; padding: 16px;
+  }
+
+  /* ---------- Section headers inside content ---------- */
+  .sec-head {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .sec-head h3 { font-size: 15px; font-weight: 600; }
+  .sec-head .sec-meta { font-size: 11px; color: var(--mc-text-muted); }
+  .sec-sub {
+    font-size: 12px; color: var(--mc-text-muted); margin-bottom: 16px; max-width: 720px;
+  }
+
+  /* ---------- Card ---------- */
+  .card {
+    background: white; border: 1px solid var(--mc-border);
+    border-radius: var(--radius-md); padding: 16px; margin-bottom: 14px;
+  }
+  .card.tight { padding: 12px 14px; }
+  .card.locked { background: var(--mc-locked-bg); border-color: var(--mc-border); }
+  .card.success-soft { background: var(--mc-success-bg); border-color: #bbf7d0; }
+  .card.warn-soft { background: var(--mc-warning-bg); border-color: #fde68a; }
+  .card h4 {
+    font-size: 12px; font-weight: 600; margin-bottom: 10px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .card h4 .pill {
+    font-size: 10px; font-weight: 600;
+    padding: 2px 6px; border-radius: 10px; letter-spacing: 0.3px;
+  }
+  .card h4 .pill.ok { background: var(--mc-success-bg); color: var(--mc-success); }
+  .card h4 .pill.warn { background: var(--mc-warning-bg); color: var(--mc-warning); }
+  .card h4 .pill.err { background: var(--mc-error-bg); color: var(--mc-error); }
+  .card h4 .pill.muted { background: var(--mc-locked-bg); color: var(--mc-text-muted); }
+
+  /* ---------- Key/value rows ---------- */
+  .kv-list { display: grid; grid-template-columns: max-content 1fr; gap: 8px 16px; font-size: 12px; }
+  .kv-list dt { color: var(--mc-text-muted); }
+  .kv-list dd { color: var(--mc-text); font-family: 'SF Mono', monospace; font-size: 11.5px; word-break: break-all; }
+  .kv-list.wide { grid-template-columns: 180px 1fr; }
+
+  /* ---------- Form rows ---------- */
+  .field { margin-bottom: 12px; }
+  .field label {
+    font-size: 11px; font-weight: 500; color: var(--mc-text-muted);
+    display: block; margin-bottom: 4px;
+  }
+  .field input[type="text"], .field select, .field textarea {
+    width: 100%; padding: 6px 8px; font-size: 12px;
+    border: 1px solid var(--mc-border); border-radius: var(--radius-sm);
+    background: white; color: var(--mc-text); font-family: inherit;
+  }
+  .field input.mono { font-family: 'SF Mono', monospace; font-size: 11.5px; }
+  .field input.locked, .field select.locked {
+    background: var(--mc-locked-bg); color: var(--mc-text-muted); cursor: not-allowed;
+  }
+  .field .hint { font-size: 10.5px; color: var(--mc-text-faint); margin-top: 3px; }
+  .field .hint.warn { color: var(--mc-warning); }
+
+  /* ---------- IdP tile picker ---------- */
+  .idp-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+    margin-bottom: 14px;
+  }
+  .idp-tile {
+    border: 1px solid var(--mc-border); border-radius: var(--radius-md);
+    padding: 14px 10px; text-align: center; cursor: pointer;
+    background: white; transition: all 0.15s;
+  }
+  .idp-tile:hover { border-color: var(--mc-blue); }
+  .idp-tile.selected {
+    border-color: var(--mc-blue); background: var(--mc-blue-wash);
+    box-shadow: 0 0 0 2px var(--mc-blue-wash);
+  }
+  .idp-tile .idp-logo {
+    width: 32px; height: 32px; margin: 0 auto 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; font-weight: 700;
+    border-radius: var(--radius-sm);
+  }
+  .idp-tile .idp-name { font-size: 12px; font-weight: 500; }
+  .idp-tile .idp-proto { font-size: 10px; color: var(--mc-text-muted); margin-top: 2px; font-family: 'SF Mono', monospace; }
+
+  /* ---------- Data tables ---------- */
+  .data-table {
+    width: 100%; border-collapse: collapse;
+    font-size: 12px;
+  }
+  .data-table thead th {
+    text-align: left; padding: 8px 10px; background: #fafbfc;
+    border-bottom: 1px solid var(--mc-border);
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px;
+    color: var(--mc-text-muted); font-weight: 600;
+  }
+  .data-table tbody td {
+    padding: 8px 10px; border-bottom: 1px solid var(--mc-border);
+    vertical-align: middle;
+  }
+  .data-table tbody tr:hover { background: #fafbfc; }
+  .data-table tbody tr:last-child td { border-bottom: none; }
+  .data-table .mono-cell { font-family: 'SF Mono', monospace; font-size: 11px; }
+  .data-table .muted-cell { color: var(--mc-text-muted); }
+  .data-table .actions-cell {
+    text-align: right; color: var(--mc-text-muted);
+  }
+
+  /* ---------- Audit log row (lifecycle events) ---------- */
+  .audit-row {
+    display: grid; grid-template-columns: 120px 120px 1fr 100px 24px;
+    gap: 12px; padding: 10px 12px;
+    border-bottom: 1px solid var(--mc-border); font-size: 12px; align-items: center;
+  }
+  .audit-row.header {
+    background: #fafbfc; font-size: 10px; text-transform: uppercase;
+    letter-spacing: 0.5px; color: var(--mc-text-muted); font-weight: 600;
+  }
+  .audit-row:last-child { border-bottom: none; }
+  .audit-row .timestamp { font-family: 'SF Mono', monospace; font-size: 11px; color: var(--mc-text-muted); }
+  .audit-row .user-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; }
+  .audit-row .avatar-sm {
+    width: 20px; height: 20px; border-radius: 50%;
+    background: var(--mc-blue); color: white; font-size: 9px; font-weight: 600;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .audit-row .event-type {
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.4px;
+    padding: 2px 6px; border-radius: 10px; font-weight: 600; display: inline-block;
+  }
+  .audit-row .event-type.provision { background: var(--mc-success-bg); color: var(--mc-success); }
+  .audit-row .event-type.deprovision { background: var(--mc-error-bg); color: var(--mc-error); }
+  .audit-row .event-type.update { background: var(--mc-blue-wash); color: var(--mc-blue); }
+  .audit-row .event-type.assign { background: var(--mc-ai-tint); color: var(--mc-ai-accent); }
+
+  /* ---------- Group to role mapping ---------- */
+  .mapping-row {
+    display: grid; grid-template-columns: 1fr 28px 1fr 90px;
+    gap: 10px; align-items: center;
+    padding: 8px 10px; border-bottom: 1px solid var(--mc-border);
+    font-size: 12px;
+  }
+  .mapping-row:last-child { border-bottom: none; }
+  .mapping-row .arrow { text-align: center; color: var(--mc-text-muted); }
+  .mapping-row .grp-name, .mapping-row .role-name {
+    display: flex; align-items: center; gap: 6px;
+  }
+  .mapping-row .grp-name .mono { font-family: 'SF Mono', monospace; font-size: 11px; color: var(--mc-text-muted); }
+  .mapping-row .role-chip {
+    padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 500;
+    background: var(--mc-blue-wash); color: var(--mc-blue); border: 1px solid transparent;
+  }
+  .mapping-row .role-chip.admin { background: #fef2f2; color: #991b1b; }
+  .mapping-row .role-chip.editor { background: var(--mc-blue-wash); color: var(--mc-blue); }
+  .mapping-row .role-chip.reviewer { background: var(--mc-warning-bg); color: var(--mc-warning); }
+  .mapping-row .role-chip.viewer { background: var(--mc-locked-bg); color: var(--mc-text-muted); }
+
+  /* ---------- Residency visual ---------- */
+  .residency-map {
+    background:
+      radial-gradient(circle at 30% 50%, rgba(0, 102, 204, 0.14) 0%, transparent 40%),
+      radial-gradient(circle at 70% 50%, rgba(22, 163, 74, 0.14) 0%, transparent 40%),
+      linear-gradient(90deg, #f5f7fa 0%, #fafbfc 100%);
+    border: 1px dashed var(--mc-border-strong);
+    border-radius: var(--radius-md);
+    height: 140px;
+    position: relative;
+    margin-bottom: 14px;
+    overflow: hidden;
+  }
+  .residency-pin {
+    position: absolute;
+    padding: 6px 10px; border-radius: var(--radius-md);
+    font-size: 11px; font-weight: 600;
+    background: white; border: 2px solid var(--mc-border-strong);
+    box-shadow: var(--shadow-sm);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .residency-pin.selected {
+    border-color: var(--mc-success); color: var(--mc-success);
+    background: var(--mc-success-bg);
+  }
+  .residency-pin.faded { opacity: 0.55; }
+  .residency-pin .dot {
+    width: 8px; height: 8px; border-radius: 50%; background: currentColor;
+  }
+
+  /* ---------- Usage progress bars ---------- */
+  .usage-row {
+    display: grid; grid-template-columns: 200px 1fr 130px;
+    gap: 14px; align-items: center;
+    padding: 12px 0; border-bottom: 1px solid var(--mc-border);
+    font-size: 12px;
+  }
+  .usage-row:last-child { border-bottom: none; }
+  .usage-row .metric-name { font-weight: 500; }
+  .usage-row .metric-name .sub {
+    display: block; font-size: 10.5px; color: var(--mc-text-muted); font-weight: 400; margin-top: 1px;
+  }
+  .usage-row .metric-values {
+    font-family: 'SF Mono', monospace; font-size: 11.5px;
+    color: var(--mc-text); text-align: right;
+  }
+  .usage-row .metric-values .limit { color: var(--mc-text-muted); }
+  .bar {
+    height: 10px; background: var(--mc-locked-bg);
+    border-radius: 5px; overflow: hidden; position: relative;
+  }
+  .bar .fill {
+    height: 100%; border-radius: 5px;
+    transition: width 0.3s;
+  }
+  .bar .fill.ok { background: var(--mc-success); }
+  .bar .fill.warn { background: var(--mc-warning); }
+  .bar .fill.err { background: var(--mc-error); }
+  .bar .threshold-mark {
+    position: absolute; top: -2px; height: 14px;
+    width: 1px; background: rgba(31, 41, 51, 0.3);
+  }
+
+  /* ---------- Subscription tier cards ---------- */
+  .tier-strip {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+    margin-bottom: 16px;
+  }
+  .tier-card {
+    border: 1px solid var(--mc-border); border-radius: var(--radius-md);
+    padding: 12px; background: white; text-align: center;
+  }
+  .tier-card.current {
+    border-color: var(--mc-blue); background: var(--mc-blue-wash);
+  }
+  .tier-card .tier-name {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;
+    color: var(--mc-text-muted); font-weight: 600;
+  }
+  .tier-card.current .tier-name { color: var(--mc-blue); }
+  .tier-card .tier-price {
+    font-size: 18px; font-weight: 600; margin: 4px 0;
+  }
+  .tier-card .tier-included { font-size: 10.5px; color: var(--mc-text-muted); }
+  .tier-card .tier-badge {
+    margin-top: 6px; font-size: 10px; padding: 2px 8px;
+    background: var(--mc-blue); color: white;
+    border-radius: 10px; display: inline-block;
+  }
+
+  /* ---------- DPA document preview ---------- */
+  .dpa-preview {
+    background: white; border: 1px solid var(--mc-border-strong);
+    border-radius: var(--radius-md);
+    padding: 24px 28px;
+    max-height: 420px; overflow-y: auto;
+    font-family: 'Georgia', 'Times New Roman', serif;
+    font-size: 12px; line-height: 1.6;
+    color: var(--mc-text);
+  }
+  .dpa-preview h2 {
+    font-size: 16px; font-weight: 600; text-align: center;
+    margin-bottom: 4px; font-family: inherit;
+  }
+  .dpa-preview .dpa-sub {
+    text-align: center; font-size: 11px; color: var(--mc-text-muted);
+    font-family: 'Inter', sans-serif; margin-bottom: 16px;
+  }
+  .dpa-preview h3 {
+    font-size: 13px; font-weight: 600; margin-top: 14px; margin-bottom: 6px;
+    font-family: inherit;
+  }
+  .dpa-preview p { margin-bottom: 8px; }
+  .dpa-preview .field-fill {
+    background: var(--mc-success-bg); color: var(--mc-success);
+    padding: 1px 4px; border-radius: 3px; font-weight: 600;
+    font-family: 'SF Mono', monospace; font-size: 11px;
+  }
+  .dpa-preview .sig-block {
+    margin-top: 20px; padding: 16px; border-top: 2px solid var(--mc-border-strong);
+    display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+    font-family: 'Inter', sans-serif; font-size: 11px;
+  }
+  .dpa-preview .sig-line {
+    border-bottom: 1px solid var(--mc-text); min-height: 28px;
+    margin-bottom: 4px; display: flex; align-items: flex-end;
+    font-family: 'Caveat', 'Brush Script MT', cursive;
+    font-size: 16px; color: var(--mc-blue); padding-bottom: 2px;
+  }
+
+  /* ---------- Legend ---------- */
+  .legend {
+    margin-top: 12px; display: flex; gap: 16px; font-size: 11px; color: var(--mc-text-muted);
+    padding: 10px 14px; background: #fafbfc; border: 1px solid var(--mc-border); border-radius: var(--radius-md);
+    flex-wrap: wrap;
+  }
+  .legend-item { display: inline-flex; align-items: center; gap: 6px; }
+  .legend-swatch { width: 14px; height: 14px; border-radius: 3px; display: inline-block; }
+  .legend-swatch.ok { background: var(--mc-success); }
+  .legend-swatch.warn { background: var(--mc-warning); }
+  .legend-swatch.err { background: var(--mc-error); }
+  .legend-swatch.muted { background: var(--mc-locked-bg); border: 1px solid var(--mc-border); }
+
+  /* ---------- Footer ---------- */
+  .doc-footer {
+    background: white; border-top: 1px solid var(--mc-border);
+    padding: 20px 40px; font-size: 12px; color: var(--mc-text-muted); text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<div class="doc-header">
+  <h1>Epic 6 — Enterprise Administration & Compliance Wireframes</h1>
+  <p>Administrative surfaces for the commercetools Next-Gen Frontend. This epic is the <strong>procurement gate</strong> — without SSO and data residency at first activation, enterprise customers cannot even start a trial. The Epic 6 skeleton ships with Epic 1 (SSO + residency); the full Epic 6 adds SCIM, multi-brand boundaries, DPA generation, and a usage dashboard. Annotations reference FRs from the PRD.</p>
+  <div class="meta">
+    <span>Author: Sally (UX)</span>
+    <span>Date: 2026-05-07</span>
+    <span>Persona: Enterprise IT Admin · procurement signer · compliance officer</span>
+    <span>Status: Draft for review</span>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" data-tab="sso"><span class="tab-num">1</span> SSO & SCIM Configuration</div>
+  <div class="tab" data-tab="brands"><span class="tab-num">2</span> Multi-Brand Access & Data Residency</div>
+  <div class="tab" data-tab="usage"><span class="tab-num">3</span> Usage Dashboard, DPA & Tier</div>
+</div>
+
+<!-- TAB 1 — SSO & SCIM -->
+<div id="tab-sso" class="tab-content active">
+  <div class="tab-intro">
+    <h2>1 — SSO & SCIM Configuration</h2>
+    <p>Enterprise identity integration is the first thing an IT Admin touches after activation. Epic 1 ships basic SAML/OIDC; Epic 6 full adds SCIM 2.0 automated lifecycle, group-to-role mapping, and a full audit log of provisioning events. IT Admins are comfortable with console-style density — metadata URLs, entity IDs, and endpoint paths are shown in monospace so they can be copy/pasted into the upstream IdP without ambiguity.</p>
+    <div class="frs">
+      <span class="fr-chip">FR40</span><span class="fr-chip">FR41</span><span class="fr-chip">FR42</span>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 1A — IdP Selection & Metadata Exchange ============ -->
+  <div class="screen">
+    <div class="screen-header">
+      <h3>1A — SSO setup: identity provider selection + metadata exchange</h3>
+      <span class="tag">IdentityProviderPicker + SAMLMetadataExchange — first-run procurement flow</span>
+    </div>
+    <div class="screen-body">
+      <div class="dev-frame" style="height: 680px;">
+        <div class="dev-topbar">
+          <span class="logo">commercetools</span>
+          <span class="crumbs">Admin › Identity › <strong>Single Sign-On</strong></span>
+          <span class="spacer"></span>
+          <span class="cmd-k">⌘K</span>
+          <span class="residency-chip">🌍 EU · Frankfurt</span>
+          <span class="user">IT</span>
+        </div>
+        <div class="sub-bar">
+          <span class="chip active"><span class="dot"></span> Production</span>
+          <span class="chip muted">Sandbox</span>
+          <span class="spacer"></span>
+          <span style="font-size: 11px; color: var(--mc-text-muted);">Tenant:</span>
+          <span class="chip mono" style="font-family: 'SF Mono', monospace;">acme-global</span>
+          <button class="btn-ghost">📘 Setup guide</button>
+        </div>
+        <div class="dev-main">
+          <div class="dev-sidebar">
+            <div class="section-title">Identity</div>
+            <div class="nav-row active">🔐 Single Sign-On <span class="status-dot off"></span></div>
+            <div class="nav-row">👥 SCIM provisioning <span class="status-dot off"></span></div>
+            <div class="nav-row">🎭 Roles & permissions</div>
+            <div class="nav-row">📜 Audit log</div>
+            <div class="section-title">Enterprise</div>
+            <div class="nav-row">🏢 Brands & boundaries</div>
+            <div class="nav-row">🌍 Data residency</div>
+            <div class="nav-row">📊 Usage & tier</div>
+            <div class="nav-row">📄 DPA & legal</div>
+          </div>
+          <div class="dev-content">
+            <div class="sec-head">
+              <div>
+                <h3>Set up Single Sign-On</h3>
+                <div class="sec-sub">Choose your identity provider, then exchange SAML/OIDC metadata. Once verified, your users sign in through their corporate IdP — no separate commercetools credentials.</div>
+              </div>
+              <span class="chip muted"><span class="dot"></span> Not configured</span>
+            </div>
+
+            <div class="card">
+              <h4>Step 1 — Select your identity provider <span class="pill muted">4 presets + custom</span></h4>
+              <div class="idp-grid">
+                <div class="idp-tile selected">
+                  <div class="idp-logo" style="background: #2563eb; color: white;">O</div>
+                  <div class="idp-name">Okta</div>
+                  <div class="idp-proto">SAML 2.0 · SCIM</div>
+                </div>
+                <div class="idp-tile">
+                  <div class="idp-logo" style="background: #0078d4; color: white;">AZ</div>
+                  <div class="idp-name">Azure AD</div>
+                  <div class="idp-proto">OIDC · SAML · SCIM</div>
+                </div>
+                <div class="idp-tile">
+                  <div class="idp-logo" style="background: #fbbc04; color: #1f2933;">G</div>
+                  <div class="idp-name">Google Workspace</div>
+                  <div class="idp-proto">SAML 2.0 · SCIM</div>
+                </div>
+                <div class="idp-tile">
+                  <div class="idp-logo" style="background: var(--mc-locked-bg); color: var(--mc-text-muted); border: 1px dashed var(--mc-border-strong);">⚙</div>
+                  <div class="idp-name">Custom SAML / OIDC</div>
+                  <div class="idp-proto">Any compliant IdP</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <h4>Step 2 — Copy commercetools Service Provider metadata <span class="pill ok">FR40</span></h4>
+              <div style="font-size: 11px; color: var(--mc-text-muted); margin-bottom: 10px;">Paste these values into your Okta SAML application. Entity ID and ACS URL identify the commercetools Next-Gen Frontend as the service provider.</div>
+              <dl class="kv-list wide">
+                <dt>Entity ID (SP)</dt>
+                <dd>urn:commercetools:frontend:acme-global:eu</dd>
+                <dt>ACS (Reply) URL</dt>
+                <dd>https://frontend.eu.commercetools.com/sso/acme-global/saml/callback</dd>
+                <dt>Start URL (RelayState)</dt>
+                <dd>https://frontend.eu.commercetools.com/sso/acme-global/start</dd>
+                <dt>Single Logout URL</dt>
+                <dd>https://frontend.eu.commercetools.com/sso/acme-global/slo</dd>
+                <dt>Name ID format</dt>
+                <dd>urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress</dd>
+                <dt>SP X.509 certificate</dt>
+                <dd>MIIDXzCCAkegAwIBAgIJAL3X... <a href="#" style="font-family: Inter, sans-serif;">Download .cer</a></dd>
+              </dl>
+              <div style="margin-top: 12px; display: flex; gap: 8px;">
+                <button class="btn-ghost">📋 Copy all as JSON</button>
+                <button class="btn-ghost">⬇ Download SP metadata XML</button>
+              </div>
+            </div>
+
+            <div class="card">
+              <h4>Step 3 — Paste IdP metadata <span class="pill warn">pending</span></h4>
+              <div style="font-size: 11px; color: var(--mc-text-muted); margin-bottom: 10px;">Paste the Okta SAML app's metadata URL, or upload the signed XML directly.</div>
+              <div class="field">
+                <label>Metadata URL</label>
+                <input type="text" class="mono" placeholder="https://acme.okta.com/app/exk1a2b3c4d5e6/sso/saml/metadata" value="https://acme.okta.com/app/exk1a2b3c4d5e6/sso/saml/metadata">
+                <div class="hint">TLS fetch, cache 24h, re-verify signing cert on each rotation.</div>
+              </div>
+              <div style="text-align: center; color: var(--mc-text-muted); font-size: 11px; margin: 6px 0;">— or —</div>
+              <div style="border: 1px dashed var(--mc-border-strong); border-radius: var(--radius-sm); padding: 14px; text-align: center; font-size: 11px; color: var(--mc-text-muted);">
+                📁 Drag IdP metadata XML here · or <a href="#">browse</a>
+              </div>
+              <div style="margin-top: 12px; display: flex; gap: 8px; justify-content: flex-end;">
+                <button class="btn-ghost">Test connection</button>
+                <button class="btn-primary">Verify & save</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-annotations">
+        <h4>Design Notes</h4>
+        <ul>
+          <li><strong>Four preset tiles + custom</strong> — covers ~90% of enterprise IdP market; custom option never hidden. Click to switch, doesn't require wizard progression. <em>(FR40)</em></li>
+          <li><strong>Monospace for every identifier</strong> — SAML entity IDs, ACS URLs, Name ID formats are copy/pasted into the IdP; visual ambiguity (O vs 0, l vs 1) breaks integrations.</li>
+          <li><strong>Residency chip in topbar</strong> — "🌍 EU · Frankfurt" is always visible. Every endpoint URL reflects the active region — IT Admin never needs to translate between regions. <em>(FR44)</em></li>
+          <li><strong>Status dot in sidebar</strong> — grey = not configured, green = healthy, amber = warning. IT Admin scans left rail for what's outstanding. <em>(FR42)</em></li>
+          <li><strong>Dev-frame density</strong> — denser padding and monospace data rows; console aesthetic IT Admins trust.</li>
+          <li><strong>Copy-all-as-JSON button</strong> — some orgs automate IdP config via Terraform/Pulumi; single-blob copy makes that trivial.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 1B — Working Configuration + Group-to-Role Mapping ============ -->
+  <div class="screen">
+    <div class="screen-header">
+      <h3>1B — Verified SSO + group-to-role mapping</h3>
+      <span class="tag">SSOStatusCard + GroupRoleMap — healthy connection, attribute mapping live</span>
+    </div>
+    <div class="screen-body">
+      <div class="dev-frame" style="height: 720px;">
+        <div class="dev-topbar">
+          <span class="logo">commercetools</span>
+          <span class="crumbs">Admin › Identity › <strong>Single Sign-On</strong></span>
+          <span class="spacer"></span>
+          <span class="residency-chip">🌍 EU · Frankfurt</span>
+          <span class="user">IT</span>
+        </div>
+        <div class="sub-bar">
+          <span class="chip active"><span class="dot"></span> Production</span>
+          <span class="chip muted">Sandbox</span>
+          <span class="spacer"></span>
+          <span class="chip live"><span class="dot"></span> SSO healthy</span>
+          <button class="btn-ghost">Test login flow</button>
+        </div>
+        <div class="dev-main">
+          <div class="dev-sidebar">
+            <div class="section-title">Identity</div>
+            <div class="nav-row active">🔐 Single Sign-On <span class="status-dot ok"></span></div>
+            <div class="nav-row">👥 SCIM provisioning <span class="status-dot ok"></span></div>
+            <div class="nav-row">🎭 Roles & permissions</div>
+            <div class="nav-row">📜 Audit log</div>
+            <div class="section-title">Enterprise</div>
+            <div class="nav-row">🏢 Brands & boundaries</div>
+            <div class="nav-row">🌍 Data residency</div>
+            <div class="nav-row">📊 Usage & tier</div>
+            <div class="nav-row">📄 DPA & legal</div>
+          </div>
+          <div class="dev-content">
+            <div class="card success-soft tight">
+              <h4>
+                ✓ SSO is live — verified at 2026-05-07 09:14 UTC
+                <span class="pill ok">Okta · SAML 2.0</span>
+                <span class="spacer" style="flex: 1;"></span>
+                <span style="font-family: 'SF Mono', monospace; font-size: 11px; color: var(--mc-text-muted); font-weight: normal;">IdP entity: http://www.okta.com/exk1a2b3c4d5e6</span>
+              </h4>
+              <div style="font-size: 11.5px; color: var(--mc-text); opacity: 0.8;">14 users have signed in via SSO in the last 7 days. Last signing cert rotation: 2026-04-22. Next cert expiry: 2027-04-22.</div>
+            </div>
+
+            <div class="card">
+              <h4>Attribute mapping <span class="pill ok">NameID + 4 claims</span></h4>
+              <div style="font-size: 11px; color: var(--mc-text-muted); margin-bottom: 10px;">Claims pulled from the SAML assertion. Used to populate commercetools user profiles and drive RBAC.</div>
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th style="width: 180px;">SAML attribute (IdP)</th>
+                    <th>Maps to</th>
+                    <th style="width: 140px;">Required</th>
+                    <th style="width: 120px;">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="mono-cell">NameID (emailAddress)</td>
+                    <td>user.email</td>
+                    <td><span class="chip muted" style="font-size: 10px;">Required</span></td>
+                    <td><span class="chip live" style="font-size: 10px;"><span class="dot"></span> Mapped</span></td>
+                  </tr>
+                  <tr>
+                    <td class="mono-cell">http://schemas.../givenname</td>
+                    <td>user.firstName</td>
+                    <td><span class="chip muted" style="font-size: 10px;">Optional</span></td>
+                    <td><span class="chip live" style="font-size: 10px;"><span class="dot"></span> Mapped</span></td>
+                  </tr>
+                  <tr>
+                    <td class="mono-cell">http://schemas.../surname</td>
+                    <td>user.lastName</td>
+                    <td><span class="chip muted" style="font-size: 10px;">Optional</span></td>
+                    <td><span class="chip live" style="font-size: 10px;"><span class="dot"></span> Mapped</span></td>
+                  </tr>
+                  <tr>
+                    <td class="mono-cell">groups (multi-value)</td>
+                    <td>user.groups[ ]</td>
+                    <td><span class="chip muted" style="font-size: 10px;">Required for RBAC</span></td>
+                    <td><span class="chip live" style="font-size: 10px;"><span class="dot"></span> Mapped</span></td>
+                  </tr>
+                  <tr>
+                    <td class="mono-cell">department</td>
+                    <td class="muted-cell">(unmapped)</td>
+                    <td><span class="chip muted" style="font-size: 10px;">Optional</span></td>
+                    <td><span class="chip muted" style="font-size: 10px;">Unmapped</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="card">
+              <h4>Group → Role mapping <span class="pill ok">FR42</span></h4>
+              <div style="font-size: 11px; color: var(--mc-text-muted); margin-bottom: 10px;">When a user arrives via SSO, their Okta group memberships are matched to these rules in order. A user with multiple groups gets the union of role permissions.</div>
+              <div class="mapping-row">
+                <div class="grp-name"><span>📂 Okta group</span><span class="mono">acme-cms-admins</span></div>
+                <div class="arrow">→</div>
+                <div class="role-name"><span class="role-chip admin">🛡 IT Admin</span></div>
+                <div style="text-align: right;"><button class="btn-ghost" style="font-size: 10px; padding: 3px 8px;">Edit</button></div>
+              </div>
+              <div class="mapping-row">
+                <div class="grp-name"><span>📂 Okta group</span><span class="mono">acme-storefront-editors</span></div>
+                <div class="arrow">→</div>
+                <div class="role-name"><span class="role-chip editor">✏ Storefront Editor</span></div>
+                <div style="text-align: right;"><button class="btn-ghost" style="font-size: 10px; padding: 3px 8px;">Edit</button></div>
+              </div>
+              <div class="mapping-row">
+                <div class="grp-name"><span>📂 Okta group</span><span class="mono">acme-brand-reviewers</span></div>
+                <div class="arrow">→</div>
+                <div class="role-name"><span class="role-chip reviewer">👀 Publish Reviewer</span></div>
+                <div style="text-align: right;"><button class="btn-ghost" style="font-size: 10px; padding: 3px 8px;">Edit</button></div>
+              </div>
+              <div class="mapping-row">
+                <div class="grp-name"><span>📂 Okta group</span><span class="mono">acme-all-employees</span></div>
+                <div class="arrow">→</div>
+                <div class="role-name"><span class="role-chip viewer">👁 Viewer</span></div>
+                <div style="text-align: right;"><button class="btn-ghost" style="font-size: 10px; padding: 3px 8px;">Edit</button></div>
+              </div>
+              <div class="mapping-row" style="border-bottom: none;">
+                <div class="grp-name"><span>📂 Okta group</span><span class="mono" style="color: var(--mc-warning);">* (no match)</span></div>
+                <div class="arrow">→</div>
+                <div class="role-name" style="color: var(--mc-text-muted);">Sign-in denied — no default role</div>
+                <div style="text-align: right;"><span class="chip muted" style="font-size: 10px;">Policy</span></div>
+              </div>
+              <div style="margin-top: 12px; display: flex; gap: 8px; justify-content: flex-end;">
+                <button class="btn-ghost">+ Add rule</button>
+                <button class="btn-primary">Save mapping</button>
+              </div>
+            </div>
+
+            <div class="card warn-soft tight">
+              <h4>⚠ Advanced — just-in-time provisioning <span class="pill warn">enabled</span></h4>
+              <div style="font-size: 11.5px; color: var(--mc-text); opacity: 0.85;">
+                If a user signs in before SCIM provisions them, we create their profile on-the-fly from the SAML assertion. <strong>Recommended:</strong> disable this and rely on SCIM only, so deprovisioning in Okta flows through to commercetools within 60 seconds.
+                <a href="#" style="color: var(--mc-blue); margin-left: 4px;">Disable JIT →</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-annotations">
+        <h4>Design Notes</h4>
+        <ul>
+          <li><strong>Success-soft banner, not alert</strong> — green-tinted card confirms SSO is live with verification timestamp and concrete evidence ("14 users signed in last 7 days"). IT Admin trusts what they can measure. <em>(FR40)</em></li>
+          <li><strong>Attribute mapping is a table, not a form</strong> — dense, scannable, exactly what IT Admins expect from identity tooling. <em>(FR42)</em></li>
+          <li><strong>Wildcard fall-through rule is explicit</strong> — "* → Sign-in denied" makes the zero-trust default visible. No hidden implicit "anyone can sign in" behavior.</li>
+          <li><strong>Cert rotation dates shown inline</strong> — next cert expiry visible in the success banner; IT Admins plan for renewal without separate reminders.</li>
+          <li><strong>JIT provisioning warning</strong> — warn-soft card (not error) explains the trade-off without being punitive. Teaches toward the more-secure default.</li>
+          <li><strong>Role chips reused across the product</strong> — same chip style appears in Epic 3 audit log; consistent identity vocabulary.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 1C — SCIM Provisioning & Lifecycle Audit Log ============ -->
+  <div class="screen">
+    <div class="screen-header">
+      <h3>1C — SCIM 2.0 provisioning + user lifecycle audit log</h3>
+      <span class="tag">SCIMEndpointPanel + LifecycleAuditLog — automated provisioning evidence</span>
+    </div>
+    <div class="screen-body">
+      <div class="dev-frame" style="height: 760px;">
+        <div class="dev-topbar">
+          <span class="logo">commercetools</span>
+          <span class="crumbs">Admin › Identity › <strong>SCIM provisioning</strong></span>
+          <span class="spacer"></span>
+          <span class="residency-chip">🌍 EU · Frankfurt</span>
+          <span class="user">IT</span>
+        </div>
+        <div class="sub-bar">
+          <span class="chip">Last 30 days ▾</span>
+          <span class="chip">All events ▾</span>
+          <span class="chip">All users ▾</span>
+          <span class="spacer"></span>
+          <span class="chip live"><span class="dot"></span> SCIM healthy</span>
+          <button class="btn-ghost">⬇ Export CSV</button>
+        </div>
+        <div class="dev-main">
+          <div class="dev-sidebar">
+            <div class="section-title">Identity</div>
+            <div class="nav-row">🔐 Single Sign-On <span class="status-dot ok"></span></div>
+            <div class="nav-row active">👥 SCIM provisioning <span class="status-dot ok"></span></div>
+            <div class="nav-row">🎭 Roles & permissions</div>
+            <div class="nav-row">📜 Audit log</div>
+            <div class="section-title">Enterprise</div>
+            <div class="nav-row">🏢 Brands & boundaries</div>
+            <div class="nav-row">🌍 Data residency</div>
+            <div class="nav-row">📊 Usage & tier</div>
+            <div class="nav-row">📄 DPA & legal</div>
+          </div>
+          <div class="dev-content dense">
+            <div class="card">
+              <h4>SCIM 2.0 endpoint <span class="pill ok">RFC 7644</span> <span class="pill ok">FR41</span></h4>
+              <div style="font-size: 11px; color: var(--mc-text-muted); margin-bottom: 10px;">Paste into Okta's "Provisioning → Integration" tab. Bearer token rotates every 90 days; regenerating invalidates the previous token atomically.</div>
+              <dl class="kv-list wide">
+                <dt>SCIM base URL</dt>
+                <dd>https://frontend.eu.commercetools.com/scim/v2/acme-global</dd>
+                <dt>Supported resources</dt>
+                <dd>/Users · /Groups · /Schemas · /ResourceTypes · /ServiceProviderConfig</dd>
+                <dt>Auth</dt>
+                <dd>Authorization: Bearer sct_prod_4f8a...c3d2 &nbsp;<a href="#" style="font-family: Inter, sans-serif;">Rotate</a></dd>
+                <dt>Token expires</dt>
+                <dd><span style="color: var(--mc-success);">2026-08-05 (89 days)</span></dd>
+                <dt>Filtering</dt>
+                <dd>userName eq · email eq · active eq · groups eq (all supported)</dd>
+              </dl>
+              <div style="margin-top: 10px; display: flex; gap: 16px; font-size: 11px; color: var(--mc-text-muted);">
+                <span><strong style="color: var(--mc-success);">✓</strong> Create · Update · Delete all enabled</span>
+                <span><strong style="color: var(--mc-success);">✓</strong> Group push enabled</span>
+                <span><strong style="color: var(--mc-success);">✓</strong> Attribute sync every 5 min</span>
+              </div>
+            </div>
+
+            <div class="card tight" style="padding: 0;">
+              <div style="padding: 14px 16px; border-bottom: 1px solid var(--mc-border); display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                  <h4 style="margin-bottom: 4px;">User lifecycle audit log <span class="pill muted">immutable · 7-year retention</span></h4>
+                  <div style="font-size: 11px; color: var(--mc-text-muted);">Every SCIM provision, update, and deprovision event — timestamps, actors, diffs.</div>
+                </div>
+                <div style="display: flex; gap: 6px;">
+                  <span class="chip"><span class="dot" style="background: var(--mc-success);"></span> 84 provisions</span>
+                  <span class="chip"><span class="dot" style="background: var(--mc-error);"></span> 12 deprovisions</span>
+                  <span class="chip"><span class="dot" style="background: var(--mc-blue);"></span> 47 updates</span>
+                </div>
+              </div>
+              <div class="audit-row header">
+                <div>Timestamp (UTC)</div><div>Actor</div><div>Event</div><div>Status</div><div></div>
+              </div>
+              <div class="audit-row">
+                <div class="timestamp">05-07 09:42:11</div>
+                <div class="user-badge"><span class="avatar-sm" style="background: #0891b2;">OK</span> Okta SCIM</div>
+                <div>
+                  <span class="event-type provision">Provisioned</span>
+                  <span style="margin-left: 6px; font-size: 12px;"><strong>rachel.kim@acme.com</strong></span>
+                  <div style="font-size: 11px; color: var(--mc-text-muted); margin-top: 2px;">Groups: acme-storefront-editors → Storefront Editor role · External ID: okta_00u4x8k2</div>
+                </div>
+                <div><span class="chip live" style="font-size: 10px;"><span class="dot"></span> Active</span></div>
+                <div></div>
+              </div>
+              <div class="audit-row">
+                <div class="timestamp">05-07 08:15:43</div>
+                <div class="user-badge"><span class="avatar-sm" style="background: #0891b2;">OK</span> Okta SCIM</div>
+                <div>
+                  <span class="event-type update">Updated</span>
+                  <span style="margin-left: 6px; font-size: 12px;"><strong>marcus.chen@acme.com</strong></span>
+                  <div style="font-size: 11px; color: var(--mc-text-muted); margin-top: 2px;">Group change: acme-brand-reviewers <span style="color: var(--mc-text-faint);">removed</span> → acme-cms-admins <span style="color: var(--mc-success);">added</span> · Role: Publish Reviewer → IT Admin</div>
+                </div>
+                <div><span class="chip live" style="font-size: 10px;"><span class="dot"></span> Active</span></div>
+                <div></div>
+              </div>
+              <div class="audit-row">
+                <div class="timestamp">05-06 17:22:08</div>
+                <div class="user-badge"><span class="avatar-sm" style="background: #0891b2;">OK</span> Okta SCIM</div>
+                <div>
+                  <span class="event-type deprovision">Deprovisioned</span>
+                  <span style="margin-left: 6px; font-size: 12px;"><strong>james.miller@acme.com</strong></span>
+                  <div style="font-size: 11px; color: var(--mc-text-muted); margin-top: 2px;">active:false in SCIM → sessions terminated in 8s · 3 in-flight drafts preserved, assigned to manager</div>
+                </div>
+                <div><span class="chip error" style="font-size: 10px;"><span class="dot"></span> Terminated</span></div>
+                <div></div>
+              </div>
+              <div class="audit-row">
+                <div class="timestamp">05-06 14:08:55</div>
+                <div class="user-badge"><span class="avatar-sm" style="background: #0891b2;">OK</span> Okta SCIM</div>
+                <div>
+                  <span class="event-type provision">Provisioned</span>
+                  <span style="margin-left: 6px; font-size: 12px;"><strong>sasha.martinez@acme.com</strong></span>
+                  <div style="font-size: 11px; color: var(--mc-text-muted); margin-top: 2px;">Groups: acme-storefront-editors + acme-brand-reviewers → combined role permissions applied</div>
+                </div>
+                <div><span class="chip live" style="font-size: 10px;"><span class="dot"></span> Active</span></div>
+                <div></div>
+              </div>
+              <div class="audit-row">
+                <div class="timestamp">05-06 11:31:02</div>
+                <div class="user-badge"><span class="avatar-sm" style="background: #0891b2;">OK</span> Okta SCIM</div>
+                <div>
+                  <span class="event-type assign">Group push</span>
+                  <span style="margin-left: 6px; font-size: 12px;">acme-brand-reviewers · 4 members added, 1 removed</span>
+                  <div style="font-size: 11px; color: var(--mc-text-muted); margin-top: 2px;">Bulk membership sync · all role changes applied atomically · no drift detected</div>
+                </div>
+                <div><span class="chip live" style="font-size: 10px;"><span class="dot"></span> Synced</span></div>
+                <div></div>
+              </div>
+              <div class="audit-row">
+                <div class="timestamp">05-05 16:44:20</div>
+                <div class="user-badge"><span class="avatar-sm">IT</span> Alex Chen (IT)</div>
+                <div>
+                  <span class="event-type update">Manual override</span>
+                  <span style="margin-left: 6px; font-size: 12px;"><strong>contractor-n1@acme.com</strong></span>
+                  <div style="font-size: 11px; color: var(--mc-text-muted); margin-top: 2px;">Role scope restricted to brand:vento · reason: "External contractor · time-boxed 90d" · expires 2026-08-05</div>
+                </div>
+                <div><span class="chip live" style="font-size: 10px;"><span class="dot"></span> Active</span></div>
+                <div></div>
+              </div>
+              <div class="audit-row">
+                <div class="timestamp">05-05 09:12:34</div>
+                <div class="user-badge"><span class="avatar-sm" style="background: #0891b2;">OK</span> Okta SCIM</div>
+                <div>
+                  <span class="event-type deprovision">Deprovisioned</span>
+                  <span style="margin-left: 6px; font-size: 12px;"><strong>intern-2025-q4@acme.com</strong></span>
+                  <div style="font-size: 11px; color: var(--mc-text-muted); margin-top: 2px;">Internship ended · SCIM sync · session terminated · 2 drafts archived (90d retention then purged)</div>
+                </div>
+                <div><span class="chip error" style="font-size: 10px;"><span class="dot"></span> Terminated</span></div>
+                <div></div>
+              </div>
+              <div style="padding: 10px 14px; background: #fafbfc; border-top: 1px solid var(--mc-border); text-align: center; font-size: 11px; color: var(--mc-text-muted);">
+                Showing 7 of 143 events · <a href="#" style="color: var(--mc-blue);">Load more</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-annotations">
+        <h4>Design Notes</h4>
+        <ul>
+          <li><strong>SCIM endpoint details shown in monospace</strong> — base URL, bearer token, filter predicates. IT Admins pipeline this into Okta's provisioning form. <em>(FR41)</em></li>
+          <li><strong>Token expiry shown green/amber/red</strong> — 90-day rotation surfaced as "89 days" reminder. Prevents surprise auth failures.</li>
+          <li><strong>Lifecycle events taxonomy</strong> — Provisioned / Updated / Deprovisioned / Group push / Manual override. Each color-coded so auditors scan by event class.</li>
+          <li><strong>Deprovision event names concrete consequence</strong> — "sessions terminated in 8s · 3 in-flight drafts preserved, assigned to manager" — no orphan work, no data loss, no ambiguity about what happened.</li>
+          <li><strong>Human and SCIM actors coexist</strong> — Okta SCIM bot and human IT Admin both appear with distinct avatars (Epic 3 pattern reused). Manual overrides are first-class events, not exceptions.</li>
+          <li><strong>Immutable, 7-year retention</strong> — pill in the section header makes the compliance promise visible. CSV export for SOC 2 / ISO 27001 evidence collection.</li>
+          <li><strong>Summary chips at top-right</strong> — provisions / deprovisions / updates counts give auditors an instant sense of activity shape.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 2 — Multi-Brand & Residency -->
+<div id="tab-brands" class="tab-content">
+  <div class="tab-intro">
+    <h2>2 — Multi-Brand Access Boundaries & Data Residency</h2>
+    <p>Multi-brand B2C enterprises (e.g. Acme Group managing Vento, Luma, Nova storefronts) need access boundaries per brand, per environment. Meanwhile, every tenant must choose EU or US data residency <em>at activation</em> — it's visible as an immutable fact for the life of the tenant. The residency decision drives which CT project, which ClickHouse cluster, which region-locked services handle their data.</p>
+    <div class="frs">
+      <span class="fr-chip">FR43</span><span class="fr-chip">FR44</span>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 2A — Data Residency at Activation (pre-tenant-create) ============ -->
+  <div class="screen">
+    <div class="screen-header">
+      <h3>2A — First-run: residency selection at activation <span style="font-size: 11px; color: var(--mc-text-muted); font-weight: normal;">(interactive — click a region to select)</span></h3>
+      <span class="tag">ResidencyPicker — procurement gate, one-time immutable decision</span>
+    </div>
+    <div class="screen-body">
+      <div class="dev-frame" style="height: 640px;">
+        <div class="dev-topbar">
+          <span class="logo">commercetools</span>
+          <span class="crumbs">Activation › <strong>Step 2 of 3 — Data residency</strong></span>
+          <span class="spacer"></span>
+          <span class="cmd-k">⌘K</span>
+          <span class="user">IT</span>
+        </div>
+        <div class="sub-bar">
+          <span class="chip muted">✓ Step 1 — Tenant details</span>
+          <span class="chip active"><span class="dot"></span> Step 2 — Residency</span>
+          <span class="chip muted">Step 3 — SSO</span>
+          <span class="spacer"></span>
+          <span style="font-size: 11px; color: var(--mc-error); font-weight: 500;">⚠ Cannot be changed after activation</span>
+        </div>
+        <div class="dev-main" style="grid-template-columns: 1fr;">
+          <div class="dev-content">
+            <div class="sec-head">
+              <div>
+                <h3>Choose your data residency region</h3>
+                <div class="sec-sub">Every piece of tenant data — user profiles, behavioral events, storefront content, audit logs — is stored and processed in the region you select. This choice is <strong style="color: var(--mc-error);">permanent for the life of this tenant</strong>. Migration between regions requires a new tenant and a manual data export/import.</div>
+              </div>
+            </div>
+
+            <div class="residency-map">
+              <div class="residency-pin faded" data-selectable="true" style="top: 40px; left: 32%;">
+                <span class="dot"></span>
+                🇺🇸 US · us-east-1 (Virginia)
+              </div>
+              <div class="residency-pin selected" data-selectable="true" style="top: 30px; left: 62%;">
+                <span class="dot"></span>
+                🇪🇺 EU · eu-central-1 (Frankfurt) ✓
+              </div>
+              <div class="residency-pin faded" style="top: 90px; left: 60%; opacity: 0.4;">
+                <span class="dot" style="background: var(--mc-locked);"></span>
+                🇬🇧 UK · London — coming Q3
+              </div>
+              <div class="residency-pin faded" style="top: 80px; left: 82%; opacity: 0.4;">
+                <span class="dot" style="background: var(--mc-locked);"></span>
+                🇸🇬 APAC · Singapore — coming Q4
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+              <div class="card" style="border-color: var(--mc-success); background: var(--mc-success-bg);">
+                <h4>🇪🇺 European Union (selected) <span class="pill ok">GDPR-native</span></h4>
+                <div style="font-size: 12px; line-height: 1.6; color: var(--mc-text);">
+                  <strong>Primary region:</strong> AWS eu-central-1 (Frankfurt)<br>
+                  <strong>DR region:</strong> AWS eu-west-1 (Ireland)<br>
+                  <strong>Sub-processors:</strong> Anthropic (EU inference), Cloudflare (EU edge only)<br>
+                  <strong>Compliance:</strong> GDPR · Schrems II compliant · no US data transfer<br>
+                  <strong>Data categories in-region:</strong>
+                </div>
+                <ul style="font-size: 11.5px; color: var(--mc-text); margin-top: 8px; margin-left: 18px; line-height: 1.7;">
+                  <li>User profiles, SSO sessions, SCIM state</li>
+                  <li>Storefront content, component library, drafts, publishes</li>
+                  <li>Behavioral events (ClickHouse EU cluster)</li>
+                  <li>AI completion logs, experiment outcomes</li>
+                  <li>Audit logs (7-year retention, EU only)</li>
+                </ul>
+              </div>
+              <div class="card" style="border-color: var(--mc-border-strong); background: white; opacity: 0.75;">
+                <h4>🇺🇸 United States <span class="pill muted">alternative</span></h4>
+                <div style="font-size: 12px; line-height: 1.6; color: var(--mc-text);">
+                  <strong>Primary region:</strong> AWS us-east-1 (Virginia)<br>
+                  <strong>DR region:</strong> AWS us-west-2 (Oregon)<br>
+                  <strong>Sub-processors:</strong> Anthropic (US), Cloudflare (global)<br>
+                  <strong>Compliance:</strong> SOC 2 Type II · CCPA-ready · HIPAA-eligible<br>
+                  <strong>Data categories in-region:</strong>
+                </div>
+                <ul style="font-size: 11.5px; color: var(--mc-text-muted); margin-top: 8px; margin-left: 18px; line-height: 1.7;">
+                  <li>All tenant data processed and stored in US</li>
+                  <li>ClickHouse US cluster for behavioral data</li>
+                  <li>Audit logs retained US-only</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="card warn-soft tight" style="margin-top: 14px;">
+              <h4>⚠ Understand before you continue</h4>
+              <ul style="font-size: 12px; color: var(--mc-text); margin-left: 18px; line-height: 1.7;">
+                <li>This region is <strong>immutable</strong> for this tenant. To change, you'll need to provision a new tenant and export/import data manually.</li>
+                <li>Cross-region storefronts (e.g., one EU tenant + one US tenant under the same parent org) are supported. See <a href="#" style="color: var(--mc-blue);">multi-region deployment guide</a>.</li>
+                <li>Your DPA (next step) will reflect the chosen region's sub-processor list and compliance posture.</li>
+              </ul>
+            </div>
+
+            <div style="display: flex; gap: 10px; justify-content: space-between; margin-top: 16px;">
+              <button class="btn-ghost">← Back to tenant details</button>
+              <div style="display: flex; gap: 8px; align-items: center;">
+                <span style="font-size: 11px; color: var(--mc-text-muted);">Selected: <strong style="color: var(--mc-success);">🇪🇺 EU · Frankfurt</strong></span>
+                <button class="btn-primary">Continue to SSO setup →</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-annotations">
+        <h4>Design Notes</h4>
+        <ul>
+          <li><strong>Residency is Step 2 of activation</strong> — not buried in settings. Without this choice, the tenant cannot be provisioned at all. <em>(FR44)</em></li>
+          <li><strong>"Cannot be changed after activation" warning in sub-bar</strong> — visible before the user commits, not after. Prevents the most common enterprise support ticket ("can we move to EU?").</li>
+          <li><strong>Side-by-side region cards</strong> — same structure, both showing sub-processors, DR region, compliance claims, and the exact data categories that live in-region. No surprises at audit time.</li>
+          <li><strong>Phase-2 regions shown muted</strong> — UK and APAC regions visible but disabled. Signals roadmap; gives IT Admin confidence the vendor is growing with them.</li>
+          <li><strong>Selected region highlighted with success green</strong> — consistent with the "good state" signal language across Epic 6.</li>
+          <li><strong>Interactive pins</strong> — click EU or US pin to see selection state change. Reinforces that this is a deliberate choice, not a default.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 2B — Residency as Immutable Fact + Impact Summary ============ -->
+  <div class="screen">
+    <div class="screen-header">
+      <h3>2B — Data residency fact: post-activation impact summary</h3>
+      <span class="tag">ResidencyFactSheet — immutable reference, audit-ready</span>
+    </div>
+    <div class="screen-body">
+      <div class="dev-frame" style="height: 700px;">
+        <div class="dev-topbar">
+          <span class="logo">commercetools</span>
+          <span class="crumbs">Admin › Enterprise › <strong>Data residency</strong></span>
+          <span class="spacer"></span>
+          <span class="residency-chip">🌍 EU · Frankfurt</span>
+          <span class="user">IT</span>
+        </div>
+        <div class="sub-bar">
+          <span class="chip live"><span class="dot"></span> Locked — activated 2026-03-14</span>
+          <span class="spacer"></span>
+          <button class="btn-ghost">📄 Export as PDF for audit</button>
+          <button class="btn-ghost">🔗 Share with DPO</button>
+        </div>
+        <div class="dev-main">
+          <div class="dev-sidebar">
+            <div class="section-title">Identity</div>
+            <div class="nav-row">🔐 Single Sign-On <span class="status-dot ok"></span></div>
+            <div class="nav-row">👥 SCIM provisioning <span class="status-dot ok"></span></div>
+            <div class="nav-row">🎭 Roles & permissions</div>
+            <div class="nav-row">📜 Audit log</div>
+            <div class="section-title">Enterprise</div>
+            <div class="nav-row">🏢 Brands & boundaries</div>
+            <div class="nav-row active">🌍 Data residency <span class="status-dot ok"></span></div>
+            <div class="nav-row">📊 Usage & tier</div>
+            <div class="nav-row">📄 DPA & legal</div>
+          </div>
+          <div class="dev-content">
+            <div class="card success-soft">
+              <h4 style="font-size: 14px;">🇪🇺 Your tenant is pinned to the European Union <span class="pill ok">Immutable</span></h4>
+              <dl class="kv-list wide" style="margin-top: 8px;">
+                <dt>Tenant ID</dt><dd>ct-ngf-acme-global-eu-prod</dd>
+                <dt>Activated</dt><dd>2026-03-14 10:22:08 UTC by alex.chen@acme.com</dd>
+                <dt>Region</dt><dd>EU · eu-central-1 (Frankfurt) · DR: eu-west-1 (Ireland)</dd>
+                <dt>CT project ref</dt><dd>acme-global-eu</dd>
+                <dt>Compliance posture</dt><dd>GDPR · Schrems II · ISO 27001 · SOC 2 Type II</dd>
+              </dl>
+            </div>
+
+            <div class="card">
+              <h4>Residency impact — what stays in EU <span class="pill ok">FR44</span></h4>
+              <div style="font-size: 11px; color: var(--mc-text-muted); margin-bottom: 10px;">Every service below is scoped to the EU region. No data crosses regional boundaries without an explicit contractual DPA amendment.</div>
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th style="width: 34%;">Service / data store</th>
+                    <th>Data categories</th>
+                    <th style="width: 140px;">Region</th>
+                    <th style="width: 120px;">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>PostgreSQL</strong><div style="font-size: 10.5px; color: var(--mc-text-muted);">Tenant config, RBAC, SCIM state</div></td>
+                    <td class="muted-cell">User profiles · roles · group mappings · session metadata</td>
+                    <td class="mono-cell">eu-central-1</td>
+                    <td><span class="chip live" style="font-size: 10px;"><span class="dot"></span> Pinned</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>ClickHouse</strong><div style="font-size: 10.5px; color: var(--mc-text-muted);">Behavioral events</div></td>
+                    <td class="muted-cell">Clickstream · pageview · conversion · CLV signals</td>
+                    <td class="mono-cell">eu-central-1</td>
+                    <td><span class="chip live" style="font-size: 10px;"><span class="dot"></span> Pinned</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Object storage</strong><div style="font-size: 10.5px; color: var(--mc-text-muted);">Media · component assets</div></td>
+                    <td class="muted-cell">Images · video · draft revisions · component artifacts</td>
+                    <td class="mono-cell">eu-central-1</td>
+                    <td><span class="chip live" style="font-size: 10px;"><span class="dot"></span> Pinned</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Anthropic inference</strong><div style="font-size: 10.5px; color: var(--mc-text-muted);">AI completions · code gen</div></td>
+                    <td class="muted-cell">Prompts · completions · operator AI transcripts</td>
+                    <td class="mono-cell">EU (Frankfurt)</td>
+                    <td><span class="chip live" style="font-size: 10px;"><span class="dot"></span> EU-locked</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Cloudflare edge</strong><div style="font-size: 10.5px; color: var(--mc-text-muted);">CDN · preview deploys</div></td>
+                    <td class="muted-cell">Customer-facing rendered pages · preview links</td>
+                    <td class="mono-cell">EU edge only</td>
+                    <td><span class="chip live" style="font-size: 10px;"><span class="dot"></span> Geo-fenced</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Observability (Datadog)</strong><div style="font-size: 10.5px; color: var(--mc-text-muted);">Logs · traces · metrics</div></td>
+                    <td class="muted-cell">Operational telemetry (PII scrubbed at ingest)</td>
+                    <td class="mono-cell">eu1.datadoghq.eu</td>
+                    <td><span class="chip live" style="font-size: 10px;"><span class="dot"></span> Pinned</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Audit log archive</strong><div style="font-size: 10.5px; color: var(--mc-text-muted);">7-year compliance retention</div></td>
+                    <td class="muted-cell">All identity events · publish events · DPA signatures</td>
+                    <td class="mono-cell">S3 Glacier (eu-central-1)</td>
+                    <td><span class="chip live" style="font-size: 10px;"><span class="dot"></span> WORM-locked</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="card tight">
+              <h4>Cross-region flows — none permitted <span class="pill ok">Verified</span></h4>
+              <div style="font-size: 11.5px; color: var(--mc-text); line-height: 1.6;">
+                <strong style="color: var(--mc-success);">✓</strong> No data egress from eu-central-1 to any non-EU region<br>
+                <strong style="color: var(--mc-success);">✓</strong> AI inference routed to EU endpoint only — US fallback explicitly disabled<br>
+                <strong style="color: var(--mc-success);">✓</strong> Sub-processor audits last reviewed: 2026-04-03 (next: 2026-10-03)<br>
+                <strong style="color: var(--mc-success);">✓</strong> Backup replication scope: eu-west-1 (Ireland) only
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-annotations">
+        <h4>Design Notes</h4>
+        <ul>
+          <li><strong>"Immutable" pill in the success banner</strong> — status is a fact, not a setting. No "Change region" button exists. <em>(FR44)</em></li>
+          <li><strong>Activation context preserved forever</strong> — "Activated 2026-03-14 by alex.chen@acme.com" gives DPOs the provenance trail they need for audit.</li>
+          <li><strong>Every data store named explicitly</strong> — Postgres, ClickHouse, object storage, Anthropic inference, Cloudflare edge, observability. Nothing hidden behind "we handle it."</li>
+          <li><strong>Region codes in monospace</strong> — "eu-central-1", "eu1.datadoghq.eu" — exact identifiers that DPOs paste into their ROPA documents.</li>
+          <li><strong>"Export as PDF for audit" button top-right</strong> — the whole page is designed to be printable compliance evidence. One-click artifact generation.</li>
+          <li><strong>Cross-region flows card verifies zero egress</strong> — a positive attestation ("no data crosses the boundary") is what auditors want, and the product surfaces it by default.</li>
+          <li><strong>Residency chip remains in topbar everywhere</strong> — operators in every other Epic 6 surface see "🌍 EU · Frankfurt" as constant context.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 2C — Multi-Brand Access Boundaries ============ -->
+  <div class="screen">
+    <div class="screen-header">
+      <h3>2C — Multi-brand access boundaries: per-brand + per-environment permissions</h3>
+      <span class="tag">BrandMatrix — CASL-backed scoping for multi-brand B2C enterprises</span>
+    </div>
+    <div class="screen-body">
+      <div class="dev-frame" style="height: 720px;">
+        <div class="dev-topbar">
+          <span class="logo">commercetools</span>
+          <span class="crumbs">Admin › Enterprise › <strong>Brands & boundaries</strong></span>
+          <span class="spacer"></span>
+          <span class="residency-chip">🌍 EU · Frankfurt</span>
+          <span class="user">IT</span>
+        </div>
+        <div class="sub-bar">
+          <span class="chip active"><span class="dot"></span> 3 brands</span>
+          <span class="chip">dev · staging · prod</span>
+          <span class="chip">12 role scopes</span>
+          <span class="spacer"></span>
+          <button class="btn-ghost">🔍 Find user access</button>
+          <button class="btn-primary">+ Add brand</button>
+        </div>
+        <div class="dev-main">
+          <div class="dev-sidebar">
+            <div class="section-title">Identity</div>
+            <div class="nav-row">🔐 Single Sign-On <span class="status-dot ok"></span></div>
+            <div class="nav-row">👥 SCIM provisioning <span class="status-dot ok"></span></div>
+            <div class="nav-row">🎭 Roles & permissions</div>
+            <div class="nav-row">📜 Audit log</div>
+            <div class="section-title">Enterprise</div>
+            <div class="nav-row active">🏢 Brands & boundaries</div>
+            <div class="nav-row">🌍 Data residency <span class="status-dot ok"></span></div>
+            <div class="nav-row">📊 Usage & tier</div>
+            <div class="nav-row">📄 DPA & legal</div>
+          </div>
+          <div class="dev-content dense">
+            <div class="sec-head">
+              <div>
+                <h3>Brands managed by Acme Global</h3>
+                <div class="sec-sub">Each brand is an independent storefront with its own component library overrides, audit stream, and access boundary. Users and Okta groups are scoped to one or more brands × environments. A Storefront Editor on Vento sees nothing from Luma or Nova.</div>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px;">
+              <div class="card tight" style="border-left: 3px solid #0891b2;">
+                <h4 style="margin-bottom: 6px;">🏢 Vento Sportswear</h4>
+                <div style="font-size: 11px; color: var(--mc-text-muted);">
+                  8 users · 2 Okta groups · Live in EU + UK locales<br>
+                  <span class="mono" style="font-family: 'SF Mono', monospace; font-size: 10.5px;">brand:vento</span>
+                </div>
+              </div>
+              <div class="card tight" style="border-left: 3px solid #7c3aed;">
+                <h4 style="margin-bottom: 6px;">🏢 Luma Beauty</h4>
+                <div style="font-size: 11px; color: var(--mc-text-muted);">
+                  5 users · 2 Okta groups · Live in DE + FR locales<br>
+                  <span class="mono" style="font-family: 'SF Mono', monospace; font-size: 10.5px;">brand:luma</span>
+                </div>
+              </div>
+              <div class="card tight" style="border-left: 3px solid #dc2626;">
+                <h4 style="margin-bottom: 6px;">🏢 Nova Home</h4>
+                <div style="font-size: 11px; color: var(--mc-text-muted);">
+                  4 users · 1 Okta group · Staging only — launch Q3 2026<br>
+                  <span class="mono" style="font-family: 'SF Mono', monospace; font-size: 10.5px;">brand:nova</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="card" style="padding: 0;">
+              <div style="padding: 12px 16px; border-bottom: 1px solid var(--mc-border); display: flex; align-items: center; justify-content: space-between;">
+                <h4 style="margin-bottom: 0;">Access matrix — groups × brands × environments <span class="pill ok">FR43</span></h4>
+                <div style="font-size: 11px; color: var(--mc-text-muted);">Click any cell to edit scope</div>
+              </div>
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th style="width: 220px;">Okta group → role</th>
+                    <th style="text-align: center;">Vento · dev</th>
+                    <th style="text-align: center;">Vento · stage</th>
+                    <th style="text-align: center;">Vento · prod</th>
+                    <th style="text-align: center;">Luma · prod</th>
+                    <th style="text-align: center;">Nova · stage</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <span class="mono" style="font-family: 'SF Mono', monospace; font-size: 11px; color: var(--mc-text-muted);">acme-cms-admins</span>
+                      <div><span class="role-chip admin" style="margin-top: 2px; display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; background: #fef2f2; color: #991b1b;">🛡 IT Admin</span></div>
+                    </td>
+                    <td style="text-align: center; background: var(--mc-success-bg);"><span style="color: var(--mc-success); font-weight: 600;">✓ Full</span></td>
+                    <td style="text-align: center; background: var(--mc-success-bg);"><span style="color: var(--mc-success); font-weight: 600;">✓ Full</span></td>
+                    <td style="text-align: center; background: var(--mc-success-bg);"><span style="color: var(--mc-success); font-weight: 600;">✓ Full</span></td>
+                    <td style="text-align: center; background: var(--mc-success-bg);"><span style="color: var(--mc-success); font-weight: 600;">✓ Full</span></td>
+                    <td style="text-align: center; background: var(--mc-success-bg);"><span style="color: var(--mc-success); font-weight: 600;">✓ Full</span></td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <span class="mono" style="font-family: 'SF Mono', monospace; font-size: 11px; color: var(--mc-text-muted);">acme-vento-editors</span>
+                      <div><span style="margin-top: 2px; display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; background: var(--mc-blue-wash); color: var(--mc-blue);">✏ Editor</span></div>
+                    </td>
+                    <td style="text-align: center; background: var(--mc-blue-wash);"><span style="color: var(--mc-blue); font-weight: 600;">✓ Edit</span></td>
+                    <td style="text-align: center; background: var(--mc-blue-wash);"><span style="color: var(--mc-blue); font-weight: 600;">✓ Edit</span></td>
+                    <td style="text-align: center; background: var(--mc-warning-bg);"><span style="color: var(--mc-warning); font-weight: 600;">✓ Draft only</span></td>
+                    <td style="text-align: center; color: var(--mc-text-faint);">—</td>
+                    <td style="text-align: center; color: var(--mc-text-faint);">—</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <span class="mono" style="font-family: 'SF Mono', monospace; font-size: 11px; color: var(--mc-text-muted);">acme-vento-publishers</span>
+                      <div><span style="margin-top: 2px; display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; background: var(--mc-warning-bg); color: var(--mc-warning);">👀 Publisher</span></div>
+                    </td>
+                    <td style="text-align: center; color: var(--mc-text-faint);">—</td>
+                    <td style="text-align: center; background: var(--mc-blue-wash);"><span style="color: var(--mc-blue); font-weight: 600;">✓ Edit + publish</span></td>
+                    <td style="text-align: center; background: var(--mc-success-bg);"><span style="color: var(--mc-success); font-weight: 600;">✓ Publish</span></td>
+                    <td style="text-align: center; color: var(--mc-text-faint);">—</td>
+                    <td style="text-align: center; color: var(--mc-text-faint);">—</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <span class="mono" style="font-family: 'SF Mono', monospace; font-size: 11px; color: var(--mc-text-muted);">acme-luma-editors</span>
+                      <div><span style="margin-top: 2px; display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; background: var(--mc-blue-wash); color: var(--mc-blue);">✏ Editor</span></div>
+                    </td>
+                    <td style="text-align: center; color: var(--mc-text-faint);">—</td>
+                    <td style="text-align: center; color: var(--mc-text-faint);">—</td>
+                    <td style="text-align: center; color: var(--mc-text-faint);">—</td>
+                    <td style="text-align: center; background: var(--mc-blue-wash);"><span style="color: var(--mc-blue); font-weight: 600;">✓ Edit + publish</span></td>
+                    <td style="text-align: center; color: var(--mc-text-faint);">—</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <span class="mono" style="font-family: 'SF Mono', monospace; font-size: 11px; color: var(--mc-text-muted);">acme-nova-preview</span>
+                      <div><span style="margin-top: 2px; display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; background: var(--mc-locked-bg); color: var(--mc-text-muted);">👁 Viewer</span></div>
+                    </td>
+                    <td style="text-align: center; color: var(--mc-text-faint);">—</td>
+                    <td style="text-align: center; color: var(--mc-text-faint);">—</td>
+                    <td style="text-align: center; color: var(--mc-text-faint);">—</td>
+                    <td style="text-align: center; color: var(--mc-text-faint);">—</td>
+                    <td style="text-align: center; background: var(--mc-locked-bg);"><span style="color: var(--mc-text-muted); font-weight: 600;">✓ Read-only</span></td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <span class="mono" style="font-family: 'SF Mono', monospace; font-size: 11px; color: var(--mc-text-muted);">acme-all-employees</span>
+                      <div><span style="margin-top: 2px; display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; background: var(--mc-locked-bg); color: var(--mc-text-muted);">👁 Viewer</span></div>
+                    </td>
+                    <td style="text-align: center; background: var(--mc-locked-bg);"><span style="color: var(--mc-text-muted);">○ View</span></td>
+                    <td style="text-align: center; color: var(--mc-text-faint);">—</td>
+                    <td style="text-align: center; color: var(--mc-text-faint);">—</td>
+                    <td style="text-align: center; color: var(--mc-text-faint);">—</td>
+                    <td style="text-align: center; color: var(--mc-text-faint);">—</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 16px;">
+              <div class="card tight">
+                <h4>Boundary enforcement</h4>
+                <div style="font-size: 11.5px; color: var(--mc-text); line-height: 1.65;">
+                  <strong style="color: var(--mc-success);">✓</strong> CASL abilities computed per-request from (user × brand × env)<br>
+                  <strong style="color: var(--mc-success);">✓</strong> Storefront Editor on Vento cannot see Luma's component library, media, or audit events<br>
+                  <strong style="color: var(--mc-success);">✓</strong> Cross-brand leakage prevented at the API boundary (not just UI)<br>
+                  <strong style="color: var(--mc-success);">✓</strong> Every access decision logged to identity audit stream
+                </div>
+              </div>
+              <div class="card tight warn-soft">
+                <h4>⚠ 1 policy warning</h4>
+                <div style="font-size: 11.5px; color: var(--mc-text); line-height: 1.65;">
+                  <strong>acme-all-employees</strong> has Viewer access to Vento · dev. This group contains 842 users. Consider narrowing to <code>acme-vento-readers</code> for tighter scope.
+                  <a href="#" style="display: inline-block; margin-top: 6px; color: var(--mc-blue);">Review and narrow →</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-annotations">
+        <h4>Design Notes</h4>
+        <ul>
+          <li><strong>Matrix instead of nested forms</strong> — groups × brands × envs as a grid is scannable. IT Admins looking at a competitor matrix (AWS IAM, Okta) expect this density. <em>(FR43)</em></li>
+          <li><strong>Cells are color-coded by permission level</strong> — green (full), blue (edit), amber (constrained), grey (read-only), faded (no access). Pattern matches usage bars in Tab 3.</li>
+          <li><strong>Brand colors persist across the product</strong> — cyan Vento, purple Luma, red Nova. Same colors appear in context switcher (Epic 3) and audit log filter chips.</li>
+          <li><strong>Policy warning card is proactive</strong> — "acme-all-employees contains 842 users, consider narrowing" — the platform suggests tighter scope rather than waiting for a breach to find it.</li>
+          <li><strong>Environment granularity</strong> — "edit on dev but draft-only on prod" is a real pattern (editors compose in dev, publishers ship from prod). Matrix shows this naturally.</li>
+          <li><strong>Boundary is enforced at API, not just UI</strong> — called out explicitly in the enforcement card; procurement security review needs this claim.</li>
+          <li><strong>Monospace for Okta group names</strong> — <code>acme-vento-editors</code> is a technical identifier that IT Admins copy-paste from Okta.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 3 — Usage, DPA, Tier -->
+<div id="tab-usage" class="tab-content">
+  <div class="tab-intro">
+    <h2>3 — Usage Dashboard, DPA & Subscription Tier</h2>
+    <p>Enterprise buyers want to see consumption against subscription limits (sessions, AI completions, experiments, recommendations, GitHub PRs generated) — and generate a Data Processing Addendum inside the platform rather than chasing a PDF through legal. The dashboard is read-only for most users; tier up/down and DPA generation are restricted to IT Admins with the compliance officer scope.</p>
+    <div class="frs">
+      <span class="fr-chip">FR45</span><span class="fr-chip">FR46</span>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 3A — Usage Dashboard ============ -->
+  <div class="screen">
+    <div class="screen-header">
+      <h3>3A — Usage dashboard: consumption against subscription tier limits</h3>
+      <span class="tag">UsageDashboard — tier tracker with color thresholds</span>
+    </div>
+    <div class="screen-body">
+      <div class="dev-frame" style="height: 760px;">
+        <div class="dev-topbar">
+          <span class="logo">commercetools</span>
+          <span class="crumbs">Admin › Enterprise › <strong>Usage & tier</strong></span>
+          <span class="spacer"></span>
+          <span class="residency-chip">🌍 EU · Frankfurt</span>
+          <span class="user">IT</span>
+        </div>
+        <div class="sub-bar">
+          <span class="chip active"><span class="dot"></span> May 2026 (current)</span>
+          <span class="chip">Apr 2026</span>
+          <span class="chip">Mar 2026</span>
+          <span class="chip muted">All time</span>
+          <span class="spacer"></span>
+          <span style="font-size: 11px; color: var(--mc-text-muted);">Billing cycle: May 1 – May 31 · 24 days remaining</span>
+          <button class="btn-ghost">⬇ Export usage CSV</button>
+        </div>
+        <div class="dev-main">
+          <div class="dev-sidebar">
+            <div class="section-title">Identity</div>
+            <div class="nav-row">🔐 Single Sign-On <span class="status-dot ok"></span></div>
+            <div class="nav-row">👥 SCIM provisioning <span class="status-dot ok"></span></div>
+            <div class="nav-row">🎭 Roles & permissions</div>
+            <div class="nav-row">📜 Audit log</div>
+            <div class="section-title">Enterprise</div>
+            <div class="nav-row">🏢 Brands & boundaries</div>
+            <div class="nav-row">🌍 Data residency <span class="status-dot ok"></span></div>
+            <div class="nav-row active">📊 Usage & tier <span class="status-dot warn"></span></div>
+            <div class="nav-row">📄 DPA & legal</div>
+          </div>
+          <div class="dev-content">
+            <div class="tier-strip">
+              <div class="tier-card">
+                <div class="tier-name">Growth</div>
+                <div class="tier-price">€2,500 <span style="font-size: 11px; color: var(--mc-text-muted);">/mo</span></div>
+                <div class="tier-included">1M sessions · 100K AI · 3 brands</div>
+              </div>
+              <div class="tier-card current">
+                <div class="tier-name">Scale · current</div>
+                <div class="tier-price">€9,800 <span style="font-size: 11px; color: var(--mc-text-muted);">/mo</span></div>
+                <div class="tier-included">5M sessions · 500K AI · 10 brands</div>
+                <div class="tier-badge">Your plan</div>
+              </div>
+              <div class="tier-card">
+                <div class="tier-name">Enterprise</div>
+                <div class="tier-price">Custom</div>
+                <div class="tier-included">Unlimited · custom SLA · dedicated CSM</div>
+              </div>
+            </div>
+
+            <div class="card">
+              <h4>This billing cycle — consumption vs. Scale tier limits <span class="pill warn">1 metric at 92%</span></h4>
+              <div style="font-size: 11px; color: var(--mc-text-muted); margin-bottom: 10px;">Bars show % of monthly allowance used. Green &lt; 80%, amber 80–95%, red &gt; 95%. Over-quota usage rolls to a per-unit rate defined in your order form.</div>
+
+              <div class="usage-row">
+                <div class="metric-name">
+                  🌐 Sessions served
+                  <span class="sub">Storefront HTTP sessions · behavioral event carrier</span>
+                </div>
+                <div class="bar">
+                  <div class="fill ok" style="width: 52%;"></div>
+                  <div class="threshold-mark" style="left: 80%;"></div>
+                  <div class="threshold-mark" style="left: 95%;"></div>
+                </div>
+                <div class="metric-values">
+                  <strong>2.62M</strong> <span class="limit">/ 5M</span><br>
+                  <span style="color: var(--mc-success); font-size: 10.5px;">52% · on pace</span>
+                </div>
+              </div>
+
+              <div class="usage-row">
+                <div class="metric-name">
+                  🧠 AI completions
+                  <span class="sub">Editor AI + Site Builder + Experience Engine inference calls</span>
+                </div>
+                <div class="bar">
+                  <div class="fill warn" style="width: 92%;"></div>
+                  <div class="threshold-mark" style="left: 80%;"></div>
+                  <div class="threshold-mark" style="left: 95%;"></div>
+                </div>
+                <div class="metric-values">
+                  <strong>458,200</strong> <span class="limit">/ 500,000</span><br>
+                  <span style="color: var(--mc-warning); font-size: 10.5px;">92% · trending high</span>
+                </div>
+              </div>
+
+              <div class="usage-row">
+                <div class="metric-name">
+                  🧪 Experiments run
+                  <span class="sub">Active + completed ACI experiments with ≥1 measured horizon</span>
+                </div>
+                <div class="bar">
+                  <div class="fill ok" style="width: 28%;"></div>
+                  <div class="threshold-mark" style="left: 80%;"></div>
+                  <div class="threshold-mark" style="left: 95%;"></div>
+                </div>
+                <div class="metric-values">
+                  <strong>28</strong> <span class="limit">/ 100</span><br>
+                  <span style="color: var(--mc-success); font-size: 10.5px;">28% · healthy</span>
+                </div>
+              </div>
+
+              <div class="usage-row">
+                <div class="metric-name">
+                  ⚡ Recommendations applied
+                  <span class="sub">Operator-approved applies (any rollout stage)</span>
+                </div>
+                <div class="bar">
+                  <div class="fill ok" style="width: 44%;"></div>
+                  <div class="threshold-mark" style="left: 80%;"></div>
+                  <div class="threshold-mark" style="left: 95%;"></div>
+                </div>
+                <div class="metric-values">
+                  <strong>176</strong> <span class="limit">/ 400</span><br>
+                  <span style="color: var(--mc-success); font-size: 10.5px;">44% · on pace</span>
+                </div>
+              </div>
+
+              <div class="usage-row">
+                <div class="metric-name">
+                  🐙 GitHub PRs generated
+                  <span class="sub">Auto-generated PRs from Experience Engine recommendations</span>
+                </div>
+                <div class="bar">
+                  <div class="fill ok" style="width: 18%;"></div>
+                  <div class="threshold-mark" style="left: 80%;"></div>
+                  <div class="threshold-mark" style="left: 95%;"></div>
+                </div>
+                <div class="metric-values">
+                  <strong>9</strong> <span class="limit">/ 50</span><br>
+                  <span style="color: var(--mc-success); font-size: 10.5px;">18% · healthy</span>
+                </div>
+              </div>
+
+              <div class="usage-row">
+                <div class="metric-name">
+                  🏢 Active storefronts (brands × envs)
+                  <span class="sub">Distinct brand × environment combinations with published storefronts</span>
+                </div>
+                <div class="bar">
+                  <div class="fill ok" style="width: 70%;"></div>
+                  <div class="threshold-mark" style="left: 80%;"></div>
+                  <div class="threshold-mark" style="left: 95%;"></div>
+                </div>
+                <div class="metric-values">
+                  <strong>7</strong> <span class="limit">/ 10</span><br>
+                  <span style="color: var(--mc-success); font-size: 10.5px;">70% · 3 slots free</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="card warn-soft tight">
+              <h4>⚠ AI completions approaching limit</h4>
+              <div style="font-size: 11.5px; color: var(--mc-text); line-height: 1.65;">
+                At 92% with 24 days remaining and current run-rate of ~19k/day, you'll exceed the 500k Scale-tier allowance around <strong>May 29</strong>. Overage rate: <code>€0.004/completion</code>. Projected end-of-month: ~914k completions (~€1,656 overage).
+                <div style="margin-top: 8px; display: flex; gap: 8px;">
+                  <button class="btn-ghost" style="font-size: 11px;">📈 View completions breakdown</button>
+                  <button class="btn-primary" style="font-size: 11px;">Contact CSM about Enterprise tier →</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-annotations">
+        <h4>Design Notes</h4>
+        <ul>
+          <li><strong>Tier strip at top</strong> — Growth / Scale / Enterprise with current plan highlighted. Upgrade path is visible without being pushy. <em>(FR46)</em></li>
+          <li><strong>Bars have 80% and 95% threshold marks</strong> — operators see where the color will flip. Amber trend is a proactive signal, not a billing surprise.</li>
+          <li><strong>All six metrics on one surface</strong> — sessions, AI completions, experiments, recommendations applied, GitHub PRs, active storefronts. Exactly the FR46 list, visible without scrolling.</li>
+          <li><strong>Proactive overage projection</strong> — warn-soft card names the projected overage date and cost. CSM contact is one click away; no surprise invoice.</li>
+          <li><strong>Billing-cycle context in sub-bar</strong> — "May 1 – May 31 · 24 days remaining" frames every number. Removes ambiguity about what period is being shown.</li>
+          <li><strong>Export CSV</strong> — usage evidence for finance-ops teams who reconcile invoices monthly.</li>
+          <li><strong>Sidebar status dot is amber</strong> — because usage has a warning. Attention-directing even from other Epic 6 screens.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 3B — DPA Generation ============ -->
+  <div class="screen">
+    <div class="screen-header">
+      <h3>3B — DPA generation: standard contract, auto-filled tenant details</h3>
+      <span class="tag">DPAGenerator — inline legal document assembly with signature block</span>
+    </div>
+    <div class="screen-body">
+      <div class="dev-frame" style="height: 780px;">
+        <div class="dev-topbar">
+          <span class="logo">commercetools</span>
+          <span class="crumbs">Admin › Enterprise › <strong>DPA & legal</strong></span>
+          <span class="spacer"></span>
+          <span class="residency-chip">🌍 EU · Frankfurt</span>
+          <span class="user">IT</span>
+        </div>
+        <div class="sub-bar">
+          <span class="chip active"><span class="dot"></span> Generate DPA</span>
+          <span class="chip">Prior versions (3)</span>
+          <span class="chip">Sub-processor list</span>
+          <span class="chip">Trust center</span>
+          <span class="spacer"></span>
+          <button class="btn-ghost">📋 View template</button>
+        </div>
+        <div class="dev-main" style="grid-template-columns: 260px 1fr 300px;">
+          <div class="dev-sidebar">
+            <div class="section-title">Legal actions</div>
+            <div class="nav-row active">📄 Generate new DPA</div>
+            <div class="nav-row">📚 Signed versions <span class="count">3</span></div>
+            <div class="nav-row">📋 Sub-processor list</div>
+            <div class="nav-row">🛡 SCCs (Schrems II)</div>
+            <div class="nav-row">🎓 Trust center</div>
+            <div class="section-title">DPA inputs</div>
+            <div class="nav-row" style="flex-direction: column; align-items: flex-start; padding: 10px 16px; gap: 2px;">
+              <div style="font-size: 10px; color: var(--mc-text-muted); text-transform: uppercase;">Controller (customer)</div>
+              <div style="font-size: 11.5px; color: var(--mc-text);">Acme Global GmbH</div>
+            </div>
+            <div class="nav-row" style="flex-direction: column; align-items: flex-start; padding: 10px 16px; gap: 2px;">
+              <div style="font-size: 10px; color: var(--mc-text-muted); text-transform: uppercase;">Processor</div>
+              <div style="font-size: 11.5px; color: var(--mc-text);">commercetools GmbH</div>
+            </div>
+            <div class="nav-row" style="flex-direction: column; align-items: flex-start; padding: 10px 16px; gap: 2px;">
+              <div style="font-size: 10px; color: var(--mc-text-muted); text-transform: uppercase;">Region</div>
+              <div style="font-size: 11.5px; color: var(--mc-text);">🇪🇺 EU · Frankfurt</div>
+            </div>
+            <div class="nav-row" style="flex-direction: column; align-items: flex-start; padding: 10px 16px; gap: 2px;">
+              <div style="font-size: 10px; color: var(--mc-text-muted); text-transform: uppercase;">Template version</div>
+              <div style="font-size: 11.5px; color: var(--mc-text);">v4.2 · 2026-01-18 (current)</div>
+            </div>
+          </div>
+          <div class="dev-content">
+            <div class="sec-head">
+              <div>
+                <h3>Data Processing Addendum — preview</h3>
+                <div class="sec-sub">Standard contract language from our legal template, auto-filled with your tenant details. Review, then sign digitally (both parties) or download PDF for wet-ink signature.</div>
+              </div>
+              <span class="chip live" style="font-size: 10px;"><span class="dot"></span> Template current · Jan 2026</span>
+            </div>
+
+            <div class="dpa-preview">
+              <h2>Data Processing Addendum</h2>
+              <div class="dpa-sub">Between <span class="field-fill">Acme Global GmbH</span> ("Controller") and commercetools GmbH ("Processor") — pursuant to GDPR Article 28</div>
+
+              <h3>1. Subject matter and duration</h3>
+              <p>This Addendum governs the processing of personal data by commercetools GmbH on behalf of <span class="field-fill">Acme Global GmbH</span> in connection with the commercetools Next-Gen Frontend platform (the "Services"), activated on <span class="field-fill">2026-03-14</span>. This Addendum remains in force for the duration of the underlying Services Agreement.</p>
+
+              <h3>2. Nature and purpose of processing</h3>
+              <p>The Processor will process personal data to provide the Services, including: authenticating users via SSO (SAML 2.0/OIDC); provisioning user lifecycle state via SCIM 2.0; capturing behavioral event streams to power the AI Experience Engine; generating AI-assisted storefront content; and retaining audit logs for compliance evidence.</p>
+
+              <h3>3. Categories of data subjects and personal data</h3>
+              <p><strong>Data subjects:</strong> Controller's employees, contractors, and end-consumers of the Controller's storefronts. <strong>Categories:</strong> identity claims (name, email, group membership); session identifiers and behavioral event metadata; IP addresses (truncated for GDPR); AI prompt/completion transcripts (operator-generated).</p>
+
+              <h3>4. Data residency</h3>
+              <p>All personal data will be stored and processed within <span class="field-fill">the European Union (eu-central-1 / Frankfurt)</span>, with disaster recovery replication to <span class="field-fill">eu-west-1 (Ireland)</span>. No personal data will be transferred to non-EU jurisdictions without a prior written amendment to this Addendum.</p>
+
+              <h3>5. Sub-processors</h3>
+              <p>The current list of authorised sub-processors is attached as <strong>Annex A</strong> and maintained in the platform Trust Center. The Processor shall notify the Controller at least 30 days prior to engaging a new sub-processor. Current sub-processors include: Amazon Web Services (EMEA) Sàrl, Anthropic Ireland Limited, Cloudflare Germany GmbH, Datadog Inc. (EU instance).</p>
+
+              <h3>6. Technical and organisational measures</h3>
+              <p>The Processor maintains the technical and organisational measures described in <strong>Annex B</strong>, including: SOC 2 Type II certification; ISO 27001 certification; encryption in transit (TLS 1.3+) and at rest (AES-256); role-based access control via CASL; immutable audit logs retained for 7 years; and annual penetration testing.</p>
+
+              <h3>7. Audit rights and term</h3>
+              <p>The Controller may audit the Processor's compliance with this Addendum on 30 days' written notice, no more than once per calendar year, subject to reasonable confidentiality undertakings. This Addendum automatically renews with the underlying Services Agreement.</p>
+
+              <div class="sig-block">
+                <div>
+                  <div style="font-weight: 600; margin-bottom: 6px;">For the Controller — <span style="font-family: 'SF Mono', monospace; font-size: 10px; color: var(--mc-text-muted);">Acme Global GmbH</span></div>
+                  <div class="sig-line">(signature required)</div>
+                  <div style="color: var(--mc-text-muted);">Name, Title, Date</div>
+                </div>
+                <div>
+                  <div style="font-weight: 600; margin-bottom: 6px;">For the Processor — <span style="font-family: 'SF Mono', monospace; font-size: 10px; color: var(--mc-text-muted);">commercetools GmbH</span></div>
+                  <div class="sig-line" style="color: var(--mc-success); font-size: 18px;">✓ Dirk Hoerig</div>
+                  <div style="color: var(--mc-text-muted);">CEO · pre-signed 2026-01-18</div>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top: 14px; display: flex; gap: 10px; justify-content: space-between; align-items: center;">
+              <div style="font-size: 11px; color: var(--mc-text-muted);">
+                Auto-fill sources: tenant record · residency fact sheet · sub-processor registry (live) · SOC 2 report (current). Changes to any source trigger DPA version bump.
+              </div>
+              <div style="display: flex; gap: 8px;">
+                <button class="btn-ghost">⬇ Download unsigned PDF</button>
+                <button class="btn-primary">✍ Sign digitally (DocuSign)</button>
+              </div>
+            </div>
+          </div>
+          <div class="dev-rightpanel">
+            <h4 style="font-size: 12px; font-weight: 600; margin-bottom: 12px;">Signature status</h4>
+            <div style="font-size: 11.5px; color: var(--mc-text); line-height: 1.6; margin-bottom: 16px;">
+              <div style="display: flex; gap: 6px; align-items: center; margin-bottom: 4px;">
+                <span style="color: var(--mc-success);">✓</span> <strong>Processor</strong> pre-signed
+              </div>
+              <div style="color: var(--mc-text-muted); font-size: 11px; margin-left: 16px;">Dirk Hoerig · 2026-01-18</div>
+              <div style="display: flex; gap: 6px; align-items: center; margin-top: 10px; margin-bottom: 4px;">
+                <span style="color: var(--mc-warning);">○</span> <strong>Controller</strong> pending
+              </div>
+              <div style="color: var(--mc-text-muted); font-size: 11px; margin-left: 16px;">Your signature required</div>
+            </div>
+
+            <h4 style="font-size: 12px; font-weight: 600; margin-bottom: 10px;">Audit trail</h4>
+            <div style="font-size: 11px; color: var(--mc-text); line-height: 1.55; padding: 10px; background: white; border: 1px solid var(--mc-border); border-radius: var(--radius-sm);">
+              <div style="margin-bottom: 6px;"><span class="mono" style="font-family: 'SF Mono', monospace; font-size: 10px; color: var(--mc-text-muted);">2026-05-07 14:22</span><br>DPA v4.2 generated by alex.chen@acme.com</div>
+              <div style="margin-bottom: 6px;"><span class="mono" style="font-family: 'SF Mono', monospace; font-size: 10px; color: var(--mc-text-muted);">2026-05-07 14:23</span><br>Preview rendered · 12 variable substitutions verified</div>
+              <div><span class="mono" style="font-family: 'SF Mono', monospace; font-size: 10px; color: var(--mc-text-muted);">Pending</span><br>Awaiting Controller signature</div>
+            </div>
+
+            <h4 style="font-size: 12px; font-weight: 600; margin: 16px 0 10px;">Prior signed versions</h4>
+            <div style="font-size: 11px; color: var(--mc-text); line-height: 1.55;">
+              <div style="padding: 8px 10px; background: white; border: 1px solid var(--mc-border); border-radius: var(--radius-sm); margin-bottom: 6px;">
+                <strong>v4.1</strong> · signed 2026-03-14<br>
+                <span style="font-size: 10px; color: var(--mc-text-muted);">Initial activation DPA · superseded</span>
+              </div>
+              <div style="padding: 8px 10px; background: white; border: 1px solid var(--mc-border); border-radius: var(--radius-sm);">
+                <strong>v4.0</strong> · signed 2025-11-02<br>
+                <span style="font-size: 10px; color: var(--mc-text-muted);">Trial DPA · superseded at activation</span>
+              </div>
+            </div>
+
+            <div style="margin-top: 16px; padding: 10px; background: var(--mc-blue-wash); border-radius: var(--radius-sm); font-size: 11px; line-height: 1.5; color: var(--mc-blue);">
+              💡 Your DPO can review this inline without leaving the platform — use "Share with DPO" above to send a secure read-only link.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-annotations">
+        <h4>Design Notes</h4>
+        <ul>
+          <li><strong>Auto-filled fields highlighted in green</strong> — tenant name, activation date, residency region appear with a success-bg tint so the reviewer instantly sees what came from the tenant record vs. template boilerplate. <em>(FR45)</em></li>
+          <li><strong>Processor pre-signed</strong> — commercetools executive signature is baked into the template with a cursive-font "Dirk Hoerig" stand-in. Controller-side is the only blocker to completion.</li>
+          <li><strong>Georgia serif font in the preview</strong> — visual language of legal documents. Rest of Epic 6 is Inter sans-serif; DPA deliberately feels like a contract.</li>
+          <li><strong>Audit trail on the right</strong> — every generation, view, share, and signature event is logged. DPA lifecycle matches the compliance-grade audit expectations of Epic 3's publish log.</li>
+          <li><strong>Prior signed versions preserved</strong> — v4.0 (trial), v4.1 (activation), v4.2 (current). No DPA gets lost; template version bumps trigger re-signature.</li>
+          <li><strong>DocuSign integration as primary action</strong> — digital signature eliminates the print-sign-scan-email roundtrip that normally takes 2-6 weeks.</li>
+          <li><strong>"Share with DPO" tip</strong> — the product acknowledges that the IT Admin generating the DPA may not be the signer; hands off gracefully.</li>
+          <li><strong>Template version shown in sidebar</strong> — "v4.2 · 2026-01-18 (current)" — DPO can verify they're signing the latest boilerplate.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 3C — Signed DPA Confirmation + Download ============ -->
+  <div class="screen">
+    <div class="screen-header">
+      <h3>3C — Signed DPA: compliance evidence, portable download</h3>
+      <span class="tag">DPACompleted — end-to-end signing trail, audit-ready artifact</span>
+    </div>
+    <div class="screen-body">
+      <div class="dev-frame" style="height: 560px;">
+        <div class="dev-topbar">
+          <span class="logo">commercetools</span>
+          <span class="crumbs">Admin › Enterprise › DPA & legal › <strong>v4.2 — signed</strong></span>
+          <span class="spacer"></span>
+          <span class="residency-chip">🌍 EU · Frankfurt</span>
+          <span class="user">IT</span>
+        </div>
+        <div class="sub-bar">
+          <span class="chip live"><span class="dot"></span> Fully executed · 2026-05-07 14:48 UTC</span>
+          <span class="spacer"></span>
+          <button class="btn-ghost">⬇ Download signed PDF</button>
+          <button class="btn-ghost">🔗 Send to finance/legal</button>
+        </div>
+        <div class="dev-main">
+          <div class="dev-sidebar">
+            <div class="section-title">Identity</div>
+            <div class="nav-row">🔐 Single Sign-On <span class="status-dot ok"></span></div>
+            <div class="nav-row">👥 SCIM provisioning <span class="status-dot ok"></span></div>
+            <div class="nav-row">🎭 Roles & permissions</div>
+            <div class="nav-row">📜 Audit log</div>
+            <div class="section-title">Enterprise</div>
+            <div class="nav-row">🏢 Brands & boundaries</div>
+            <div class="nav-row">🌍 Data residency <span class="status-dot ok"></span></div>
+            <div class="nav-row">📊 Usage & tier <span class="status-dot warn"></span></div>
+            <div class="nav-row active">📄 DPA & legal <span class="status-dot ok"></span></div>
+          </div>
+          <div class="dev-content">
+            <div class="card success-soft">
+              <h4 style="font-size: 14px;">✓ DPA v4.2 — fully executed <span class="pill ok">Legally binding</span></h4>
+              <dl class="kv-list wide" style="margin-top: 8px;">
+                <dt>Document hash (SHA-256)</dt>
+                <dd>7f3e9a...c2b4 · <a href="#" style="font-family: Inter, sans-serif;">verify</a></dd>
+                <dt>Processor signature</dt>
+                <dd>Dirk Hoerig (CEO, commercetools GmbH) · 2026-01-18 · pre-signed</dd>
+                <dt>Controller signature</dt>
+                <dd>Markus Vogel (CTO, Acme Global GmbH) · 2026-05-07 14:48 UTC · DocuSign envelope eab12-...-fd4c</dd>
+                <dt>Effective</dt>
+                <dd>2026-05-07 — remains in force for duration of Services Agreement</dd>
+                <dt>Governing law</dt>
+                <dd>Germany (per DPA §10) · GDPR Article 28 compliance</dd>
+              </dl>
+            </div>
+
+            <div class="card" style="padding: 0;">
+              <div style="padding: 12px 16px; border-bottom: 1px solid var(--mc-border);">
+                <h4 style="margin-bottom: 4px;">Full execution timeline <span class="pill muted">immutable</span></h4>
+                <div style="font-size: 11px; color: var(--mc-text-muted);">Every step of the DPA lifecycle, with cryptographic evidence.</div>
+              </div>
+              <div class="audit-row">
+                <div class="timestamp">05-07 14:48:11</div>
+                <div class="user-badge"><span class="avatar-sm" style="background: #16a34a;">MV</span> Markus Vogel</div>
+                <div>
+                  <span class="event-type assign">Controller signed</span>
+                  <span style="margin-left: 6px; font-size: 12px;"><strong>DPA v4.2 fully executed</strong></span>
+                  <div style="font-size: 11px; color: var(--mc-text-muted); margin-top: 2px;">DocuSign envelope eab12fd4c · IP 185.42....· audit bundle archived to Glacier</div>
+                </div>
+                <div><span class="chip live" style="font-size: 10px;"><span class="dot"></span> Effective</span></div>
+                <div></div>
+              </div>
+              <div class="audit-row">
+                <div class="timestamp">05-07 14:26:03</div>
+                <div class="user-badge"><span class="avatar-sm">IT</span> Alex Chen (IT)</div>
+                <div>
+                  <span class="event-type update">Sent for signature</span>
+                  <span style="margin-left: 6px; font-size: 12px;">Envelope dispatched to markus.vogel@acme.com</span>
+                  <div style="font-size: 11px; color: var(--mc-text-muted); margin-top: 2px;">DocuSign envelope eab12fd4c created · 2 signers · auto-reminder 48h</div>
+                </div>
+                <div><span class="chip draft" style="font-size: 10px;"><span class="dot"></span> Pending</span></div>
+                <div></div>
+              </div>
+              <div class="audit-row">
+                <div class="timestamp">05-07 14:23:45</div>
+                <div class="user-badge"><span class="avatar-sm">IT</span> Alex Chen (IT)</div>
+                <div>
+                  <span class="event-type update">Reviewed by DPO</span>
+                  <span style="margin-left: 6px; font-size: 12px;">DPO read-only link opened · 3 annotations · no changes requested</span>
+                  <div style="font-size: 11px; color: var(--mc-text-muted); margin-top: 2px;">Shared with dpo@acme.com · 12-minute review session · approved inline</div>
+                </div>
+                <div><span class="chip live" style="font-size: 10px;"><span class="dot"></span> Reviewed</span></div>
+                <div></div>
+              </div>
+              <div class="audit-row">
+                <div class="timestamp">05-07 14:22:08</div>
+                <div class="user-badge"><span class="avatar-sm">IT</span> Alex Chen (IT)</div>
+                <div>
+                  <span class="event-type provision">DPA generated</span>
+                  <span style="margin-left: 6px; font-size: 12px;">Template v4.2 · 12 auto-filled fields · tenant acme-global-eu</span>
+                  <div style="font-size: 11px; color: var(--mc-text-muted); margin-top: 2px;">Residency: EU · Frankfurt · Sub-processors snapshot captured: 4</div>
+                </div>
+                <div><span class="chip live" style="font-size: 10px;"><span class="dot"></span> Created</span></div>
+                <div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-annotations">
+        <h4>Design Notes</h4>
+        <ul>
+          <li><strong>Success-soft banner with executed status</strong> — "Fully executed" and "Legally binding" pills make the compliance state unambiguous to anyone who opens this page. <em>(FR45)</em></li>
+          <li><strong>SHA-256 hash for integrity verification</strong> — enterprise DPOs can verify that the stored document matches what was signed. Cryptographic evidence, not just "trust us."</li>
+          <li><strong>Signer names with real identity</strong> — Markus Vogel (CTO, Acme) + Dirk Hoerig (CEO, commercetools). Shows who's accountable on both sides.</li>
+          <li><strong>Timeline reuses audit-row pattern from Epic 3</strong> — consistent visual language: created → reviewed → sent → signed. Same rows as publish audit and SCIM lifecycle.</li>
+          <li><strong>DocuSign envelope ID captured</strong> — third-party e-sign provider becomes part of the evidence chain. Auditors can cross-reference with DocuSign's own audit trail.</li>
+          <li><strong>DPO review step is logged</strong> — "12-minute review session · approved inline" shows the DPO was engaged before signature, not a rubber stamp.</li>
+          <li><strong>Audit bundle archived to Glacier</strong> — 7-year WORM retention matches the audit log retention policy from Screen 1C. Consistent compliance-grade storage across the product.</li>
+          <li><strong>Download signed PDF remains prominent</strong> — finance/legal teams often want the physical artifact in their contract-management system even when the truth-of-record is here.</li>
+        </ul>
+      </div>
+    </div>
+    <div style="padding: 0 24px 20px;">
+      <div class="legend">
+        <span class="legend-item"><span class="legend-swatch ok"></span> Usage &lt; 80% / Configured / Verified</span>
+        <span class="legend-item"><span class="legend-swatch warn"></span> Usage 80–95% / Attention needed</span>
+        <span class="legend-item"><span class="legend-swatch err"></span> Usage &gt; 95% / Over quota</span>
+        <span class="legend-item"><span class="legend-swatch muted"></span> Not configured / Not in scope</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="doc-footer">
+  Wireframes are intentionally low-fidelity — dashed borders and placeholder content indicate where tenant-specific values render. Final visual styling inherits commercetools Merchant Center design tokens. Monospace used throughout for technical identifiers (SAML entity IDs, SCIM endpoints, tenant UUIDs) per IT Admin conventions.
+</div>
+
+<script>
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      const target = tab.dataset.tab;
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('tab-' + target).classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+
+  // Interactive IdP tile selection (Tab 1)
+  document.querySelectorAll('.idp-grid').forEach(grid => {
+    grid.querySelectorAll('.idp-tile').forEach(tile => {
+      tile.addEventListener('click', () => {
+        grid.querySelectorAll('.idp-tile').forEach(t => t.classList.remove('selected'));
+        tile.classList.add('selected');
+      });
+    });
+  });
+
+  // Interactive residency selector (Tab 2 — pre-activation only)
+  document.querySelectorAll('.residency-pin[data-selectable="true"]').forEach(pin => {
+    pin.addEventListener('click', () => {
+      const map = pin.closest('.residency-map');
+      if (!map) return;
+      map.querySelectorAll('.residency-pin[data-selectable="true"]').forEach(p => {
+        p.classList.remove('selected');
+        p.classList.add('faded');
+      });
+      pin.classList.remove('faded');
+      pin.classList.add('selected');
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,1819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Epic 2 — Governed Component Library — Wireframes</title>
+<style>
+  :root {
+    --mc-blue: #0066cc;
+    --mc-blue-wash: rgba(0, 102, 204, 0.08);
+    --mc-ai-tint: rgba(88, 28, 255, 0.08);
+    --mc-ai-accent: #5b21b6;
+    --mc-bg: #f5f7fa;
+    --mc-surface: #ffffff;
+    --mc-border: #e4e7eb;
+    --mc-border-strong: #cbd2d9;
+    --mc-text: #1f2933;
+    --mc-text-muted: #6b7280;
+    --mc-text-faint: #9aa5b1;
+    --mc-success: #16a34a;
+    --mc-success-bg: #ecfdf5;
+    --mc-warning: #d97706;
+    --mc-warning-bg: #fef3c7;
+    --mc-error: #dc2626;
+    --mc-error-bg: #fee2e2;
+    --mc-locked: #9aa5b1;
+    --mc-locked-bg: #f3f4f6;
+    --green-zone: #16a34a;
+    --green-zone-bg: #ecfdf5;
+    --red-zone: #64748b;
+    --red-zone-bg: #f1f5f9;
+    --code-bg: #0f172a;
+    --code-text: #e2e8f0;
+    --code-keyword: #c4b5fd;
+    --code-string: #86efac;
+    --code-comment: #64748b;
+    --code-number: #fbbf24;
+    --radius-sm: 4px;
+    --radius-md: 6px;
+    --radius-lg: 8px;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 2px 6px rgba(0,0,0,0.06);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 13px; line-height: 1.5;
+    background: var(--mc-bg); color: var(--mc-text);
+  }
+
+  code, .mono { font-family: 'SF Mono', 'Monaco', 'Consolas', monospace; font-size: 12px; }
+
+  /* Doc header */
+  .doc-header {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: white; padding: 24px 40px;
+  }
+  .doc-header h1 { font-size: 22px; font-weight: 600; margin-bottom: 6px; }
+  .doc-header p { font-size: 13px; opacity: 0.85; max-width: 900px; }
+  .doc-header .meta { margin-top: 12px; display: flex; gap: 20px; font-size: 12px; opacity: 0.7; }
+
+  /* Tabs */
+  .tabs {
+    background: white; border-bottom: 1px solid var(--mc-border);
+    display: flex; padding: 0 40px; gap: 32px; position: sticky; top: 0; z-index: 100;
+  }
+  .tab {
+    padding: 14px 0; cursor: pointer; border-bottom: 3px solid transparent;
+    font-weight: 500; font-size: 13px; color: var(--mc-text-muted);
+    transition: all 0.2s ease; display: flex; align-items: center; gap: 8px;
+  }
+  .tab.active { border-bottom-color: var(--mc-blue); color: var(--mc-blue); }
+  .tab:hover { color: var(--mc-blue); }
+  .tab-num {
+    display: inline-block; width: 18px; height: 18px;
+    background: var(--mc-border); color: var(--mc-text-muted);
+    border-radius: 50%; font-size: 11px; text-align: center; line-height: 18px; font-weight: 600;
+  }
+  .tab.active .tab-num { background: var(--mc-blue); color: white; }
+
+  .tab-content { display: none; padding: 32px 40px 80px; }
+  .tab-content.active { display: block; }
+
+  /* Intro */
+  .tab-intro {
+    background: white; border: 1px solid var(--mc-border);
+    border-left: 3px solid var(--mc-blue);
+    border-radius: var(--radius-md); padding: 16px 20px; margin-bottom: 28px; max-width: 1100px;
+  }
+  .tab-intro h2 { font-size: 16px; margin-bottom: 6px; }
+  .tab-intro p { color: var(--mc-text-muted); font-size: 13px; }
+  .tab-intro .frs { margin-top: 10px; display: flex; gap: 6px; flex-wrap: wrap; }
+  .fr-chip {
+    background: var(--mc-blue-wash); color: var(--mc-blue);
+    padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 500;
+    font-family: 'SF Mono', 'Monaco', monospace;
+  }
+
+  /* Screen card */
+  .screen {
+    background: white; border: 1px solid var(--mc-border);
+    border-radius: var(--radius-lg); margin-bottom: 32px; overflow: hidden;
+    box-shadow: var(--shadow-sm);
+  }
+  .screen-header {
+    padding: 14px 20px; border-bottom: 1px solid var(--mc-border); background: #fafbfc;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .screen-header h3 { font-size: 14px; font-weight: 600; }
+  .screen-header .tag {
+    font-family: 'SF Mono', monospace; font-size: 11px; color: var(--mc-text-muted);
+    background: white; border: 1px solid var(--mc-border);
+    padding: 2px 8px; border-radius: 10px;
+  }
+  .screen-body { padding: 24px; display: grid; grid-template-columns: 1fr 280px; gap: 24px; }
+  .screen-body.single { grid-template-columns: 1fr; }
+  .screen-annotations {
+    background: #fafbfc; border: 1px solid var(--mc-border);
+    border-radius: var(--radius-md); padding: 16px; font-size: 12px;
+  }
+  .screen-annotations h4 {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;
+    color: var(--mc-text-muted); margin-bottom: 10px;
+  }
+  .screen-annotations ul { list-style: none; padding: 0; }
+  .screen-annotations li {
+    padding: 6px 0; border-bottom: 1px dashed var(--mc-border);
+    font-size: 12px; line-height: 1.45;
+  }
+  .screen-annotations li:last-child { border-bottom: none; }
+  .screen-annotations li strong { color: var(--mc-blue); font-weight: 600; }
+
+  /* Developer console frame */
+  .dev-frame {
+    border: 1px solid var(--mc-border-strong);
+    border-radius: var(--radius-md); overflow: hidden;
+    background: var(--mc-bg);
+    display: grid; grid-template-rows: 40px 36px 1fr;
+    height: 600px; font-size: 12px;
+  }
+  .dev-topbar {
+    background: #1f2933; color: white;
+    display: flex; align-items: center; padding: 0 16px; gap: 20px; font-size: 12px;
+  }
+  .dev-topbar .logo { font-weight: 600; letter-spacing: 0.3px; }
+  .dev-topbar .crumbs { opacity: 0.7; }
+  .dev-topbar .crumbs strong { color: white; opacity: 1; }
+  .dev-topbar .spacer { flex: 1; }
+  .dev-topbar .cmd-k {
+    background: rgba(255,255,255,0.08); padding: 3px 10px; border-radius: var(--radius-sm);
+    font-size: 11px; opacity: 0.8; font-family: 'SF Mono', monospace;
+  }
+  .dev-topbar .user {
+    width: 24px; height: 24px; border-radius: 50%;
+    background: var(--mc-blue); display: inline-flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 600;
+  }
+
+  .sub-bar {
+    background: white; border-bottom: 1px solid var(--mc-border);
+    display: flex; align-items: center; padding: 0 12px; gap: 8px;
+  }
+  .chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 500;
+    border: 1px solid var(--mc-border); background: white; cursor: pointer;
+    transition: all 0.15s;
+  }
+  .chip:hover { border-color: var(--mc-blue); color: var(--mc-blue); }
+  .chip.active { background: var(--mc-blue-wash); border-color: var(--mc-blue); color: var(--mc-blue); }
+  .chip.green { background: var(--green-zone-bg); border-color: var(--green-zone); color: var(--green-zone); }
+  .chip.red-zone { background: var(--red-zone-bg); border-color: var(--red-zone); color: var(--red-zone); }
+  .chip.draft { background: var(--mc-warning-bg); border-color: var(--mc-warning); color: var(--mc-warning); }
+  .chip.live { background: var(--mc-success-bg); border-color: var(--mc-success); color: var(--mc-success); }
+  .chip .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  .sub-bar .spacer { flex: 1; }
+
+  .btn-primary, .btn-ghost, .btn-danger {
+    padding: 5px 12px; border-radius: var(--radius-sm); font-size: 12px; font-weight: 500;
+    cursor: pointer; border: 1px solid transparent; display: inline-flex; align-items: center; gap: 6px;
+    font-family: inherit;
+  }
+  .btn-primary { background: var(--mc-blue); color: white; }
+  .btn-primary:hover { background: #0052a3; }
+  .btn-ghost { background: white; color: var(--mc-text-muted); border-color: var(--mc-border); }
+  .btn-danger { background: white; color: var(--mc-error); border-color: var(--mc-border); }
+
+  .dev-main {
+    display: grid; grid-template-columns: 200px 1fr 320px;
+    height: 100%; overflow: hidden;
+  }
+  .dev-sidebar {
+    background: #fafbfc; border-right: 1px solid var(--mc-border);
+    padding: 14px 0; overflow-y: auto;
+  }
+  .dev-sidebar .section-title {
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.6px;
+    color: var(--mc-text-muted); padding: 8px 16px; font-weight: 600;
+  }
+  .dev-sidebar .nav-row {
+    padding: 6px 16px; font-size: 12px; display: flex; align-items: center; gap: 8px;
+    cursor: pointer; color: var(--mc-text); border-left: 2px solid transparent;
+  }
+  .dev-sidebar .nav-row:hover { background: white; }
+  .dev-sidebar .nav-row.active { background: white; border-left-color: var(--mc-blue); color: var(--mc-blue); font-weight: 500; }
+  .dev-sidebar .nav-row .count { margin-left: auto; color: var(--mc-text-faint); font-size: 10px; }
+
+  .dev-content { background: white; overflow-y: auto; padding: 20px; }
+  .dev-content.full { grid-column: 2 / span 2; }
+
+  .dev-rightpanel {
+    background: #fafbfc; border-left: 1px solid var(--mc-border);
+    overflow-y: auto; padding: 16px;
+  }
+
+  /* Tables */
+  .library-table {
+    width: 100%; border-collapse: collapse; font-size: 12px;
+  }
+  .library-table th {
+    text-align: left; padding: 10px 12px; font-size: 10px;
+    text-transform: uppercase; letter-spacing: 0.5px; color: var(--mc-text-muted);
+    font-weight: 600; border-bottom: 1px solid var(--mc-border); background: #fafbfc;
+  }
+  .library-table td {
+    padding: 12px; border-bottom: 1px solid var(--mc-border); vertical-align: middle;
+  }
+  .library-table tr:hover td { background: #fafbfc; cursor: pointer; }
+  .library-table .cmp-name {
+    font-family: 'SF Mono', monospace; font-weight: 600; color: var(--mc-text);
+  }
+  .library-table .cmp-desc { color: var(--mc-text-muted); font-size: 11px; margin-top: 2px; }
+
+  /* Zone pill (large) */
+  .zone-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 600;
+  }
+  .zone-pill.green { background: var(--green-zone-bg); color: var(--green-zone); border: 1px solid var(--green-zone); }
+  .zone-pill.red { background: var(--red-zone-bg); color: var(--red-zone); border: 1px solid var(--red-zone); }
+
+  .version-badge {
+    display: inline-block; padding: 2px 6px; font-size: 10px; font-weight: 600;
+    background: var(--mc-border); color: var(--mc-text-muted); border-radius: 3px;
+    font-family: 'SF Mono', monospace;
+  }
+  .version-badge.current { background: var(--mc-blue-wash); color: var(--mc-blue); }
+
+  /* Schema editor */
+  .schema-canvas {
+    display: grid; grid-template-columns: 1fr 360px; gap: 16px; height: 100%; overflow: hidden;
+  }
+  .schema-form {
+    overflow-y: auto; padding-right: 4px;
+  }
+  .schema-preview {
+    background: var(--code-bg); color: var(--code-text);
+    border-radius: var(--radius-md); padding: 16px;
+    font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+    font-size: 11px; line-height: 1.6; overflow-y: auto;
+  }
+  .schema-preview .kw { color: var(--code-keyword); }
+  .schema-preview .str { color: var(--code-string); }
+  .schema-preview .num { color: var(--code-number); }
+  .schema-preview .cmt { color: var(--code-comment); }
+  .schema-preview .fn { color: #93c5fd; }
+
+  .form-section {
+    background: white; border: 1px solid var(--mc-border);
+    border-radius: var(--radius-md); padding: 14px 16px; margin-bottom: 12px;
+  }
+  .form-section h4 {
+    font-size: 12px; font-weight: 600; margin-bottom: 10px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .form-row { margin-bottom: 10px; }
+  .form-label { font-size: 11px; color: var(--mc-text-muted); display: block; margin-bottom: 4px; font-weight: 500; }
+  .form-input {
+    width: 100%; padding: 6px 8px; border: 1px solid var(--mc-border);
+    border-radius: var(--radius-sm); font-size: 12px; background: white; font-family: inherit;
+  }
+  .form-input.mono { font-family: 'SF Mono', monospace; }
+  .form-input:focus { outline: none; border-color: var(--mc-blue); box-shadow: 0 0 0 2px var(--mc-blue-wash); }
+
+  /* Zone toggle */
+  .zone-toggle {
+    display: inline-flex; border: 1px solid var(--mc-border); border-radius: var(--radius-sm); overflow: hidden;
+  }
+  .zone-toggle button {
+    background: white; border: none; padding: 6px 12px; font-size: 11px; font-weight: 500; cursor: pointer;
+    color: var(--mc-text-muted); border-right: 1px solid var(--mc-border); font-family: inherit;
+  }
+  .zone-toggle button:last-child { border-right: none; }
+  .zone-toggle button.active.green-active { background: var(--green-zone); color: white; }
+  .zone-toggle button.active.red-active { background: var(--red-zone); color: white; }
+
+  /* Field row */
+  .field-row {
+    display: grid; grid-template-columns: 1fr 120px 100px 80px 40px;
+    gap: 8px; padding: 8px; align-items: center; font-size: 12px;
+    border-bottom: 1px solid var(--mc-border);
+  }
+  .field-row:last-child { border-bottom: none; }
+  .field-row.header {
+    background: #fafbfc; font-size: 10px; text-transform: uppercase;
+    letter-spacing: 0.4px; color: var(--mc-text-muted); font-weight: 600;
+  }
+  .field-row .field-name {
+    font-family: 'SF Mono', monospace; font-weight: 600; color: var(--mc-text);
+  }
+  .field-row .field-type {
+    font-family: 'SF Mono', monospace; font-size: 11px;
+    color: var(--mc-ai-accent); background: var(--mc-ai-tint);
+    padding: 2px 6px; border-radius: 3px; display: inline-block;
+  }
+  .checkbox {
+    width: 16px; height: 16px; border: 1px solid var(--mc-border-strong);
+    border-radius: 3px; display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer; background: white;
+  }
+  .checkbox.checked { background: var(--mc-blue); border-color: var(--mc-blue); color: white; font-size: 10px; }
+  .icon-btn {
+    background: none; border: none; color: var(--mc-text-muted);
+    cursor: pointer; font-size: 13px; padding: 4px;
+  }
+  .icon-btn:hover { color: var(--mc-blue); }
+
+  /* Metric card */
+  .metric-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+  }
+  .metric-card {
+    background: white; border: 1px solid var(--mc-border);
+    border-radius: var(--radius-md); padding: 14px;
+  }
+  .metric-card .label {
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px;
+    color: var(--mc-text-muted); font-weight: 600; margin-bottom: 6px;
+  }
+  .metric-card .value {
+    font-size: 20px; font-weight: 600; color: var(--mc-text);
+  }
+  .metric-card .trend {
+    font-size: 11px; margin-top: 4px; display: flex; align-items: center; gap: 4px;
+  }
+  .metric-card .trend.up { color: var(--mc-success); }
+  .metric-card .trend.down { color: var(--mc-error); }
+  .metric-card .trend.flat { color: var(--mc-text-muted); }
+  .metric-card.highlight {
+    border-color: var(--mc-blue); background: var(--mc-blue-wash);
+  }
+
+  /* Simulator */
+  .simulator-toggle {
+    display: inline-flex; background: #1f2933; color: white; border-radius: 20px;
+    padding: 3px; font-size: 11px;
+  }
+  .simulator-toggle button {
+    background: none; border: none; color: rgba(255,255,255,0.6); cursor: pointer;
+    padding: 5px 12px; border-radius: 17px; font-size: 11px; font-family: inherit; font-weight: 500;
+  }
+  .simulator-toggle button.active { background: var(--mc-blue); color: white; }
+
+  /* Diff rows */
+  .diff-row {
+    display: grid; grid-template-columns: 30px 1fr;
+    padding: 6px 12px; font-family: 'SF Mono', monospace; font-size: 11px;
+    border-bottom: 1px solid #1a2330;
+  }
+  .diff-row.add { background: rgba(22, 163, 74, 0.1); color: #86efac; }
+  .diff-row.remove { background: rgba(220, 38, 38, 0.1); color: #fca5a5; }
+  .diff-row.context { background: transparent; color: #94a3b8; }
+  .diff-row .sign { color: var(--code-comment); }
+
+  /* Progress */
+  .progress-bar {
+    height: 6px; background: var(--mc-border); border-radius: 3px; overflow: hidden;
+  }
+  .progress-bar .fill {
+    height: 100%; background: var(--mc-blue); transition: width 0.3s;
+  }
+  .progress-bar .fill.success { background: var(--mc-success); }
+
+  /* Sparkline */
+  .sparkline {
+    height: 32px; display: flex; align-items: flex-end; gap: 2px;
+  }
+  .sparkline .bar {
+    flex: 1; background: var(--mc-blue); opacity: 0.4; border-radius: 1px 1px 0 0;
+  }
+  .sparkline .bar.highlight { opacity: 1; }
+
+  /* Legend */
+  .legend {
+    margin-top: 12px; display: flex; gap: 16px; font-size: 11px; color: var(--mc-text-muted);
+    padding: 10px 14px; background: #fafbfc; border: 1px solid var(--mc-border);
+    border-radius: var(--radius-md); flex-wrap: wrap;
+  }
+  .legend-item { display: inline-flex; align-items: center; gap: 6px; }
+
+  /* Modal */
+  .modal-overlay {
+    position: absolute; inset: 0; background: rgba(31, 41, 51, 0.5);
+    display: flex; align-items: center; justify-content: center; z-index: 30;
+  }
+  .modal {
+    background: white; border-radius: var(--radius-lg); width: 560px; max-width: 90%;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2); overflow: hidden;
+  }
+  .modal-header {
+    padding: 16px 20px; border-bottom: 1px solid var(--mc-border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .modal-header h3 { font-size: 15px; }
+  .modal-body { padding: 20px; max-height: 480px; overflow-y: auto; }
+  .modal-footer {
+    padding: 12px 20px; border-top: 1px solid var(--mc-border); background: #fafbfc;
+    display: flex; justify-content: flex-end; gap: 8px;
+  }
+
+  /* Check item (used in deploy screen) */
+  .check-item {
+    display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px dashed var(--mc-border); font-size: 12px;
+  }
+  .check-item:last-child { border-bottom: none; }
+  .check-item .check-icon {
+    width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 600; flex-shrink: 0;
+  }
+  .check-item.pass .check-icon { background: var(--mc-success-bg); color: var(--mc-success); }
+  .check-item.warn .check-icon { background: var(--mc-warning-bg); color: var(--mc-warning); }
+  .check-item.fail .check-icon { background: var(--mc-error-bg); color: var(--mc-error); }
+  .check-item .check-body { flex: 1; }
+  .check-item .check-title { font-weight: 600; font-size: 12px; margin-bottom: 2px; }
+  .check-item .check-desc { font-size: 11px; color: var(--mc-text-muted); line-height: 1.4; }
+
+  /* Doc footer */
+  .doc-footer {
+    background: white; border-top: 1px solid var(--mc-border);
+    padding: 20px 40px; font-size: 12px; color: var(--mc-text-muted); text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<div class="doc-header">
+  <h1>Epic 2 — Governed Component Library Wireframes</h1>
+  <p>Developer Console surfaces for Storefront Developers defining and publishing the component library that Business Operators edit against. Governance is encoded at the schema level; operators never encounter schema, they encounter the governance boundary. The console also surfaces each component's behavioral provenance — what works, what doesn't, where it's used.</p>
+  <div class="meta">
+    <span>Author: Sally (UX)</span>
+    <span>Date: 2026-05-07</span>
+    <span>Status: Draft for review</span>
+    <span>Persona: Storefront Developer</span>
+    <span>Aligned to: ux-design-specification.md</span>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" data-tab="library"><span class="tab-num">1</span> Library Console & Schema Editor</div>
+  <div class="tab" data-tab="governance"><span class="tab-num">2</span> Governance Simulator & Publishing</div>
+  <div class="tab" data-tab="provenance"><span class="tab-num">3</span> Component Behavioral Provenance</div>
+</div>
+
+<div id="tab-library" class="tab-content active">
+
+  <div class="tab-intro">
+    <h2>1 — Library Console & Schema Editor</h2>
+    <p>The Developer Console is where Storefront Developers define, version, and publish the component library. Every component is classified as Green Zone (operator-editable) or Red Zone (platform-protected) at creation time, with field-level edit permissions configured through a clear matrix rather than code-only.</p>
+    <div class="frs">
+      <span class="fr-chip">FR13</span><span class="fr-chip">FR14</span>
+      <span class="fr-chip">FR29</span><span class="fr-chip">FR30</span>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 1A — Component Library Landing ============ -->
+  <div class="screen">
+    <div class="screen-header">
+      <h3>1A — Component library: landing view</h3>
+      <span class="tag">Developer Console / Components — the home base</span>
+    </div>
+    <div class="screen-body">
+      <div class="dev-frame">
+        <div class="dev-topbar">
+          <span class="logo">commercetools Developer</span>
+          <span class="crumbs">Tutorial › <strong>Component library</strong></span>
+          <span class="spacer"></span>
+          <span class="cmd-k">⌘K</span>
+          <span class="user">LP</span>
+        </div>
+        <div class="sub-bar">
+          <span class="chip active">All zones</span>
+          <span class="chip green"><span class="dot"></span> Green Zone (12)</span>
+          <span class="chip red-zone"><span class="dot"></span> Red Zone (7)</span>
+          <span class="chip live"><span class="dot"></span> Published</span>
+          <span class="chip draft"><span class="dot"></span> Draft</span>
+          <span class="spacer"></span>
+          <input class="form-input" placeholder="Search components..." style="width: 200px; margin-right: 8px; font-size: 11px;">
+          <button class="btn-ghost">⬇ Export schema</button>
+          <button class="btn-primary">+ New component</button>
+        </div>
+        <div class="dev-main">
+          <div class="dev-sidebar">
+            <div class="section-title">Library</div>
+            <div class="nav-row active">🧩 Components <span class="count">19</span></div>
+            <div class="nav-row">🎨 Design tokens</div>
+            <div class="nav-row">📦 Releases <span class="count">v4.2.1</span></div>
+            <div class="nav-row">🧪 Operator simulator</div>
+            <div class="section-title">Developer tools</div>
+            <div class="nav-row">⌨ CLI & SDK</div>
+            <div class="nav-row">📚 Docs</div>
+            <div class="nav-row">🔔 Webhooks</div>
+            <div class="section-title">Categories</div>
+            <div class="nav-row">Layout <span class="count">4</span></div>
+            <div class="nav-row">Content <span class="count">6</span></div>
+            <div class="nav-row">Commerce <span class="count">5</span></div>
+            <div class="nav-row">Account <span class="count">4</span></div>
+          </div>
+          <div class="dev-content full">
+            <div class="metric-grid" style="margin-bottom: 20px;">
+              <div class="metric-card">
+                <div class="label">Components</div>
+                <div class="value">19</div>
+                <div class="trend flat">— 12 Green · 7 Red</div>
+              </div>
+              <div class="metric-card">
+                <div class="label">Current version</div>
+                <div class="value mono" style="font-size: 16px;">v4.2.1</div>
+                <div class="trend up">↑ published 2d ago</div>
+              </div>
+              <div class="metric-card">
+                <div class="label">Draft changes</div>
+                <div class="value">3</div>
+                <div class="trend flat">in v4.3.0-draft</div>
+              </div>
+              <div class="metric-card highlight">
+                <div class="label">Avg. CTR lift</div>
+                <div class="value">+14.3%</div>
+                <div class="trend up">↑ 2.1% vs last release</div>
+              </div>
+            </div>
+
+            <table class="library-table">
+              <thead>
+                <tr>
+                  <th style="width: 30%;">Component</th>
+                  <th>Zone</th>
+                  <th>Version</th>
+                  <th>Used on</th>
+                  <th>CTR lift (30d)</th>
+                  <th>A11y</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <div class="cmp-name">HeroBanner</div>
+                    <div class="cmp-desc">Full-width hero with headline, sub, CTA, background</div>
+                  </td>
+                  <td><span class="zone-pill green">● Green</span></td>
+                  <td><span class="version-badge current">v2.1.0</span></td>
+                  <td>8 pages</td>
+                  <td style="color: var(--mc-success); font-weight: 600;">+18.2%</td>
+                  <td style="color: var(--mc-success);">✓ AA</td>
+                  <td><button class="icon-btn">⋯</button></td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="cmp-name">ProductGrid</div>
+                    <div class="cmp-desc">Responsive product tile grid · CLV-variant aware</div>
+                  </td>
+                  <td><span class="zone-pill green">● Green</span></td>
+                  <td><span class="version-badge current">v3.0.2</span></td>
+                  <td>12 pages</td>
+                  <td style="color: var(--mc-success); font-weight: 600;">+22.4%</td>
+                  <td style="color: var(--mc-success);">✓ AA</td>
+                  <td><button class="icon-btn">⋯</button></td>
+                </tr>
+                <tr style="background: var(--mc-warning-bg);">
+                  <td>
+                    <div class="cmp-name">TestimonialsCarousel <span style="font-size: 10px; color: var(--mc-warning); font-weight: 600;">● DRAFT</span></div>
+                    <div class="cmp-desc">Review carousel with rating filter · new in v4.3.0</div>
+                  </td>
+                  <td><span class="zone-pill green">● Green</span></td>
+                  <td><span class="version-badge">v0.1.0</span></td>
+                  <td>0 pages</td>
+                  <td style="color: var(--mc-text-muted);">—</td>
+                  <td style="color: var(--mc-warning);">⚠ 1 issue</td>
+                  <td><button class="icon-btn">⋯</button></td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="cmp-name">PricingRules 🔒</div>
+                    <div class="cmp-desc">Price display logic with B2C/B2B/dealer context switch</div>
+                  </td>
+                  <td><span class="zone-pill red">● Red</span></td>
+                  <td><span class="version-badge current">v1.4.0</span></td>
+                  <td>19 pages</td>
+                  <td style="color: var(--mc-text-muted);">— platform</td>
+                  <td style="color: var(--mc-success);">✓ AA</td>
+                  <td><button class="icon-btn">⋯</button></td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="cmp-name">AccountDashboard 🔒</div>
+                    <div class="cmp-desc">B2B approval queue · credit balance · reorder history</div>
+                  </td>
+                  <td><span class="zone-pill red">● Red</span></td>
+                  <td><span class="version-badge current">v2.0.1</span></td>
+                  <td>4 pages</td>
+                  <td style="color: var(--mc-text-muted);">— platform</td>
+                  <td style="color: var(--mc-success);">✓ AA</td>
+                  <td><button class="icon-btn">⋯</button></td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="cmp-name">CLVRecommender</div>
+                    <div class="cmp-desc">CLV-tier aware recommendation block · 4 variants</div>
+                  </td>
+                  <td><span class="zone-pill green">● Green</span></td>
+                  <td><span class="version-badge current">v1.2.0</span></td>
+                  <td>6 pages</td>
+                  <td style="color: var(--mc-success); font-weight: 600;">+31.7%</td>
+                  <td style="color: var(--mc-success);">✓ AA</td>
+                  <td><button class="icon-btn">⋯</button></td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="cmp-name">Newsletter</div>
+                    <div class="cmp-desc">Email signup with consent · dual-consent aware</div>
+                  </td>
+                  <td><span class="zone-pill green">● Green</span></td>
+                  <td><span class="version-badge current">v1.0.4</span></td>
+                  <td>14 pages</td>
+                  <td style="color: var(--mc-success); font-weight: 600;">+4.1%</td>
+                  <td style="color: var(--mc-success);">✓ AA</td>
+                  <td><button class="icon-btn">⋯</button></td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="cmp-name">CheckoutFlow 🔒</div>
+                    <div class="cmp-desc">End-to-end checkout · PCI-scope protected</div>
+                  </td>
+                  <td><span class="zone-pill red">● Red</span></td>
+                  <td><span class="version-badge current">v4.1.2</span></td>
+                  <td>1 page</td>
+                  <td style="color: var(--mc-text-muted);">— platform</td>
+                  <td style="color: var(--mc-success);">✓ AA</td>
+                  <td><button class="icon-btn">⋯</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="screen-annotations">
+        <h4>Design Notes</h4>
+        <ul>
+          <li><strong>Library is the home base</strong> — developers land here, not on a welcome page. <em>(FR29)</em></li>
+          <li><strong>Zone designation is visually unmissable</strong> — green pill vs gray pill, plus lock icon on Red Zone names. Governance is encoded at the schema level, not in documentation. <em>(FR13)</em></li>
+          <li><strong>Behavioral provenance inline</strong> — CTR lift column surfaces which components actually move the needle. Developers prioritize maintenance by evidence, not intuition.</li>
+          <li><strong>A11y column</strong> — every component's WCAG 2.1 AA status visible at a glance. <em>(FR50)</em></li>
+          <li><strong>Draft row is highlighted amber</strong> — the TestimonialsCarousel draft stands out from published components without a separate screen.</li>
+          <li><strong>Red Zone components show "— platform" for CTR</strong> — platform-managed components don't compete on operator performance metrics.</li>
+          <li><strong>Version column uses semver</strong> — developer-native format. Current version pill uses brand blue to distinguish from older versions in the popover.</li>
+        </ul>
+      </div>
+    </div>
+    <div style="padding: 0 24px 20px;">
+      <div class="legend">
+        <span class="legend-item"><span class="zone-pill green" style="padding: 2px 8px; font-size: 10px;">● Green</span> Operator-editable component</span>
+        <span class="legend-item"><span class="zone-pill red" style="padding: 2px 8px; font-size: 10px;">● Red</span> Platform-managed component</span>
+        <span class="legend-item">🔒 Lock icon reinforces Red Zone on names</span>
+        <span class="legend-item">CTR lift is 30-day trailing — from AI Experience Engine</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 1B — Component Schema Editor ============ -->
+  <div class="screen">
+    <div class="screen-header">
+      <h3>1B — Schema editor: defining HeroBanner v2.2.0 (draft)</h3>
+      <span class="tag">Visual schema + live code preview side-by-side</span>
+    </div>
+    <div class="screen-body single">
+      <div class="dev-frame" style="height: 680px;">
+        <div class="dev-topbar">
+          <span class="logo">commercetools Developer</span>
+          <span class="crumbs">Components › <strong>HeroBanner</strong> › v2.2.0 (draft)</span>
+          <span class="spacer"></span>
+          <span class="cmd-k">⌘S Save</span>
+          <span class="user">LP</span>
+        </div>
+        <div class="sub-bar">
+          <span class="chip draft"><span class="dot"></span> Draft v2.2.0</span>
+          <span class="chip">Based on v2.1.0</span>
+          <div class="zone-toggle" style="margin-left: 8px;">
+            <button class="active green-active">● Green Zone</button>
+            <button>Red Zone</button>
+          </div>
+          <span class="spacer"></span>
+          <button class="btn-ghost">👁 Preview as operator</button>
+          <button class="btn-ghost">Validate</button>
+          <button class="btn-primary">Save draft</button>
+        </div>
+        <div class="dev-main" style="grid-template-columns: 200px 1fr;">
+          <div class="dev-sidebar">
+            <div class="section-title">Editing</div>
+            <div class="nav-row active">⚙ Metadata</div>
+            <div class="nav-row">📝 Fields <span class="count">6</span></div>
+            <div class="nav-row">🎨 Variants <span class="count">3</span></div>
+            <div class="nav-row">🔐 Permissions</div>
+            <div class="nav-row">♿ Accessibility</div>
+            <div class="nav-row">📖 Docs & preview</div>
+            <div class="section-title">Deploy</div>
+            <div class="nav-row">📦 Version diff</div>
+            <div class="nav-row">🧪 Simulate</div>
+          </div>
+          <div class="dev-content" style="padding: 20px 20px 20px 20px;">
+            <div class="schema-canvas">
+              <div class="schema-form">
+                <div class="form-section">
+                  <h4>Component metadata</h4>
+                  <div class="form-row">
+                    <label class="form-label">Name <span style="color: var(--mc-error);">*</span></label>
+                    <input class="form-input mono" value="HeroBanner">
+                  </div>
+                  <div class="form-row">
+                    <label class="form-label">Display name</label>
+                    <input class="form-input" value="Hero Banner">
+                  </div>
+                  <div class="form-row">
+                    <label class="form-label">Description (shown to operators)</label>
+                    <input class="form-input" value="Full-width hero with headline, subheadline, CTA, and background image">
+                  </div>
+                  <div class="form-row">
+                    <label class="form-label">Category</label>
+                    <select class="form-input"><option>Layout</option><option>Content</option><option>Commerce</option></select>
+                  </div>
+                </div>
+
+                <div class="form-section">
+                  <h4>Governance zone
+                    <span style="font-size: 10px; color: var(--mc-text-muted); font-weight: normal;">⚠ Cannot be changed after publish</span>
+                  </h4>
+                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div style="border: 2px solid var(--green-zone); background: var(--green-zone-bg); padding: 12px; border-radius: var(--radius-md); position: relative;">
+                      <div style="position: absolute; top: 8px; right: 8px; font-size: 11px; color: var(--green-zone); font-weight: 600;">✓ Selected</div>
+                      <div style="font-weight: 600; color: var(--green-zone); margin-bottom: 4px;">● Green Zone</div>
+                      <div style="font-size: 11px; color: var(--mc-text-muted); line-height: 1.4;">
+                        Operators edit content and layout freely. AI can compose, swap, and modify.
+                      </div>
+                    </div>
+                    <div style="border: 1px solid var(--mc-border); padding: 12px; border-radius: var(--radius-md); cursor: pointer;">
+                      <div style="font-weight: 600; color: var(--mc-text-muted); margin-bottom: 4px;">Red Zone</div>
+                      <div style="font-size: 11px; color: var(--mc-text-muted); line-height: 1.4;">
+                        Platform-managed. Operators see but cannot edit. Used for commerce logic, pricing, checkout.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-section">
+                  <h4>CLV variant support
+                    <span style="font-size: 10px; color: var(--mc-ai-accent); font-weight: normal;">✨ CLV-aware</span>
+                  </h4>
+                  <div style="display: flex; gap: 6px; margin-bottom: 8px;">
+                    <span class="chip active"><span class="dot"></span> clv_tier</span>
+                    <span class="chip">context (B2C/B2B)</span>
+                    <span class="chip">locale</span>
+                    <span class="chip">+ add dimension</span>
+                  </div>
+                  <div style="font-size: 11px; color: var(--mc-text-muted); line-height: 1.4; background: var(--mc-ai-tint); padding: 10px; border-radius: var(--radius-sm); border-left: 3px solid var(--mc-ai-accent);">
+                    This component will render 4 variants automatically based on <code style="background: white; padding: 1px 5px; border-radius: 3px;">clv_tier</code> (new / low / mid / high). CLV-aware rendering is compiled — no runtime branching logic. Variants are edited in the <strong>Variants</strong> tab.
+                  </div>
+                </div>
+
+                <div class="form-section">
+                  <h4>Fields <span style="font-size: 11px; color: var(--mc-text-muted); font-weight: normal;">6 fields · 4 editable · 2 locked</span></h4>
+                  <div class="field-row header">
+                    <div>Field</div><div>Type</div><div>Operator edit</div><div>AI can write</div><div></div>
+                  </div>
+                  <div class="field-row">
+                    <div>
+                      <div class="field-name">headline</div>
+                      <div style="font-size: 10px; color: var(--mc-text-muted);">Primary H1 · required · max 80 chars</div>
+                    </div>
+                    <div><span class="field-type">string</span></div>
+                    <div><div class="checkbox checked">✓</div></div>
+                    <div><div class="checkbox checked">✓</div></div>
+                    <div><button class="icon-btn">⋯</button></div>
+                  </div>
+                  <div class="field-row">
+                    <div>
+                      <div class="field-name">subheadline</div>
+                      <div style="font-size: 10px; color: var(--mc-text-muted);">Optional · max 160 chars</div>
+                    </div>
+                    <div><span class="field-type">string?</span></div>
+                    <div><div class="checkbox checked">✓</div></div>
+                    <div><div class="checkbox checked">✓</div></div>
+                    <div><button class="icon-btn">⋯</button></div>
+                  </div>
+                  <div class="field-row">
+                    <div>
+                      <div class="field-name">cta</div>
+                      <div style="font-size: 10px; color: var(--mc-text-muted);">CTA object · label + destination</div>
+                    </div>
+                    <div><span class="field-type">CTA</span></div>
+                    <div><div class="checkbox checked">✓</div></div>
+                    <div><div class="checkbox checked">✓</div></div>
+                    <div><button class="icon-btn">⋯</button></div>
+                  </div>
+                  <div class="field-row">
+                    <div>
+                      <div class="field-name">backgroundImage</div>
+                      <div style="font-size: 10px; color: var(--mc-text-muted);">Asset ref · alt text required for a11y</div>
+                    </div>
+                    <div><span class="field-type">AssetRef</span></div>
+                    <div><div class="checkbox checked">✓</div></div>
+                    <div><div class="checkbox checked">✓</div></div>
+                    <div><button class="icon-btn">⋯</button></div>
+                  </div>
+                  <div class="field-row" style="background: var(--mc-locked-bg);">
+                    <div>
+                      <div class="field-name">linkType</div>
+                      <div style="font-size: 10px; color: var(--mc-locked);">🔒 Platform-managed · catalog/collection ref validated by engine</div>
+                    </div>
+                    <div><span class="field-type" style="background: var(--mc-locked-bg); color: var(--mc-locked);">enum</span></div>
+                    <div><div class="checkbox">—</div></div>
+                    <div><div class="checkbox">—</div></div>
+                    <div><button class="icon-btn">⋯</button></div>
+                  </div>
+                  <div class="field-row" style="background: var(--mc-locked-bg);">
+                    <div>
+                      <div class="field-name">tracking</div>
+                      <div style="font-size: 10px; color: var(--mc-locked);">🔒 Platform-managed · emits behavioral events to ACI pipeline</div>
+                    </div>
+                    <div><span class="field-type" style="background: var(--mc-locked-bg); color: var(--mc-locked);">Tracking</span></div>
+                    <div><div class="checkbox">—</div></div>
+                    <div><div class="checkbox">—</div></div>
+                    <div><button class="icon-btn">⋯</button></div>
+                  </div>
+                  <div style="padding: 10px; text-align: center; border-top: 1px solid var(--mc-border); margin-top: 4px;">
+                    <button class="btn-ghost" style="font-size: 11px;">+ Add field</button>
+                  </div>
+                </div>
+              </div>
+              <div class="schema-preview">
+                <div style="font-size: 10px; color: var(--code-comment); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">Live schema — hero-banner.schema.ts</div>
+<pre style="margin: 0; white-space: pre-wrap;"><span class="cmt">// Auto-generated from schema editor</span>
+<span class="kw">export const</span> <span class="fn">HeroBanner</span> = <span class="fn">defineComponent</span>({
+  <span class="str">name</span>: <span class="str">'HeroBanner'</span>,
+  <span class="str">version</span>: <span class="str">'2.2.0'</span>,
+  <span class="str">zone</span>: <span class="str">'green'</span>,
+  <span class="str">category</span>: <span class="str">'layout'</span>,
+
+  <span class="str">variants</span>: {
+    <span class="str">dimension</span>: <span class="str">'clv_tier'</span>,
+    <span class="str">values</span>: [<span class="str">'new'</span>, <span class="str">'low'</span>, <span class="str">'mid'</span>, <span class="str">'high'</span>],
+  },
+
+  <span class="str">fields</span>: {
+    <span class="str">headline</span>: {
+      <span class="str">type</span>: <span class="str">'string'</span>,
+      <span class="str">required</span>: <span class="num">true</span>,
+      <span class="str">maxLength</span>: <span class="num">80</span>,
+      <span class="str">permissions</span>: {
+        <span class="str">operator</span>: <span class="str">'edit'</span>,
+        <span class="str">ai</span>: <span class="str">'write'</span>,
+      },
+    },
+    <span class="str">subheadline</span>: {
+      <span class="str">type</span>: <span class="str">'string'</span>,
+      <span class="str">required</span>: <span class="num">false</span>,
+      <span class="str">maxLength</span>: <span class="num">160</span>,
+      <span class="str">permissions</span>: { <span class="str">operator</span>: <span class="str">'edit'</span>, <span class="str">ai</span>: <span class="str">'write'</span> },
+    },
+    <span class="str">cta</span>: {
+      <span class="str">type</span>: <span class="str">'CTA'</span>,
+      <span class="str">permissions</span>: { <span class="str">operator</span>: <span class="str">'edit'</span>, <span class="str">ai</span>: <span class="str">'write'</span> },
+    },
+    <span class="str">backgroundImage</span>: {
+      <span class="str">type</span>: <span class="str">'AssetRef'</span>,
+      <span class="str">permissions</span>: { <span class="str">operator</span>: <span class="str">'edit'</span>, <span class="str">ai</span>: <span class="str">'write'</span> },
+      <span class="str">a11y</span>: { <span class="str">altTextRequired</span>: <span class="num">true</span> },
+    },
+    <span class="cmt">// 🔒 platform-managed below</span>
+    <span class="str">linkType</span>: {
+      <span class="str">type</span>: <span class="str">'enum'</span>,
+      <span class="str">values</span>: [<span class="str">'collection'</span>, <span class="str">'product'</span>, <span class="str">'category'</span>],
+      <span class="str">permissions</span>: {
+        <span class="str">operator</span>: <span class="str">'locked'</span>,
+        <span class="str">ai</span>: <span class="str">'locked'</span>,
+      },
+    },
+    <span class="str">tracking</span>: {
+      <span class="str">type</span>: <span class="str">'Tracking'</span>,
+      <span class="str">permissions</span>: {
+        <span class="str">operator</span>: <span class="str">'locked'</span>,
+        <span class="str">ai</span>: <span class="str">'locked'</span>,
+      },
+      <span class="str">emits</span>: [<span class="str">'view'</span>, <span class="str">'ctaClick'</span>],
+    },
+  },
+
+  <span class="str">accessibility</span>: {
+    <span class="str">wcag</span>: <span class="str">'2.1-AA'</span>,
+    <span class="str">landmark</span>: <span class="str">'banner'</span>,
+  },
+});</pre>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="padding: 0 24px 20px;">
+      <div class="screen-annotations single" style="padding: 16px 20px;">
+        <h4>Design Notes</h4>
+        <ul>
+          <li><strong>Schema UI + live code preview</strong> — developers see the form and the generated TypeScript schema update in real time. The schema is the source of truth; the UI makes it tangible. <em>(FR29)</em></li>
+          <li><strong>Zone choice is permanent after publish</strong> — warning surfaced inline in the section header. Reflects a real platform constraint that must be clear upfront. <em>(FR13)</em></li>
+          <li><strong>Field-level permission matrix</strong> — two independent toggles per field: "operator edit" and "AI can write." Locked fields use a flat gray background, not a big warning. <em>(FR14, FR30)</em></li>
+          <li><strong>Platform-managed fields stay visible</strong> — developers see the full schema including locked fields, so they understand the complete component contract.</li>
+          <li><strong>CLV variant support is first-class</strong> — declared at the schema level, renders 4 variants automatically with no runtime logic. Reinforced as an AI-tinted section because variants power AI experience personalization.</li>
+          <li><strong>Accessibility baked in</strong> — a11y config (alt text required, landmark role) appears in the schema, not as a separate concern. Operators inherit WCAG 2.1 AA for free. <em>(FR50)</em></li>
+          <li><strong>"Preview as operator" action in the sub-bar</strong> — one click to the governance simulator (Screen 2A). Trust but verify.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div id="tab-governance" class="tab-content">
+
+  <div class="tab-intro">
+    <h2>2 — Governance Simulator & Publishing</h2>
+    <p>Before shipping a component library version, developers verify that governance behaves as intended by simulating operator access — seeing exactly what a Business Operator will see. Publishing is hot-reload: library updates deploy to tenant storefronts without a full platform redeployment. Every release is versioned, diffable, and rollback-capable.</p>
+    <div class="frs">
+      <span class="fr-chip">FR31</span><span class="fr-chip">FR32</span><span class="fr-chip">FR50</span>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 2A — Operator Access Simulator ============ -->
+  <div class="screen">
+    <div class="screen-header">
+      <h3>2A — Operator simulator: verify what operators can and can't edit</h3>
+      <span class="tag">Governance Simulator — dev sees exactly what operators see</span>
+    </div>
+    <div class="screen-body single">
+      <div class="dev-frame" style="height: 620px;">
+        <div class="dev-topbar">
+          <span class="logo">commercetools Developer</span>
+          <span class="crumbs">Components › HeroBanner › <strong>Simulator</strong></span>
+          <span class="spacer"></span>
+          <span class="cmd-k">⌘K</span>
+          <span class="user">LP</span>
+        </div>
+        <div class="sub-bar" data-sim-container>
+          <span style="font-size: 11px; color: var(--mc-text-muted); margin-right: 6px;">View as:</span>
+          <div class="simulator-toggle">
+            <button class="active" data-mode="operator">👤 Business Operator</button>
+            <button data-mode="ai">✨ AI agent</button>
+            <button data-mode="dev">🧑‍💻 Developer (full access)</button>
+          </div>
+          <span style="font-size: 11px; color: var(--mc-text-muted); margin-left: 14px;">Simulating:</span>
+          <span class="chip">Sasha M. · Marketing Operator</span>
+          <span class="chip">B2C · en-GB · Guest</span>
+          <span class="spacer"></span>
+          <button class="btn-ghost">Export permission report</button>
+          <button class="btn-primary">✓ Governance verified</button>
+        </div>
+        <div class="dev-main" style="grid-template-columns: 1fr 320px;">
+          <div style="padding: 20px; background: var(--mc-bg); overflow-y: auto;">
+            <div style="background: white; border: 1px solid var(--mc-border); border-radius: var(--radius-md); padding: 16px; margin-bottom: 16px;">
+              <div style="font-size: 11px; color: var(--mc-text-muted); margin-bottom: 8px;">What the operator sees in the editor property sidebar:</div>
+              <div style="border: 1px solid var(--mc-border); border-radius: var(--radius-sm); padding: 14px; background: #fafbfc;">
+                <div style="font-size: 13px; font-weight: 600; margin-bottom: 10px;">HeroBanner</div>
+                <div style="font-size: 11px; color: var(--mc-text-muted); margin-bottom: 14px;">Green Zone · 6 fields · 4 editable</div>
+
+                <div class="form-row">
+                  <label class="form-label" style="display: flex; justify-content: space-between;"><span>Headline</span><span style="color: var(--mc-success); font-size: 10px;">✓ editable</span></label>
+                  <input class="form-input" value="Summer Collection">
+                </div>
+                <div class="form-row">
+                  <label class="form-label" style="display: flex; justify-content: space-between;"><span>Subheadline</span><span style="color: var(--mc-success); font-size: 10px;">✓ editable</span></label>
+                  <input class="form-input" value="New arrivals">
+                </div>
+                <div class="form-row">
+                  <label class="form-label" style="display: flex; justify-content: space-between;"><span>CTA</span><span style="color: var(--mc-success); font-size: 10px;">✓ editable</span></label>
+                  <input class="form-input" value="Shop now → /collections/summer">
+                </div>
+                <div class="form-row">
+                  <label class="form-label" style="display: flex; justify-content: space-between;"><span>Background image</span><span style="color: var(--mc-success); font-size: 10px;">✓ editable</span></label>
+                  <div style="border: 1px dashed var(--mc-border-strong); padding: 10px; text-align: center; font-size: 11px; color: var(--mc-text-muted); border-radius: var(--radius-sm);">📁 Click to replace</div>
+                </div>
+                <div class="form-row">
+                  <label class="form-label" style="display: flex; justify-content: space-between;"><span>Link type</span><span style="color: var(--mc-locked); font-size: 10px;">🔒 Platform</span></label>
+                  <input class="form-input" style="background: var(--mc-locked-bg); color: var(--mc-text-muted); cursor: not-allowed;" value="Internal collection" disabled>
+                </div>
+                <div class="form-row">
+                  <label class="form-label" style="display: flex; justify-content: space-between;"><span>Tracking</span><span style="color: var(--mc-locked); font-size: 10px;">🔒 Platform</span></label>
+                  <div style="font-size: 11px; color: var(--mc-text-muted); padding: 6px 8px; background: var(--mc-locked-bg); border-radius: var(--radius-sm);">Emits: view, ctaClick</div>
+                </div>
+              </div>
+            </div>
+
+            <div style="background: white; border: 1px solid var(--mc-border); border-radius: var(--radius-md); padding: 16px;">
+              <div style="font-size: 11px; color: var(--mc-text-muted); margin-bottom: 8px;">When an operator tries to bypass governance:</div>
+              <div style="background: #0f172a; color: #86efac; padding: 14px; border-radius: var(--radius-sm); font-family: 'SF Mono', monospace; font-size: 11px; line-height: 1.6;">
+                <div style="color: #64748b;">// Simulated: operator attempts to set linkType via API</div>
+                <div>POST /storefront/components/HeroBanner</div>
+                <div>  <span style="color: #c4b5fd;">body:</span> { linkType: <span style="color: #fde047;">"external"</span> }</div>
+                <div style="color: #fca5a5; margin-top: 6px;">← 403 Forbidden</div>
+                <div style="color: #fca5a5;">  { error: <span style="color: #fde047;">"FIELD_LOCKED"</span>,</div>
+                <div style="color: #fca5a5;">    field: <span style="color: #fde047;">"linkType"</span>,</div>
+                <div style="color: #fca5a5;">    reason: <span style="color: #fde047;">"Platform-managed — edit via Merchant Center → Catalog"</span> }</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="dev-rightpanel">
+            <div class="form-section" style="background: white;">
+              <h4>Permission summary</h4>
+              <div style="font-size: 11px; color: var(--mc-text-muted); margin-bottom: 10px;">Current persona: <strong style="color: var(--mc-text);">Business Operator</strong></div>
+
+              <div style="padding: 10px; background: var(--green-zone-bg); border: 1px solid var(--green-zone); border-radius: var(--radius-sm); margin-bottom: 10px;">
+                <div style="font-size: 11px; font-weight: 600; color: var(--green-zone); margin-bottom: 4px;">✓ Can edit (4 fields)</div>
+                <div style="font-size: 11px; color: var(--mc-text-muted); font-family: 'SF Mono', monospace;">
+                  headline, subheadline, cta, backgroundImage
+                </div>
+              </div>
+
+              <div style="padding: 10px; background: var(--mc-locked-bg); border: 1px solid var(--mc-locked); border-radius: var(--radius-sm); margin-bottom: 10px;">
+                <div style="font-size: 11px; font-weight: 600; color: var(--mc-text-muted); margin-bottom: 4px;">🔒 Platform-locked (2 fields)</div>
+                <div style="font-size: 11px; color: var(--mc-text-muted); font-family: 'SF Mono', monospace;">
+                  linkType, tracking
+                </div>
+              </div>
+
+              <div style="padding: 10px; background: var(--mc-ai-tint); border: 1px solid var(--mc-ai-accent); border-radius: var(--radius-sm); margin-bottom: 10px;">
+                <div style="font-size: 11px; font-weight: 600; color: var(--mc-ai-accent); margin-bottom: 4px;">✨ AI write access (4 fields)</div>
+                <div style="font-size: 11px; color: var(--mc-text-muted); font-family: 'SF Mono', monospace;">
+                  headline, subheadline, cta, backgroundImage
+                </div>
+                <div style="font-size: 10px; color: var(--mc-text-muted); margin-top: 4px; font-style: italic;">
+                  Mirrors operator permissions by design — AI cannot exceed operator authority.
+                </div>
+              </div>
+            </div>
+
+            <div class="form-section" style="background: white;">
+              <h4>Governance verification</h4>
+              <div class="check-item pass">
+                <div class="check-icon">✓</div>
+                <div class="check-body">
+                  <div class="check-title">Zone classification</div>
+                  <div class="check-desc">Green Zone — operator editing permitted</div>
+                </div>
+              </div>
+              <div class="check-item pass">
+                <div class="check-icon">✓</div>
+                <div class="check-body">
+                  <div class="check-title">Locked fields enforced</div>
+                  <div class="check-desc">2 fields correctly platform-locked; bypass attempts return 403</div>
+                </div>
+              </div>
+              <div class="check-item pass">
+                <div class="check-icon">✓</div>
+                <div class="check-body">
+                  <div class="check-title">AI parity with operator</div>
+                  <div class="check-desc">AI write scope = operator edit scope · no privilege escalation</div>
+                </div>
+              </div>
+              <div class="check-item pass">
+                <div class="check-icon">✓</div>
+                <div class="check-body">
+                  <div class="check-title">Required a11y config</div>
+                  <div class="check-desc">Alt text required on backgroundImage — WCAG 2.1 AA</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="padding: 0 24px 20px;">
+      <div class="screen-annotations single" style="padding: 16px 20px;">
+        <h4>Design Notes</h4>
+        <ul>
+          <li><strong>"View as" toggle at the top</strong> — developer can flip between Business Operator / AI agent / Developer perspective in one click. The same governance rules are viewed through different lenses. <em>(FR31)</em></li>
+          <li><strong>Left pane renders the operator's actual property sidebar</strong> — this is pixel-equivalent to what the operator will see in Epic 3. Not a mock — the same rendering engine.</li>
+          <li><strong>Per-field edit badges</strong> — "✓ editable" vs "🔒 Platform" surfaced inline so developers can audit each field at a glance.</li>
+          <li><strong>Bypass attempt preview</strong> — the simulator shows what happens if an operator (or AI agent) tries to write to a locked field via API. A successful 403 response proves the governance is <em>enforced</em>, not just UI-hidden.</li>
+          <li><strong>AI parity rule is visible</strong> — "AI cannot exceed operator authority" stated explicitly in the right panel. Prevents the AI from becoming a governance bypass surface.</li>
+          <li><strong>"Governance verified" is a commit action</strong> — the blue button isn't cosmetic; it signs off that this simulation was run against this version. A timestamped verification appears in the release audit trail.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 2B — Publish Library Version ============ -->
+  <div class="screen">
+    <div class="screen-header">
+      <h3>2B — Publish library release: v4.3.0</h3>
+      <span class="tag">Release composer — diff view, release notes, deployment target</span>
+    </div>
+    <div class="screen-body single">
+      <div class="dev-frame" style="height: 640px;">
+        <div class="dev-topbar">
+          <span class="logo">commercetools Developer</span>
+          <span class="crumbs">Releases › <strong>v4.3.0 (draft)</strong></span>
+          <span class="spacer"></span>
+          <span class="user">LP</span>
+        </div>
+        <div class="sub-bar">
+          <span class="chip draft"><span class="dot"></span> Draft release</span>
+          <span class="chip">From: v4.2.1</span>
+          <span class="chip">To: v4.3.0</span>
+          <span class="chip">3 changes</span>
+          <span class="spacer"></span>
+          <button class="btn-ghost">📋 Copy release URL</button>
+          <button class="btn-ghost">⬇ Download artifact</button>
+          <button class="btn-primary">🚀 Publish release</button>
+        </div>
+        <div class="dev-main" style="grid-template-columns: 1fr 340px;">
+          <div style="padding: 20px; overflow-y: auto;">
+            <div style="margin-bottom: 20px;">
+              <h3 style="font-size: 14px; margin-bottom: 10px;">Release notes</h3>
+              <textarea class="form-input" style="min-height: 80px; font-family: inherit; line-height: 1.5;" placeholder="Describe what changed and why...">Added TestimonialsCarousel (Green Zone) with rating filter. Bumped HeroBanner to v2.2.0 with clv_tier variant support. Deprecated PromoStrip v1 — migrate usage before v5.0.0.</textarea>
+            </div>
+
+            <h3 style="font-size: 14px; margin-bottom: 10px;">Changes in this release</h3>
+            <div style="border: 1px solid var(--mc-border); border-radius: var(--radius-md); overflow: hidden; margin-bottom: 16px;">
+              <div style="padding: 12px 14px; background: #fafbfc; border-bottom: 1px solid var(--mc-border); display: flex; align-items: center; gap: 10px;">
+                <span style="color: var(--mc-success); font-weight: 600; font-size: 11px;">+ NEW</span>
+                <span class="cmp-name" style="font-family: 'SF Mono', monospace; font-weight: 600;">TestimonialsCarousel</span>
+                <span class="zone-pill green" style="font-size: 10px;">● Green</span>
+                <span class="version-badge">v0.1.0</span>
+                <span class="spacer" style="flex: 1;"></span>
+                <button class="btn-ghost" style="font-size: 11px;">View schema</button>
+              </div>
+              <div style="padding: 0; background: var(--code-bg); max-height: 120px; overflow-y: auto;">
+                <div class="diff-row add"><span class="sign">+</span><span>export const TestimonialsCarousel = defineComponent({</span></div>
+                <div class="diff-row add"><span class="sign">+</span><span>  name: 'TestimonialsCarousel', zone: 'green', version: '0.1.0',</span></div>
+                <div class="diff-row add"><span class="sign">+</span><span>  fields: { reviews: Review[], maxItems: number, minRating: number }</span></div>
+                <div class="diff-row add"><span class="sign">+</span><span>});</span></div>
+              </div>
+            </div>
+
+            <div style="border: 1px solid var(--mc-border); border-radius: var(--radius-md); overflow: hidden; margin-bottom: 16px;">
+              <div style="padding: 12px 14px; background: #fafbfc; border-bottom: 1px solid var(--mc-border); display: flex; align-items: center; gap: 10px;">
+                <span style="color: var(--mc-warning); font-weight: 600; font-size: 11px;">Δ CHANGED</span>
+                <span class="cmp-name" style="font-family: 'SF Mono', monospace; font-weight: 600;">HeroBanner</span>
+                <span class="zone-pill green" style="font-size: 10px;">● Green</span>
+                <span class="version-badge">v2.1.0 → v2.2.0</span>
+                <span class="spacer" style="flex: 1;"></span>
+                <button class="btn-ghost" style="font-size: 11px;">View diff</button>
+              </div>
+              <div style="padding: 0; background: var(--code-bg); max-height: 120px; overflow-y: auto;">
+                <div class="diff-row context"><span class="sign"> </span><span>  variants: {</span></div>
+                <div class="diff-row remove"><span class="sign">−</span><span>    dimension: 'context',</span></div>
+                <div class="diff-row add"><span class="sign">+</span><span>    dimension: 'clv_tier',</span></div>
+                <div class="diff-row add"><span class="sign">+</span><span>    values: ['new', 'low', 'mid', 'high'],</span></div>
+                <div class="diff-row context"><span class="sign"> </span><span>  },</span></div>
+              </div>
+            </div>
+
+            <div style="border: 1px solid var(--mc-border); border-radius: var(--radius-md); overflow: hidden;">
+              <div style="padding: 12px 14px; background: var(--mc-warning-bg); border-bottom: 1px solid var(--mc-border); display: flex; align-items: center; gap: 10px;">
+                <span style="color: var(--mc-error); font-weight: 600; font-size: 11px;">⚠ DEPRECATED</span>
+                <span class="cmp-name" style="font-family: 'SF Mono', monospace; font-weight: 600;">PromoStrip</span>
+                <span class="version-badge">v1.4.1 → v1.4.1 (deprecated)</span>
+                <span class="spacer" style="flex: 1;"></span>
+                <span style="font-size: 11px; color: var(--mc-text-muted);">Removed in v5.0.0 · 4 pages still using</span>
+              </div>
+              <div style="padding: 12px 14px; font-size: 11px; color: var(--mc-text-muted); line-height: 1.5;">
+                Operators will see a "Deprecated" badge on any page using PromoStrip. Migration target: <code>HeroBanner</code> with <code>variant: 'strip'</code>. Auto-migration available in v4.4.0.
+              </div>
+            </div>
+          </div>
+
+          <div class="dev-rightpanel">
+            <div class="form-section" style="background: white;">
+              <h4>Deployment target</h4>
+              <div class="form-row">
+                <label class="form-label">Target tenants</label>
+                <select class="form-input">
+                  <option>All tenants (production)</option>
+                  <option>Staging tenants only</option>
+                  <option>Canary — 10% of tenants</option>
+                  <option>Specific tenants...</option>
+                </select>
+              </div>
+              <div class="form-row">
+                <label class="form-label">Deployment mode <span class="fr-chip" style="font-size: 9px;">FR32</span></label>
+                <div style="padding: 10px; background: var(--mc-blue-wash); border-radius: var(--radius-sm); font-size: 11px; line-height: 1.5;">
+                  <strong style="color: var(--mc-blue);">⚡ Hot-reload</strong> — library update deploys to tenant storefronts in seconds, no platform redeployment required. Zero downtime.
+                </div>
+              </div>
+              <div class="form-row">
+                <label class="form-label">Rollback window</label>
+                <div style="font-size: 11px; color: var(--mc-text-muted);">90 days · one-click revert per tenant</div>
+              </div>
+            </div>
+
+            <div class="form-section" style="background: white;">
+              <h4>Pre-publish checks</h4>
+              <div class="check-item pass">
+                <div class="check-icon">✓</div>
+                <div class="check-body">
+                  <div class="check-title">All schemas valid</div>
+                  <div class="check-desc">19 components compile · no type errors</div>
+                </div>
+              </div>
+              <div class="check-item pass">
+                <div class="check-icon">✓</div>
+                <div class="check-body">
+                  <div class="check-title">WCAG 2.1 AA baseline</div>
+                  <div class="check-desc">All Green Zone components meet AA · <strong style="color: var(--mc-blue);">FR50</strong></div>
+                </div>
+              </div>
+              <div class="check-item pass">
+                <div class="check-icon">✓</div>
+                <div class="check-body">
+                  <div class="check-title">Governance simulator run</div>
+                  <div class="check-desc">3 changes verified at 14:22 today by Leandro</div>
+                </div>
+              </div>
+              <div class="check-item warn">
+                <div class="check-icon">!</div>
+                <div class="check-body">
+                  <div class="check-title">4 pages using deprecated PromoStrip</div>
+                  <div class="check-desc">Operators notified via deprecated badge. No block.</div>
+                </div>
+              </div>
+              <div class="check-item pass">
+                <div class="check-icon">✓</div>
+                <div class="check-body">
+                  <div class="check-title">Backwards compatible</div>
+                  <div class="check-desc">No breaking field removals · safe for all tenants on v4.2.x</div>
+                </div>
+              </div>
+            </div>
+
+            <div style="font-size: 11px; color: var(--mc-text-muted); text-align: center; padding: 10px; background: #fafbfc; border-radius: var(--radius-sm); border: 1px dashed var(--mc-border);">
+              Publishing will update <strong>42 tenant storefronts</strong> over ~60 seconds.<br>Rollback available anytime in the next 90 days.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="padding: 0 24px 20px;">
+      <div class="screen-annotations single" style="padding: 16px 20px;">
+        <h4>Design Notes</h4>
+        <ul>
+          <li><strong>Release-centric not component-centric</strong> — developers ship library versions, not individual components. Matches modern design system workflows (Storybook, Radix, Shadcn).</li>
+          <li><strong>Diff view per change</strong> — add / change / deprecated colored inline in dark code blocks. Reuses the visual language of git diff developers already know.</li>
+          <li><strong>Deprecation is first-class</strong> — not a delete-vs-keep binary. PromoStrip has a migration target, an auto-migration version, and operators get a visible badge. Reflects real library lifecycle.</li>
+          <li><strong>Hot-reload deployment mode explicit</strong> — called out with an icon and plain-English explanation. The whole point of FR32 is "no platform redeploy needed" — this is the UI surfacing of that promise.</li>
+          <li><strong>Pre-publish checks mirror Epic 3's operator pre-publish checks</strong> — same component, different scope. Developers can see which have passed, which are informational warnings (4 pages using deprecated), and which would block (none here).</li>
+          <li><strong>Scope impact stated plainly</strong> — "42 tenant storefronts updated over 60 seconds" helps developers grasp blast radius before clicking Publish.</li>
+          <li><strong>Governance simulator signature required</strong> — the check "Governance simulator run at 14:22 today by Leandro" creates a compliance trail: no release ships without explicit verification.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 2C — Hot-Reload Deploy In Progress ============ -->
+  <div class="screen">
+    <div class="screen-header">
+      <h3>2C — Deploy in progress: hot-reload across tenant storefronts</h3>
+      <span class="tag">Real-time deploy status — per-tenant rollout with per-tenant rollback</span>
+    </div>
+    <div class="screen-body single">
+      <div class="dev-frame" style="height: 520px;">
+        <div class="dev-topbar">
+          <span class="logo">commercetools Developer</span>
+          <span class="crumbs">Releases › <strong>v4.3.0 deploying...</strong></span>
+          <span class="spacer"></span>
+          <span class="user">LP</span>
+        </div>
+        <div class="sub-bar">
+          <span class="chip" style="background: var(--mc-blue-wash); border-color: var(--mc-blue); color: var(--mc-blue);"><span class="dot"></span> Deploying v4.3.0</span>
+          <span style="font-size: 11px; color: var(--mc-text-muted);">Started 14:47:12 · Elapsed 00:38</span>
+          <span class="spacer"></span>
+          <button class="btn-ghost">⏸ Pause rollout</button>
+          <button class="btn-danger">✕ Abort & rollback all</button>
+        </div>
+        <div class="dev-main" style="grid-template-columns: 1fr;">
+          <div style="padding: 20px; overflow-y: auto;">
+            <div style="background: white; border: 1px solid var(--mc-border); border-radius: var(--radius-md); padding: 16px; margin-bottom: 16px;">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                <div>
+                  <div style="font-size: 13px; font-weight: 600;">Overall progress</div>
+                  <div style="font-size: 11px; color: var(--mc-text-muted);">28 of 42 tenants updated · 14 pending · 0 failed</div>
+                </div>
+                <div style="font-size: 22px; font-weight: 600; color: var(--mc-blue);">67%</div>
+              </div>
+              <div class="progress-bar" style="height: 10px;">
+                <div class="fill" style="width: 67%;"></div>
+              </div>
+              <div style="display: flex; gap: 16px; margin-top: 10px; font-size: 11px; color: var(--mc-text-muted);">
+                <span><strong style="color: var(--mc-success);">✓ 28</strong> deployed</span>
+                <span><strong style="color: var(--mc-blue);">⟳ 3</strong> in progress</span>
+                <span><strong>14</strong> queued</span>
+                <span><strong style="color: var(--mc-error);">0</strong> failed</span>
+                <span class="spacer" style="flex:1;"></span>
+                <span>Est. remaining: ~22s</span>
+              </div>
+            </div>
+
+            <div style="background: white; border: 1px solid var(--mc-border); border-radius: var(--radius-md); overflow: hidden;">
+              <div style="padding: 10px 14px; background: #fafbfc; border-bottom: 1px solid var(--mc-border); font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 10px;">
+                <span>Per-tenant status</span>
+                <span class="spacer" style="flex: 1;"></span>
+                <input class="form-input" placeholder="Filter tenants..." style="width: 180px; font-size: 11px; padding: 4px 8px;">
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1.5fr 100px 100px 1fr 80px; padding: 8px 14px; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--mc-text-muted); font-weight: 600; border-bottom: 1px solid var(--mc-border); background: #fafbfc;">
+                <div>Tenant</div><div>From</div><div>To</div><div>Status</div><div></div>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1.5fr 100px 100px 1fr 80px; padding: 10px 14px; font-size: 12px; align-items: center; border-bottom: 1px solid var(--mc-border);">
+                <div><strong>Acme Retail</strong> <span style="font-size: 10px; color: var(--mc-text-muted);">· EU prod</span></div>
+                <div><span class="version-badge">v4.2.1</span></div>
+                <div><span class="version-badge current">v4.3.0</span></div>
+                <div style="color: var(--mc-success);">✓ Deployed · 2.1s</div>
+                <div><button class="btn-ghost" style="font-size: 10px; padding: 3px 8px;">⟲ Rollback</button></div>
+              </div>
+              <div style="display: grid; grid-template-columns: 1.5fr 100px 100px 1fr 80px; padding: 10px 14px; font-size: 12px; align-items: center; border-bottom: 1px solid var(--mc-border);">
+                <div><strong>BrightBrand</strong> <span style="font-size: 10px; color: var(--mc-text-muted);">· US prod</span></div>
+                <div><span class="version-badge">v4.2.1</span></div>
+                <div><span class="version-badge current">v4.3.0</span></div>
+                <div style="color: var(--mc-success);">✓ Deployed · 1.8s</div>
+                <div><button class="btn-ghost" style="font-size: 10px; padding: 3px 8px;">⟲ Rollback</button></div>
+              </div>
+              <div style="display: grid; grid-template-columns: 1.5fr 100px 100px 1fr 80px; padding: 10px 14px; font-size: 12px; align-items: center; border-bottom: 1px solid var(--mc-border); background: var(--mc-blue-wash);">
+                <div><strong>Tutorial</strong> <span style="font-size: 10px; color: var(--mc-text-muted);">· EU staging</span></div>
+                <div><span class="version-badge">v4.2.1</span></div>
+                <div><span class="version-badge current">v4.3.0</span></div>
+                <div style="color: var(--mc-blue); display: flex; align-items: center; gap: 8px;">
+                  <div class="progress-bar" style="width: 80px; height: 6px;"><div class="fill" style="width: 62%;"></div></div>
+                  ⟳ Installing...
+                </div>
+                <div><button class="btn-ghost" style="font-size: 10px; padding: 3px 8px;" disabled>⟲</button></div>
+              </div>
+              <div style="display: grid; grid-template-columns: 1.5fr 100px 100px 1fr 80px; padding: 10px 14px; font-size: 12px; align-items: center; border-bottom: 1px solid var(--mc-border); background: var(--mc-blue-wash);">
+                <div><strong>NorthernLux</strong> <span style="font-size: 10px; color: var(--mc-text-muted);">· EU prod</span></div>
+                <div><span class="version-badge">v4.2.1</span></div>
+                <div><span class="version-badge current">v4.3.0</span></div>
+                <div style="color: var(--mc-blue); display: flex; align-items: center; gap: 8px;">
+                  <div class="progress-bar" style="width: 80px; height: 6px;"><div class="fill" style="width: 34%;"></div></div>
+                  ⟳ Validating...
+                </div>
+                <div><button class="btn-ghost" style="font-size: 10px; padding: 3px 8px;" disabled>⟲</button></div>
+              </div>
+              <div style="display: grid; grid-template-columns: 1.5fr 100px 100px 1fr 80px; padding: 10px 14px; font-size: 12px; align-items: center; border-bottom: 1px solid var(--mc-border);">
+                <div style="color: var(--mc-text-muted);"><strong>Meridian Co.</strong> <span style="font-size: 10px;">· APAC prod</span></div>
+                <div><span class="version-badge">v4.2.1</span></div>
+                <div><span class="version-badge current">v4.3.0</span></div>
+                <div style="color: var(--mc-text-muted);">Queued · position 3 of 14</div>
+                <div></div>
+              </div>
+              <div style="padding: 14px; text-align: center; font-size: 11px; color: var(--mc-text-muted);">
+                Showing 5 of 42 tenants · <a href="#" style="color: var(--mc-blue);">View all →</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="padding: 0 24px 20px;">
+      <div class="screen-annotations single" style="padding: 16px 20px;">
+        <h4>Design Notes</h4>
+        <ul>
+          <li><strong>Hot-reload makes per-tenant status the primary view</strong> — FR32 promises "update without full redeploy." The UX makes that tangible: tenants update in seconds, visible in real time.</li>
+          <li><strong>Tenant-level granularity</strong> — each tenant is an independent rollout. Failures isolate; one tenant's bad state doesn't block the others.</li>
+          <li><strong>Per-tenant rollback</strong> — "⟲ Rollback" button on successfully-deployed rows. Nothing to wait for — if a specific tenant reports issues, revert that one in isolation.</li>
+          <li><strong>Abort & rollback all</strong> — the nuclear option visible at the top, but distinct from per-tenant rollback. Red styling reserved for destructive actions.</li>
+          <li><strong>Progress transparency during deploy</strong> — not just "deploying..." but per-phase status: Validating → Installing → Activated. Developers can tell where a slow tenant is stuck.</li>
+          <li><strong>No page navigation during deploy</strong> — developers can continue working on the next draft while the deploy runs in this view. Dev console is non-blocking.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div id="tab-provenance" class="tab-content">
+
+  <div class="tab-intro">
+    <h2>3 — Component Behavioral Provenance</h2>
+    <p>Every component accumulates performance data — CTR lift, CLV impact, experiment win rate, where it's deployed. This is the compounding moat: the longer the library ships, the more developers know about what works. Provenance surfaces across two views: a deep single-component view for maintenance decisions, and a library-wide health overview for roadmap prioritization.</p>
+    <div class="frs">
+      <span class="fr-chip">Epic 2 scope</span>
+      <span class="fr-chip">feeds Epic 8</span>
+      <span class="fr-chip">moat layer</span>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 3A — Single Component Provenance ============ -->
+  <div class="screen">
+    <div class="screen-header">
+      <h3>3A — Component detail: CLVRecommender v1.2.0 provenance</h3>
+      <span class="tag">Per-component behavioral dashboard — performance + deployments + history</span>
+    </div>
+    <div class="screen-body single">
+      <div class="dev-frame" style="height: 680px;">
+        <div class="dev-topbar">
+          <span class="logo">commercetools Developer</span>
+          <span class="crumbs">Components › <strong>CLVRecommender</strong> › Provenance</span>
+          <span class="spacer"></span>
+          <span class="user">LP</span>
+        </div>
+        <div class="sub-bar">
+          <span class="chip">Overview</span>
+          <span class="chip">Schema</span>
+          <span class="chip">Variants</span>
+          <span class="chip active">Provenance</span>
+          <span class="chip">Versions</span>
+          <span class="chip">Docs</span>
+          <span class="spacer"></span>
+          <span class="chip">Last 30 days ▾</span>
+          <button class="btn-ghost">📊 Compare versions</button>
+          <button class="btn-ghost">⬇ Export report</button>
+        </div>
+        <div class="dev-main" style="grid-template-columns: 200px 1fr;">
+          <div class="dev-sidebar">
+            <div style="padding: 14px 16px; border-bottom: 1px solid var(--mc-border);">
+              <div class="cmp-name" style="font-size: 13px; margin-bottom: 4px;">CLVRecommender</div>
+              <div style="display: flex; gap: 6px; margin-bottom: 8px; flex-wrap: wrap;">
+                <span class="zone-pill green" style="font-size: 10px;">● Green</span>
+                <span class="version-badge current">v1.2.0</span>
+              </div>
+              <div style="font-size: 11px; color: var(--mc-text-muted); line-height: 1.4;">
+                CLV-tier aware recommendation block with 4 variants (new / low / mid / high).
+              </div>
+            </div>
+            <div class="section-title">Provenance</div>
+            <div class="nav-row active">📈 Performance <span class="count">30d</span></div>
+            <div class="nav-row">🧪 Experiments <span class="count">8</span></div>
+            <div class="nav-row">📍 Deployments <span class="count">6</span></div>
+            <div class="nav-row">🕒 Version history</div>
+            <div class="nav-row">⚠ Known issues <span class="count">0</span></div>
+            <div class="section-title">Usage</div>
+            <div class="nav-row">Pages using <span class="count">6</span></div>
+            <div class="nav-row">Tenants using <span class="count">31/42</span></div>
+          </div>
+          <div style="padding: 20px; overflow-y: auto;">
+            <div class="metric-grid" style="margin-bottom: 20px;">
+              <div class="metric-card highlight">
+                <div class="label">CTR lift (30d)</div>
+                <div class="value">+31.7%</div>
+                <div class="trend up">↑ 4.2% vs v1.1.0</div>
+              </div>
+              <div class="metric-card">
+                <div class="label">CLV impact · 90d</div>
+                <div class="value">+£42</div>
+                <div class="trend up">per buyer exposed</div>
+              </div>
+              <div class="metric-card">
+                <div class="label">Experiment win rate</div>
+                <div class="value">75%</div>
+                <div class="trend up">↑ 6 of 8 significant</div>
+              </div>
+              <div class="metric-card">
+                <div class="label">Sessions observed</div>
+                <div class="value">2.4M</div>
+                <div class="trend flat">across 31 tenants</div>
+              </div>
+            </div>
+
+            <div style="background: white; border: 1px solid var(--mc-border); border-radius: var(--radius-md); padding: 16px; margin-bottom: 16px;">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
+                <div>
+                  <div style="font-size: 13px; font-weight: 600; margin-bottom: 2px;">CTR lift over time</div>
+                  <div style="font-size: 11px; color: var(--mc-text-muted);">Rolling 7-day · across all tenants · vs baseline (no recommender)</div>
+                </div>
+                <div style="display: flex; gap: 6px;">
+                  <span class="chip active">CTR</span>
+                  <span class="chip">CLV</span>
+                  <span class="chip">AOV</span>
+                </div>
+              </div>
+              <div style="height: 140px; background: #fafbfc; border: 1px dashed var(--mc-border-strong); border-radius: var(--radius-sm); padding: 14px; display: flex; flex-direction: column;">
+                <div class="sparkline" style="flex: 1; height: auto; gap: 3px;">
+                  <div class="bar" style="height: 28%;"></div>
+                  <div class="bar" style="height: 34%;"></div>
+                  <div class="bar" style="height: 32%;"></div>
+                  <div class="bar" style="height: 41%;"></div>
+                  <div class="bar" style="height: 38%;"></div>
+                  <div class="bar" style="height: 46%;"></div>
+                  <div class="bar" style="height: 44%;"></div>
+                  <div class="bar" style="height: 52%;"></div>
+                  <div class="bar" style="height: 58%;"></div>
+                  <div class="bar" style="height: 55%;"></div>
+                  <div class="bar" style="height: 64%;"></div>
+                  <div class="bar" style="height: 68%;"></div>
+                  <div class="bar" style="height: 72%;"></div>
+                  <div class="bar" style="height: 71%;"></div>
+                  <div class="bar highlight" style="height: 82%;"></div>
+                  <div class="bar highlight" style="height: 87%;"></div>
+                  <div class="bar highlight" style="height: 91%;"></div>
+                  <div class="bar highlight" style="height: 86%;"></div>
+                  <div class="bar highlight" style="height: 92%;"></div>
+                  <div class="bar highlight" style="height: 95%;"></div>
+                  <div class="bar highlight" style="height: 100%;"></div>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 10px; color: var(--mc-text-muted); margin-top: 6px;">
+                  <span>30d ago</span><span style="color: var(--mc-warning);">↑ v1.2.0 shipped</span><span>today</span>
+                </div>
+              </div>
+            </div>
+
+            <div style="background: white; border: 1px solid var(--mc-border); border-radius: var(--radius-md); padding: 16px; margin-bottom: 16px;">
+              <div style="font-size: 13px; font-weight: 600; margin-bottom: 10px;">Performance by CLV tier variant</div>
+              <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
+                <div style="padding: 12px; background: #fafbfc; border-radius: var(--radius-sm); border-left: 3px solid #94a3b8;">
+                  <div style="font-size: 10px; color: var(--mc-text-muted); text-transform: uppercase; letter-spacing: 0.4px; font-weight: 600;">new</div>
+                  <div style="font-size: 18px; font-weight: 600; margin-top: 4px;">+12.1%</div>
+                  <div style="font-size: 10px; color: var(--mc-text-muted);">onboarding · safer picks</div>
+                </div>
+                <div style="padding: 12px; background: #fafbfc; border-radius: var(--radius-sm); border-left: 3px solid #60a5fa;">
+                  <div style="font-size: 10px; color: var(--mc-text-muted); text-transform: uppercase; letter-spacing: 0.4px; font-weight: 600;">low</div>
+                  <div style="font-size: 18px; font-weight: 600; margin-top: 4px;">+22.4%</div>
+                  <div style="font-size: 10px; color: var(--mc-text-muted);">discount-sensitive picks</div>
+                </div>
+                <div style="padding: 12px; background: var(--mc-blue-wash); border-radius: var(--radius-sm); border-left: 3px solid var(--mc-blue);">
+                  <div style="font-size: 10px; color: var(--mc-blue); text-transform: uppercase; letter-spacing: 0.4px; font-weight: 600;">mid ★</div>
+                  <div style="font-size: 18px; font-weight: 600; margin-top: 4px; color: var(--mc-blue);">+41.3%</div>
+                  <div style="font-size: 10px; color: var(--mc-text-muted);">best performing tier</div>
+                </div>
+                <div style="padding: 12px; background: #fafbfc; border-radius: var(--radius-sm); border-left: 3px solid #c4b5fd;">
+                  <div style="font-size: 10px; color: var(--mc-text-muted); text-transform: uppercase; letter-spacing: 0.4px; font-weight: 600;">high</div>
+                  <div style="font-size: 18px; font-weight: 600; margin-top: 4px;">+28.8%</div>
+                  <div style="font-size: 10px; color: var(--mc-text-muted);">exclusive / premium picks</div>
+                </div>
+              </div>
+            </div>
+
+            <div style="background: white; border: 1px solid var(--mc-border); border-radius: var(--radius-md); padding: 16px;">
+              <div style="font-size: 13px; font-weight: 600; margin-bottom: 10px;">Recent experiments using this component</div>
+              <div style="display: grid; grid-template-columns: 1fr 100px 80px 100px 80px; padding: 8px 10px; font-size: 10px; text-transform: uppercase; letter-spacing: 0.4px; color: var(--mc-text-muted); font-weight: 600; border-bottom: 1px solid var(--mc-border);">
+                <div>Experiment</div><div>Tenant</div><div>Horizon</div><div>Outcome</div><div>Δ vs control</div>
+              </div>
+              <div style="display: grid; grid-template-columns: 1fr 100px 80px 100px 80px; padding: 10px; font-size: 12px; align-items: center; border-bottom: 1px solid var(--mc-border);">
+                <div>CLVRecommender above fold vs below fold</div>
+                <div style="font-size: 11px; color: var(--mc-text-muted);">Acme Retail</div>
+                <div><span class="chip" style="font-size: 10px; background: #fef3c7; border-color: #d97706; color: #d97706;">⚡ H1</span></div>
+                <div style="color: var(--mc-success);">✓ Winner</div>
+                <div style="color: var(--mc-success); font-weight: 600;">+18.2%</div>
+              </div>
+              <div style="display: grid; grid-template-columns: 1fr 100px 80px 100px 80px; padding: 10px; font-size: 12px; align-items: center; border-bottom: 1px solid var(--mc-border);">
+                <div>CLV mid vs high variant swap test</div>
+                <div style="font-size: 11px; color: var(--mc-text-muted);">BrightBrand</div>
+                <div><span class="chip" style="font-size: 10px; background: #dbeafe; border-color: #0066cc; color: #0066cc;">📈 H2</span></div>
+                <div style="color: var(--mc-success);">✓ Winner</div>
+                <div style="color: var(--mc-success); font-weight: 600;">+£22 CLV</div>
+              </div>
+              <div style="display: grid; grid-template-columns: 1fr 100px 80px 100px 80px; padding: 10px; font-size: 12px; align-items: center; border-bottom: 1px solid var(--mc-border);">
+                <div>3-item vs 6-item recommender layout</div>
+                <div style="font-size: 11px; color: var(--mc-text-muted);">NorthernLux</div>
+                <div><span class="chip" style="font-size: 10px; background: #fef3c7; border-color: #d97706; color: #d97706;">⚡ H1</span></div>
+                <div style="color: var(--mc-error);">✗ Retired</div>
+                <div style="color: var(--mc-text-muted);">inconclusive</div>
+              </div>
+              <div style="display: grid; grid-template-columns: 1fr 100px 80px 100px 80px; padding: 10px; font-size: 12px; align-items: center;">
+                <div>CLVRecommender on PDP vs category page</div>
+                <div style="font-size: 11px; color: var(--mc-text-muted);">Meridian Co.</div>
+                <div><span class="chip" style="font-size: 10px; background: #dbeafe; border-color: #0066cc; color: #0066cc;">📈 H2</span></div>
+                <div style="color: var(--mc-blue);">⟳ Running · 14d</div>
+                <div style="color: var(--mc-text-muted);">gathering</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="padding: 0 24px 20px;">
+      <div class="screen-annotations single" style="padding: 16px 20px;">
+        <h4>Design Notes</h4>
+        <ul>
+          <li><strong>Provenance is a tab, not a separate tool</strong> — developers maintaining this component see its behavioral story alongside schema/version/docs. No context switch.</li>
+          <li><strong>Four headline metrics tell the component's story</strong> — CTR lift (Horizon 1 signal), CLV impact (Horizon 2 — the moat), experiment win rate (reliability), and scale (sessions observed). Matches the Epic 8 AI Experience Engine two-horizon model.</li>
+          <li><strong>Variant-level performance breakdown</strong> — CLV tier variants don't perform equally. "mid" tier wins at +41.3%. Developers see exactly which variants are carrying the weight, informing where to invest future iteration.</li>
+          <li><strong>Version-anchored annotations</strong> — the chart marks where v1.2.0 shipped, so developers can attribute performance changes to their releases (vs seasonal effects).</li>
+          <li><strong>Experiments table reuses Epic 8 vocabulary</strong> — H1/H2 horizons, winner/retired states, per-tenant attribution. Same components, same vocabulary across consoles.</li>
+          <li><strong>Retired experiments included, not hidden</strong> — "Retired — inconclusive" is honest data. Feeds the Tried and Retired library (Epic 8).</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 3B — Library-Wide Health Overview ============ -->
+  <div class="screen">
+    <div class="screen-header">
+      <h3>3B — Library health: winners, retirements, and where to invest</h3>
+      <span class="tag">Cross-component overview — roadmap prioritization view</span>
+    </div>
+    <div class="screen-body single">
+      <div class="dev-frame" style="height: 620px;">
+        <div class="dev-topbar">
+          <span class="logo">commercetools Developer</span>
+          <span class="crumbs">Component library › <strong>Health overview</strong></span>
+          <span class="spacer"></span>
+          <span class="user">LP</span>
+        </div>
+        <div class="sub-bar">
+          <span class="chip">Last 30 days ▾</span>
+          <span class="chip">All tenants ▾</span>
+          <span class="chip">All zones</span>
+          <span class="spacer"></span>
+          <button class="btn-ghost">📊 Compare to last period</button>
+          <button class="btn-ghost">⬇ Export for roadmap</button>
+        </div>
+        <div class="dev-main" style="grid-template-columns: 1fr;">
+          <div style="padding: 20px; overflow-y: auto;">
+
+            <div class="metric-grid" style="margin-bottom: 20px;">
+              <div class="metric-card">
+                <div class="label">Components shipped</div>
+                <div class="value">19</div>
+                <div class="trend up">↑ 3 new · 1 deprecated</div>
+              </div>
+              <div class="metric-card">
+                <div class="label">Avg. CTR lift · library</div>
+                <div class="value">+14.3%</div>
+                <div class="trend up">↑ 2.1% vs last month</div>
+              </div>
+              <div class="metric-card">
+                <div class="label">Experiments · win rate</div>
+                <div class="value">68%</div>
+                <div class="trend up">34 wins · 16 retired</div>
+              </div>
+              <div class="metric-card highlight">
+                <div class="label">Compound CLV · 90d</div>
+                <div class="value">+£1.2M</div>
+                <div class="trend up">across 42 tenants</div>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+
+              <div style="background: white; border: 1px solid var(--mc-border); border-left: 3px solid var(--mc-success); border-radius: var(--radius-md); padding: 16px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                  <div style="font-size: 13px; font-weight: 600; color: var(--mc-success);">🏆 Emerging winners</div>
+                  <span style="font-size: 11px; color: var(--mc-text-muted);">Invest in these</span>
+                </div>
+                <div style="font-size: 11px; color: var(--mc-text-muted); margin-bottom: 12px;">Components with CTR lift &gt; 25% AND &gt;5 experiments won in last 30d.</div>
+
+                <div style="display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--mc-border);">
+                  <span class="cmp-name" style="font-size: 12px;">CLVRecommender</span>
+                  <span class="version-badge current">v1.2.0</span>
+                  <span class="spacer" style="flex: 1;"></span>
+                  <span style="font-size: 12px; color: var(--mc-success); font-weight: 600;">+31.7%</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--mc-border);">
+                  <span class="cmp-name" style="font-size: 12px;">ProductGrid</span>
+                  <span class="version-badge current">v3.0.2</span>
+                  <span class="spacer" style="flex: 1;"></span>
+                  <span style="font-size: 12px; color: var(--mc-success); font-weight: 600;">+22.4%</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 10px; padding: 8px 0;">
+                  <span class="cmp-name" style="font-size: 12px;">HeroBanner</span>
+                  <span class="version-badge current">v2.1.0</span>
+                  <span class="spacer" style="flex: 1;"></span>
+                  <span style="font-size: 12px; color: var(--mc-success); font-weight: 600;">+18.2%</span>
+                </div>
+              </div>
+
+              <div style="background: white; border: 1px solid var(--mc-border); border-left: 3px solid var(--mc-error); border-radius: var(--radius-md); padding: 16px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                  <div style="font-size: 13px; font-weight: 600; color: var(--mc-error);">⚠ Retired & deprecated</div>
+                  <span style="font-size: 11px; color: var(--mc-text-muted);">Stop investing</span>
+                </div>
+                <div style="font-size: 11px; color: var(--mc-text-muted); margin-bottom: 12px;">Components with negative or flat performance — plan retirement.</div>
+
+                <div style="display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--mc-border);">
+                  <span class="cmp-name" style="font-size: 12px; color: var(--mc-text-muted);">PromoStrip</span>
+                  <span class="version-badge">v1.4.1</span>
+                  <span style="font-size: 10px; color: var(--mc-error); background: var(--mc-error-bg); padding: 2px 6px; border-radius: 3px; font-weight: 600;">deprecated</span>
+                  <span class="spacer" style="flex: 1;"></span>
+                  <span style="font-size: 12px; color: var(--mc-error); font-weight: 600;">−2.1%</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--mc-border);">
+                  <span class="cmp-name" style="font-size: 12px; color: var(--mc-text-muted);">ExitIntentPopup</span>
+                  <span class="version-badge">v1.0.3</span>
+                  <span style="font-size: 10px; color: var(--mc-warning); background: var(--mc-warning-bg); padding: 2px 6px; border-radius: 3px; font-weight: 600;">retire candidate</span>
+                  <span class="spacer" style="flex: 1;"></span>
+                  <span style="font-size: 12px; color: var(--mc-error); font-weight: 600;">−0.8%</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 10px; padding: 8px 0;">
+                  <span class="cmp-name" style="font-size: 12px; color: var(--mc-text-muted);">SocialProofBar</span>
+                  <span class="version-badge">v0.9.2</span>
+                  <span style="font-size: 10px; color: var(--mc-warning); background: var(--mc-warning-bg); padding: 2px 6px; border-radius: 3px; font-weight: 600;">retire candidate</span>
+                  <span class="spacer" style="flex: 1;"></span>
+                  <span style="font-size: 12px; color: var(--mc-text-muted); font-weight: 600;">flat</span>
+                </div>
+              </div>
+            </div>
+
+            <div style="background: white; border: 1px solid var(--mc-border); border-radius: var(--radius-md); padding: 16px; margin-bottom: 16px;">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
+                <div>
+                  <div style="font-size: 13px; font-weight: 600;">Component performance scatter</div>
+                  <div style="font-size: 11px; color: var(--mc-text-muted);">CTR lift (X) × Experiment win rate (Y) · bubble size = tenant adoption</div>
+                </div>
+                <div style="display: flex; gap: 6px;">
+                  <span class="chip active">Last 30d</span>
+                  <span class="chip">Quarter</span>
+                  <span class="chip">All time</span>
+                </div>
+              </div>
+              <div style="height: 180px; background: #fafbfc; border: 1px dashed var(--mc-border-strong); border-radius: var(--radius-sm); position: relative;">
+                <div style="position: absolute; left: 8px; top: 8px; font-size: 10px; color: var(--mc-text-muted);">Win rate ↑</div>
+                <div style="position: absolute; right: 8px; bottom: 8px; font-size: 10px; color: var(--mc-text-muted);">CTR lift →</div>
+
+                <div style="position: absolute; left: 15%; bottom: 20%; width: 20px; height: 20px; border-radius: 50%; background: var(--mc-text-muted); opacity: 0.4;"></div>
+                <div style="position: absolute; left: 28%; bottom: 35%; width: 24px; height: 24px; border-radius: 50%; background: var(--mc-warning); opacity: 0.6;"></div>
+                <div style="position: absolute; left: 38%; bottom: 52%; width: 32px; height: 32px; border-radius: 50%; background: var(--mc-blue); opacity: 0.6;"></div>
+                <div style="position: absolute; left: 55%; bottom: 62%; width: 40px; height: 40px; border-radius: 50%; background: var(--mc-success); opacity: 0.7;"></div>
+                <div style="position: absolute; left: 72%; bottom: 74%; width: 50px; height: 50px; border-radius: 50%; background: var(--mc-success); opacity: 0.85;"></div>
+                <div style="position: absolute; left: 82%; bottom: 82%; width: 44px; height: 44px; border-radius: 50%; background: var(--mc-success);"></div>
+
+                <div style="position: absolute; left: 82%; bottom: 82%; margin-left: 52px; margin-top: -4px; font-size: 10px; color: var(--mc-text); font-weight: 600;">CLVRecommender</div>
+                <div style="position: absolute; left: 72%; bottom: 74%; margin-left: 56px; margin-top: -4px; font-size: 10px; color: var(--mc-text);">ProductGrid</div>
+                <div style="position: absolute; left: 15%; bottom: 20%; margin-left: 24px; margin-top: -4px; font-size: 10px; color: var(--mc-text-muted);">PromoStrip (retire)</div>
+
+                <div style="position: absolute; top: 6px; right: 70px; font-size: 10px; color: var(--mc-success); background: var(--mc-success-bg); padding: 3px 8px; border-radius: 10px; font-weight: 600;">★ Invest quadrant</div>
+                <div style="position: absolute; bottom: 6px; left: 6px; font-size: 10px; color: var(--mc-error); background: var(--mc-error-bg); padding: 3px 8px; border-radius: 10px; font-weight: 600;">⚠ Retire quadrant</div>
+              </div>
+            </div>
+
+            <div style="background: var(--mc-ai-tint); border: 1px solid var(--mc-ai-accent); border-radius: var(--radius-md); padding: 16px;">
+              <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                <span style="font-size: 16px;">✨</span>
+                <div style="font-size: 13px; font-weight: 600; color: var(--mc-ai-accent);">AI-suggested library actions</div>
+              </div>
+              <ul style="list-style: none; padding: 0; font-size: 12px;">
+                <li style="padding: 6px 0; border-bottom: 1px dashed rgba(88, 28, 255, 0.2);">
+                  <strong>Extract a TestimonialBar primitive</strong> from CLVRecommender and ProductGrid — both use the same rating+quote pattern in 11 tenants. Reusable and the rating UI is the top-performing sub-pattern.
+                </li>
+                <li style="padding: 6px 0; border-bottom: 1px dashed rgba(88, 28, 255, 0.2);">
+                  <strong>Retire PromoStrip in v5.0.0</strong> — 4 tenants still using, all with negative performance. HeroBanner strip variant handles the use case better.
+                </li>
+                <li style="padding: 6px 0;">
+                  <strong>CLVRecommender mid-tier variant is a moat</strong> — +41.3% lift. Consider a dedicated high-tier version with different copy strategy. No current experiment tests this.
+                </li>
+              </ul>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="padding: 0 24px 20px;">
+      <div class="screen-annotations single" style="padding: 16px 20px;">
+        <h4>Design Notes</h4>
+        <ul>
+          <li><strong>Compound CLV is the headline number</strong> — "+£1.2M across 42 tenants" frames the library as a revenue engine, not a code asset. This is the metric that converts developers into product thinkers.</li>
+          <li><strong>Winners + retirements side-by-side</strong> — the two most actionable lists for roadmap planning. "Invest here" and "stop investing here" at a glance.</li>
+          <li><strong>Scatter plot with invest / retire quadrants</strong> — translates abstract data into a spatial metaphor. Developers can see at a glance which components deserve the next iteration.</li>
+          <li><strong>AI suggestions are extraction-focused, not generation-focused</strong> — "extract a TestimonialBar primitive" proposes a refactor based on observed patterns. Treats the AI as a pair programmer, not an automator.</li>
+          <li><strong>AI tinting stays consistent</strong> — same low-opacity brand-color wash used in Epic 3's AI panel. Operators and developers recognize AI-originated content the same way across the product.</li>
+          <li><strong>Explicit "★ Invest" and "⚠ Retire" quadrant labels</strong> — named decisions, not just plotted data. Reflects the Porter-style strategic thinking that should drive library roadmaps.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="doc-footer">
+  Wireframes align to the same commercetools Merchant Center design tokens as Epic 3, but the Developer Console surfaces data density and code affordances suited to the storefront developer audience.
+</div>
+
+<script>
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      const target = tab.dataset.tab;
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('tab-' + target).classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+
+  // Zone toggle in schema editor
+  document.querySelectorAll('.zone-toggle').forEach(group => {
+    group.querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        group.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      });
+    });
+  });
+
+  // Simulator toggle
+  document.querySelectorAll('.simulator-toggle').forEach(group => {
+    group.querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        group.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const mode = btn.dataset.mode;
+        const container = group.closest('.dev-frame')?.querySelector('[data-sim-container]');
+        if (container && mode) {
+          container.dataset.simMode = mode;
+        }
+      });
+    });
+  });
+</script>
+</body>
+</html>
