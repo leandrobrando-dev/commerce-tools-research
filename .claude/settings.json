@@ -9,7 +9,9 @@
       "Bash(npx @commercetools-frontend/create-mc-app@latest next-gen-frontend --template starter-typescript)",
       "Bash(npx tsc *)",
       "Bash(python3 /Users/mac-LPALAZ03/Bmad/commerce-tools-research/_bmad/scripts/resolve_customization.py --skill /Users/mac-LPALAZ03/Bmad/commerce-tools-research/.claude/skills/bmad-agent-ux-designer --key agent)",
-      "Bash(python3 /Users/mac-LPALAZ03/Bmad/commerce-tools-research/_bmad/scripts/resolve_customization.py --skill /Users/mac-LPALAZ03/Bmad/commerce-tools-research/.claude/skills/bmad-create-ux-design --key workflow)"
+      "Bash(python3 /Users/mac-LPALAZ03/Bmad/commerce-tools-research/_bmad/scripts/resolve_customization.py --skill /Users/mac-LPALAZ03/Bmad/commerce-tools-research/.claude/skills/bmad-create-ux-design --key workflow)",
+      "WebFetch(domain:www.prnewswire.com)",
+      "WebFetch(domain:www.builder.io)"
     ],
     "additionalDirectories": [
       "/Users/mac-LPALAZ03/Bmad/next-gen-frontend/src",
