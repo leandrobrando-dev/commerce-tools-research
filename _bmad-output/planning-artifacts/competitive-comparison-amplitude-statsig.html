@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Competitive Comparison — Epic 8 vs Amplitude+Statsig+OpenAI</title>
+<style>
+  :root {
+    --brand-1: #0066cc;
+    --brand-1-bg: #dbeafe;
+    --brand-1-wash: rgba(0, 102, 204, 0.08);
+    --brand-2: #5b21b6;
+    --brand-2-bg: #ede9fe;
+    --ai-tint: rgba(88, 28, 255, 0.08);
+    --bg: #f5f7fa;
+    --surface: #ffffff;
+    --border: #e4e7eb;
+    --border-strong: #cbd2d9;
+    --text: #1f2933;
+    --text-muted: #6b7280;
+    --text-faint: #9aa5b1;
+    --success: #16a34a;
+    --success-bg: #ecfdf5;
+    --warning: #d97706;
+    --warning-bg: #fef3c7;
+    --error: #dc2626;
+    --error-bg: #fee2e2;
+    --locked: #9aa5b1;
+    --locked-bg: #f3f4f6;
+
+    /* Competitor colors — neutral, respectful (not villainous) */
+    --competitor: #475569;
+    --competitor-bg: #f1f5f9;
+    --competitor-border: #cbd5e1;
+
+    /* Us colors — commercetools blue family */
+    --us: #0066cc;
+    --us-bg: #dbeafe;
+    --us-border: #93c5fd;
+
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.06);
+    --shadow-lg: 0 10px 30px rgba(0,0,0,0.08);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 20px; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 14px; line-height: 1.55;
+    background: var(--bg); color: var(--text);
+  }
+  code, .mono { font-family: 'SF Mono', 'Monaco', 'Consolas', monospace; font-size: 12px; }
+
+  /* ============ Layout ============ */
+  .page {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 32px 40px 80px;
+  }
+
+  /* ============ Nav bar ============ */
+  .topnav {
+    background: white;
+    border-bottom: 1px solid var(--border);
+    padding: 12px 32px;
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; gap: 20px;
+    box-shadow: var(--shadow-sm);
+  }
+  .topnav a.back {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: var(--radius-sm);
+    transition: all 0.15s;
+  }
+  .topnav a.back:hover { background: var(--brand-1-bg); color: var(--brand-1); }
+  .topnav .breadcrumb {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  .topnav .chip {
+    font-size: 11px;
+    padding: 2px 10px;
+    border-radius: 10px;
+    background: var(--warning-bg);
+    color: var(--warning);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .topnav .spacer { flex: 1; }
+  .topnav .meta {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-family: 'SF Mono', monospace;
+  }
+
+  /* ============ Hero ============ */
+  .hero {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 45%, #312e81 100%);
+    color: white;
+    padding: 48px 56px 40px;
+    border-radius: var(--radius-xl);
+    margin-bottom: 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; right: -80px; bottom: -80px;
+    width: 320px; height: 320px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(88,28,255,0.3), transparent 70%);
+  }
+  .hero .eyebrow {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px;
+    color: #a5b4fc; font-weight: 600; margin-bottom: 10px; position: relative; z-index: 1;
+  }
+  .hero h1 {
+    font-size: 36px; font-weight: 700; line-height: 1.15;
+    letter-spacing: -0.5px; margin-bottom: 14px;
+    position: relative; z-index: 1;
+    max-width: 900px;
+  }
+  .hero h1 .highlight { color: #a5b4fc; }
+  .hero .lede {
+    font-size: 15px; color: #cbd5e1; max-width: 820px;
+    line-height: 1.6; position: relative; z-index: 1;
+  }
+  .hero .tag-row {
+    margin-top: 24px; display: flex; gap: 10px; flex-wrap: wrap;
+    position: relative; z-index: 1;
+  }
+  .hero-tag {
+    background: rgba(255,255,255,0.08);
+    color: white;
+    padding: 6px 14px;
+    border-radius: 14px;
+    font-size: 12px;
+    font-weight: 500;
+    border: 1px solid rgba(255,255,255,0.18);
+  }
+  .hero-tag strong { color: #a5b4fc; font-weight: 700; }
+
+  /* ============ Section heading ============ */
+  section { margin-bottom: 56px; scroll-margin-top: 32px; }
+  .section-head {
+    display: flex; align-items: baseline; gap: 16px;
+    margin-bottom: 8px;
+  }
+  .section-head .num {
+    font-family: 'SF Mono', monospace; font-size: 14px; font-weight: 600;
+    color: var(--text-faint);
+  }
+  .section-head h2 {
+    font-size: 22px; font-weight: 700; letter-spacing: -0.3px;
+  }
+  .section-lede {
+    font-size: 14px; color: var(--text-muted); margin-bottom: 24px;
+    max-width: 820px; line-height: 1.6;
+  }
+
+  /* ============ Cards ============ */
+  .card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    box-shadow: var(--shadow-sm);
+  }
+
+  /* ============ Stat row (hero stats) ============ */
+  .stat-strip {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;
+    margin-bottom: 48px;
+  }
+  .stat-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 20px;
+  }
+  .stat-card.highlight {
+    background: var(--brand-1-bg);
+    border-color: var(--brand-1);
+  }
+  .stat-card .label {
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.7px;
+    color: var(--text-muted); font-weight: 600; margin-bottom: 8px;
+  }
+  .stat-card .value {
+    font-size: 26px; font-weight: 700; color: var(--text); line-height: 1;
+    margin-bottom: 6px;
+  }
+  .stat-card.highlight .value { color: var(--brand-1); }
+  .stat-card .detail {
+    font-size: 12px; color: var(--text-muted);
+  }
+
+  /* ============ Timeline ============ */
+  .timeline {
+    position: relative;
+    padding: 12px 0;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 20px; right: 20px; top: 36px;
+    height: 2px;
+    background: linear-gradient(to right, var(--competitor-border), var(--competitor), var(--brand-1));
+    border-radius: 1px;
+  }
+  .timeline-row {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0;
+    position: relative;
+  }
+  .timeline-event {
+    position: relative;
+    padding-top: 52px;
+    text-align: center;
+  }
+  .timeline-event::before {
+    content: '';
+    position: absolute;
+    left: 50%; top: 28px;
+    transform: translateX(-50%);
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: white;
+    border: 3px solid var(--competitor);
+    z-index: 2;
+  }
+  .timeline-event.us::before { border-color: var(--brand-1); }
+  .timeline-event.key::before { background: var(--warning); border-color: var(--warning); width: 22px; height: 22px; top: 26px; }
+  .timeline-event .date {
+    font-family: 'SF Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+  }
+  .timeline-event .title {
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.35;
+    color: var(--text);
+    padding: 0 6px;
+  }
+  .timeline-event.key .title { color: var(--warning); }
+  .timeline-event .sub {
+    font-size: 10px;
+    color: var(--text-muted);
+    margin-top: 4px;
+    padding: 0 6px;
+  }
+
+  /* ============ Moat comparison matrix ============ */
+  .moat-row {
+    display: grid;
+    grid-template-columns: 50px 1fr 1fr 1fr;
+    gap: 0;
+    background: white;
+    border: 1px solid var(--border);
+    border-bottom: none;
+    align-items: stretch;
+  }
+  .moat-row:first-of-type { border-radius: var(--radius-md) var(--radius-md) 0 0; }
+  .moat-row:last-of-type {
+    border-bottom: 1px solid var(--border);
+    border-radius: 0 0 var(--radius-md) var(--radius-md);
+  }
+  .moat-row.header {
+    background: #fafbfc;
+    font-weight: 600;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+  }
+  .moat-row.header div {
+    padding: 14px 16px;
+  }
+  .moat-row .moat-num {
+    padding: 18px 14px;
+    font-family: 'SF Mono', monospace;
+    font-weight: 700;
+    color: var(--text-faint);
+    background: #fafbfc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    border-right: 1px solid var(--border);
+  }
+  .moat-row .moat-dim {
+    padding: 18px 18px;
+    border-right: 1px solid var(--border);
+  }
+  .moat-row .moat-dim .dim-title {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: var(--text);
+  }
+  .moat-row .moat-dim .dim-desc {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+  .moat-row .moat-dim .fr-ref {
+    display: inline-block;
+    font-family: 'SF Mono', monospace;
+    font-size: 10px;
+    padding: 2px 6px;
+    background: var(--brand-1-bg);
+    color: var(--brand-1);
+    border-radius: 10px;
+    margin-top: 8px;
+    font-weight: 600;
+  }
+  .moat-row .moat-competitor,
+  .moat-row .moat-us {
+    padding: 18px 18px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .moat-row .moat-competitor {
+    background: var(--competitor-bg);
+    border-right: 1px solid var(--border);
+  }
+  .moat-row .moat-us {
+    background: var(--us-bg);
+  }
+  .cell-title {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+  .moat-competitor .cell-title { color: var(--competitor); }
+  .moat-us .cell-title { color: var(--brand-1); }
+  .cell-verdict {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    width: fit-content;
+  }
+  .cell-verdict.gap { background: var(--error-bg); color: var(--error); }
+  .cell-verdict.partial { background: var(--warning-bg); color: var(--warning); }
+  .cell-verdict.win { background: var(--success-bg); color: var(--success); }
+  .cell-body {
+    font-size: 12px;
+    color: var(--text);
+    line-height: 1.5;
+  }
+  .cell-body em { color: var(--text-muted); font-style: normal; }
+
+  /* ============ Scorecard (bottom of matrix) ============ */
+  .scorecard {
+    background: linear-gradient(135deg, #1e293b 0%, #312e81 100%);
+    color: white;
+    border-radius: var(--radius-lg);
+    padding: 28px 32px;
+    margin-top: 18px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    align-items: center;
+  }
+  .scorecard h3 {
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #a5b4fc;
+    margin-bottom: 8px;
+  }
+  .scorecard .score-main {
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.5px;
+  }
+  .scorecard .score-highlight { color: #a5b4fc; }
+  .scorecard .score-detail {
+    font-size: 13px;
+    color: #cbd5e1;
+    line-height: 1.6;
+    margin-top: 10px;
+  }
+
+  /* ============ Quadrant chart ============ */
+  .quadrant-wrap {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    align-items: center;
+  }
+  .quadrant {
+    position: relative;
+    aspect-ratio: 1;
+    background: #fafbfc;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    padding: 20px;
+  }
+  .quadrant-axis-x, .quadrant-axis-y {
+    position: absolute;
+    background: var(--border-strong);
+  }
+  .quadrant-axis-x {
+    left: 10%; right: 10%; top: 50%;
+    height: 1px;
+  }
+  .quadrant-axis-y {
+    top: 10%; bottom: 10%; left: 50%;
+    width: 1px;
+  }
+  .quadrant-label {
+    position: absolute;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+  }
+  .quadrant-label.xl { left: 4px; top: 50%; transform: translateY(-50%); }
+  .quadrant-label.xr { right: 4px; top: 50%; transform: translateY(-50%); }
+  .quadrant-label.yt { top: 4px; left: 50%; transform: translateX(-50%); }
+  .quadrant-label.yb { bottom: 4px; left: 50%; transform: translateX(-50%); }
+
+  .quadrant-tag {
+    position: absolute;
+    font-size: 9px;
+    font-weight: 600;
+    color: var(--text-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    pointer-events: none;
+  }
+  .quadrant-dot {
+    position: absolute;
+    padding: 6px 12px;
+    border-radius: 14px;
+    font-size: 12px;
+    font-weight: 700;
+    transform: translate(-50%, -50%);
+    border: 2px solid;
+    white-space: nowrap;
+    box-shadow: var(--shadow-sm);
+  }
+  .quadrant-dot.us {
+    background: var(--us-bg);
+    color: var(--brand-1);
+    border-color: var(--brand-1);
+  }
+  .quadrant-dot.them {
+    background: var(--competitor-bg);
+    color: var(--competitor);
+    border-color: var(--competitor-border);
+  }
+  .quadrant-dot.other {
+    background: white;
+    color: var(--text-muted);
+    border-color: var(--border-strong);
+    font-size: 11px;
+  }
+
+  .quadrant-side p {
+    font-size: 13px;
+    line-height: 1.65;
+    color: var(--text);
+    margin-bottom: 12px;
+  }
+  .quadrant-side p:last-child { margin-bottom: 0; }
+  .quadrant-side strong { color: var(--brand-1); }
+
+  /* ============ Capability Venn ============ */
+  .venn-wrap {
+    display: grid;
+    grid-template-columns: 480px 1fr;
+    gap: 32px;
+    align-items: center;
+  }
+  .venn {
+    position: relative;
+    height: 400px;
+    background: #fafbfc;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+  }
+  .venn-circle {
+    position: absolute;
+    width: 260px; height: 260px;
+    border-radius: 50%;
+    border: 3px solid;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 34px;
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .venn-circle.them {
+    left: 40px;
+    background: rgba(71, 85, 105, 0.12);
+    border-color: var(--competitor);
+    color: var(--competitor);
+  }
+  .venn-circle.us {
+    right: 40px;
+    background: rgba(0, 102, 204, 0.12);
+    border-color: var(--brand-1);
+    color: var(--brand-1);
+  }
+  .venn-capability {
+    position: absolute;
+    font-size: 11px;
+    color: var(--text);
+    background: white;
+    padding: 3px 8px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    white-space: nowrap;
+    font-weight: 500;
+  }
+
+  /* ============ FAQ ============ */
+  .faq-item {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 22px 26px;
+    margin-bottom: 14px;
+  }
+  .faq-item .q {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--brand-1);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .faq-item .q::before {
+    content: "Q";
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px; height: 22px;
+    background: var(--brand-1);
+    color: white;
+    border-radius: 50%;
+    font-size: 11px;
+    font-weight: 700;
+    font-family: 'SF Mono', monospace;
+  }
+  .faq-item .a {
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--text);
+    padding-left: 32px;
+  }
+  .faq-item .a strong { color: var(--text); }
+  .faq-item .a em { color: var(--text-muted); font-style: normal; }
+
+  /* ============ Revisit triggers ============ */
+  .triggers {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+  .trigger {
+    background: white;
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--warning);
+    border-radius: var(--radius-md);
+    padding: 16px 18px;
+  }
+  .trigger.high { border-left-color: var(--error); }
+  .trigger .trigger-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    font-weight: 700;
+    color: var(--warning);
+    margin-bottom: 6px;
+  }
+  .trigger.high .trigger-label { color: var(--error); }
+  .trigger .trigger-text {
+    font-size: 12px;
+    line-height: 1.55;
+    color: var(--text);
+  }
+  .trigger .trigger-impact {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px dashed var(--border);
+  }
+
+  /* ============ Footer ============ */
+  footer.doc-footer {
+    margin-top: 64px;
+    padding: 28px 32px;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  footer.doc-footer a {
+    color: var(--brand-1);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  footer.doc-footer a:hover { text-decoration: underline; }
+  footer .foot-links {
+    display: flex; gap: 16px;
+  }
+
+  /* Print styles */
+  @media print {
+    body { background: white; font-size: 10pt; }
+    .topnav { display: none; }
+    .page { max-width: 100%; padding: 0; }
+    .hero, .stat-card, .card, .moat-row, .scorecard { break-inside: avoid; page-break-inside: avoid; }
+    section { break-inside: avoid-page; }
+  }
+
+  @media (max-width: 900px) {
+    .stat-strip { grid-template-columns: repeat(2, 1fr); }
+    .moat-row { grid-template-columns: 40px 1fr; }
+    .moat-row .moat-competitor, .moat-row .moat-us { grid-column: 1 / -1; }
+    .quadrant-wrap, .venn-wrap { grid-template-columns: 1fr; }
+    .triggers { grid-template-columns: 1fr; }
+    .hero { padding: 32px 24px; }
+    .hero h1 { font-size: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <a class="back" href="00-bmad-journey-map.html">← Journey map</a>
+  <span class="chip">Competitive</span>
+  <span class="breadcrumb">Sales enablement · companion to ADR-002</span>
+  <span class="spacer"></span>
+  <span class="meta">2026-05-08 · v1.0</span>
+</nav>
+
+<div class="page">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="eyebrow">Competitive comparison · Sales enablement</div>
+    <h1>Epic 8 vs <span class="highlight">Amplitude + Statsig + OpenAI</span> — seven moats, zero matched.</h1>
+    <p class="lede">On May 5, 2026, Amplitude announced a strategic partnership with Statsig (whose team is now at OpenAI, per the $1.1B acquisition of Sept 2025). This document is the one-pager every sales conversation needs when a prospect asks <em>"why not just use Amplitude?"</em> — a dimension-by-dimension comparison, scored honestly, anchored in structural moats Amplitude+Statsig cannot close without acquiring a commerce backend.</p>
+    <div class="tag-row">
+      <span class="hero-tag"><strong>7</strong> structural moats</span>
+      <span class="hero-tag"><strong>0 of 7</strong> matched by A+S</span>
+      <span class="hero-tag"><strong>$1.1B</strong> OpenAI paid for Statsig</span>
+      <span class="hero-tag"><strong>3 days old</strong> (deal announced May 5, 2026)</span>
+    </div>
+  </section>
+
+  <!-- ================ STATS ================ -->
+  <div class="stat-strip">
+    <div class="stat-card">
+      <div class="label">Category signal</div>
+      <div class="value">$1.1B</div>
+      <div class="detail">OpenAI paid for Statsig in Sept 2025</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Customer stack displaced</div>
+      <div class="value">$350K–$1M</div>
+      <div class="detail">Annual analytics + experimentation spend</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Statsig Series C valuation</div>
+      <div class="value">$1.1B</div>
+      <div class="detail">May 2025 · 4 months pre-acquisition</div>
+    </div>
+    <div class="stat-card highlight">
+      <div class="label">Moats Epic 8 defends</div>
+      <div class="value">7 of 7</div>
+      <div class="detail">Each structurally unreachable without a commerce backend</div>
+    </div>
+  </div>
+
+  <!-- ================ TIMELINE ================ -->
+  <section id="timeline">
+    <div class="section-head">
+      <span class="num">01</span>
+      <h2>Timeline — the deal is 3 days old, not historical</h2>
+    </div>
+    <p class="section-lede">
+      The Amplitude–Statsig–OpenAI consolidation happened in a compressed ten-month window. Every stage validates the category and tightens the competitive window. Epic 8's B2C-first GTM sequencing (already committed as the official narrative flip) is the right ordering against this timeline — B2C proof lands in weeks, before the bundle hardens.
+    </p>
+
+    <div class="card">
+      <div class="timeline">
+        <div class="timeline-row">
+          <div class="timeline-event">
+            <div class="date">May 2025</div>
+            <div class="title">Statsig raises $100M Series C at $1.1B valuation</div>
+            <div class="sub">After an abandoned Datadog acquisition</div>
+          </div>
+          <div class="timeline-event key">
+            <div class="date">Sept 2, 2025</div>
+            <div class="title">OpenAI acquires Statsig — $1.1B all-stock</div>
+            <div class="sub">Raji becomes OpenAI CTO of Applications</div>
+          </div>
+          <div class="timeline-event">
+            <div class="date">Apr 30, 2026</div>
+            <div class="title">Amplitude Wizard CLI launches</div>
+            <div class="sub">AI-builders positioning push begins</div>
+          </div>
+          <div class="timeline-event">
+            <div class="date">May 1, 2026</div>
+            <div class="title">Amplitude AI Plugin for Claude/Cursor</div>
+            <div class="sub">Developer mindshare play</div>
+          </div>
+          <div class="timeline-event">
+            <div class="date">May 4, 2026</div>
+            <div class="title">Amplitude Agent Skills ship</div>
+            <div class="sub">Product-review automation</div>
+          </div>
+          <div class="timeline-event key">
+            <div class="date">May 5, 2026</div>
+            <div class="title">Amplitude + Statsig partnership announced</div>
+            <div class="sub">Amplitude takes brand + customers; team stays at OpenAI</div>
+          </div>
+          <div class="timeline-event us">
+            <div class="date">May 8, 2026</div>
+            <div class="title">ADR-002 + this comparison published</div>
+            <div class="sub">Epic 8 positioning stance locked</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================ MOAT MATRIX ================ -->
+  <section id="matrix">
+    <div class="section-head">
+      <span class="num">02</span>
+      <h2>The seven-moat matrix — dimension by dimension</h2>
+    </div>
+    <p class="section-lede">
+      Each row is one moat Epic 8 defends. Scoring is honest — we credit Amplitude+Statsig for real capabilities and mark partial coverage where it exists. Every verdict is anchored in a structural reason, not a marketing argument: commerce context cannot be reached without the commerce data model; Two-Horizon cannot be computed without CLV modeling on commerce outcomes; Green/Red Zone governance cannot be enforced without owning the runtime. Those aren't roadmap gaps — they are product-architecture gaps.
+    </p>
+
+    <div class="moat-row header">
+      <div>#</div>
+      <div>Dimension</div>
+      <div>Amplitude + Statsig + OpenAI</div>
+      <div>Epic 8 — AI Experience Engine</div>
+    </div>
+
+    <!-- MOAT 1 -->
+    <div class="moat-row">
+      <div class="moat-num">1</div>
+      <div class="moat-dim">
+        <div class="dim-title">Commerce context</div>
+        <div class="dim-desc">CLV tier, contract price, catalog segment, B2B approval queue state, account tier — read natively at the component runtime, not via webhook.</div>
+        <span class="fr-ref">FR21–28 · FR52–64</span>
+      </div>
+      <div class="moat-competitor">
+        <span class="cell-verdict gap">Structural gap</span>
+        <div class="cell-body">
+          Amplitude ingests SDK events. Statsig ingests flag exposures. <em>Neither has native access to commercetools' catalog, pricing service, or approval workflows.</em> Closing this requires acquiring a commerce backend — the only credible path is M&amp;A, and no comparable platform is acquirable at their current valuation.
+        </div>
+      </div>
+      <div class="moat-us">
+        <span class="cell-verdict win">Native</span>
+        <div class="cell-body">
+          Epic 8 reads commerce context <strong>at the point of render</strong> through the commercetools data model. A recommendation knows that this session is a mid-tier CLV consumer on the summer catalog; or that it's a B2B buyer whose account is at $4,900 of a $5,000 approval threshold. No webhook, no attribution stitching — the platform is the storefront.
+        </div>
+      </div>
+    </div>
+
+    <!-- MOAT 2 -->
+    <div class="moat-row">
+      <div class="moat-num">2</div>
+      <div class="moat-dim">
+        <div class="dim-title">Two-Horizon Measurement</div>
+        <div class="dim-desc">H1 (CTR, CVR in 3-5 days) and H2 (CLV delta, repeat purchase, AOV over 90 days) gated independently and measured in parallel.</div>
+        <span class="fr-ref">FR54 · FR55</span>
+      </div>
+      <div class="moat-competitor">
+        <span class="cell-verdict partial">Partial — separate products</span>
+        <div class="cell-body">
+          Amplitude has retention analytics. Statsig has experimentation with CUPED and sequential testing. <em>Neither has an opinionated commerce-specific H1/H2 model</em> where recommendations surface only after clearing horizon-specific signal gates. Combining them would require a custom pipeline that no Amplitude/Statsig customer runs today.
+        </div>
+      </div>
+      <div class="moat-us">
+        <span class="cell-verdict win">Opinionated &amp; first-class</span>
+        <div class="cell-body">
+          Every Epic 8 experiment measures H1 and H2 <strong>in parallel, in the same pipeline.</strong> Recommendations with strong H1 but weak H2 (the "selection effect" failure mode — short-term wins that hurt CLV) are caught automatically and feed the Tried-and-Retired library. This is the mechanism that prevents optimising for the wrong outcome.
+        </div>
+      </div>
+    </div>
+
+    <!-- MOAT 3 -->
+    <div class="moat-row">
+      <div class="moat-num">3</div>
+      <div class="moat-dim">
+        <div class="dim-title">Green / Red Zone governance</div>
+        <div class="dim-desc">AI composes freely from the component library (Green Zone); pricing, checkout, auth, approvals are immutable (Red Zone) — hard boundary enforced at a single runtime chokepoint.</div>
+        <span class="fr-ref">FR13-14 · FR15 · FR33</span>
+      </div>
+      <div class="moat-competitor">
+        <span class="cell-verdict gap">No structural equivalent</span>
+        <div class="cell-body">
+          Statsig has feature flags + targeted rollouts + permissions. <em>Flags toggle behaviour; they cannot structurally prevent AI from proposing a change to pricing logic</em> — governance depends on a policy layer and human review. Different architecture: flags filter, Green/Red Zone forbids.
+        </div>
+      </div>
+      <div class="moat-us">
+        <span class="cell-verdict win">Architectural, not policy</span>
+        <div class="cell-body">
+          One file to audit: <code>executor.ts</code>. AI operates <strong>exclusively within the Green Zone</strong>. Red Zone is not a permission — it is a hard boundary the runtime enforces. An auditor can trace every AI mutation back to a single enforcement point. This is the enterprise-procurement answer to "how do we trust AI with our checkout flow?"
+        </div>
+      </div>
+    </div>
+
+    <!-- MOAT 4 -->
+    <div class="moat-row">
+      <div class="moat-num">4</div>
+      <div class="moat-dim">
+        <div class="dim-title">Auto-generated GitHub PRs for beyond-Green-Zone changes</div>
+        <div class="dim-desc">When a recommendation needs new component logic, the engine produces a full code diff + schema update + behavioural evidence + preview deployment.</div>
+        <span class="fr-ref">FR58</span>
+      </div>
+      <div class="moat-competitor">
+        <span class="cell-verdict gap">Out of scope</span>
+        <div class="cell-body">
+          Statsig feature flags gate existing behaviour — they produce no code artefact. <em>Amplitude+Statsig cannot write a schema update to a component library it does not own.</em> This entire category of work is invisible to a horizontal experimentation platform.
+        </div>
+      </div>
+      <div class="moat-us">
+        <span class="cell-verdict win">Platform-native</span>
+        <div class="cell-body">
+          AI writes the full PR: code diff, schema migration, behavioural evidence brief, preview deploy. Developer reviews and merges, or doesn't. Recommendations that require code changes stop being blocked by engineering capacity — they become <strong>tracked, reviewable, commerce-contextual pull requests</strong>. This is an order of magnitude more ambitious than feature flags.
+        </div>
+      </div>
+    </div>
+
+    <!-- MOAT 5 -->
+    <div class="moat-row">
+      <div class="moat-num">5</div>
+      <div class="moat-dim">
+        <div class="dim-title">Progressive rollout tied to the component library</div>
+        <div class="dim-desc">5 → 25 → 50 → 100% gates run against governed component versions, per-tenant hot-reload, atomic rollback of the commerce-governed runtime.</div>
+        <span class="fr-ref">FR57 · FR59</span>
+      </div>
+      <div class="moat-competitor">
+        <span class="cell-verdict partial">Same vocabulary, different scope</span>
+        <div class="cell-body">
+          Statsig does progressive rollouts on feature flags at enterprise grade. <em>But their rollouts gate toggles; ours gate governed components with commerce state.</em> A Statsig rollout cannot atomically revert a pricing rule change or a checkout flow variant — those live outside its model.
+        </div>
+      </div>
+      <div class="moat-us">
+        <span class="cell-verdict win">Component-scoped</span>
+        <div class="cell-body">
+          Same gate cadence, <strong>different unit of control.</strong> A progressive rollout in Epic 8 advances the version of a governed component through tenant storefronts with the commerce context intact — CLV tier-aware cohorts, B2B account-aware exclusions, atomic rollback of the full runtime state. The component library is the unit of deployment, not a flag.
+        </div>
+      </div>
+    </div>
+
+    <!-- MOAT 6 -->
+    <div class="moat-row">
+      <div class="moat-num">6</div>
+      <div class="moat-dim">
+        <div class="dim-title">Tenant Intelligence Score</div>
+        <div class="dim-desc">0–100 composite metric compounding monthly from commerce-specific signals: experiment history, CLV cohort depth, prediction accuracy on commerce outcomes.</div>
+        <span class="fr-ref">FR61</span>
+      </div>
+      <div class="moat-competitor">
+        <span class="cell-verdict gap">Cannot compute — no commerce model</span>
+        <div class="cell-body">
+          Even with every session event and every flag exposure, <em>Amplitude+Statsig cannot weight experiment outcomes by CLV tier or segment by contract-pricing context</em> — neither data is reachable. A "tenant intelligence" metric without commerce context is just engagement data; it does not compound the moat.
+        </div>
+      </div>
+      <div class="moat-us">
+        <span class="cell-verdict win">The moat's scoreboard</span>
+        <div class="cell-body">
+          Every experiment, CLV cohort rotation, and prediction-vs-outcome delta feeds the score. It is the <strong>most honest answer to "why not migrate to a competitor?"</strong> — because migrating drops the score to zero and rebuilds the model from scratch. The score is the visible manifestation of the compounding moat.
+        </div>
+      </div>
+    </div>
+
+    <!-- MOAT 7 -->
+    <div class="moat-row">
+      <div class="moat-num">7</div>
+      <div class="moat-dim">
+        <div class="dim-title">First-party, cookieless, GDPR-native ingestion</div>
+        <div class="dim-desc">Behavioral data collected at the storefront where commerce happens — no SDK instrumentation, no cookie barriers, no third-party tracking, no attribution stitching.</div>
+        <span class="fr-ref">FR21-28 · FR47-49</span>
+      </div>
+      <div class="moat-competitor">
+        <span class="cell-verdict partial">Still SDK + cookie dependent</span>
+        <div class="cell-body">
+          Amplitude captures events via SDK; Statsig via flag exposure. <em>In a world where 67% of US users block or reject tracking cookies, that means external tools see a fraction of actual traffic.</em> GDPR compliance is possible but adds friction; enterprise customers carry the privacy risk.
+        </div>
+      </div>
+      <div class="moat-us">
+        <span class="cell-verdict win">Platform-native — +40-50% data capture</span>
+        <div class="cell-body">
+          Behavioral data never leaves the platform — <strong>consent barriers disappear when the collector is the renderer.</strong> Epic 8 captures 40-50% more behavioural signal than cookie-based external tools. Erasure, retention, and residency are enforced at the platform tenancy boundary, not bolted on.
+        </div>
+      </div>
+    </div>
+
+    <!-- SCORECARD -->
+    <div class="scorecard">
+      <div>
+        <h3>Scorecard</h3>
+        <div class="score-main">
+          <span class="score-highlight">7 of 7</span> structural moats defended — <span class="score-highlight">0 of 7</span> matched by Amplitude+Statsig+OpenAI today.
+        </div>
+      </div>
+      <div>
+        <div class="score-detail">
+          Every dimension where they win is a dimension Epic 8 does not compete on (generalist event analytics, developer AI tooling). Every dimension Epic 8 wins on is a dimension the consolidated Amplitude+Statsig platform <strong>structurally cannot reach</strong> without buying a commerce backend — a multi-year integration at best.
+        </div>
+        <div class="score-detail" style="margin-top: 14px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.15);">
+          <span class="score-highlight">Monitoring trigger:</span> if Amplitude acquires Shopify, BigCommerce, SAP commerce, Salesforce Commerce Cloud, or commercetools itself, moats 1 &amp; 7 collapse immediately — <strong>revisit ADR-002 that same week.</strong>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================ QUADRANT (horizontal vs vertical) ================ -->
+  <section id="quadrant">
+    <div class="section-head">
+      <span class="num">03</span>
+      <h2>Horizontal vs vertical consolidation — we play different games</h2>
+    </div>
+    <p class="section-lede">
+      Amplitude+Statsig+OpenAI is a textbook <em>horizontal</em> consolidation — unifying session analytics, experimentation, feature flags, and AI builder tooling across every software vertical. Epic 8 is a <em>vertical</em> consolidation — unifying frontend, editor, governance, experimentation, and intelligence inside one commerce platform. The two strategies look adjacent but compete for different budget lines and different buyers. This is the clearest single frame for "why not just use Amplitude?"
+    </p>
+
+    <div class="card">
+      <div class="quadrant-wrap">
+        <div class="quadrant">
+          <!-- Axes -->
+          <div class="quadrant-axis-x"></div>
+          <div class="quadrant-axis-y"></div>
+
+          <!-- Axis labels -->
+          <div class="quadrant-label xl">← Commerce-agnostic</div>
+          <div class="quadrant-label xr">Commerce-native →</div>
+          <div class="quadrant-label yt">↑ Vertical (full platform)</div>
+          <div class="quadrant-label yb">↓ Horizontal (best of breed)</div>
+
+          <!-- Quadrant corner hints -->
+          <div class="quadrant-tag" style="top: 18%; left: 18%;">Point solution · any vertical</div>
+          <div class="quadrant-tag" style="top: 18%; right: 18%;">Point solution · commerce-specific</div>
+          <div class="quadrant-tag" style="bottom: 18%; left: 18%;">Platform · any vertical</div>
+          <div class="quadrant-tag" style="bottom: 18%; right: 18%;">Platform · commerce-specific</div>
+
+          <!-- Competitor dots -->
+          <div class="quadrant-dot other" style="left: 20%; top: 35%;">Statsig (pre-2025)</div>
+          <div class="quadrant-dot other" style="left: 25%; top: 68%;">ContentSquare</div>
+          <div class="quadrant-dot other" style="left: 32%; top: 80%;">FullStory</div>
+          <div class="quadrant-dot other" style="left: 28%; top: 55%;">Optimizely</div>
+          <div class="quadrant-dot them" style="left: 18%; bottom: 82%;">Amplitude + Statsig + OpenAI</div>
+          <div class="quadrant-dot other" style="left: 80%; top: 70%;">Shopify Plus analytics</div>
+          <div class="quadrant-dot us" style="right: 14%; top: 12%;">Epic 8</div>
+        </div>
+
+        <div class="quadrant-side">
+          <p><strong>Horizontal play (them):</strong> Amplitude's partnership with Statsig and Raji's OpenAI connection together push Amplitude toward the top-left quadrant — a full platform for <em>any</em> software vertical, with premium access to OpenAI model capabilities. Their dot is <strong>intentionally</strong> not in the commerce-native quadrant. The OpenAI pitch is "evaluate and iterate on shipped code, for every AI builder."</p>
+          <p><strong>Vertical play (us):</strong> Epic 8 sits in the top-right quadrant because the value is <em>specifically</em> commerce-contextual — CLV tier, contract price, catalog segment, approval state, Green/Red Zone. We are a full platform, but only for commerce. This is not a gap to close; <strong>it is the positioning.</strong></p>
+          <p>Both positions can win. <strong>The question for the prospect is whether they want a commerce-blind horizontal consolidator or a commerce-contextual vertical consolidator.</strong> That frame is the single cleanest way to answer "why not Amplitude?" — because the answer is "you may well use them too, for your non-commerce stack. For the commerce frontend, you need something that speaks commerce."</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================ CAPABILITY VENN ================ -->
+  <section id="capability">
+    <div class="section-head">
+      <span class="num">04</span>
+      <h2>Capability overlap — what each platform covers</h2>
+    </div>
+    <p class="section-lede">
+      A Venn view of who covers what. The overlap is real — both platforms do event analytics and progressive rollouts, both can A/B test, both have an AI layer. The asymmetry lives at the extremes: Amplitude+Statsig covers every software vertical from the outside; Epic 8 covers commerce from the inside. The five capabilities in the centre shared cluster are where sales conversations start — the six on each side are where they end.
+    </p>
+
+    <div class="card">
+      <div class="venn-wrap">
+        <div class="venn">
+          <div class="venn-circle them" style="left: 40px;">
+            Amplitude + Statsig + OpenAI
+          </div>
+          <div class="venn-circle us" style="right: 40px;">
+            Epic 8 (platform-native)
+          </div>
+
+          <!-- Their side only -->
+          <div class="venn-capability" style="left: 55px; top: 28%;">Any vertical</div>
+          <div class="venn-capability" style="left: 60px; top: 42%;">Warehouse-native</div>
+          <div class="venn-capability" style="left: 55px; top: 58%;">OpenAI model access</div>
+          <div class="venn-capability" style="left: 70px; top: 72%;">Claude/Cursor plugin</div>
+
+          <!-- Centre / shared -->
+          <div class="venn-capability" style="left: 50%; transform: translateX(-50%); top: 24%;">Event analytics</div>
+          <div class="venn-capability" style="left: 50%; transform: translateX(-50%); top: 39%;">A/B testing</div>
+          <div class="venn-capability" style="left: 50%; transform: translateX(-50%); top: 54%;">Progressive rollout</div>
+          <div class="venn-capability" style="left: 50%; transform: translateX(-50%); top: 68%;">AI recommendations</div>
+          <div class="venn-capability" style="left: 50%; transform: translateX(-50%); top: 83%;">Session replay</div>
+
+          <!-- Our side only -->
+          <div class="venn-capability" style="right: 55px; top: 22%;">Commerce context</div>
+          <div class="venn-capability" style="right: 60px; top: 35%;">Green/Red Zone runtime</div>
+          <div class="venn-capability" style="right: 60px; top: 48%;">Two-Horizon H1+H2</div>
+          <div class="venn-capability" style="right: 60px; top: 60%;">Auto-generated PRs</div>
+          <div class="venn-capability" style="right: 60px; top: 72%;">Tenant Intelligence Score</div>
+          <div class="venn-capability" style="right: 55px; top: 84%;">First-party, cookieless</div>
+        </div>
+
+        <div class="quadrant-side">
+          <p><strong>The shared centre is real.</strong> We respect it in every customer conversation — a prospect running Amplitude is already measuring sessions, already running A/Bs, already doing progressive rollouts. The Epic 8 pitch is <em>not</em> "you're doing those wrong." It is "those capabilities get deeper and more actionable when the platform sees commerce context."</p>
+          <p><strong>Left-side capabilities are theirs to keep.</strong> We do not try to out-Amplitude Amplitude on any-vertical event analytics, warehouse-native architecture, OpenAI model access, or developer AI plugins. That would dilute the positioning. Those are legitimately good capabilities for a horizontal platform — a Fortune 500 with a non-commerce product might well keep Amplitude for their marketing attribution and still adopt Epic 8 for their commerce frontend.</p>
+          <p><strong>Right-side capabilities are the moat.</strong> Commerce context, Green/Red Zone, Two-Horizon, auto-generated PRs, the Intelligence Score, and first-party ingestion — <strong>none of these are product roadmap items for Amplitude+Statsig.</strong> They are architectural consequences of being inside the commerce platform. Five years of roadmap work for them; day one for us.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================ FAQ / SALES RESPONSES ================ -->
+  <section id="faq">
+    <div class="section-head">
+      <span class="num">05</span>
+      <h2>Sales responses — prepared answers to the five questions you will hear</h2>
+    </div>
+    <p class="section-lede">
+      Every discovery call after May 5, 2026 will raise one of these five questions. These are the prepared, honest answers — no straw-men, no hand-waving. Each assumes the prospect is technically literate and already running one or more of Amplitude, Statsig, or Optimizely. None of them frame the competitor as inferior overall — all of them frame the positioning as <em>different</em>, with a specific reason to pick Epic 8 for the commerce frontend.
+    </p>
+
+    <div class="faq-item">
+      <div class="q">Why not just use Amplitude+Statsig? Isn't that enough?</div>
+      <div class="a">
+        <strong>For most of your non-commerce stack, it may well be enough.</strong> Amplitude is a strong event-analytics platform, and Statsig brings credible experimentation — the combined bundle will serve your product-analytics and feature-flagging needs. <em>For the commerce frontend specifically, it is not enough.</em> The combined platform reads SDK events and flag exposures, neither of which carries CLV tier, contract price, catalog segment, or approval-queue state. That commerce context is what makes a recommendation actionable in the first place. Our engine is built <em>inside</em> the commerce platform where that context lives natively. You may keep Amplitude for your marketing and product analytics across every vertical; our scope is the commerce frontend specifically.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="q">We already pay $400K a year for Amplitude. Why add another tool?</div>
+      <div class="a">
+        <strong>You are not adding a tool — you are consolidating the stack that sits beside Amplitude.</strong> The average commercetools enterprise already pays $350K-$1M across Amplitude, ContentSquare, FullStory, and Optimizely for the commerce frontend. Epic 8's core platform is bundled into your existing commercetools subscription — no incremental line item. The AI Experience Engine is consumption-based, with the first 10 experiments per tenant free. If you keep Amplitude for your non-commerce stack and use Epic 8 for the commerce frontend, you still eliminate ContentSquare, FullStory, and Optimizely — that's a material TCO reduction in year one.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="q">How are you different from Statsig's experimentation?</div>
+      <div class="a">
+        <strong>Statsig is a best-in-class horizontal experimentation platform. We are a vertical experimentation platform, and the vertical difference matters in three specific places.</strong> First, Two-Horizon Measurement — our engine measures H1 (CTR, CVR in days) and H2 (CLV, repeat purchase, AOV over 90 days) in the same pipeline. An experiment with great H1 but declining H2 — the "selection effect" failure — is caught automatically. Statsig can be configured to do this with effort; ours is the default. Second, Green/Red Zone — our runtime structurally prevents AI from proposing changes to pricing, checkout, or approval logic. That is enterprise-procurement risk mitigation Statsig's flag model cannot match. Third, progressive rollouts gate governed <em>components</em>, not just feature toggles — atomic rollback of a rendered storefront including its commerce state.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="q">What happens if Amplitude adds commerce context in their roadmap?</div>
+      <div class="a">
+        <strong>They can't — not without acquiring a commerce backend.</strong> Commerce context (CLV tier, contract price, catalog segment, approval state) is not a data integration problem; it's a data-ownership problem. Amplitude reads events via webhook or SDK. To weight an experiment by CLV tier, they would need continuous, low-latency access to the full commercetools customer-group + order + pricing model. That is a multi-year integration for a customer-by-customer setup and still doesn't give them runtime-level Green/Red Zone governance. The only structural closer of this gap is M&amp;A — if Amplitude acquires Shopify, BigCommerce, SAP commerce, Salesforce Commerce Cloud, or commercetools itself, we revisit ADR-002 that same week. Until then, the commerce-context gap is architectural, not a roadmap item.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="q">We're already on Statsig. What do we do at renewal?</div>
+      <div class="a">
+        <strong>This is genuinely the right time to evaluate alternatives.</strong> The Statsig platform team is now at OpenAI; the brand, customers, and maintenance responsibility have transitioned to Amplitude. Pricing at renewal is an open question — Amplitude has not publicly disclosed how Statsig contracts will reprice or whether the warehouse-native architecture will be preserved long-term. If you are on commercetools, a commerce-native alternative is worth a 90-day evaluation: keep your existing Statsig contract live, stand up Epic 8 on a pilot storefront (first 10 experiments are free), and compare H1+H2 outcomes with CLV-tier-aware segmentation vs. your current Statsig setup. The renewal decision then gets made on evidence, not on vendor-transition uncertainty.
+      </div>
+    </div>
+  </section>
+
+  <!-- ================ REVISIT TRIGGERS ================ -->
+  <section id="triggers">
+    <div class="section-head">
+      <span class="num">06</span>
+      <h2>Revisit triggers — when this comparison becomes stale</h2>
+    </div>
+    <p class="section-lede">
+      A competitive document ages fast in a live consolidation. These are the triggers that invalidate specific sections or require a full rewrite. Scheduled revisit is 2026-11-08 (6 months). Any of the below occurs sooner, this doc gets updated within the same week and ADR-002 is revisited.
+    </p>
+
+    <div class="triggers">
+      <div class="trigger high">
+        <div class="trigger-label">High-impact</div>
+        <div class="trigger-text">Amplitude acquires a commerce backend (Shopify, BigCommerce, SAP, Salesforce Commerce Cloud, commercetools itself).</div>
+        <div class="trigger-impact">Impact: moats 1 &amp; 7 collapse immediately; moats 2, 3, 5, 6 weakened. Full positioning rewrite required.</div>
+      </div>
+      <div class="trigger high">
+        <div class="trigger-label">High-impact</div>
+        <div class="trigger-text">OpenAI launches a commerce-agent product with native storefront integration.</div>
+        <div class="trigger-impact">Impact: shifts Epic 8 positioning from "better commerce analytics" to "commerce-governed orchestration layer beneath the agents." Roadmap additions around agent interoperability needed.</div>
+      </div>
+      <div class="trigger high">
+        <div class="trigger-label">High-impact</div>
+        <div class="trigger-text">commercetools itself acquires a horizontal experimentation vendor.</div>
+        <div class="trigger-impact">Impact: potential re-scoping of Epic 8. ADR-002 and this comparison must be re-evaluated against the new in-house capability.</div>
+      </div>
+      <div class="trigger">
+        <div class="trigger-label">Medium-impact</div>
+        <div class="trigger-text">Amplitude+Statsig ships a CLV-tier-aware or commerce-context-aware feature.</div>
+        <div class="trigger-impact">Impact: suggests investment in closing moat 1 without a backend acquisition. Evaluate the depth; most likely still a webhook-dependent partial fix.</div>
+      </div>
+      <div class="trigger">
+        <div class="trigger-label">Medium-impact</div>
+        <div class="trigger-text">A commercetools customer adopts Amplitude+Statsig <em>on top of</em> Epic 8.</div>
+        <div class="trigger-impact">Impact: indicates the commerce-native pitch is not neutralizing theirs on the specific buyer. Case study required; messaging sharpening in the sales motion.</div>
+      </div>
+      <div class="trigger">
+        <div class="trigger-label">Medium-impact</div>
+        <div class="trigger-text">Statsig customer churn pattern stabilises under Amplitude (positive retention signal).</div>
+        <div class="trigger-impact">Impact: reduces the renewal-window opportunity; shift GTM emphasis back to consolidation-pricing argument.</div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="doc-footer">
+    <div>Competitive comparison · companion to <strong>ADR-002</strong> · revisit <strong>2026-11-08</strong></div>
+    <div class="foot-links">
+      <a href="adr-002-positioning-amplitude-statsig.html">ADR-002 →</a>
+      <a href="epic-8-experience-engine-wireframes.html">Epic 8 wireframes →</a>
+      <a href="research/market-autonomous-commerce-intelligence-storefront-research-2026-05-04.html">ACI research →</a>
+      <a href="00-bmad-journey-map.html">Journey map →</a>
+    </div>
+  </footer>
+
+</div>
+
+</body>
+</html>
