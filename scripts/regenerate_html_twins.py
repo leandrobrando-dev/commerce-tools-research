@@ -42,6 +42,22 @@ LAGGING_TWINS = [
         "briefs/interview-narrative-head-of-product-nextgen-frontend-2026-05-04.md",
         "briefs/interview-narrative-head-of-product-nextgen-frontend-2026-05-04.html",
     ),
+    (
+        "decisions/adr-004-tracking-layer-architecture.md",
+        "adr-004-tracking-layer-architecture.html",
+    ),
+    (
+        "reports/implementation-readiness-report-2026-05-12.md",
+        "implementation-readiness-report-2026-05-12.html",
+    ),
+    (
+        "research/market-golden-path-architecture-cdp-positioning-research-2026-05-12.md",
+        "research/market-golden-path-architecture-cdp-positioning-research-2026-05-12.html",
+    ),
+    (
+        "reports/implementation-readiness-report-2026-05-12-v2.md",
+        "implementation-readiness-report-2026-05-12-v2.html",
+    ),
 ]
 
 
@@ -77,48 +93,9 @@ def update_lagging_twin(md_path: Path, html_path: Path) -> None:
 # New-twin instantiation — use header/footer templates with metadata
 # ----------------------------------------------------------------------
 
-NEW_TWINS = [
+NEW_TWINS: list[dict] = [
     # md_relpath, html_relpath, title, subtitle, phase_slug, phase_label, breadcrumb, doc_type
-    {
-        "md": "decisions/adr-004-tracking-layer-architecture.md",
-        "html": "adr-004-tracking-layer-architecture.html",
-        "title": "ADR-004 — Tracking Layer Architecture (CDP Co-Exist)",
-        "subtitle": (
-            "Three data paths, scoped identity-resolution boundary, explicit "
-            "out-of-scope decisions. The platform co-exists with the customer's CDP."
-        ),
-        "phase_slug": "plan",
-        "phase_label": "Phase 02 · Planning",
-        "breadcrumb": "planning-artifacts / decisions",
-        "doc_type": "Architecture Decision Record",
-    },
-    {
-        "md": "reports/implementation-readiness-report-2026-05-12.md",
-        "html": "implementation-readiness-report-2026-05-12.html",
-        "title": "Implementation Readiness Report — 2026-05-12",
-        "subtitle": (
-            "Six-step assessment of PRD / architecture / epics / stories alignment, "
-            "focused on Epic 3 → Epic 4 progression. Three critical, six major, five minor findings."
-        ),
-        "phase_slug": "validate",
-        "phase_label": "Phase 02 · Planning",
-        "breadcrumb": "planning-artifacts / reports",
-        "doc_type": "Implementation Readiness Report",
-    },
-    {
-        "md": "research/market-golden-path-architecture-cdp-positioning-research-2026-05-12.md",
-        "html": "research/market-golden-path-architecture-cdp-positioning-research-2026-05-12.html",
-        "title": "Golden Path Architecture — CDP Positioning Research",
-        "subtitle": (
-            "Competitive landscape (4 classes), ICP × CDP-maturity segmentation, "
-            "three-positioning-options analysis with recommendation, FR78–82 gap analysis, "
-            "native-intelligence-loop reframe, threat/partnership map."
-        ),
-        "phase_slug": "research",
-        "phase_label": "Phase 01 · Analysis",
-        "breadcrumb": "planning-artifacts / research",
-        "doc_type": "Market Research",
-    },
+    # Empty after each session — entries move to LAGGING_TWINS once instantiated.
 ]
 
 

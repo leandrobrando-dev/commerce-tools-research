@@ -57,7 +57,15 @@ status: "complete"
 
 # Tutorial - User Stories
 
-## Epic 1: Platform Foundation & Operator Workspace
+## Epic 1: Foundation, Migration & Operator Workspace
+
+Epic 1 is split into three named sub-phases — **1A / 1B / 1C** — covering platform scaffold (1A), Migrator MVP (1B), and Migrator Phase 2 (1C). Stories 1.1–1.7 (Phase 1A) appear immediately below; Stories 1.8–1.14 (Phase 1B + 1C) physically live in the document section currently labelled "Epic 4 (Dissolved)" — they were renumbered during the 2026-05-12 epic restructure but were not physically moved (preserves git diff history). See [epics.md → Epic 1](epics.md#epic-1-foundation-migration--operator-workspace) for the full per-phase prose.
+
+**Phase 1A — Platform Scaffold** _(below)_ — Stories 1.1–1.7
+**Phase 1B — Migrator MVP** _(in dissolved-Epic-4 section below)_ — Stories 1.8, 1.9, 1.10, 1.13, 1.14
+**Phase 1C — Migrator Phase 2** _(deferrable; in dissolved-Epic-4 section below)_ — Stories 1.11, 1.12
+
+---
 
 ### Story 1.1: MC Custom Application Scaffold & Connect Packaging
 
@@ -421,7 +429,14 @@ status: "complete"
 
 ---
 
-## Epic 3: Storefront Editor & Publishing
+## Epic 3: Storefront Editor, Publishing & AI Site Builder
+
+Epic 3 is split into two named sub-phases — **3A / 3B** — covering the Storefront Editor + Publishing (3A) and the AI Site Builder warm-start completion engine (3B). Stories 3.0–3.14 (Phase 3A) appear immediately below; Stories 3.15–3.20 (Phase 3B) physically live in the document section currently labelled "Epic 4 (Dissolved)" — they were renumbered during the 2026-05-12 epic restructure but were not physically moved (preserves git diff history). See [epics.md → Epic 3](epics.md#epic-3-storefront-editor-publishing--ai-site-builder) for the full per-phase prose.
+
+**Phase 3A — Storefront Editor & Publishing** _(below)_ — Stories 3.0, 3.1a, 3.1b, 3.2–3.14
+**Phase 3B — AI Site Builder (Warm-Start Completion)** _(in dissolved-Epic-4 section below)_ — Stories 3.15, 3.16a, 3.16b, 3.16c, 3.17, 3.18, 3.19, 3.20
+
+---
 
 ### Story 3.0: Starter Template Gallery
 
@@ -764,9 +779,19 @@ status: "complete"
 **Dependencies:** Story 3.12, Story 3.13, axe-core v4 installed
 **FRs Covered:** FR51
 **Complexity:** M
-## Epic 4: AI Core Site Builder & Migrator
+## ~~Epic 4: AI Site Builder & Migrator~~ — **Dissolved (2026-05-12)** _(stories below physically remain here for git-diff continuity; conceptually they live under Epic 1 and Epic 3)_
 
-### Story 4.1: CT Project Connection via API Credentials
+Per the 2026-05-12 epic restructure, Epic 4 dissolved. Migration scope (former Stories 4.1, 4.8, 4.9, 4.10, 4.11, 4.12, 4.13) was renumbered to **Stories 1.8–1.14** and now belongs to **Epic 1 Phase 1B/1C**. AI Site Builder scope (former Stories 4.2, 4.3a/b/c, 4.4, 4.5, 4.6, 4.7) was renumbered to **Stories 3.15–3.20** and now belongs to **Epic 3 Phase 3B**. The story bodies below were not physically moved during the rewrite — preserves git diff history for unchanged story content. Read each story under its conceptual epic membership (Epic 1 or Epic 3 per the per-story section).
+
+**Migration stories (Epic 1 Phase 1B + 1C)** in document order below: Story 1.8, Stories 1.9–1.14 (interleaved with the AI Site Builder stories).
+
+**AI Site Builder stories (Epic 3 Phase 3B)** in document order below: Stories 3.15, 3.16a, 3.16b, 3.16c, 3.17, 3.18, 3.19, 3.20.
+
+See [epics.md → Epic 1](epics.md#epic-1-foundation-migration--operator-workspace) and [epics.md → Epic 3](epics.md#epic-3-storefront-editor-publishing--ai-site-builder) for full per-phase prose, ship gates, and FR coverage.
+
+---
+
+### Story 1.8: CT Project Connection via API Credentials  *(Epic 1 Phase 1B)*
 
 **As a** platform operator
 **I want** to connect my existing commercetools project by entering API credentials that are validated and securely stored
@@ -787,7 +812,7 @@ status: "complete"
 
 ---
 
-### Story 4.2: Commerce Intelligence Drawer — Create Mode Infrastructure
+### Story 3.15: Commerce Intelligence Drawer — Create Mode Infrastructure
 
 **As a** platform operator editing a page in Create mode
 **I want** a Commerce Intelligence Drawer that slides in from the right without reflowing the canvas, toggled via ⌘/, with a full focus trap while open
@@ -799,16 +824,16 @@ status: "complete"
 3. When the drawer is open, a focus trap (using `focus-trap-react` or equivalent) confines keyboard navigation inside the drawer; pressing Escape closes it and returns focus to the last focused element on the canvas.
 4. The drawer initialises an Inngest client connection on open; the Inngest function `site-builder/ai-completion-job` is registered in the Inngest 4.2.6 app and its event subscription established so the drawer can receive streamed events.
 5. The drawer shell renders three distinct zones: a header with title "Commerce Intelligence" and the ⌘/ hint, a scrollable body (reserved for `AIReasoningCard` output), and a sticky footer with Approve/Cancel CTAs (disabled until a completion candidate is ready).
-6. Opening the drawer in Create mode does not trigger any AI inference call on its own; inference is triggered only by observed canvas edit sequences (Stories 4.3a–4.3c); the drawer shows an idle state with instructional copy until inference begins.
+6. Opening the drawer in Create mode does not trigger any AI inference call on its own; inference is triggered only by observed canvas edit sequences (Stories 3.16a–3.16c); the drawer shows an idle state with instructional copy until inference begins.
 7. An ARIA `role="dialog"` with `aria-label="Commerce Intelligence"` and `aria-modal="true"` is applied to the drawer root; a visually hidden `aria-live="polite"` region is rendered inside for status announcements.
 
-**Dependencies:** Story 4.1, Inngest 4.2.6 app bootstrap
+**Dependencies:** Story 1.8, Inngest 4.2.6 app bootstrap
 **FRs Covered:** FR7, FR65
 **Complexity:** XL
 
 ---
 
-### Story 4.3a: Canvas Edit Observation Hook & Inngest Event Firing
+### Story 3.16a: Canvas Edit Observation Hook & Inngest Event Firing
 
 **As a** platform operator making edits on the canvas in Create mode
 **I want** the platform to observe my edit sequence and emit a structured event when a meaningful edit threshold is crossed
@@ -823,13 +848,13 @@ status: "complete"
 6. The hook is unit-tested with a deterministic action-stream simulator; tests cover the 800 ms debounce, the 5 s same-component window, the three-event threshold, and the "fires exactly once per cycle" invariant.
 7. The hook is feature-flagged via `useFlagVariation('aiSiteBuilderEnabled')`; when flagged off, the hook unsubscribes from the action stream and is a no-op — no event fires regardless of edit volume.
 
-**Dependencies:** Story 4.2 (Drawer infrastructure), Story 3.1a (canvas state manager exists), Inngest 4.2.6
+**Dependencies:** Story 3.15 (Drawer infrastructure), Story 3.1a (canvas state manager exists), Inngest 4.2.6
 **FRs Covered:** FR7 (edit-observation portion)
 **Complexity:** M
 
 ---
 
-### Story 4.3b: AI Inference Engine — OpenRouter Integration with Library-Governed Prompt
+### Story 3.16b: AI Inference Engine — OpenRouter Integration with Library-Governed Prompt
 
 **As a** platform receiving an `intent-observed` event
 **I want** an Inngest function that calls OpenRouter with a strictly library-governed system prompt and produces a structured candidate
@@ -844,35 +869,35 @@ status: "complete"
 6. The function logs each inference call (prompt hash, model id, token counts, latency, rejection count) to the audit log Prisma table with `actionType: 'AI_INFERENCE_INVOKED'` and `tenantHash`, never raw tenant id; the actual prompt and response bodies are NOT logged (PII / IP avoidance).
 7. The function is rate-limited per tenant (max 60 inferences per hour) via Upstash Ratelimit SDK; tenants exceeding the limit see a "Slow down — too many AI requests in the last hour" inline message in the drawer with the reset time.
 
-**Dependencies:** Story 4.3a (`intent-observed` event source), Story 4.2 (drawer to receive results), published component library CT Custom Object (FR77 default + tenant additions), OpenRouter API key in `securedConfiguration`, Upstash Ratelimit SDK
+**Dependencies:** Story 3.16a (`intent-observed` event source), Story 3.15 (drawer to receive results), published component library CT Custom Object (FR77 default + tenant additions), OpenRouter API key in `securedConfiguration`, Upstash Ratelimit SDK
 **FRs Covered:** FR7 (inference portion), FR8 (governed library scoping)
 **Complexity:** L
 
 ---
 
-### Story 4.3c: Streaming Pipeline, Zod Validation, and Drawer Wiring
+### Story 3.16c: Streaming Pipeline, Zod Validation, and Drawer Wiring
 
 **As a** platform operator waiting for an AI completion
 **I want** the candidate to stream into the drawer with strict schema validation, a hard timeout, and clean cancellation
 **So that** I see results progressively, malformed candidates are caught before reaching the UI, and runaway calls are bounded
 
 **Acceptance Criteria:**
-1. The `site-builder/ai-completion-job` Inngest function streams partial candidate JSON to the drawer via Inngest's `step.sendEvent` mechanism — the drawer subscribes to `site-builder/candidate-progress` events and renders intermediate state in the `AIReasoningCard` (covered by Story 4.4) as text streams in.
+1. The `site-builder/ai-completion-job` Inngest function streams partial candidate JSON to the drawer via Inngest's `step.sendEvent` mechanism — the drawer subscribes to `site-builder/candidate-progress` events and renders intermediate state in the `AIReasoningCard` (covered by Story 3.17) as text streams in.
 2. Streaming begins within 2 seconds of the Inngest function receiving the event; if the first OpenRouter token has arrived earlier, it is buffered to maintain consistent perceived latency.
-3. A 30-second hard timeout is enforced via `Promise.race` between OpenRouter stream resolution and `step.sleep('30s')` abort; on timeout, the function emits a `TIMEOUT` event, the drawer shows a graceful error state with "Try again" and "Cancel" CTAs, and the streaming canvas skeleton (Story 4.7) is removed.
+3. A 30-second hard timeout is enforced via `Promise.race` between OpenRouter stream resolution and `step.sleep('30s')` abort; on timeout, the function emits a `TIMEOUT` event, the drawer shows a graceful error state with "Try again" and "Cancel" CTAs, and the streaming canvas skeleton (Story 3.20) is removed.
 4. The completed candidate JSON is validated against a strict Zod schema (`SuggestedCompletionSchema`) before emission to the drawer; the schema includes shape constraints, range constraints (`confidence` between 0 and 1, `slotIndex` ≥ 0), and length caps (`reasoning` ≤ 2000 chars, `suggestedComponents` ≤ 12 entries). Validation failures emit a `MALFORMED_RESPONSE` event handled identically to timeouts in the drawer.
-5. Drawer cancellation (operator clicks Cancel or closes the drawer) sends a `site-builder/cancel-inference` event consumed by the Inngest function; the function aborts the OpenRouter stream cleanly within 1 s, releases the rate-limit token (per Story 4.3b AC7), and stops emitting progress events.
-6. Inference results are never applied to the canvas without operator approval (covered by Story 4.4); the raw candidate is held in React state in the drawer and discarded on drawer close, Cancel action, or successful Apply.
+5. Drawer cancellation (operator clicks Cancel or closes the drawer) sends a `site-builder/cancel-inference` event consumed by the Inngest function; the function aborts the OpenRouter stream cleanly within 1 s, releases the rate-limit token (per Story 3.16b AC7), and stops emitting progress events.
+6. Inference results are never applied to the canvas without operator approval (covered by Story 3.17); the raw candidate is held in React state in the drawer and discarded on drawer close, Cancel action, or successful Apply.
 7. End-to-end happy-path test: an operator triggers inference, streaming starts within 2 s, candidate streams in, Zod validation passes, candidate is rendered in `AIReasoningCard` — full path covered by a Playwright integration test against a stubbed OpenRouter endpoint.
 8. End-to-end timeout test: an operator triggers inference against a stubbed slow endpoint, the 30 s timeout fires, drawer shows error state, retry succeeds — covered by a Playwright integration test.
 
-**Dependencies:** Story 4.3a, Story 4.3b, Story 4.4 (`AIReasoningCard` is the streaming target — but 4.3c can ship against a stub card and 4.4 enhances it), Inngest 4.2.6 with `step.sendEvent`, Zod
+**Dependencies:** Story 3.16a, Story 3.16b, Story 3.17 (`AIReasoningCard` is the streaming target — but 4.3c can ship against a stub card and 4.4 enhances it), Inngest 4.2.6 with `step.sendEvent`, Zod
 **FRs Covered:** FR7 (streaming + cancellation portion), FR12 (streaming progress feedback wired into the drawer)
 **Complexity:** M
 
 ---
 
-### Story 4.4: AIReasoningCard / ConfidenceCard UI
+### Story 3.17: AIReasoningCard / ConfidenceCard UI
 
 **As a** platform operator reviewing an AI completion candidate
 **I want** to see a clear "What I'll do" card showing the proposed components, governance scope, and my data signals — with Approve/Edit/Cancel actions — before any canvas change occurs
@@ -883,17 +908,17 @@ status: "complete"
 2. The card header displays the title "What I'll do" and a confidence percentage badge (derived from `candidate.confidence`); confidence below 60% renders the badge in amber, 60–84% in blue, 85%+ in green.
 3. The card body lists each `suggestedComponent` as a row showing: the component display name (resolved from the published library), the target slot label, and a Green Zone badge confirming library membership; rows are in proposed slot order.
 4. A "Your data shows" section renders the `candidate.reasoning` string formatted as plain prose; this section must use the exact phrase "your data shows" at least once to maintain the product's established language convention.
-5. Three action buttons are rendered in the card footer: **Approve** (primary, triggers Story 4.5 application), **Edit** (secondary, opens slot-by-slot edit mode allowing component swap via library picker before approval), and **Cancel** (tertiary, discards the candidate); no canvas mutation occurs until Approve is explicitly clicked.
+5. Three action buttons are rendered in the card footer: **Approve** (primary, triggers Story 3.18 application), **Edit** (secondary, opens slot-by-slot edit mode allowing component swap via library picker before approval), and **Cancel** (tertiary, discards the candidate); no canvas mutation occurs until Approve is explicitly clicked.
 6. Keyboard navigation: Approve is mapped to Enter when the card has focus, Cancel to Escape; all interactions are announced via the drawer's `aria-live="polite"` region.
 7. The `AIReasoningCard` variant (used for streaming progress) and `ConfidenceCard` (used for final approval) are separate named exports from a shared `ai-cards` module; they share a base layout but differ in action surface and data shape.
 
-**Dependencies:** Story 4.3c (drawer subscribes to streaming candidate events from 4.3c; 4.3a + 4.3b are transitive dependencies), Inngest candidate event
+**Dependencies:** Story 3.16c (drawer subscribes to streaming candidate events from 3.16c; 3.16a + 3.16b are transitive dependencies), Inngest candidate event
 **FRs Covered:** FR9
 **Complexity:** L
 
 ---
 
-### Story 4.5: Governed AI Completion Application
+### Story 3.18: Governed AI Completion Application
 
 **As a** platform operator who has approved a ConfidenceCard
 **I want** the approved component sequence to be applied to the canvas only within the Green Zone, with any non-library component causing an outright rejection
@@ -908,13 +933,13 @@ status: "complete"
 6. The full approved candidate JSON, the governance validation result, and the final applied diff are written to a CT Custom Object (`container: "ai-completion-audit"`, `key: "{pageId}-{timestamp}"`) for compliance and debugging.
 7. A CASL `can('apply', 'AICompletion')` guard is evaluated before dispatch; the guard check is enforced both client-side and in the server-side route that writes the audit Custom Object.
 
-**Dependencies:** Story 4.4, canvas state manager, CT Custom Objects API
+**Dependencies:** Story 3.17, canvas state manager, CT Custom Objects API
 **FRs Covered:** FR8, FR10, FR11
 **Complexity:** L
 
 ---
 
-### Story 4.6: Accept/Modify/Reject Individual AI Placements
+### Story 3.19: Accept/Modify/Reject Individual AI Placements
 
 **As a** platform operator reviewing a multi-component AI completion draft
 **I want** to accept, modify, or reject each proposed component placement individually before final application
@@ -929,13 +954,13 @@ status: "complete"
 6. The final payload sent to the governance middleware contains only accepted and modified rows, with modified rows carrying the operator-selected `componentTypeId`; the audit CT Custom Object records both the original suggestion and the operator's per-row decisions.
 7. All row action buttons are reachable via Tab; the library picker modal implements its own focus trap; closing the picker returns focus to the modified row's swap icon.
 
-**Dependencies:** Story 4.4, Story 4.5
+**Dependencies:** Story 3.17, Story 3.18
 **FRs Covered:** FR10, FR11
 **Complexity:** M
 
 ---
 
-### Story 4.7: AI Completion Streaming Progress Feedback
+### Story 3.20: AI Completion Streaming Progress Feedback
 
 **As a** platform operator waiting for an AI completion to generate
 **I want** to see a skeleton pulse animation on the affected canvas section and hear screen-reader announcements of progress, with clear timeout handling
@@ -950,13 +975,13 @@ status: "complete"
 6. If the browser tab loses focus during streaming, the operation continues in the background; on tab refocus, the UI reconciles with the current Inngest event state.
 7. All skeleton and progress elements have `aria-hidden="true"` to avoid polluting the accessibility tree; only the `aria-live` region conveys state to assistive technologies.
 
-**Dependencies:** Story 4.2, Story 4.3a (edit observation provides skeleton overlay trigger), Story 4.3c (streaming wiring carries the progress events)
+**Dependencies:** Story 3.15, Story 3.16a (edit observation provides skeleton overlay trigger), Story 3.16c (streaming wiring carries the progress events)
 **FRs Covered:** FR12
 **Complexity:** M
 
 ---
 
-### Story 4.8: Historical Behavioral Data Import
+### Story 1.9: Historical Behavioral Data Import
 
 **As a** platform operator onboarding to the AI Site Builder
 **I want** to import historical analytics data from GA4, Hotjar, Mixpanel, or Frontastic analytics, map fields to the platform schema, and have it ingested into the `behavioral_events` table
@@ -971,13 +996,13 @@ status: "complete"
 6. The Inngest function processes files in 1,000-row batches using `step.run` chunking; each batch emits a progress event consumed by a polling hook that updates a progress bar (0–100%) in the onboarding wizard.
 7. Imported data is tagged with `{ source: 'historical-import', importedAt, sourceType }` metadata in each `behavioral_events` row; this tag allows the inference engine to weight live behavioral data more heavily than historical imports.
 
-**Dependencies:** Story 4.1, behavioral_events table (Epic 1), Inngest 4.2.6
+**Dependencies:** Story 1.8, behavioral_events table (Epic 1), Inngest 4.2.6
 **FRs Covered:** FR63
 **Complexity:** L
 
 ---
 
-### Story 4.9: Frontastic Migration Path
+### Story 1.10: Frontastic Migration Path
 
 **As a** operator migrating an existing Frontastic site
 **I want** the platform to automatically detect tastic schema compatibility, auto-map component types, and publish the reviewed mapping to CT Custom Objects
@@ -992,13 +1017,13 @@ status: "complete"
 6. On publishing the reviewed mapping, the application writes a CT Custom Object (`container: "migration-mapping"`, `key: "frontastic-{projectKey}-{timestamp}"`) containing the full mapping table JSON; a second CT Custom Object update merges approved Green Zone components into the published component library atomically using the `version` field.
 7. A migration summary report is displayed post-publish: total tastics detected, auto-mapped (exact/semantic), operator-mapped, unmatched/skipped, Green/Red Zone counts; downloadable as PDF.
 
-**Dependencies:** Story 4.1, published component library CT Custom Object, OpenRouter, Story 4.12
+**Dependencies:** Story 1.8, published component library CT Custom Object, OpenRouter, Story 1.13
 **FRs Covered:** FR34, FR35, FR36, FR37
 **Complexity:** XL
 
 ---
 
-### Story 4.10: Custom Next.js Migration Path
+### Story 1.11: Custom Next.js Migration Path
 
 **As a** developer migrating a custom Next.js storefront
 **I want** the platform to analyse my codebase via a GitHub App integration, extract components, scaffold a Green/Red Zone structure, and export a mapping for review
@@ -1008,39 +1033,39 @@ status: "complete"
 1. The migration wizard provides a "Connect GitHub Repository" step that initiates the GitHub App OAuth flow; after authorisation, the app lists accessible repositories; the operator selects a repo and branch, and the GitHub App token is stored in `securedConfiguration`.
 2. The platform's GitHub App installation calls the GitHub Contents API to recursively list files under `components/`, `src/components/`, and `app/` directories; it fetches the content of every `.tsx` and `.jsx` file (up to 500 files; larger repos prompt the operator to narrow the scope path); fetched content is written to a temporary Neon table `migration_codebase_files`.
 3. An Inngest function `migration/analyse-nextjs-codebase` processes the fetched files in batches of 20 using `step.run`; for each file it calls OpenRouter (`openrouter('anthropic/claude-3.5-sonnet')`) with a prompt instructing extraction of: exported component name, prop interface shape, inferred page/section type, and any CT SDK usage patterns.
-4. Extracted components are matched against the published component library using the same two-pass strategy as Story 4.9; each match result includes `inferredZone` (`"green"` if CT SDK usage detected and maps to library, `"red"` otherwise) and a `scaffoldPriority` score.
-5. The developer review UI (Story 4.12) receives the extraction results and renders them with file paths, prop diffs between the extracted interface and the library component schema, and the inferred zone; developers can override zone assignment and edit field mappings inline.
+4. Extracted components are matched against the published component library using the same two-pass strategy as Story 1.10; each match result includes `inferredZone` (`"green"` if CT SDK usage detected and maps to library, `"red"` otherwise) and a `scaffoldPriority` score.
+5. The developer review UI (Story 1.13) receives the extraction results and renders them with file paths, prop diffs between the extracted interface and the library component schema, and the inferred zone; developers can override zone assignment and edit field mappings inline.
 6. A mapping export action generates a `migration-manifest.json` file containing: component inventory, zone assignments, field mappings, and a scaffold plan; this file can be re-imported to resume a paused migration session.
 7. All GitHub App API calls use the installation access token (not the user OAuth token); tokens are refreshed automatically before expiry; if the token cannot be refreshed, the migration session is paused with a "Reconnect GitHub" CTA.
 
-**Dependencies:** Story 4.1, GitHub App registration, Neon branch database, OpenRouter, Inngest 4.2.6, Story 4.12
+**Dependencies:** Story 1.8, GitHub App registration, Neon branch database, OpenRouter, Inngest 4.2.6, Story 1.13
 **FRs Covered:** FR34, FR35, FR36, FR37
 **Complexity:** XL
 
 ---
 
-### Story 4.11: Monolith Migration Path + Core Web Vitals Baseline
+### Story 1.12: Monolith Migration Path + Core Web Vitals Baseline
 
 **As a** pre-sales engineer or operator planning a monolith migration
 **I want** to measure Core Web Vitals for the existing monolith site and generate a before/after ROI report — available without full platform activation — and then trigger full canvas generation for the migration
 **So that** I can prove the business case for migration and initiate the migration from a measurable baseline
 
 **Acceptance Criteria:**
-1. The CWV baseline tool is accessible from a standalone route (`/migrate/cwv-baseline`) that requires only a valid CT project connection (Story 4.1) and does NOT require a full platform subscription; a "Pre-sales mode" banner is shown when accessed without full activation.
+1. The CWV baseline tool is accessible from a standalone route (`/migrate/cwv-baseline`) that requires only a valid CT project connection (Story 1.8) and does NOT require a full platform subscription; a "Pre-sales mode" banner is shown when accessed without full activation.
 2. The operator enters one or more URLs representing key monolith pages (up to 10); the platform triggers Lighthouse audits for each via the Google PageSpeed Insights API, collecting LCP, CLS, FID/INP, FCP, and TTFB for both mobile and desktop strategies.
 3. Baseline metrics are persisted to a CT Custom Object (`container: "cwv-baseline"`, `key: "{projectKey}-{timestamp}"`) immediately after collection; if full platform activation occurs later, this baseline is automatically linked to the project for ongoing before/after comparison.
 4. The ROI report renders a table comparing baseline CWV scores against published platform benchmark values (stored in CT Custom Object `container: "platform-benchmarks"`, `key: "cwv-targets"`); each metric shows: current value, target value, delta, and a pass/fail badge using Core Web Vitals thresholds (LCP ≤ 2.5 s = good, CLS ≤ 0.1 = good, INP ≤ 200 ms = good).
 5. An estimated revenue impact section uses the formula `revenueImpact = baselineRevenue * (lcpDeltaMs / 1000) * 0.01`; `baselineRevenue` is entered by the operator; the report is exportable as PDF via `window.print()` with a print-optimised CSS stylesheet.
 6. For operators with full platform activation, the monolith migration wizard accepts a sitemap XML URL; the platform fires the Inngest function `migration/generate-monolith-canvas` which uses OpenRouter to generate a complete draft canvas for each page type, respecting Green/Red Zone governance.
-7. The generated canvas drafts are written as CT Custom Objects (`container: "migration-canvas-drafts"`, `key: "{pageType}-{projectKey}"`) and surfaced in the platform canvas editor as "Migration Drafts" — editable before publish; a readiness check (Story 4.13) is automatically queued for all generated drafts.
+7. The generated canvas drafts are written as CT Custom Objects (`container: "migration-canvas-drafts"`, `key: "{pageType}-{projectKey}"`) and surfaced in the platform canvas editor as "Migration Drafts" — editable before publish; a readiness check (Story 1.14) is automatically queued for all generated drafts.
 
-**Dependencies:** Story 4.1, Google PageSpeed Insights API key, CT Custom Objects API, OpenRouter, Inngest 4.2.6, Story 4.12, Story 4.13
+**Dependencies:** Story 1.8, Google PageSpeed Insights API key, CT Custom Objects API, OpenRouter, Inngest 4.2.6, Story 1.13, Story 1.14
 **FRs Covered:** FR34, FR35, FR36, FR37, FR38, FR39
 **Complexity:** XL
 
 ---
 
-### Story 4.12: Migration Scaffolded Component Mapping Review
+### Story 1.13: Migration Scaffolded Component Mapping Review
 
 **As a** platform operator or developer reviewing a migration mapping from any of the three migration paths
 **I want** a unified review UI where I can adjust zone assignments, permissions, and field type mappings before publishing to the component library
@@ -1054,21 +1079,26 @@ status: "complete"
 5. A summary sidebar shows live-updating counts: total components, Green Zone, Red Zone, excluded, field mappings complete/incomplete; the "Publish Mapping" button is enabled only when all non-excluded components have complete field mappings and explicit zone assignments.
 6. On publish, the application writes the finalised mapping back to the migration CT Custom Object (with `status: "published"`) and merges all Green Zone components into the published component library Custom Object using a version-safe update; a Neon database migration is generated for any new component schema fields.
 7. The published mapping triggers a webhook event `migration.mapping.published` that the Neon branch CI pipeline can consume to run automated schema validation tests.
+8. A test-fixture set is committed to the repository at `tests/fixtures/migration-mapping-{frontastic|nextjs|monolith}.json` covering at minimum: (a) a happy-path mapping where every component matches with `matchConfidence ≥ 0.85`, (b) an unmatched-component scenario producing Red Zone defaults, and (c) a field-type-mismatch scenario surfacing the field-mapping drawer's coercion strategies. The development environment seeds these fixtures into a CT Custom Object stub (`container: "migration-mapping"`, `key: "fixture-{path}"`) on `next dev` startup via an Inngest function `migration/seed-fixtures`; this allows Story 1.13 to be developed, QA'd, and merged before any of Stories 1.10 / 1.11 / 1.12 lands.
 
-**Dependencies:** Test-fixture migration mapping JSON at `tests/fixtures/migration-mapping-{frontastic|nextjs|monolith}.json` (committed to the platform repo and used as the development driver — Story 4.12 builds against fixture data and is **not blocked by any migration path landing**). End-to-end production validation requires at least one of Story 4.9 / 4.10 / 4.11 to be wired through; Stories 4.9 / 4.10 / 4.11 declare a forward dependency on Story 4.12 because they hand off their generated mapping to the review UI for publish. Also depends on: published component library CT Custom Object, Neon branch database.
+**Dependencies:**
+- *Build deps:* Test-fixture migration mapping JSON (per AC8); published component library CT Custom Object; Neon branch database.
+- *Forward consumers:* Stories 1.10, 1.11, 1.12 hand off their generated mappings to this review UI for publish.
+- *Not blocked by:* Stories 1.10, 1.11, 1.12. Story 1.13 is fixture-driven in development per AC8 and ships independently. End-to-end production validation requires at least one migration path (Story 1.10 first — Frontastic, per Priority Sequencing P2) to be wired through after 1.13 lands.
+
 **FRs Covered:** FR36
 **Complexity:** L
 
 ---
 
-### Story 4.13: Migrated Page Validation & Readiness Report
+### Story 1.14: Migrated Page Validation & Readiness Report
 
 **As a** platform operator preparing a migrated site for go-live
 **I want** all migrated pages validated for required field completeness, broken reference detection, and accessibility, with a per-page pass/fail readiness report
 **So that** I can confidently go live knowing no migrated page has missing data, dead references, or critical accessibility failures
 
 **Acceptance Criteria:**
-1. The readiness report is triggered manually from the migration review UI (Story 4.12) via "Run Validation", or automatically after `migration/generate-monolith-canvas` completes; it queues an Inngest function `migration/validate-pages` that processes each migrated page draft sequentially using `step.run`.
+1. The readiness report is triggered manually from the migration review UI (Story 1.13) via "Run Validation", or automatically after `migration/generate-monolith-canvas` completes; it queues an Inngest function `migration/validate-pages` that processes each migrated page draft sequentially using `step.run`.
 2. For each page, the validator checks required field completeness: every component is inspected for properties flagged `required: true` in the library component schema; components with any `required` field that is null, undefined, or `__aiIncomplete: true` are flagged as `INCOMPLETE` with specific field names.
 3. Broken reference detection resolves all CT reference fields (product, category, content entry references) against the live CT project API; any reference returning `404` or `ResourceNotFound` is flagged as `BROKEN_REFERENCE` with the field path and unresolvable reference ID.
 4. Accessibility validation runs a subset of axe-core rules server-side against a rendered HTML snapshot: `color-contrast`, `image-alt`, `label`, `link-name`, and `landmark-one-main`; violations at `critical` or `serious` severity are included as `ACCESSIBILITY_VIOLATION` items.
@@ -1076,7 +1106,7 @@ status: "complete"
 6. The readiness report UI renders a filterable table of all pages with status badges; a top-level summary shows: total pages, passing, failing, warnings, and an overall go-live readiness indicator.
 7. The full readiness report is written to a CT Custom Object (`container: "migration-readiness"`, `key: "{migrationId}-{timestamp}"`); each re-run creates a new versioned CT Custom Object rather than overwriting, preserving validation history.
 
-**Dependencies:** Story 4.12, CT Custom Objects API, CT project API (reference resolution), axe-core, Inngest 4.2.6
+**Dependencies:** Story 1.13, CT Custom Objects API, CT project API (reference resolution), axe-core, Inngest 4.2.6
 **FRs Covered:** FR39
 **Complexity:** M
 ## Epic 5: Behavioral Data Infrastructure
@@ -1096,7 +1126,7 @@ status: "complete"
 6. Event collection activates automatically when the CT project is first connected; the behavioral events table is activated from Epic 1 Story 1.2; no manual activation step is required.
 7. A ClickHouse `MergeTree` table `behavioral_events` is partitioned by `toYYYYMM(timestamp)` and ordered by `(tenant_id, section_id, timestamp)` to support efficient per-tenant, per-section range scans.
 
-**Dependencies:** Story 1.2 (behavioral_events table), Story 4.1 (CT project connection)
+**Dependencies:** Story 1.2 (behavioral_events table), Story 1.8 (CT project connection)
 **FRs Covered:** FR25
 **Complexity:** XL
 
@@ -1307,7 +1337,7 @@ status: "complete"
 7. GDPR right-to-erasure (FR48) is extended: when a tenant submits an erasure request for a `Customer.id`, the platform deletes all `behavioral_events` rows where `user_hash` matches the `HMAC-SHA256(externalId, TENANT_STITCH_SECRET)` of that customer; the operation is logged in the audit table.
 8. Documentation: a public docs page explicitly describes the scope split — *what stitching the platform does (auth-customer cross-session) vs. what it delegates to the CDP (anonymous + cross-device)* — so customers can make an informed decision about CDP partnership.
 
-**Dependencies:** Story 5.1 (event ingestion pipeline), Story 4.1 (commercetools Customer Subscriptions), Prisma migration for `user_hash` column, `TENANT_STITCH_SECRET` per-tenant
+**Dependencies:** Story 5.1 (event ingestion pipeline), Story 1.8 (commercetools Customer Subscriptions), Prisma migration for `user_hash` column, `TENANT_STITCH_SECRET` per-tenant
 **FRs Covered:** FR78
 **Complexity:** L
 
@@ -1555,7 +1585,7 @@ status: "complete"
 10. Phase 2 scope is explicitly **opt-in**: tenants without OAuth grants continue with Phase 1 documentation-only mode; the platform never auto-emits to ad platforms without explicit operator configuration.
 
 **Dependencies (Phase 1):** Story 6.9 onboarding flow, Story 5.1 ingest for Match Quality telemetry surface, Resend for the docs-portal launch announcement
-**Dependencies (Phase 2):** Story 4.1 CT project connection, Story 5.1 + 5.2 (consent), Story 6.9 OAuth flow scaffold, Inngest 4.2.6, ad-platform OAuth credentials in `securedConfiguration`
+**Dependencies (Phase 2):** Story 1.8 CT project connection, Story 5.1 + 5.2 (consent), Story 6.9 OAuth flow scaffold, Inngest 4.2.6, ad-platform OAuth credentials in `securedConfiguration`
 **FRs Covered:** FR81
 **Complexity:** M (Phase 1 docs); L (Phase 2 native fallback)
 
