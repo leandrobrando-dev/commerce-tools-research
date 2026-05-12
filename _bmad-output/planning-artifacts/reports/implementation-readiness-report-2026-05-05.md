@@ -451,4 +451,4 @@ This assessment identified **12 issues** across **3 severity categories**. The p
 
 *Assessment completed: 2026-05-05*
 *Assessed by: BMad Implementation Readiness Checker*
-*Output: `_bmad-output/planning-artifacts/implementation-readiness-report-2026-05-05.md`*
+*Output: `_bmad-output/planning-artifacts/reports/implementation-readiness-report-2026-05-05.md`*

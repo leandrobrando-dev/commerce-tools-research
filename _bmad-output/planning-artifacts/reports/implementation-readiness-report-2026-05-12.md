@@ -14,7 +14,7 @@ filesIncluded:
     - _bmad-output/planning-artifacts/prd.md
   architecture:
     - _bmad-output/planning-artifacts/architecture.md
-    - _bmad-output/planning-artifacts/adr-002-positioning-amplitude-statsig.md
+    - _bmad-output/planning-artifacts/decisions/adr-002-positioning-amplitude-statsig.md
   epics:
     - _bmad-output/planning-artifacts/epics.md
   stories:
@@ -31,8 +31,8 @@ filesIncluded:
     - _bmad-output/planning-artifacts/epic-9-retail-pos-wireframes.html
   supplemental:
     - _bmad-output/planning-artifacts/briefs/product-brief-commercetools-next-gen-frontend-aci-2026-05-04.md
-    - _bmad-output/planning-artifacts/competitive-analysis-site-builders-behavioral-analytics-ab-testing-2026-05-11.md
-    - _bmad-output/planning-artifacts/implementation-readiness-report-2026-05-05.md
+    - _bmad-output/planning-artifacts/competitive/competitive-analysis-site-builders-behavioral-analytics-ab-testing-2026-05-11.md
+    - _bmad-output/planning-artifacts/reports/implementation-readiness-report-2026-05-05.md
 notes:
   - .md files treated as canonical; .html files are rendered twins (confirmed by user)
   - Epic 7 was merged into Epic 4 (confirmed by user) — Epic 4 scope is therefore expected to be heavier than original

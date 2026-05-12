@@ -3,7 +3,7 @@ stepsCompleted: [1, 2, 3, 4]
 inputDocuments:
   - _bmad-output/planning-artifacts/research/market-ai-native-next-gen-frontend-platform-enterprise-commerce-research-2026-05-03.md
   - _bmad-output/planning-artifacts/research/market-autonomous-commerce-intelligence-storefront-research-2026-05-04.md
-  - _bmad-output/planning-artifacts/competitive-analysis-site-builders-behavioral-analytics-ab-testing-2026-05-11.md
+  - _bmad-output/planning-artifacts/competitive/competitive-analysis-site-builders-behavioral-analytics-ab-testing-2026-05-11.md
   - _bmad-output/planning-artifacts/prd.md
   - _bmad-output/planning-artifacts/architecture.md
   - _bmad-output/planning-artifacts/briefs/product-brief-commercetools-next-gen-frontend-aci-2026-05-04.md
