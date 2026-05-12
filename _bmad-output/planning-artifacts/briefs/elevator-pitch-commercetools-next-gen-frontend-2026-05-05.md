@@ -11,6 +11,21 @@ status: B2C-first narrative flip
 
 ---
 
+## 0. Sales-Motion Guidance **[ADDED 2026-05-12 — see Golden Path market research]**
+
+The 2026-05-12 Golden Path market research surfaced that 81 % of > $10 B-revenue commercetools customers already run a Customer Data Platform (RudderStack, Twilio Segment, Snowplow, Adobe RT-CDP, Salesforce Data Cloud, Tealium, or Hightouch). **Two sales motions exist** and these pitches map to them differently:
+
+| Motion | ICP segments | Lead pitch | Differentiator emphasis |
+|---|---|---|---|
+| **Integration motion** *(default; production-grade)* | Digital-Native B2B Scale-up · AI-Forward Innovator · Multi-Brand B2C Enterprise · B2B2C Hybrid · Unified Commerce Leader (5 of 6 segments) | *"We are the storefront experience-and-decisioning layer that lives above your existing CDP — we don't replace it, we read commercetools commerce context the CDP can't, and we report experiment outcomes back to your warehouse."* | Commerce-context decisioning, governance-aware AI, tenant intelligence accumulation as primary moat. **Drop the "replace a $1M stack" framing for these audiences.** |
+| **Consolidation motion** *(provisional; pending customer-interview validation per Golden Path roadmap)* | Legacy-Trapped Enterprise (1 of 6 segments) | *"Replace a fragmented analytics + storefront stack with one bundled platform that proves itself in week one on B2C traffic."* | TCO consolidation, single-vendor procurement, faster time-to-ROI. **The existing Sections 1–7 below land here as written.** |
+
+When pitching to a known CDP-mature audience, lead with Section 4 (Head of Digital) which already opens with operator-velocity rather than vendor-replacement, and qualify Section 3 (CFO) explicitly: *"if you don't already run a CDP, this consolidation case applies; if you do, the case is integration + tenant-intelligence compounding rather than replacement."* Section 5 (CTO) and Section 6 (SI Partner) work for both motions as written.
+
+The "replaces the fragmented stack" line in Section 1 below is **the consolidation pitch.** Use it intact for Legacy-Trapped audiences. For CDP-mature audiences, substitute the integration variant: *"It lives above your existing data infrastructure (your CDP, your warehouse) as the single AI-native experience layer your commercetools backend has been missing — proves itself in week one on B2C traffic, extends the same moat to B2B, and compounds every time an experiment runs."*
+
+---
+
 ## 1. The 30-Second Version
 
 Modern enterprise retailers run B2C, B2B, and direct-to-consumer commerce from a single commercetools backend — and then stitch together Contentsquare, Amplitude, Optimizely, and a hand-built frontend to serve them all. They pay up to $1M a year for analytics tools that cannot see the commerce data — contract price, catalog segment, CLV tier, account tier, approval state — that actually drives the decision. The Next-Gen Frontend ships natively inside the Merchant Center as a Connect-packaged application. It replaces the fragmented stack with a single AI-native layer that proves itself in week one on B2C traffic, extends the same moat to B2B, and compounds every time an experiment runs. Native. B2X. AI-first. No compromise.
@@ -85,7 +100,8 @@ The Tenant Intelligence Score makes every account stickier. A customer whose sco
 
 | Persona | One-liner |
 |---|---|
-| CFO | Replace a $1M analytics stack with one bundled platform that pays per result — proven on B2C, extended to B2B. |
+| CFO (Consolidation motion — Legacy-Trapped Enterprise) | Replace a $1M analytics stack with one bundled platform that pays per result — proven on B2C, extended to B2B. |
+| CFO (Integration motion — CDP-mature) | Add the experience-and-decisioning layer your CDP can't deliver — bundled into your commercetools subscription, consumption-based AI on top, outcomes flow back to your warehouse. |
 | Head of Digital (B2C) | Ship experiments without tickets — AI surfaces the insight on your own traffic, you make the call. |
 | Head of Digital (B2B) | The only AI layer that reads contract price, account tier, and approval state — the commerce context every other tool is blind to. |
 | CTO / Head of Architecture | AI-native B2X frontend, zero new infrastructure, one governance chokepoint to audit. |

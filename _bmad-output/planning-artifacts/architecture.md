@@ -372,6 +372,78 @@ The editor ships as an MC Custom Application. The standalone Next.js + Clerk + t
 
 ---
 
+### CDP Co-Exist Pattern **[ADDED 2026-05-12 — see ADR-004]**
+
+The platform deliberately **co-exists** with the customer's Customer Data Platform (RudderStack, Twilio Segment, Snowplow, Adobe Real-Time CDP, Salesforce Data Cloud, Tealium, Hightouch, or equivalent) rather than replacing it. The CDP is the data-and-identity layer; the platform is the experience-and-decisioning layer. This section documents the data-flow pattern; **ADR-004 (Tracking Layer Architecture)** holds the strategic reasoning, rejected alternatives, and revisit conditions.
+
+#### Three data paths
+
+| # | Data type | Path | Owner |
+|---|---|---|---|
+| **1** | **Behavioral events** (clicks, scrolls, hovers, exposures, form abandonment, JS errors, performance) | Storefront → **either** platform-owned SDK (`/api/events`, Story 5.1) **or** CDP source-adapter (`/api/cdp-events/{vendor}`, Story 5.12 / FR79, Phase 2) → ClickHouse `behavioral_events` | Platform receives; CDP may emit |
+| **2** | **Commerce events** (orders, payments, customer lifecycle, catalog changes, inventory updates, pricing) | commercetools Subscriptions → platform Inngest service → ClickHouse + Postgres mirror → ACI decisioning. **Bypasses the CDP entirely.** | Platform reads directly from commercetools |
+| **3** | **Experiment-outcome events** (variant ID, exposure count, conversion delta, statistical confidence, rollout state, Horizon-1 + Horizon-2 measurements) | Experience Engine → customer-configured destination (RudderStack / Segment / generic webhook, Story 8.19 / FR80) → customer's warehouse + ad platforms + BI | Platform emits; CDP routes onward |
+
+```text
+                  ┌────────────────────────────────────────────────┐
+                  │         ClickHouse `behavioral_events`         │
+                  │   tenant_id · session_id · user_hash · source  │
+                  └─────────────▲────────────────▲─────────────────┘
+                                │                │
+                       (Path 1a)│        (Path 1b)│
+                                │                │
+                  ┌─────────────┴──────┐   ┌─────┴────────────────┐
+                  │ Platform SDK       │   │ CDP source-adapter   │
+                  │ (browser, FR25)    │   │ (Phase 2, FR79)      │
+                  │ source: "sdk"      │   │ source: "cdp:{v}"    │
+                  └─────────▲──────────┘   └─────────▲────────────┘
+                            │                        │
+                  ┌─────────┴──────────┐   ┌─────────┴────────────┐
+                  │ Live storefront    │   │ Customer CDP         │
+                  │                    │   │ (Rudder/Segment/Snow)│
+                  └────────────────────┘   └──────────────────────┘
+
+   ┌─────────────────────┐   (Path 2 — bypass CDP)   ┌─────────────────────┐
+   │ commercetools       │ ──── Subscriptions ─────▶ │ Platform commerce   │
+   │ Order/Customer/Cart │      (real-time push)     │ service (Inngest)   │
+   │ Catalog/Pricing     │                           │   → ClickHouse      │
+   │                     │                           │   → Postgres        │
+   │                     │                           │   → ACI decisioning │
+   └─────────────────────┘                           └─────────────────────┘
+
+   ┌─────────────────────┐   (Path 3 — outcome emission to customer's CDP) ┌──────────────────────┐
+   │ Experience Engine   │ ───── outcome events ─────────────────────────▶ │ Customer's CDP        │
+   │ (Epic 8)            │       correlationId per event for idempotency   │ → warehouse           │
+   │ FR80 / Story 8.19   │       no raw PII (HMAC user_hash only)          │ → ad-platform CAPI    │
+   │                     │                                                 │ → BI dashboards       │
+   └─────────────────────┘                                                 └──────────────────────┘
+```
+
+#### Identity-resolution boundary (FR78 / Story 5.11)
+
+- **In scope (platform owns):** authenticated-customer cross-session stitching via `Customer.externalId` → `HMAC-SHA256(externalId, TENANT_STITCH_SECRET)` → first-party `__aci_uid` cookie (Secure, HttpOnly, SameSite=Lax, 13-month expiry). Powers Horizon 2 CLV (FR55) for the auth-customer cohort regardless of CDP presence. Per-tenant secret ensures cross-tenant `user_hash` values are mathematically non-comparable.
+- **Out of scope (CDP partner owns):** anonymous + cross-device + cross-cookie identity-graph resolution. Delegated to the customer's CDP; platform consumes the CDP's resolved identity if provided (`userId` field in CDP-emitted events → derived `user_hash`).
+
+| Cohort | Stitching | CLV measurement (FR55) |
+|---|---|---|
+| Authenticated customer, single device | Platform | ✅ Full Horizon 2 |
+| Authenticated customer, multi-device | Platform (post-auth); CDP (pre-auth) | ✅ Full (post-auth) + 🟡 partial (pre-auth) |
+| Anonymous, single session | `session_id` only | ❌ Not computed |
+| Anonymous, cross-session/cross-device | **Out of scope** — delegated to CDP | ✅ CDP-equipped tenants; ❌ non-CDP tenants |
+
+#### Out-of-scope decisions (deliberately not built)
+
+1. **Identity graph for anonymous + cross-device traffic** — CDP layer concern.
+2. **Native Event Match Quality (EMQ) scoring or Match Quality optimization** — CDP partner concern; platform ships docs + reference implementations only (FR81 / Story 6.10 Phase 1) plus a Phase 2 native CAPI fallback for non-CDP tenants.
+3. **Destination catalog for multi-tool fan-out** — CDP layer concern (RudderStack 200+, Segment 400+ destinations).
+4. **PII transformation, consent management, GDPR/CCPA cookie banner replacement** — CMP integration via FR26 / Story 5.2; platform does not replace consent platforms.
+
+#### Time-bounded competitive frame
+
+Twilio Segment AI (GA June 2025) and Snowplow Signals (GA May 2025) are encroaching on the AI-personalization / decisioning layer. The platform's experience-and-decisioning differentiation is time-bounded — a 12–24 month window before Class C dev-led CDPs may build storefront-decisioning surfaces of their own. **Tenant intelligence accumulation (FR82 / Story 8.1 enhanced) is the durable long-term moat** — Tenant Intelligence Score, failure taxonomy, "tried and retired" library, CLV-correlation models compound with every experiment and cannot be replicated by connecting to commercetools APIs alone. First-10-Experiments-Free (FR62) is reframed as a permanent moat-accumulation accelerator, not a launch-only tactic. **Epic 8 elevated from P3 → P2.5 in Priority Sequencing per this competitive frame.**
+
+---
+
 ### Authentication & Security
 
 #### Authentication: Two-Layer Model **[REVISED 2026-05-12 per Pivot Notice]**

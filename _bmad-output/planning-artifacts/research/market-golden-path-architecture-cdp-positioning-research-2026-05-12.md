@@ -50,7 +50,7 @@ The existing competitive analysis (2026-05-11) covers site builders, behavioral 
 
 **commercetools' own AI direction does not collide with ours.** Agentic Jumpstart (Nov 2025) targets agentic commerce (AI agents buying on behalf of consumers); our scope is operator-driven storefront authoring + experimentation. Their launch SI partners (Accenture/Song, EPAM, Orium, Valtech) are exactly our target channel partners. **Joint-pitch with Agentic Jumpstart as "the storefront layer beneath the agentic surface" is the single most leveraged GTM move.**
 
-**Concrete artifacts the team needs to update** (handoff to John): 5 PRD additions (FR78–FR82 for CDP source/destination + auth-stitching + EMQ delegation + outcome-emission), 1 Epic priority reordering (Epic 8 elevated to P2), positioning copy edits across PRD/architecture/product brief/elevator pitch, and ADR-005 (Tracking Layer Architecture) to lock the architectural decision durably.
+**Concrete artifacts the team needs to update** (handoff to John): 5 PRD additions (FR78–FR82 for CDP source/destination + auth-stitching + EMQ delegation + outcome-emission), 1 Epic priority reordering (Epic 8 elevated to P2), positioning copy edits across PRD/architecture/product brief/elevator pitch, and ADR-004 (Tracking Layer Architecture) to lock the architectural decision durably.
 
 The full strategic synthesis with three-positioning-options analysis, ICP × motion table, FR gap analysis, native-intelligence-loop reframe, and threat/partnership map is in the **Strategic Synthesis** section below.
 
@@ -425,7 +425,7 @@ The PRD as of 2026-05-12 (post FR76/FR77/FR7-reconciliation edits by John) does 
 
 **Architecture / ADR recommendations:**
 
-- **ADR-005 (recommended):** Tracking Layer Architecture — formalize the co-exist + auth-stitching + commerce-events-direct decision; documents the integration patterns for FR79/FR80/FR81 and the explicit out-of-scope decisions
+- **ADR-004 (recommended):** Tracking Layer Architecture — formalize the co-exist + auth-stitching + commerce-events-direct decision; documents the integration patterns for FR79/FR80/FR81 and the explicit out-of-scope decisions
 - **Architecture document update:** Pivot Notice already added (per John's earlier edit); recommend adding a "CDP Co-Exist Pattern" section that diagrams the data flow: client → (own SDK or CDP destination) → ClickHouse + commercetools Subscriptions → ACI ingest → Experience Engine → outcome events back to CDP
 
 ### 4 · "Native Intelligence Loop" Differentiation Reframe
@@ -517,7 +517,7 @@ When walking back the "no third-party handoffs" claim with stakeholders (commerc
 
 | Phase | Duration | Deliverables | Success criteria |
 |---|---|---|---|
-| **Phase 0 — Decision lock (1 week)** | 1 week | ADR-005 drafted; PRD additions FR78–FR82 written; Epic 8 priority elevated to P2 in priority sequencing; positioning copy edits to PRD/architecture/product brief/elevator pitch | All artifacts updated and reviewed; stakeholder conversation about the "no-handoffs" pivot completed |
+| **Phase 0 — Decision lock (1 week)** | 1 week | ADR-004 drafted; PRD additions FR78–FR82 written; Epic 8 priority elevated to P2 in priority sequencing; positioning copy edits to PRD/architecture/product brief/elevator pitch | All artifacts updated and reviewed; stakeholder conversation about the "no-handoffs" pivot completed |
 | **Phase 1 — Validation (4 weeks)** | 4 weeks | Customer-discovery interviews: 5 Legacy-Trapped + 5 Digital-Native B2B + 5 AI-Forward (n=15) | Two-motion thesis validated or refined; Consolidation motion either confirmed or collapsed |
 | **Phase 2 — Channel + lighthouse build (12 weeks)** | 12 weeks | Outreach to Agentic Jumpstart SI partners (Accenture/Song, EPAM, Orium, Valtech); 2–3 lighthouse customer conversations initiated; RudderStack/Hightouch partnership exploration | At least 1 SI partnership LOI; at least 1 lighthouse customer LOI |
 | **Phase 3 — MVP shipping (6 months from Phase 0)** | 6 months | Epic 1+2+3 complete (per existing readiness report); FR78 (auth-stitching) shipped; FR80 (outcome emission) shipped; FR82 (Tenant Intelligence Score moat surfacing) shipped | First lighthouse customer in production with 1+ experiment cycle complete |
@@ -561,7 +561,7 @@ The biggest cost of these decisions is the "no third-party handoffs" pitch langu
 1. Add FR78–FR82 to PRD; back-propagate to epics.md and stories.md
 2. Elevate Epic 8 priority from P3 to P2 in priority sequencing
 3. Update PRD Executive Summary, "What Makes This Special" section, and product brief with revised differentiation language
-4. Draft ADR-005 (Tracking Layer Architecture) with co-exist + auth-stitching + commerce-events-direct decisions
+4. Draft ADR-004 (Tracking Layer Architecture) with co-exist + auth-stitching + commerce-events-direct decisions
 5. Update architecture.md with a "CDP Co-Exist Pattern" data-flow section
 
 **Short-term (week 2–6):** Customer-discovery interviews (n=15, two-motion validation gate); Agentic Jumpstart SI partner outreach; RudderStack/Hightouch partnership exploration.
@@ -578,6 +578,6 @@ The biggest cost of these decisions is the "no third-party handoffs" pitch langu
 **Source Verification:** All claims cited or explicitly flagged with confidence level (✅ / 🟡 / ❌)
 **Confidence Level:** High on strategic recommendation; medium on Consolidation-motion viability (pending customer interviews); medium-high on competitive landscape (good secondary sources, primary research recommended)
 
-*This research is the strategic input for the next round of PRD/architecture/epics/stories revision. Recommended handoff back to John (PM) for execution; durable artifacts (ADR-005, FR78–FR82) should land before any market-facing pitch language change.*
+*This research is the strategic input for the next round of PRD/architecture/epics/stories revision. Recommended handoff back to John (PM) for execution; durable artifacts (ADR-004, FR78–FR82) should land before any market-facing pitch language change.*
 
 
