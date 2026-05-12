@@ -236,12 +236,12 @@ FR3:  Epic 3 — Edit content properties within Green Zone constraints
 FR4:  Epic 3 — Preview in desktop/tablet/mobile viewports
 FR5:  Epic 3 — Preview in B2C/B2B/dealer portal contexts
 FR6:  Epic 3 — Mobile device editor access
-FR7:  Epic 4 — AI completion engine (intent inference → governed completion)
-FR8:  Epic 4 — AI completions from approved component library only
-FR9:  Epic 4 — ConfidenceCard / AIReasoningCard transparency before canvas change
-FR10: Epic 4 — Accept/modify/reject individual AI placements
-FR11: Epic 4 — Manual edit of AI-generated components
-FR12: Epic 4 — Streaming progress feedback during AI completion
+FR7:  Epic 3 (Phase 3B) — AI completion engine (intent inference → governed completion)
+FR8:  Epic 3 (Phase 3B) — AI completions from approved component library only
+FR9:  Epic 3 (Phase 3B) — ConfidenceCard / AIReasoningCard transparency before canvas change
+FR10: Epic 3 (Phase 3B) — Accept/modify/reject individual AI placements
+FR11: Epic 3 (Phase 3B) — Manual edit of AI-generated components
+FR12: Epic 3 (Phase 3B) — Streaming progress feedback during AI completion
 FR13: Epic 2 — Designate components Green Zone / Red Zone
 FR14: Epic 2 — Configure field-level edit permissions per component
 FR15: Epic 3 — Red Zone boundary enforcement in editor
@@ -263,12 +263,12 @@ FR30: Epic 2 — Define field-level edit permissions per Green Zone component
 FR31: Epic 2 — Simulate operator access to verify governance
 FR32: Epic 2 — Update component library without full platform redeployment
 FR33: Epic 3 — AI completions restricted to published component library
-FR34: Epic 4 — Connect existing CT project via API credentials
-FR35: Epic 4 — AI-scaffolded component mapping from existing templates (3 migration paths)
-FR36: Epic 4 — Review, adjust, and publish scaffolded component mapping
-FR37: Epic 4 — Migrate existing page configurations to storefront canvas
-FR38: Epic 4 — Core Web Vitals baseline measurement (pre-sales tool + migration)
-FR39: Epic 4 — Validate migrated pages and generate readiness report
+FR34: Epic 1 (Phase 1B) — Connect existing CT project via API credentials (Story 1.8)
+FR35: Epic 1 (Phase 1B Frontastic, Story 1.10; Phase 1C Custom Next.js + Monolith, Stories 1.11/1.12) — AI-scaffolded component mapping from existing templates (3 migration paths)
+FR36: Epic 1 (Phase 1B) — Review, adjust, and publish scaffolded component mapping (Story 1.13)
+FR37: Epic 1 (Phase 1B) — Migrate existing page configurations to storefront canvas (Story 1.10)
+FR38: Epic 1 (Phase 1B + Phase 1C) — Core Web Vitals baseline measurement (pre-sales tool + migration; Story 1.12 AC1)
+FR39: Epic 1 (Phase 1B) — Validate migrated pages and generate readiness report (Story 1.14)
 FR40: Epic 1 (basic MC session auth) + Epic 6 (full SAML/OIDC enterprise SSO)
 FR41: Epic 6 — SCIM 2.0 automated user provisioning/deprovisioning
 FR42: Epic 1 (basic role assignment) + Epic 6 (full role management UI)
@@ -292,9 +292,9 @@ FR59: Epic 8 — Rollback alert + operator-executed atomic revert
 FR60: Epic 8 — Failure taxonomy + "Tried and Retired" recommendation library
 FR61: Epic 8 — Tenant Intelligence Score in navigation
 FR62: Epic 8 — First 10 experiments free (moat-first activation)
-FR63: Epic 4 — Historical behavioral data import during onboarding (pre-warm engine)
+FR63: Epic 1 (Phase 1B, Story 1.9) — Historical behavioral data import during onboarding (pre-warm engine)
 FR64: Epic 8 — Campaign workspace with goal metric and timeline
-FR65: Epic 4 + Epic 8 — Commerce Intelligence Drawer (Create + Optimize modes)
+FR65: Epic 3 (Phase 3B Create mode) + Epic 8 (Optimize mode) — Commerce Intelligence Drawer dual-mode
 FR66: Epic 9 — POS transaction initiation within MC Custom Application shell
 FR67: Epic 9 — POS inventory reservations reflected in storefront availability within 60s
 FR68: Epic 9 — In-store orders created in CT Order API (unified pipeline)
@@ -317,15 +317,46 @@ FR82: Epic 8 — Tenant Intelligence Score repositioned as primary moat-narrativ
 
 ## Epic List
 
-### Epic 1: Foundation — Platform Scaffold & Operator Workspace
-_(Foundation epic — most stories are infrastructure that must exist before any user-feature work. User-facing value is intentionally limited to operator sign-in and platform navigation. Stories 1.4 and 1.7 are the only operator-visible deliverables.)_
+### Epic 1: Foundation, Migration & Operator Workspace
+_(Combines former Epic 1 foundation + former Epic 4a/4c Migrator. "Initial setup" epic — covers everything a tenant needs before they can edit storefronts: platform scaffold, governance schema, identity, brownfield migration paths.)_
 
-The running MC Custom Application exists — IT Admins and operators can sign in via MC session auth, navigate the platform within the Merchant Center shell, and manage their workspace. Establishes: MC Custom Application scaffold (Create-mc-app TypeScript template), Connect packaging (`connect.yaml`), multi-tenant PostgreSQL schema with RLS, the **Postgres `behavioral_events` table** (defined in Story 1.2 AC4 as the destination for behavioral data once active collection ships in Epic 5), CASL RBAC wired to ApplicationShell `oAuthScopes`, MC session auth (no Clerk at editor layer), CI/CD pipeline with Neon branch-per-PR, base observability, and Epic 6 skeleton (SSO + data residency selection as procurement gate).
+#### Phase 1A — Platform Scaffold _(Stories 1.1–1.7, ships first)_
 
-**Clarified scope on behavioral data:** Epic 1 ships the **Postgres behavioral events schema only** (Story 1.2 AC4). The active collection pipeline (storefront snippet, `/api/events` ingestion endpoint, ClickHouse `behavioral_events` table, batching) ships in Epic 5 Story 5.1. The "moat begins accumulating" claim is realised once **both** Epic 5 Story 5.1 and Epic 4 Story 4.1 (CT project connection) have shipped — collection then starts immediately on project connection without manual activation, and silently accumulates data **before any analytics UI surface (Story 5.3 onward) ships**. The original prose conflated schema-creation timing with active-ingestion timing; this clarification resolves it.
+The running MC Custom Application exists — IT Admins and operators can sign in via MC session auth, navigate the platform within the Merchant Center shell, and manage their workspace. Establishes: MC Custom Application scaffold (`create-mc-app` TypeScript template), Connect packaging (`connect.yaml`), multi-tenant PostgreSQL schema with RLS, the **Postgres `behavioral_events` table** (defined in Story 1.2 AC4 as the destination for behavioral data once active collection ships in Epic 5), CASL RBAC wired to ApplicationShell `oAuthScopes`, MC session auth (no Clerk at editor layer), CI/CD pipeline with Neon branch-per-PR, base observability, and Epic 6 skeleton (SSO + data residency selection as procurement gate).
 
-**FRs covered:** FR40 (basic MC session auth), FR42 (basic role assignment)
-**Foundation deliverables:** Connect packaging, ApplicationShell integration, Postgres behavioral events schema (no active collection — that lives in Epic 5), Epic 6 procurement skeleton
+**Clarified scope on behavioral data:** Phase 1A ships the **Postgres behavioral events schema only** (Story 1.2 AC4). The active collection pipeline (storefront snippet, `/api/events` ingestion endpoint, ClickHouse `behavioral_events` table, batching) ships in Epic 5 Story 5.1. The "moat begins accumulating" claim is realised once **both** Epic 5 Story 5.1 and Epic 1 Story 1.8 (CT project connection) have shipped — collection then starts immediately on project connection without manual activation, and silently accumulates data **before any analytics UI surface (Story 5.3 onward) ships**.
+
+**Stories:** Story 1.1 (MC Custom Application scaffold + Connect packaging), Story 1.2 (Postgres + RLS + behavioral_events schema), Story 1.3 (CASL RBAC), Story 1.4 (operator sign-in via MC session auth), Story 1.5 (CI/CD with Neon branch-per-PR), Story 1.6 (base observability), Story 1.7 (Epic 6 procurement skeleton — SSO + data residency selection).
+
+**FRs covered:** FR40 (basic MC session auth), FR42 (basic role assignment).
+
+#### Phase 1B — Migrator MVP _(Stories 1.8–1.10, 1.13, 1.14 — ships after Epic 2 + Phase 1A)_
+
+Existing commercetools customers can migrate their storefronts on Day 1 of platform availability — without waiting on the AI Site Builder. The Frontastic path is the highest-urgency ICP per Priority Sequencing P2; it has near-native tastic schema compatibility, so component mapping is mostly automated. Migration ships with a fixture-driven review UI (Story 1.13) and a per-page readiness report (Story 1.14). Historical behavioral data import (Story 1.9) pre-warms the AI Experience Engine before native data accumulates and is included here so onboarding completes in one sweep.
+
+**Stories:** Story 1.8 (CT project connection via API credentials), Story 1.9 (historical behavioral data import — pre-warm Epic 8), Story 1.10 (Frontastic migration path), Story 1.13 (migration scaffolded component mapping review — fixture-driven), Story 1.14 (migrated page validation & readiness report).
+
+**Ship gates:** Phase 1A live + Epic 2 (component library + FR77 default platform library) live. The Migrator must map source components into a published target library, so Epic 2 ships before Phase 1B even though they are conceptually both "initial setup". Story 1.13 ships against fixtures (per Story 1.13 AC8) so it does not block on Story 1.10 — both develop in parallel.
+
+**FRs covered:** FR34, FR35 (Frontastic path only — Custom Next.js and Monolith deferred to Phase 1C), FR36, FR37, FR38, FR39, FR63.
+
+#### Phase 1C — Migrator Phase 2 _(Stories 1.11–1.12, deferrable — ships after Phase 1B Frontastic validates architecture)_
+
+The two harder migration paths. Each is XL on its own; each leans on OpenRouter for codebase analysis or canvas generation. Both are deferrable to MVP+1 without blocking implementation start.
+
+**Stories:** Story 1.11 (Custom Next.js path — GitHub App integration + LLM codebase extraction), Story 1.12 (Monolith path — sitemap-driven LLM canvas generation + Core Web Vitals baseline as pre-sales tool).
+
+**Phased deliverable for the CWV pre-sales tool:** the standalone CWV baseline tool (Story 1.12 AC1, accessible at `/migrate/cwv-baseline`) does not require full platform activation — pre-sales engineers can use it before the rest of Phase 1C lands. Recommend pulling the CWV pre-sales tool forward into Phase 1B if Phase 1C is deferred indefinitely; the rest of Story 1.12 (full canvas generation) stays in Phase 1C.
+
+**Ship gates:** Phase 1B complete + Frontastic-path lessons documented (so Custom Next.js and Monolith can avoid known pitfalls). Both paths share Story 1.13's review UI and Story 1.14's readiness report — neither requires a separate review-UI rebuild.
+
+**FRs covered:** FR34, FR35 (Custom Next.js + Monolith paths), FR38 (CWV baseline tool — pull forward to Phase 1B if Phase 1C is deferred).
+
+#### Cross-Phase Concerns (Migration)
+
+**Slicing strategy (resolves prior circular dependency on Stories 1.10/1.11/1.12 ↔ 1.13):** Story 1.13 (unified migration review UI) is **fixture-driven in development** per its AC8 — it loads test mapping JSON from `tests/fixtures/migration-mapping-{frontastic|nextjs|monolith}.json` and is therefore unblocked by any specific migration path landing. Migration paths 1.10 / 1.11 / 1.12 each have a forward dependency on 1.13 (they hand off generated mappings to the review UI for publish), but they no longer block 1.13's development. The fixture set is committed to the repo and seeded into a local CT Custom Object stub on `next dev` startup.
+
+**FRs covered (Epic 1 total):** FR40, FR42 (foundation); FR34, FR35, FR36, FR37, FR38, FR39, FR63 (migration). User-facing value is intentionally limited in Phase 1A; brownfield-onboarding value lands in Phase 1B/1C.
 
 ---
 
@@ -338,42 +369,55 @@ Storefront Developers can define, configure, and publish a governed component li
 
 ---
 
-### Epic 3: Storefront Editor & Publishing
-**Greenfield bootstrap is owned by this epic.** New tenants land on a curated **starter-template gallery** (single-brand B2C, multi-locale B2C, B2B with account portal, B2X multi-context) that produces a populated canvas of brand-tokenized governed components on Day 1 — no blank-canvas, no waiting on Epic 2 developer setup. From the populated canvas, Business Operators visually build and edit storefronts on a live canvas — adding, reordering, and editing Green Zone components — and publish with full governance validation and atomic deployment. The canvas operates in three dimensions: business context (B2C/B2B/dealer) × locale × consumer identity cohort. Behavioral analytics are dissolved into the canvas surface — heatmap overlay toggleable, engagement score badges on sections, drop-off annotations on hover; no separate analytics dashboard. Storefront branches (Git-model variants) allow operators to create isolated page variants for safe experimentation. Includes real-time collaboration (Liveblocks), multi-viewport preview, immutable publish audit log, and accessibility warnings before publish.
+### Epic 3: Storefront Editor, Publishing & AI Site Builder
+_(Combines former Epic 3 editor/publishing + former Epic 4b AI Site Builder. The editor and the AI completion engine form one coherent operator experience — operator edits the canvas, AI offers completions on observed edits, operator approves and publishes.)_
 
-The starter gallery (FR76) hands off cleanly to Epic 4's AI Site Builder (FR7 warm-start completion model) — once a template has populated the canvas, operator edits trigger AI completion offers without the cold-start risk of pure describe-to-generate.
+#### Phase 3A — Storefront Editor & Publishing _(Stories 3.0–3.14, ships first)_
 
-**FRs covered:** FR1, FR2, FR3, FR4, FR5, FR6, FR15, FR16, FR17, FR18, FR19, FR20, FR33, FR51, FR76
+**Greenfield bootstrap is owned by this phase.** New tenants land on a curated **starter-template gallery** (single-brand B2C, multi-locale B2C, B2B with account portal, B2X multi-context) that produces a populated canvas of brand-tokenized governed components on Day 1 — no blank-canvas, no waiting on Epic 2 developer setup. From the populated canvas, Business Operators visually build and edit storefronts on a live canvas — adding, reordering, and editing Green Zone components — and publish with full governance validation and atomic deployment. The canvas operates in three dimensions: business context (B2C/B2B/dealer) × locale × consumer identity cohort. Behavioral analytics are dissolved into the canvas surface — heatmap overlay toggleable, engagement score badges on sections, drop-off annotations on hover; no separate analytics dashboard. Storefront branches (Git-model variants) allow operators to create isolated page variants for safe experimentation. Includes real-time collaboration (Liveblocks), multi-viewport preview, immutable publish audit log, and accessibility warnings before publish.
+
+**Stories:** Story 3.0 (starter template gallery), Stories 3.1a/3.1b (canvas foundation + a11y), Story 3.2 (component add/reorder/remove), Stories 3.3–3.6 (B2X context preview, locale, branches, mobile editor), Stories 3.7–3.9 (real-time collaboration, viewport preview, branches), Stories 3.10–3.14 (governance validation, staging, production publish, audit log, accessibility warnings).
+
+**Ship gates:** Epic 1 Phase 1A foundation + Epic 2 component library (FR77 default + tenant additions).
+
+**FRs covered:** FR1, FR2, FR3, FR4, FR5, FR6, FR15, FR16, FR17, FR18, FR19, FR20, FR33, FR51, FR76.
+
+#### Phase 3B — AI Site Builder (Warm-Start Completion) _(Stories 3.15–3.20, ships after Phase 3A canvas + Epic 1 Phase 1B Story 1.8)_
+
+The Commerce Intelligence Drawer operates in Create mode — AI observes operator edits on the canvas, infers intent from observed behavior, and offers to complete remaining sections using the governed component library. This is an inference-and-completion model, not a blank-canvas generation model. Operators approve a completion brief (AIReasoningCard) before any canvas change is applied. Phase 3A's starter gallery (FR76) hands off cleanly to Phase 3B — once a template has populated the canvas, operator edits trigger AI completion offers without the cold-start risk of pure describe-to-generate.
+
+**Why split from Phase 3A:** the Site Builder requires (1) a populated canvas — provided by Story 3.0 starter gallery (greenfield) or Epic 1 Phase 1B Migrator output (brownfield), and (2) Epic 1 Story 1.8 CT project connection. Both prerequisites are owned outside Phase 3B. Splitting lets Phase 3A ship a working manual editor before the AI inference engine work is complete.
+
+**Stories:** Story 3.15 (Commerce Intelligence Drawer Create mode infrastructure), Story 3.16a (canvas edit observation hook + Inngest event firing), Story 3.16b (OpenRouter inference engine with library-governed prompt), Story 3.16c (streaming pipeline + Zod validation + drawer wiring), Story 3.17 (AIReasoningCard / ConfidenceCard UI — shared with Epic 8 Optimize mode), Story 3.18 (governed AI completion application), Story 3.19 (per-placement accept/modify/reject), Story 3.20 (streaming progress feedback).
+
+**Ship gates:** Phase 3A canvas + Story 1.8 (CT project connection).
+
+**FRs covered:** FR7, FR8, FR9, FR10, FR11, FR12, FR65 (Create mode).
+
+#### Cross-Phase Concerns (LLM-Quality Risk — spans Epics 1 and 3)
+
+The platform leans on OpenRouter LLM calls in five distinct stories that span Epic 1 (Migration paths) and Epic 3 (Site Builder): **Story 3.16b** (Site Builder inference, Phase 3B), **Story 1.10** (Frontastic semantic component matching, Phase 1B), **Story 1.11** (Custom Next.js codebase extraction, Phase 1C), **Story 1.12** (Monolith canvas generation, Phase 1C), and **Story 1.13** (field-mapping schema validation hints, Phase 1B). Failure modes compound: an LLM regression upstream affects multiple operator-visible features simultaneously. **Mitigations applied across all five LLM-using stories:**
+
+- **Pinned model id loaded from `securedConfiguration`** so production model upgrades are deliberate (Story 3.16b AC2 sets the precedent — same pattern applies to Stories 1.10–1.13)
+- **Structured-output mode (JSON schema) on every LLM call** — output validity validated by Zod before reaching the user (Story 3.16b AC4 sets the precedent — repeat across 1.10–1.13)
+- **Per-tenant rate limits via Upstash** (Story 3.16b AC7) extended to all five LLM-using stories, with a single shared rate budget per tenant per hour
+- **Golden-fixture regression suite** — every LLM-using story ships with a fixture set of expected inputs → expected output shapes, run on every PR; LLM provider changes that alter output shape break CI before reaching prod
+- **Manual operator-approval gating at every output surface** (Story 3.17 ConfidenceCard for Site Builder, Story 1.13 review UI for migrations) — no LLM output ever auto-applies; human-in-the-loop is the structural backstop
+- **Operator-facing language treats AI output as suggestion** — "your data shows" / "I'll do this if you approve" — never "the AI recommends" or "applying changes" without explicit Approve
+
+**FRs covered (Epic 3 total):** FR1–6 (canvas authoring), FR7–12 (AI completion), FR15 (Red Zone enforcement), FR16–20 (publish flow), FR33 (AI restricted to library), FR51 (a11y warnings), FR65 (Drawer Create mode), FR76 (starter gallery).
 
 ---
 
-### Epic 4: AI Core Site Builder & Migrator
-_(Combines former Epic 4 and Epic 7 — "get to live fast" epic)_
-
-**Greenfield bootstrap dependency:** Epic 4's Site Builder uses a warm-start completion model (FR7 — observe operator edits on a populated canvas → infer intent → offer governed completion). Greenfield tenants reach a populated canvas via the Epic 3 starter-template gallery (FR76, Story 3.0); brownfield tenants reach it via the Migrator paths below. Epic 4 does **not** ship a cold-start describe-to-storefront flow — that path is deliberately closed by FR76's gallery, which engineers out the blank-canvas risk.
-
-**Site Builder:** The Commerce Intelligence Drawer operates in Create mode — AI observes operator edits on the canvas, infers intent from behavior, and offers to complete remaining sections using the governed component library. This is an inference-and-completion model, not a blank-canvas generation model. Operators approve a completion brief before any canvas change is applied. Historical behavioral data from GA4, Hotjar, Mixpanel, or Frontastic analytics can be imported during onboarding to pre-warm the AI Experience Engine before native data accumulates.
-
-**Migrator:** Existing commercetools customers can migrate their storefronts via three paths: (1) **Frontastic path** — near-native tastic schema compatibility, component mapping mostly automated; (2) **Custom Next.js path** — AI analyzes the codebase, maps components to governed schema, scaffolds Green/Red Zone boundaries from existing page structure; (3) **Monolith path** — full migration with Core Web Vitals baseline measurement as the before/after ROI proof. Core Web Vitals baseline is available as a pre-sales tool without full platform activation. All migrated pages validated before go-live with a readiness report.
-
-**Slicing strategy (resolves prior circular dependency on Stories 4.9/4.10/4.11 ↔ 4.12):** Story 4.12 (unified migration review UI) is **fixture-driven in development** — it loads test mapping JSON from `tests/fixtures/migration-mapping-{frontastic|nextjs|monolith}.json` and is therefore unblocked by any specific migration path landing. Migration paths 4.9 / 4.10 / 4.11 each have a forward dependency on 4.12 (they hand off generated mappings to the review UI for publish), but they no longer block 4.12's development. Per Priority Sequencing P2, the Frontastic path (4.9) ships first as the Migrator MVP; 4.10 and 4.11 ship in Epic 4 phase 2.
-
-**LLM-quality compounding risk:** Epic 4 leans on OpenRouter LLM calls in five distinct stories — 4.3b (Site Builder inference), 4.9 (Frontastic semantic component matching), 4.10 (Custom Next.js codebase extraction), 4.11 (Monolith canvas generation), and 4.12 (field-mapping schema validation hints). Failure modes compound: an LLM regression upstream affects multiple operator-visible features simultaneously. **Mitigations:**
-- **Pinned model id loaded from `securedConfiguration`** so production model upgrades are deliberate (Story 4.3b AC2 already specifies this — the same pattern applies to 4.9, 4.10, 4.11, 4.12)
-- **Structured-output mode (JSON schema) on every LLM call** — output validity validated by Zod before reaching the user (4.3b AC4 sets the precedent — repeat across 4.9–4.12)
-- **Per-tenant rate limits via Upstash** (4.3b AC7) extended to all five LLM-using stories, with a single shared rate budget per tenant per hour
-- **Golden-fixture regression suite** — every LLM-using story ships with a fixture set of expected inputs → expected output shapes, run on every PR; LLM provider changes that alter output shape break CI before reaching prod
-- **Manual operator-approval gating at every output surface** (Story 4.4 ConfidenceCard for Site Builder, Story 4.12 review UI for migrations) — no LLM output ever auto-applies; human-in-the-loop is the structural backstop
-- **Operator-facing language treats AI output as suggestion** — "your data shows" / "I'll do this if you approve" — never "the AI recommends" or "applying changes" without explicit Approve. This is already the established product language and applies to every LLM-derived surface.
-
-**FRs covered:** FR7, FR8, FR9, FR10, FR11, FR12, FR34, FR35, FR36, FR37, FR38, FR39, FR63, FR65 (Create mode)
+### ~~Epic 4: AI Site Builder & Migrator~~
+**Dissolved.** Migration scope (former Stories 4.1, 4.8, 4.9, 4.10, 4.11, 4.12, 4.13) absorbed into **Epic 1 Phase 1B/1C** as Stories 1.8–1.14. AI Site Builder scope (former Stories 4.2, 4.3a/b/c, 4.4, 4.5, 4.6, 4.7) absorbed into **Epic 3 Phase 3B** as Stories 3.15–3.20. The dissolve gives Epic 1 a coherent "initial setup including brownfield onboarding" identity and gives Epic 3 a coherent "operator builds storefront with AI assistance" identity. FRs FR7–FR12, FR34–FR39, FR63, FR65 (Create mode) are now owned by Epic 1 (migration FRs) and Epic 3 (AI completion FRs) per the per-phase breakdowns above.
 
 ---
 
 ### Epic 5: Behavioral Data Infrastructure
 _(Active collection pipeline + canvas-anchored UI surfaces. The Postgres behavioral events table is created upstream in Epic 1 Story 1.2; this epic ships the storefront snippet, ingestion endpoint, ClickHouse pipeline, and the canvas-anchored UI that consumes it.)_
 
-**Sequencing precision (resolves prior prose ↔ story-location contradiction):** Story 5.1 ships the active collection pipeline — storefront snippet, `/api/events` endpoint with ClickHouse ingestion, batching. Once Story 5.1 ships and a tenant has completed Epic 4 Story 4.1 (CT project connection), behavioral events flow automatically with no manual activation. Story 5.1 ships **before** Stories 5.3 onward (UI surfaces), so behavioral data accumulates silently before any operator-visible analytics UI lands — the "moat starts accumulating before UI" claim refers to within-Epic-5 sequencing, not to Epic 1 ↔ Epic 5 ordering.
+**Sequencing precision (resolves prior prose ↔ story-location contradiction):** Story 5.1 ships the active collection pipeline — storefront snippet, `/api/events` endpoint with ClickHouse ingestion, batching. Once Story 5.1 ships and a tenant has completed Epic 1 Phase 1B Story 1.8 (CT project connection), behavioral events flow automatically with no manual activation. Story 5.1 ships **before** Stories 5.3 onward (UI surfaces), so behavioral data accumulates silently before any operator-visible analytics UI lands — the "moat starts accumulating before UI" claim refers to within-Epic-5 sequencing, not to Epic 1 ↔ Epic 5 ordering.
 
 **CDP co-exist posture (added per 2026-05-12 Golden Path research):** Epic 5 also owns the platform's behavioral-data co-exist contract with the customer's Customer Data Platform. Story 5.11 (FR78) ships auth-customer cross-session stitching using `Customer.externalId` + first-party HMAC cookie — this powers Horizon 2 CLV (FR55) for the authenticated cohort regardless of CDP presence. Anonymous + cross-device stitching is explicitly out-of-scope and delegated to the customer's CDP. Story 5.12 (FR79, Phase 2) extends the ingest pipeline to accept behavioral events from RudderStack / Twilio Segment / Snowplow as a CDP source-adapter, validating against the same Zod schema as the platform's own SDK.
 
@@ -397,7 +441,7 @@ Enterprise IT Admins can fully provision the platform: SAML 2.0/OIDC SSO, SCIM 2
 ---
 
 ### ~~Epic 7: Migration & Onboarding~~
-**Dissolved.** All migration and onboarding scope absorbed into Epic 4 (AI Core Site Builder & Migrator). FR34–FR39 and FR63 are covered by Epic 4.
+**Dissolved (2026-05-05).** Originally absorbed into Epic 4 (AI Core Site Builder & Migrator). Subsequently re-absorbed (2026-05-12) into **Epic 1 Phase 1B/1C** when Epic 4 itself was dissolved — see "~~Epic 4~~" entry below. FR34–FR39 and FR63 are covered by Epic 1 (Phases 1B + 1C).
 
 ---
 
@@ -488,9 +532,9 @@ _Updated 2026-05-12 per Golden Path market research: Epic 8 elevated from P3 to 
 
 | Priority | Epic(s) | Rationale |
 |----------|---------|-----------|
-| **P0 — Parallel Foundation** | Epic 1 + Epic 5 infrastructure + Epic 6 skeleton | CT activation + behavioral collection (moat starts) + procurement gate — simultaneous |
-| **P1 — Core Value** | Epic 2 + Epic 3 | Governed component library + editor — what operators come for |
-| **P2 — Entry Hook** | Epic 4 | AI Site Builder + Migrator — Frontastic path first (highest-urgency ICP) |
+| **P0 — Parallel Foundation** | Epic 1 Phase 1A + Epic 5 infrastructure + Epic 6 skeleton | Platform scaffold + behavioral collection (moat starts) + procurement gate — simultaneous |
+| **P1 — Core Value** | Epic 2 + Epic 3 Phase 3A | Governed component library + editor (with starter template gallery) — what operators come for |
+| **P2 — Entry Hook** | Epic 1 Phase 1B + Epic 3 Phase 3B | Migrator MVP (Frontastic path first — highest-urgency ICP) + AI Site Builder warm-start completion |
 | **P2.5 — Moat Activation [ELEVATED 2026-05-12]** | Epic 8 MVP + FR78 auth-stitching (Story 5.11) + FR80 outcome emission (Story 8.19) + FR82 moat surfacing (Story 8.1 enhanced) | Manual experiments + Horizon 1 + Unified Drawer Optimize mode + 10 free experiments + auth-customer CLV + outcome events flowing to customer's CDP. **Tenant intelligence accumulation begins here — primary long-term moat.** First lighthouse customer needs Epic 8 in production to start compounding. |
 | **P3 — Compounding Moat** | Epic 8 full + FR79 CDP source-adapters (Story 5.12) | Horizon 2 CLV, auto-hypotheses, PR generation, campaign workspace, progressive rollout, plus CDP source-adapter ingest (RudderStack / Segment / Snowplow) for high-maturity-tenant Integration sales motion |
 | **P4 — Enterprise Scale** | Epic 6 full + FR81 native CAPI fallback (Story 6.10 Phase 2) | SCIM, multi-brand governance hub, usage dashboard with Experience Engine metrics; native CAPI emission for non-CDP tenants |

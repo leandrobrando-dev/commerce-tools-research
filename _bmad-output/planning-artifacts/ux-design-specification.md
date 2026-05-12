@@ -90,7 +90,7 @@ These are the daily-frequency actions. If any of them require more than three in
 
 1. **Zero-ticket publish** — A marketer makes a change and it is live without a Jira ticket filed. The first time this happens is the product's conversion event; the UX should make it feel inevitable, not remarkable.
 
-2. **AI draft → publish in under an hour** — Operator describes a campaign page or new storefront; AI generates a governed draft; operator tweaks with visual editing and publishes. Sub-60-minute start-to-finish is the target; the UX must support this pace without forcing the operator to "trust blindly."
+2. **Starter template → AI completion → publish in under an hour** — Operator picks a starter template from the gallery (or starts from a populated canvas via migration / prior published state); operator edits a few elements; AI Site Builder offers governed completions for the remaining sections; operator accepts/refines and publishes. Sub-60-minute start-to-finish is the target; the UX must support this pace without forcing the operator to "trust blindly."
 
 3. **B2X preview confidence** — Operator sees exactly how the same page renders for a B2B buyer and a B2C consumer before publishing. This moment — "one page, two perfect experiences" — is the B2X moat made visible.
 
@@ -413,6 +413,39 @@ The Operator UI chrome (sidebar, toolbar, top bar, panels) uses **commercetools 
 - Canvas preview area: operator UI accessibility-exempt — renders the customer's storefront; their own compliance is their responsibility
 - Focus ring styles: inherit Merchant Center — keyboard navigation parity with existing platform
 
+## Performance Design Budgets
+
+The PRD defines hard performance targets (NFR1, NFR2, NFR3, NFR4, NFR5, NFR6) that the UX must accommodate. These are not engineering-only concerns — they shape loading states, skeleton design, progressive disclosure, and optimistic UI patterns. Designers must know the timing budget they design *around*.
+
+### Budget Table
+
+| NFR | Action | Budget | Designer's job |
+|---|---|---|---|
+| **NFR1** | Editor user actions (component placement, property edits, canvas navigation) | <500 ms visible response | No loading states for routine actions; canvas updates feel instant. Optimistic UI on every interaction; reconcile silently if the server disagrees. |
+| **NFR2** | AI completion job (intent inference + governed completion offer applied to canvas) | <30 s end-to-end; streaming progress shown after 2 s | Skeleton overlay on the affected section after 2 s; live token stream visible in the CommerceIntelligenceDrawer; "Cancel completion" available throughout. Never a blocking spinner. |
+| **NFR3** | Publish action (governance validation + atomic deployment, storefronts ≤500 KB) | <15 s | PublishAction shows progressive states: validating → deploying → live. Confirmation toast names contexts affected. No modal lock during publish — canvas remains read-only-visible. |
+| **NFR4** | Storefront page load (Core Web Vitals — consumer-facing) | LCP <2.5 s mobile / <1.5 s desktop; CLS <0.1; INP <200 ms | Canvas preview iframe must report CWV scores live; ACI script adds 0 ms measurable LCP impact (FR25). Designers spec image sizes / layout boundaries that prevent CLS regressions in Green Zone components. |
+| **NFR5** | ACI heatmap overlay loads after canvas section navigation | <3 s | Show a low-opacity loading wash on the overlay layer only; canvas remains interactive. Cached overlay states surface immediately on revisit; cold loads progress within 3 s. |
+| **NFR6** | commercetools API sync (catalog, pricing, inventory) propagates to live storefronts | <60 s | Context bar surfaces a "syncing" indicator when content is in flight; timestamps are honest about staleness. Designers do not surface stale data without provenance. |
+
+### Loading-State Patterns
+
+| Duration of work | Pattern |
+|---|---|
+| **<200 ms** | No state — change appears instantly |
+| **200–2000 ms** | Optimistic UI (apply immediately, reconcile if server disagrees); subtle inline indicator only if reconcile happens |
+| **2–15 s** | Skeleton overlay scoped to the affected section; rest of canvas remains interactive; cancel/abort always available |
+| **15–30 s** | Streaming progress (token-by-token for AI completion, deploy-stage-by-stage for publish); skeleton + status text |
+| **>30 s** | Treat as failure; surface error with retry. NFR2 / NFR3 budgets are hard ceilings, not aspirations. |
+
+### Anti-Patterns to Avoid
+
+- **Full-page spinners** — every loading state is contextual and inline; never blocks the entire canvas
+- **"Are you sure?" gates on routine actions** — adds latency the user feels as friction; reserve for destructive only
+- **Hidden loading states** — every >200 ms operation announces itself; silence reads as "stuck"
+- **Canvas re-renders for property edits** — property-level changes update only the affected element; full canvas re-render is reserved for context switches and template applies
+- **AI completion without streaming** — the 30 s budget is too long without visible progress; streaming starts at 2 s and never lapses for >5 s without a token
+
 ## Design Direction Decision
 
 ### Design Directions Explored
@@ -440,7 +473,7 @@ This means:
 - **Power users:** Direction 4's ⌘K command palette is available as a keyboard shortcut layer on top of the base layout
 - **Multi-market operators:** Direction 5's context switcher pattern is adopted for the context bar — contexts are explicitly named and switchable, with their live/draft state always visible
 
-Direction 6 (Guided Creation) is not the primary shell but informs the **new page creation flow** — a stepped modal or side panel that transitions to the standard editor after initial generation.
+Direction 6 (Guided Creation) is not the primary shell. Its onboarding intent is fulfilled by the **Starter Template Gallery** (FR76 / Story 3.0): on first canvas open and on each new-page action, operators choose from a curated gallery of starter templates that populate the canvas with brand-tokenized governed components — no wizard, no AI cold-start. From the populated canvas, the warm-start AI completion flow (FR7) takes over: operator edits trigger AI completion offers for the remaining sections.
 
 ### Design Rationale
 
@@ -450,7 +483,7 @@ The Direction 1 foundation also minimizes engineering risk — building within t
 
 ### Implementation Approach
 
-- **Phase 1 (MLP):** Direction 1 base layout with basic AI panel as a collapsible right drawer. Property sidebar and AI panel share the same 240px right column — toggle between them.
+- **Phase 1 (MLP):** Direction 1 base layout with the CommerceIntelligenceDrawer as a collapsible right drawer (Create mode primary, Optimize mode unlocked when a page accumulates sufficient behavioral data). Property sidebar and Drawer share the same 240px right column — toggle between them.
 - **Phase 2:** Full split-studio mode available as a user preference — operators who work AI-first can switch to the persistent split layout.
 - **Phase 3:** Direction 5 context dashboard as a dedicated multi-market view for operators managing 5+ contexts simultaneously.
 - **⌘K command palette:** Available from Phase 1 as a power-user shortcut layer; does not change the base layout.
@@ -508,23 +541,27 @@ flowchart TD
 
 ### Journey 3: First Publish — Onboarding Milestone
 
-The emotional conversion moment — skeptic to owner.
+The emotional conversion moment — skeptic to owner. Bootstrap is owned by the **Starter Template Gallery** (FR76); AI completion (FR7) layers on top of the populated canvas.
 
 ```mermaid
 flowchart TD
-    A[New operator first login] --> B[Guided creation panel\nopens automatically]
-    B --> C[Operator describes page goal\nin simple form fields]
-    C --> D[AI reads: catalog + brand tokens\n+ locale config + governance rules]
-    D --> E[Preview generates on canvas\nwhile operator watches]
-    E --> F{Satisfied with draft?}
-    F -- Yes, small tweaks --> G[Clicks element → edits in sidebar]
-    G --> H[Standard MC Native editor layout]
-    H --> I[Prominent Publish button]
-    I --> J[Clicks Publish]
-    J --> K[🎉 First publish celebration:\nYour storefront is live!\nwith context confirmation]
-    K --> L[Continues in standard editor]
-    F -- Regenerate with changes --> C
-    F -- Start direct edit --> H
+    A[New operator first login] --> B[Starter Template Gallery\nopens automatically — full-canvas modal]
+    B --> C[Operator picks a starter:\nsingle-brand B2C / multi-locale B2C /\nB2B with account portal / B2X multi-context]
+    C --> D[Canvas populates instantly with\nbrand-tokenized governed components\nfrom the platform default library]
+    D --> E[Operator edits text /\nswaps imagery / reorders sections]
+    E --> F{Trigger AI completion?}
+    F -- Yes — after 3+ edits --> G[AI Site Builder infers intent\nfrom observed edits → offers\ngoverned completion in CI Drawer]
+    G --> H{Accept completion?}
+    H -- Accept --> I[Canvas updates with completion]
+    H -- Reject / refine --> E
+    F -- Manual only --> J[Continues direct editing]
+    I --> J
+    J --> K{Ready to publish?}
+    K -- Yes --> L[Prominent Publish button]
+    L --> M[Clicks Publish]
+    M --> N[🎉 First publish celebration:\nYour storefront is live!\nwith context confirmation]
+    N --> O[Continues in standard editor]
+    K -- More edits --> E
 ```
 
 ### Journey Patterns
@@ -532,7 +569,7 @@ flowchart TD
 **Navigation patterns:**
 - Canvas always visible — no full-screen modal interrupts editing mid-flow
 - Context bar persists across all journeys — B2X/locale always legible
-- Sidebar is contextual — transitions seamlessly between property panel (direct edit) and AI panel (generation)
+- Sidebar is contextual — transitions seamlessly between property panel (direct edit) and CommerceIntelligenceDrawer (Create mode warm-start completion / Optimize mode recommendations)
 
 **Decision patterns:**
 - AI always shows reasoning before acting — operator approves before canvas changes (Journey 1)
@@ -547,7 +584,7 @@ flowchart TD
 
 ### Flow Optimization Principles
 
-1. **Minimum path to publish = 3 interactions** — describe → approve AI reasoning → publish
+1. **Minimum path to publish = 3 interactions** — pick starter template (or open populated canvas) → edit and accept AI completion → publish
 2. **Error recovery stays in context** — no navigation away from canvas to fix issues; corrections happen inline
 3. **Governance encountered naturally** — locked badge in sidebar when component is Red Zone; never a blocking error state
 4. **B2X preview is one click from any state** — context switcher always visible in context bar, never more than one click away
@@ -574,9 +611,15 @@ Ten components are unique to this product with no adequate equivalent in the des
 
 #### Phase 1 — MLP Critical
 
+**StarterTemplateGallery**
+- *Purpose:* Bootstrap surface (FR76 / Story 3.0) — populates a new tenant's canvas with brand-tokenized governed components on Day 1, before AI completion is useful. Closes the cold-start gap created by FR7's warm-start completion model.
+- *Anatomy:* Full-canvas modal on first open + accessible thereafter via "Start from template" action and page-create menu. Card grid showing each starter (single-brand B2C, multi-locale B2C, B2B with account portal, B2X multi-context) with name, description, preview thumbnail, included page count, and B2X context coverage chips.
+- *States:* gallery (default), preview-hover, applying (skeleton overlay on canvas), applied
+- *Key behavior:* Selection validates that every component referenced by the template exists in the tenant's published library (default library per FR77 + tenant additions); missing components surface as inline warnings and block "Apply template" until resolved. On apply, the canvas populates with brand-tokenized Green Zone components ready for operator edits and subsequent AI completion (FR7).
+
 **StorefrontCanvas**
 - *Purpose:* Main editing surface — renders the customer's live storefront with selection overlay controls
-- *States:* idle, element-selected, AI-generating, read-only (published view)
+- *States:* idle, element-selected, AI-generating, read-only (published view), empty (deep-links to StarterTemplateGallery via "Start from template" CTA when no draft or published state exists)
 - *Key behavior:* Click-to-select any element; selection triggers sidebar property panel; canvas is always the live truth — no preview mode switch
 - *Accessibility:* Keyboard navigable section-by-section; selected element announced to screen reader
 
@@ -592,17 +635,23 @@ Ten components are unique to this product with no adequate equivalent in the des
 - *States:* idle, hover, selected, AI-modified (subtle AI tint indicator)
 - *Key behavior:* Green Zone click → opens property sidebar; Red Zone click → shows locked tooltip explaining what the platform manages and why
 
-**AIPanel**
-- *Purpose:* The AI chat interface — message history, reasoning cards, conversation input
-- *Anatomy:* Conversation scroll area + AI message bubbles + user bubbles + AIReasoningCard + input field + send action
-- *States:* idle (collapsed), active (expanded), generating, error
-- *Key behavior:* Slides in as right drawer; toggles with property sidebar; conversation history persists per session
+**CommerceIntelligenceDrawer** *(supersedes the original `AIPanel` naming)*
+- *Purpose:* The canvas-anchored AI surface — single drawer that operates in two automatically-switched modes based on whether the active page has sufficient behavioral data: **Create mode** (AI Site Builder — observes operator edits and offers governed completions, FR7 / Epic 4) and **Optimize mode** (canvas-anchored behavioral recommendations from the AI Experience Engine, FR56 / Epic 8).
+- *Anatomy:* Mode badge (Create / Optimize) + reasoning surface (AIReasoningCard in Create, ConfidenceCard in Optimize) + action buttons + scoped to the page currently being edited. Mode switches automatically when the page accumulates enough sessions/experiments to support recommendations; operator can manually toggle.
+- *States:* idle (collapsed), Create-active (warm-start completion observing edits), Optimize-active (recommendations available), generating, error
+- *Key behavior:* Slides in as right drawer; toggles with property sidebar; persists conversation/recommendation history per session. Drawer never mode-switches mid-action — completion-in-progress completes before Optimize mode takes over.
 
-**AIReasoningCard**
-- *Purpose:* Pre-action transparency card — AI shows its plan before making any canvas changes
+**AIReasoningCard** *(Create mode — AI Site Builder)*
+- *Purpose:* Pre-action transparency card for warm-start completion — AI shows its plan before making any canvas changes
 - *Anatomy:* "What I'll do" description + components list + governance scope + Approve / Edit plan / Cancel actions
 - *States:* pending approval, approved (collapses to summary), edited, cancelled
-- *Key behavior:* AI NEVER applies canvas changes until operator clicks Approve — this is the core trust-earning pattern
+- *Key behavior:* AI NEVER applies canvas changes until operator clicks Approve — this is the core trust-earning pattern in Create mode
+
+**ConfidenceCard** *(Optimize mode — AI Experience Engine)*
+- *Purpose:* Recommendation transparency card for behavioral-data-driven optimization — surfaces a ranked recommendation with expected outcome, statistical confidence, and Horizon badge (⚡ Quick Win / 📈 Long Game)
+- *Anatomy:* Recommendation summary + behavioral evidence brief + expected outcome + confidence interval + Horizon badge + Apply (with progressive rollout 5/25/50/100%) / Defer / Reject actions
+- *States:* pending review, applied (rolling out), rolled-back, retired (added to "Tried and Retired" library)
+- *Key behavior:* Apply triggers progressive traffic gates with rollback alerts (FR59); rejected/rolled-back recommendations classify into the failure taxonomy (FR60) and feed the "Tried and Retired" library
 
 **PublishAction**
 - *Purpose:* Publish button + confirmation flow with context specifics
@@ -640,13 +689,14 @@ Ten components are unique to this product with no adequate equivalent in the des
 - All custom components built on Radix UI primitives — accessibility compliance inherited, not retrofitted
 - commercetools design tokens applied as CSS custom properties — no hardcoded values in component code
 - ComponentSlot and GovernanceBadge encode the Green/Red Zone governance model visually — these are the components that make the two-zone architecture tangible to operators
-- AIPanel and AIReasoningCard are decoupled from specific AI model implementations — they render reasoning text supplied by the AI service layer
+- CommerceIntelligenceDrawer, AIReasoningCard, and ConfidenceCard are decoupled from specific AI model implementations — they render reasoning/recommendation payloads supplied by the AI service layer
 
 ### Implementation Roadmap
 
 | Phase | Components | Blocking journey |
 |-------|-----------|-----------------|
-| **MLP (Phase 1)** | StorefrontCanvas, ContextBar, ComponentSlot, AIPanel, AIReasoningCard, PublishAction, ContextSwitcher, GovernanceBadge, FirstPublishCelebration | All three critical journeys + first-publish conversion moment |
+| **MLP (Phase 1)** | StarterTemplateGallery, StorefrontCanvas, ContextBar, ComponentSlot, CommerceIntelligenceDrawer (Create mode), AIReasoningCard, PublishAction, ContextSwitcher, GovernanceBadge, FirstPublishCelebration | All three critical journeys + greenfield bootstrap + first-publish conversion moment |
+| **MLP (Phase 1+)** | ConfidenceCard, CommerceIntelligenceDrawer Optimize mode | AI Experience Engine MVP recommendations (Epic 8) |
 | **Phase 2** | B2XPreviewSplit, ⌘K CommandPalette | Multi-market operators + power users |
 | **Phase 3** | MultiContextDashboard (Direction 5 layout) | Multi-brand B2C enterprise segment |
 
@@ -678,7 +728,7 @@ Ten components are unique to this product with no adequate equivalent in the des
 | **First publish** | FirstPublishCelebration overlay | Appears once; full-canvas moment; auto-dismisses after 4s |
 | **Governance lock** | GovernanceBadge in sidebar | Muted lock icon + explanation tooltip; never a blocking error |
 | **AI generating** | Canvas skeleton + generating indicator | Affected section shows skeleton pulse; rest of canvas remains editable |
-| **AI error** | Inline in AIPanel | "Something went wrong — try rephrasing" + retry; never navigates away |
+| **AI error** | Inline in CommerceIntelligenceDrawer | "Something went wrong — try rephrasing" + retry; never navigates away |
 | **Validation error** | Inline below input field | Red border + message below the specific field; never a toast |
 
 **Anti-patterns to avoid:**
@@ -719,7 +769,7 @@ Ten components are unique to this product with no adequate equivalent in the des
 | **Context switching** | ContextBar chips are primary nav for B2X/locale — one click, no page reload |
 | **Section navigation** | Collapsible left section list; click to scroll canvas to that section |
 | **Editor ↔ Merchant Center** | MC nav rail always present; switching prompts "Save draft?" if unpublished changes exist |
-| **AI panel toggle** | Toggle at top of right column; keyboard shortcut ⌘/ |
+| **CommerceIntelligenceDrawer toggle** | Toggle at top of right column; keyboard shortcut ⌘/ |
 | **Undo** | ⌘Z — each canvas change is a revertible state; AI conversation turns each count as one undo step |
 
 ### Progressive Disclosure Strategy
@@ -742,90 +792,100 @@ The operator audience spans a wide capability range — a marketer updating a he
 
 ## ACI Intelligence Plane: UX Specification
 
-The ACI (Autonomous Commerce Intelligence) plane serves a distinct user persona — data-fluent operators including CRO managers, Heads of Merchandising, and CMOs — who read behavioral signals, run experiments, and interpret commerce-native insights. This plane replaces the fragmented toolset of ContentSquare (session analytics), Amplitude (product analytics), and Optimizely (experimentation) with a single surface that carries native commerce context none of those tools can access.
+The ACI (Autonomous Commerce Intelligence) plane serves data-fluent operators — CRO managers, Heads of Merchandising, CMOs, and ACI Analysts — who read behavioral signals, run experiments, and interpret commerce-native insights. This plane replaces the fragmented toolset of ContentSquare (session analytics), Amplitude (product analytics), and Optimizely (experimentation) with a single surface that carries native commerce context none of those tools can access.
+
+### Architectural Posture: Canvas-Dissolved, Not Dashboard-Separate
+
+**The ACI plane is dissolved into the storefront editor canvas — there is no separate dashboard product.** This is a deliberate architectural reversal of the original three-dashboard model (Commerce Signals / Product Intelligence / Experiments) and aligns with the epics' canvas-anchored model. The reasoning: every prior-generation analytics tool failed at the *act on the signal* step because the act required leaving the analytics tool and going back to the editor. By placing behavioral signals **on the same canvas where edits happen**, the signal-to-action loop collapses to zero navigation hops.
+
+**Three surfaces carry the entire ACI experience:**
+
+| Surface | Where | Persona | What it shows |
+|---|---|---|---|
+| **Inline canvas overlays** | StorefrontCanvas (the editor) | Business Operator + ACI Analyst | Heatmap toggle, engagement-score badges per section, drop-off annotations on hover, hesitation-moment markers — all overlaid on the live canvas in the editor |
+| **CommerceIntelligenceDrawer Optimize mode** | Right-side drawer in the editor | Business Operator + ACI Analyst | Canvas-anchored ConfidenceCard recommendations scoped to the page being edited — ranked by expected outcome, with progressive-rollout apply, rollback alerts, and "Tried and Retired" filter |
+| **ACI Inbox** *(MC nav, minimal)* | Top-level MC nav section | ACI Analyst (primary) | Chronological feed of signals from across the tenant's pages — inbox-style, ranked by estimated revenue impact, filterable by segment/locale/signal type. Each row deep-links to the editor canvas at the affected page with the canvas overlay pre-toggled. |
+
+The ACI Inbox is deliberately minimal — it is **not** a replacement for the three-dashboard model. It is a chronological signal feed that complements the canvas-anchored experience, sized for the ACI Analyst persona who needs a cross-page view that doesn't fit on any single canvas.
 
 ### ACI User Persona
 
-| Persona | Role | Primary job in ACI |
-|---------|------|-------------------|
-| **CRO Manager** | Conversion Rate Optimization | Run A/B tests, interpret experiment results, promote winners |
-| **Head of Merchandising** | Product & Catalog | Read category performance, identify hesitation signals, act on AI recommendations |
-| **CMO / VP Commerce** | Strategic oversight | Campaign ROI, segment performance, executive-level signal digest |
-| **Data Science** | Analytical depth | Export raw signals, build custom segments, validate statistical significance |
+| Persona | Role | Primary surface |
+|---------|------|-----------------|
+| **Business Operator** | Marketing / Merchandising | Canvas overlays + CommerceIntelligenceDrawer Optimize mode (the same drawer they use for AI completion in Create mode) |
+| **CRO Manager** | Conversion Rate Optimization | Canvas overlays + Drawer Optimize mode + ACI Inbox for cross-page experiment tracking |
+| **Head of Merchandising** | Product & Catalog | Canvas overlays per category page + Drawer recommendations |
+| **CMO / VP Commerce** | Strategic oversight | Tenant Intelligence Score in MC nav (FR82) + read-only Inbox |
+| **ACI Analyst** | Cross-page signal interpretation | ACI Inbox primary + canvas overlays via deep-link |
+| **Data Science** | Analytical depth | Raw exports via FR79/FR80 destination adapters (RudderStack, Twilio Segment, Snowplow, generic webhook) — to customer's CDP / warehouse, not consumed inside the platform UI |
 
 ### Defining ACI Experience
 
-> **"I see why revenue dropped on the DACH B2B catalog — and I can fix it without leaving this screen."**
+> **"I see why revenue dropped on the DACH B2B catalog — and I can fix it without leaving the canvas."**
 
-The ACI plane is not a passive reporting dashboard. The defining experience is the **signal → insight → action** loop: a behavioral signal surfaces, ACI provides commerce-native context the operator couldn't get from any external tool, and the operator acts directly — approving an experiment, promoting a variant, or routing a recommendation to the visual editor — without leaving the surface.
+The defining experience is the **signal → insight → action** loop, collapsed onto a single surface. A behavioral overlay reveals a hesitation signal on the canvas. The operator hovers — commerce context appears (account tier, approval threshold, order-total-at-hesitation). The operator opens the CommerceIntelligenceDrawer, switches to Optimize mode (or it switches automatically when sufficient data is available), and a ConfidenceCard surfaces an AI recommendation scoped to that page. Apply with progressive rollout. The loop closes without ever leaving the editor.
 
-### ACI Dashboard Architecture
+### Inline Canvas Overlay Patterns
 
-The ACI plane is a dedicated section within the Merchant Center navigation (not embedded in the visual editor). It shares the MC shell and design tokens — same chrome, different capability surface.
+**Heatmap Overlay**
+- *Toggle:* On/off control in the canvas toolbar; defaults off, persists per operator
+- *Visual:* Click-density heatmap layered over the canvas with adjustable opacity; respects the active B2X context + locale + customer group from the ContextBar
+- *Time window selector:* 24h / 7d / 14d / 30d (defaults to 7d, persists per operator)
+- *Behavior:* Updates within 3 seconds of canvas navigation to a new page section (NFR5); CWV impact zero (NFR4 / FR25)
 
-**Three primary views:**
+**Engagement Score Badge**
+- *Visual:* Numeric badge (0.00–1.00) anchored to each section's top-right corner, color-coded against the tenant's threshold (default 0.60); muted when overlay is off
+- *Behavior:* Click opens an inline insights popover (bounce rate, scroll depth, exit rate, hesitation count) without leaving the canvas; ACI Analyst-only "Flag section" action appears in the popover (FR23)
 
-| View | Replaces | What it shows |
-|------|----------|--------------|
-| **Commerce Signals** | ContentSquare session analytics | Session paths, hesitation moments, scroll depth — annotated with commerce context (account tier, cart value, pricing group) |
-| **Product Intelligence** | Amplitude product analytics | SKU and category performance, add-to-cart funnels, search-to-purchase journeys — with B2B approval workflow stages overlaid |
-| **Experiments** | Optimizely | Active A/B tests, statistical significance tracking, variant performance, winner promotion |
+**Drop-off Annotation**
+- *Visual:* Dotted vertical marker on the canvas at the average scroll-depth drop-off line per section
+- *Behavior:* Hover surfaces the percentage and the time window; click opens the insights popover
 
-### Commerce Context Advantage — The ACI Differentiator
+**Hesitation Marker**
+- *Visual:* Pulse indicator on individual canvas elements where session pause time exceeds the tenant threshold (default 8 seconds)
+- *Behavior:* Hover surfaces the commerce context block — same data the original three-dashboard model showed, now anchored to the element on canvas
 
-Every signal in the ACI plane carries context no external tool can access. The UX must make this context legible at a glance — not buried in filters.
+**Commerce Context Block** *(repeating sub-pattern)*
 
-**Example signal card (Commerce Signals view):**
+Every overlay popover surfaces the same context block — the ACI moat made visible:
 
 ```
-⚠ Hesitation signal — Product Detail Page
 B2B segment: Enterprise tier  |  Locale: DE  |  Customer group: Distributor
 
-47% of sessions in this segment paused 8+ seconds on the pricing block
-before abandoning in the last 14 days.
+47% of sessions paused 8+ seconds on the pricing block in the last 14 days.
 
 Commerce context: Order total at hesitation avg. £4,850
                   Approval threshold for this customer group: £5,000
 
-AI recommendation: Add a "Request approval" CTA below the price for
-orders within 15% of the approval threshold.
-
-[Approve recommendation →]  [Run A/B test →]  [View in editor →]
+[Open in CommerceIntelligenceDrawer →]  [Flag section →]  [View raw signal →]
 ```
 
-This card pattern — signal + commerce context + AI recommendation + direct action — is the repeating unit across all three ACI views.
+### ACI Inbox (MC Nav — Minimal Surface)
 
-### ACI UX Patterns
+A top-level MC nav section sized for ACI Analysts who need a cross-page view. **Not** a dashboard replacement; deliberately scoped down.
 
-**Signal Card**
-- *Purpose:* The atomic unit of ACI — one behavioral signal with full commerce context and a recommended action
-- *Anatomy:* Signal type indicator + affected segment/locale chips + behavioral summary + commerce context block + AI recommendation + action buttons
-- *States:* unread, reviewed, action taken, dismissed
-- *Key behavior:* Action buttons route directly to the right surface — "View in editor" opens the visual editor at the relevant page; "Run A/B test" opens experiment setup with pre-populated variant config
-
-**Experiment Tracker**
-- *Purpose:* Live view of all running A/B tests with statistical significance and commerce-native outcome metrics
-- *Anatomy:* Experiment list with status chips + variant performance bars + significance indicator + "Promote winner" action
-- *Key behavior:* Significance indicator updates in real time; "Promote winner" routes to the visual editor with the winning variant pre-selected for publish
-
-**Commerce Intelligence Feed**
-- *Purpose:* Chronological feed of signals ranked by commercial impact — the "inbox" of ACI insights
-- *Anatomy:* Signal cards sorted by estimated revenue impact + filter bar (segment / locale / signal type) + "Mark reviewed" batch action
-- *Key behavior:* Signals created by the storefront's own behavioral data — not imported from external tools; filters are pre-populated with the operator's saved contexts
+| Element | Behavior |
+|---|---|
+| **Signal feed** | Chronological list of signals across the tenant; each row carries signal type + segment chips + behavioral summary + estimated revenue impact + commerce context preview |
+| **Filters** | Segment / locale / signal type / time window — pre-populated with the operator's saved contexts |
+| **Row action** | "Open on canvas" — deep-links to the editor at the relevant page with the corresponding overlay pre-toggled and the affected element pre-selected |
+| **Batch action** | "Mark reviewed" — clears unread state without dismissing the underlying signal |
+| **Tenant Intelligence Score** | Persistent header element (FR82) — sessions collected, experiments completed, CLV cohort size, prediction accuracy, "tried and retired" library size, "your data is compounding" narrative |
 
 ### ACI Interaction Principles
 
-1. **Action at the point of insight** — Every signal card exposes the action directly; operators never navigate to a separate tool to act on what they've just read.
-2. **Commerce context is always visible** — Account tier, pricing group, approval threshold, and locale are present on every signal card — not available only on drill-down.
-3. **AI recommendation before operator decision** — ACI surfaces AI recommendations the same way the visual editor does: recommendation first, operator approves or modifies. The same trust model applies.
-4. **No raw data walls** — The default view is never a table of unprocessed numbers. Data Science users can access raw exports; the default surface presents interpreted signals with recommended actions.
+1. **Canvas is the surface, not the dashboard** — Behavioral signals appear on the same canvas where edits happen. The signal-to-action loop collapses to zero navigation hops.
+2. **Commerce context is always visible** — Account tier, pricing group, approval threshold, locale, customer group are present on every overlay popover — not buried in drill-down.
+3. **Recommendations route through the CommerceIntelligenceDrawer** — Not a separate Experiments dashboard. The Drawer's Optimize mode is the single recommendation surface; ConfidenceCard is the single recommendation pattern.
+4. **Mode-switching is automatic** — The Drawer switches between Create (AI completion on observed edits) and Optimize (canvas-anchored recommendations) based on whether the active page has sufficient behavioral data. Operator can manually toggle.
+5. **Raw data exits the platform** — Data Science users get raw exports via FR79/FR80 destination adapters to the customer's CDP / warehouse. The platform does not host raw-data analytics views.
 
-### ACI Navigation Integration
+### Two-Plane State Sharing
 
-- ACI is a top-level section in the MC nav rail — same hierarchy as the visual editor
-- Signals from ACI that affect a specific storefront page include a "View in editor" deep-link that opens the visual editor at the relevant page with the affected section highlighted
-- Experiment variants created in ACI are visible in the visual editor as draft variants — the two planes share state, not just navigation links
-- The ContextBar in the visual editor shows "1 active ACI signal" when an open signal exists for the current page/context — connecting the two planes without forcing a context switch
+- The CommerceIntelligenceDrawer is the same component across the editor and ACI workflows — single surface, two modes.
+- ACI Inbox rows deep-link to the editor with the relevant overlay pre-toggled and the affected element pre-selected.
+- Experiment variants created via ConfidenceCard apply are visible in the editor as draft variants under progressive rollout — state is shared, not bridged.
+- The ContextBar in the editor shows "1 active ACI signal" when an open signal exists for the current page/context — connecting the Inbox to the canvas without forcing a navigation.
 
 ## Responsive Design & Accessibility
 
@@ -833,7 +893,7 @@ This card pattern — signal + commerce context + AI recommendation + direct act
 
 This product has two surfaces with fundamentally different responsive requirements:
 
-**Operator UI Chrome (sidebar, toolbar, context bar, AI panel):**
+**Operator UI Chrome (sidebar, toolbar, context bar, CommerceIntelligenceDrawer):**
 
 The product supports **two operator surfaces** at MVP, tuned to two distinct workflows:
 
@@ -871,7 +931,7 @@ The Operator UI uses **three explicit breakpoints** rather than a single hard co
 | **Canvas keyboard navigation** | Tab through sections in document order; arrow keys within selected section; Enter to open sidebar |
 | **Drag-and-drop alternative** | Section reordering via keyboard: select section → ⌘↑/↓ to move; no mouse-only interactions |
 | **AI generation announcements** | ARIA live region announces when AI starts generating and when canvas change is applied |
-| **Sidebar panel switch** | Focus management when toggling between property panel and AI panel — focus moves to first interactive element |
+| **Sidebar panel switch** | Focus management when toggling between property panel and CommerceIntelligenceDrawer — focus moves to first interactive element |
 | **AIReasoningCard actions** | Approve / Edit plan / Cancel keyboard-accessible; Approve is default action (Enter key) |
 | **Context switcher** | Announced as navigation landmark; context change announced to screen reader |
 | **Color contrast** | AI tint overlay maintains 4.5:1 contrast ratio for any text rendered over it at lowest opacity |
@@ -895,7 +955,7 @@ Font sizes: never below 12px in operator UI; 11px only for metadata/caption text
 
 - Semantic HTML throughout: `<nav>`, `<main>`, `<aside>` for rail, canvas, sidebar respectively
 - ARIA live region (`aria-live="polite"`) on AI generation status indicator
-- Focus trap on all overlay components (AIPanel drawer, PublishAction confirmation)
+- Focus trap on all overlay components (CommerceIntelligenceDrawer, StarterTemplateGallery modal, PublishAction confirmation)
 - `aria-label` on all icon-only buttons (drag handles, context switcher chips, AI toggle)
 - Keyboard shortcut register: all ⌘ shortcuts documented and discoverable via ⌘?
 - Canvas iframe: `title` attribute identifies active storefront context for screen readers

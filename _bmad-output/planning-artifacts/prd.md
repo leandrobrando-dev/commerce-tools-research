@@ -64,7 +64,7 @@ Three compounding differentiators no competitor can replicate without rebuilding
 
 **Business Operators (primary)**
 - First campaign published within the same business day — no developer ticket required
-- Operators describe a storefront intent and receive a governed, on-brand AI draft within 60 seconds
+- Operators starting from a populated canvas (starter template, migration, or prior published state) receive a governed AI completion suggestion within 60 seconds of triggering AI from observed edits
 - Operator NPS target: >50 — publishing feels confident, not risky
 - Zero Red Zone violations in published storefronts — governance holds under independent operator use
 
@@ -115,7 +115,7 @@ MVP is the product a commercetools customer can migrate to, use confidently on d
 
 **In MVP:**
 - **Storefront Editor** — StorefrontCanvas with Green/Red Zone governance, visual component placement, context-aware editing
-- **AI Creation Flow** — Describe → AI generates governed draft → operator refines → publish (Lovable-inspired, enterprise-grade)
+- **AI Site Builder (warm-start completion)** — operator edits a populated canvas → AI infers intent from observed edits → governed completion offered → operator accepts, refines, or rejects → publish. Greenfield canvas populated via the FR76 starter-template gallery; brownfield canvas via the Migrator (FR34–FR39)
 - **Governed Component Library** — Developer-defined Green Zone; Red Zone protection for cart, checkout, and product data
 - **B2X Rendering** — Single storefront resolves B2C, B2B, and dealer portal contexts from commercetools data
 - **Migration Tooling** — Automated commercetools project connection, component scaffolding from existing catalog structure
@@ -161,13 +161,13 @@ MVP is the product a commercetools customer can migrate to, use confidently on d
 
 Today she opens the storefront editor from Merchant Center. She's done this before. She knows what to do.
 
-**Rising Action:** She types into the AI panel: *"Valentine's Day capsule collection landing page — romantic, deep red palette, feature the Velvet Edit pieces above the fold, limited stock urgency messaging."* Sixty seconds later, the canvas populates with three hero variants — all using her approved component library, all on-brand, all Red Zone protected so commerce logic is untouched. She picks the middle one. She swaps one image from the asset library. She rewrites the headline: *"Made for the ones worth it."* She hits Preview. Desktop looks right. Mobile looks right.
+**Rising Action:** From the editor's "Start from template" menu she picks **Campaign Landing — Single-Brand B2C** from the starter gallery. The canvas populates instantly — brand-tokenized hero, product grid, urgency strip, footer — all governed Green Zone components from her approved library, all Red Zone protected so commerce logic is untouched. She swaps the hero image from the asset library for the Velvet Edit shot. She rewrites the headline: *"Made for the ones worth it."* The AI Site Builder watches her edits and, after she touches a third element, offers a governed completion: a deep-red palette swap across the page and a limited-stock urgency block tied to the Velvet Edit SKUs. She accepts the palette, accepts the urgency block, rejects the suggested second-hero variant. She hits Preview. Desktop looks right. Mobile looks right.
 
 **Climax:** She clicks Publish. The governance check runs in the background — zero violations. The storefront goes live. Sofia watches the first session appear in the ACI panel within minutes.
 
 **Resolution:** 47 minutes from idea to live storefront. The Velvet Edit capsule sells out in 36 hours. At the Monday retrospective, Sofia's CMO asks how she pulled off a same-day campaign launch. She shrugs: *"It just works now."*
 
-**Capabilities revealed:** AI creation flow, governed component library, asset management, preview (desktop/mobile), publish workflow, ACI real-time session tracking.
+**Capabilities revealed:** Starter-template gallery (per-page), AI Site Builder warm-start completion, governed component library, asset management, preview (desktop/mobile), publish workflow, ACI real-time session tracking.
 
 ---
 
@@ -257,7 +257,8 @@ He runs the content migration script — existing page configurations map to the
 
 | Capability Area | Revealed By |
 |---|---|
-| AI creation flow (describe → draft → publish) | Journeys 1, 2 |
+| Starter-template gallery (per-page bootstrap) | Journey 1 |
+| AI Site Builder warm-start completion (populated canvas → observed edits → governed completion → publish) | Journeys 1, 2 |
 | Governed component library (Green/Red Zone) | Journeys 1, 2, 3, 6 |
 | Mobile editor access | Journey 2 |
 | Real-time publish + governance validation | Journeys 1, 2, 3 |
@@ -457,18 +458,18 @@ Organization (Tenant)
 | Metric | Definition |
 |---|---|
 | **Storefront sessions** | One ACI-instrumented visitor session on a live storefront |
-| **AI generation events** | One describe → governed draft execution (regardless of publish outcome) |
+| **AI completion events** | One AI completion job (intent inference → governed completion offered to operator) regardless of accept/reject outcome |
 | **Connected storefronts** | Number of commercetools projects actively connected to the platform |
 
 **Usage Tiers:**
 
-| Tier | Sessions/month | AI Generations/month | Connected Storefronts | Target Customer |
+| Tier | Sessions/month | AI Completions/month | Connected Storefronts | Target Customer |
 |---|---|---|---|---|
 | **Starter** | Up to 500K | Up to 500 | 1 | SMB / pilot |
 | **Growth** | Up to 5M | Up to 5,000 | Up to 3 | Mid-market |
 | **Enterprise** | Custom (unlimited) | Custom (unlimited) | Unlimited | Enterprise / multi-brand |
 
-- Overage pricing applies beyond tier limits on sessions and AI generations
+- Overage pricing applies beyond tier limits on sessions and AI completions
 - ACI Phase 1 (behavioral analytics) included in all tiers — not a separate SKU
 - Advanced ACI features (experiment platform, event analytics — Phase 2/3) gated to Growth and Enterprise
 - Enterprise tier includes: dedicated data residency, SOC 2 Type II report, SLA guarantees, professional services onboarding
@@ -498,7 +499,7 @@ Organization (Tenant)
 
 - **Edge rendering architecture:** Storefront must render at the edge (Vercel Edge Functions or Cloudflare Workers) for Core Web Vitals compliance. Server-side rendering at origin is a fallback only.
 - **Incremental static regeneration (ISR):** Product catalog and pricing data changes in commercetools must propagate to live storefronts within 60 seconds via ISR or subscription-based cache invalidation.
-- **AI generation latency budget:** Describe → governed draft must complete within 30 seconds end-to-end (LLM + component assembly + canvas render). User-facing streaming progress indicator required.
+- **AI completion latency budget:** Intent inference → governed completion offer must complete within 30 seconds end-to-end (edit-observation hook + LLM + governance check + canvas patch). User-facing streaming progress indicator required after 2 seconds.
 - **ACI event pipeline:** Behavioral events must be ingested asynchronously without blocking storefront render performance. ACI script must add zero measurable impact to Core Web Vitals scores.
 - **Zero-downtime deploys:** Operator publishes must deploy atomically — no partial state visible to live traffic. Blue/green or canary deployment model required.
 
@@ -519,7 +520,7 @@ The AI creation flow is in MVP, but manual canvas editing is the safety net. If 
 ### MVP Feature Set (Phase 1)
 
 **Core User Journeys Supported:**
-- Journey 1 (Sofia — campaign launch): Full describe → AI draft → refine → publish flow
+- Journey 1 (Sofia — campaign launch): Per-page starter template → operator edits → AI completion offer → refine → publish
 - Journey 2 (Sofia — crisis recovery): Mobile editor access + Green Zone component swap
 - Journey 3 (Mateus — governance setup): Developer Console + Green/Red Zone configuration
 - Journey 5 (Marcus — provisioning): SSO, multi-tenant, RBAC, EU data residency
@@ -527,7 +528,7 @@ The AI creation flow is in MVP, but manual canvas editing is the safety net. If 
 
 **Must-Have Capabilities:**
 - Storefront editor (StorefrontCanvas, Green/Red Zone governance, visual component placement)
-- AI creation flow (describe → governed draft → refine → publish); manual editing as fallback
+- AI Site Builder warm-start completion (populated canvas → observed edits → governed completion → publish); manual canvas editing fully functional without AI
 - Governed component library + Developer Console
 - B2X rendering (B2C, B2B, dealer portal contexts from one storefront)
 - Migration Console (commercetools project connection, component scaffolding, content migration)
@@ -670,6 +671,40 @@ This section locks the platform's posture on customer data infrastructure. Per t
 - **FR81:** The platform ships a documented integration playbook for hybrid Pixel + Conversions API (CAPI) integration with Meta, Google, and TikTok ad platforms — covering Event Match Quality (EMQ) optimization through the customer's CDP layer. The platform itself does **not** own EMQ scoring or Match Quality optimization (delegated to the CDP partner per the co-exist posture). MVP deliverable: documentation + reference implementations for each ad platform. Phase 2 deliverable: native CAPI emission for tenants without a CDP, as a consolidation-motion fallback.
 - **FR82:** The Tenant Intelligence Score (FR61) is repositioned in the operator UI as the platform's primary moat-narrative surface — visible in MC navigation with: sessions collected, experiments completed, CLV cohort size, prediction accuracy, "tried and retired" library size, and an explicit "your data is compounding" narrative arc. First 10 Experiments Free (FR62) is reframed as a permanent moat-accumulation accelerator, not a launch-only tactic. The score communicates that platform value compounds with tenant-specific experiment history that competitors cannot replicate by connecting to commercetools APIs alone.
 
+### AI Experience Engine — Phase 2 / 3 (Epic 8)
+
+This section formalises the FR52–FR65 capabilities owned by Epic 8 (AI Experience Engine). MVP delivers ACI Phase 1 (FR21–FR28) — behavioral analytics and engagement scoring. Phase 2 unlocks A/B experimentation (FR52–FR55, FR62, FR64). Phase 3 unlocks autonomous recommendations and the Tenant Intelligence Score moat-narrative surface (FR56–FR61, FR63, FR65). The Commerce Intelligence Drawer dual-mode operates as the single AI-action surface across Create (warm-start completion, FR7) and Optimize (canvas-anchored recommendations, FR65).
+
+- **FR52:** Operators can create manual A/B experiment hypotheses tied to a specific page, section, or component from the canvas surface
+- **FR53:** The platform automatically generates experiment hypotheses from behavioral patterns once a minimum session threshold is reached (default: 2,000 qualified sessions per page)
+- **FR54:** The platform runs controlled A/B tests with configurable traffic splits and measures Horizon 1 outcomes (CTR, conversion rate, add-to-cart rate) with statistical confidence intervals
+- **FR55:** The platform measures Horizon 2 outcomes (CLV delta, repeat purchase rate, AOV change) over a 90-day window in parallel with Horizon 1 for all running experiments
+- **FR56:** The platform surfaces a canvas-anchored recommendation panel showing ranked recommendations with expected outcomes, confidence intervals, and Horizon badges (⚡ Quick Win / 📈 Long Game) scoped to the page currently being edited
+- **FR57:** Operators can apply a recommendation as a single-shot canvas change with configurable progressive rollout (5 % → 25 % → 50 % → 100 % traffic gates)
+- **FR58:** When a recommendation requires a component change beyond Green Zone constraints, the platform generates a code-change pull request — containing the component diff, schema update, behavioral evidence brief, expected outcome, and an auto-provisioned preview deployment link — for developer review before merge
+- **FR59:** The platform alerts operators when live metrics fall below a defined baseline threshold during progressive rollout; operators execute rollback via a single action; rollback is atomic with no partial state visible
+- **FR60:** The platform classifies rolled-back experiments into a failure taxonomy (metric degradation, context mismatch, operator override, data immaturity) and surfaces a "Tried and Retired" library in the recommendation panel; classifications filter future recommendations
+- **FR61:** The platform displays a Tenant Intelligence Score in the navigation — a calibration indicator showing sessions collected, experiments completed, CLV cohort size, and prediction accuracy — updated in real time
+- **FR62:** The first 10 experiments per tenant are available at no consumption cost to accelerate moat accumulation before commitment
+- **FR63:** The platform imports historical behavioral event data from supported sources (GA4, Hotjar, Mixpanel, or Frontastic analytics) during onboarding to pre-warm the recommendation engine before native data accumulates
+- **FR64:** Operators can group experiments under a named campaign with a goal metric, timeline, and success threshold; results are reported as campaign-level outcomes
+- **FR65:** The Commerce Intelligence Drawer operates in two modes — Create (AI observes operator edits and offers governed completion, FR7) and Optimize (canvas-anchored behavioral recommendations, FR56) — switching automatically based on whether the active page has sufficient behavioral data
+
+### Physical Retail POS (Epic 9 — Research)
+
+This section formalises FR66–FR75. Epic 9 is a research epic — partner ADR pending; stories defer until vendor selected. POS is included in the PRD because it is a contract-level capability area for unified-commerce buyers (commercetools' fastest-growing segment) and shares state with online behavioral data via FR72. POS Green/Red Zone (FR74) extends the same governance contract from the storefront to in-store surfaces.
+
+- **FR66:** Store Associates can initiate and complete in-store POS transactions from within the Merchant Center shell without leaving the platform environment
+- **FR67:** POS inventory reservations are reflected in live storefront availability within 60 seconds via the commercetools Inventory API
+- **FR68:** In-store transactions are created as commercetools Orders in the same Order pipeline as online orders — unified order state, unified fulfillment
+- **FR69:** Store Associates can search the product catalog from the POS interface using the commercetools Catalog API with full attribute and pricing context
+- **FR70:** Fiscal receipts are generated in compliance with the jurisdiction's requirements (NF525 France, RTF Italy, GoBD Germany, SAF-T Portugal/Poland) — handled by the partner integration layer, not the platform
+- **FR71:** IT Admins can configure POS locations, register devices, and assign Store Associate access within the platform's existing role-based access control (no separate identity system)
+- **FR72:** Anonymized in-store POS transaction behavioral signals (product lookup rate, associate-assisted add-to-cart, terminal cart abandonment) are ingested into the ACI behavioral pipeline alongside online behavioral events
+- **FR73:** Store Associates can surface AI Experience Engine product recommendations during assisted-selling flows, drawn from the same tenant recommendation model as the online storefront
+- **FR74:** POS promotion slots and upsell sections are operator-configurable as Green Zone components; pricing rules, discounts, and tax calculations remain Red Zone (enforced by the commercetools Pricing API and the partner fiscal engine)
+- **FR75:** The platform supports an offline transaction queue for network-resilient POS operations — queued transactions sync automatically when connectivity is restored (handled by partner SDK)
+
 ### Compliance & Data Privacy
 
 - **FR47:** End consumers can withdraw behavioral tracking consent and the platform immediately stops ACI data collection for that session
@@ -685,7 +720,7 @@ This section locks the platform's posture on customer data infrastructure. Per t
 ### Performance
 
 - **NFR1:** Editor user actions (component placement, property edits, canvas navigation) complete with visible response within 500ms
-- **NFR2:** AI draft generation (describe → fully rendered draft on canvas) completes within 30 seconds end-to-end, with streaming progress shown after 2 seconds
+- **NFR2:** AI completion job (intent inference + governed completion offer applied to canvas) completes within 30 seconds end-to-end, with streaming progress shown after 2 seconds
 - **NFR3:** Publish action (governance validation + deployment) completes within 15 seconds for storefronts ≤500KB
 - **NFR4:** Storefront page load (LCP): <2.5s on mobile, <1.5s on desktop; CLS <0.1; INP <200ms (Core Web Vitals Pass)
 - **NFR5:** ACI heatmap overlay loads within 3 seconds after canvas navigates to a new page section
