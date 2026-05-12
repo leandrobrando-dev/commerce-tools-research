@@ -117,6 +117,16 @@ These close the cold-start gap created by FR7's warm-start completion model. New
 FR76: Business Operators can instantiate a full-site starter from a curated, brand-tokenizable template gallery during tenant onboarding. The gallery ships with at least four starter shapes — single-brand B2C, multi-locale B2C, B2B with account portal, B2X multi-context — each producing a populated canvas of governed Green Zone components ready for operator edits and subsequent AI completion (FR7).
 FR77: The platform ships a default, platform-maintained Green Zone component library covering the components required by all FR76 starter templates, so a new tenant has Day-1 component coverage before defining their own developer-governed library (FR29). Tenants can extend or replace the default library at any time without losing canvas state.
 
+### New Functional Requirements — Tracking Layer & CDP Co-Exist (Epic 5 + Epic 6 + Epic 8)
+
+These FRs land the platform's deliberate co-exist posture vs. the customer's existing Customer Data Platform per the 2026-05-12 Golden Path market research. The CDP is the data-and-identity layer; the platform is the experience-and-decisioning layer. Commerce events bypass the CDP (commercetools Subscriptions direct).
+
+FR78: The platform stitches behavioral events across sessions for authenticated commercetools customers using `Customer.externalId` plus a first-party HMAC-hashed cookie, producing identity-stitched event streams that power Horizon 2 CLV measurement (FR55) for the auth-customer cohort regardless of CDP presence. Anonymous + cross-device stitching is **out of scope** — delegated to the customer's CDP.
+FR79: The platform accepts behavioral events from a customer-configured CDP via destination-adapter pattern (Phase 2 — RudderStack, Twilio Segment, Snowplow). All adapters validate events against the same Zod schema as the platform's own SDK and tag ingested events `source: "cdp:{vendor}"` for downstream observability.
+FR80: The platform emits structured experiment-outcome events (variant ID, exposure count, conversion delta, statistical confidence, rollout state, Horizon-1 + Horizon-2 measurements) to customer-configured destinations — RudderStack and Twilio Segment as Phase 1 destinations, plus a generic webhook destination — so experiment outcomes appear in the customer's warehouse, ad-platform attribution, and BI dashboards without manual ETL.
+FR81: The platform ships a documented integration playbook for hybrid Pixel + Conversions API integration with Meta, Google, and TikTok ad platforms — covering Event Match Quality optimization through the customer's CDP layer. The platform itself does NOT own EMQ scoring (delegated to CDP partner). MVP: docs + reference implementations. Phase 2: native CAPI emission for tenants without a CDP.
+FR82: The Tenant Intelligence Score (FR61) is repositioned in the operator UI as the primary moat-narrative surface — visible in MC navigation with sessions collected, experiments completed, CLV cohort size, prediction accuracy, "tried and retired" library size, and an explicit "your data is compounding" narrative arc. First 10 Experiments Free (FR62) is reframed as a permanent moat-accumulation accelerator, not a launch-only tactic.
+
 ---
 
 ### NonFunctional Requirements
@@ -296,7 +306,12 @@ FR73: Epic 9 — AI Experience Engine recommendations surfaced in assisted-selli
 FR74: Epic 9 — POS Green Zone (promotion slots) vs Red Zone (pricing/tax) governance
 FR75: Epic 9 — Offline transaction queue + auto-sync (partner SDK)
 FR76: Epic 3 — Starter Template Gallery (Story 3.0) — greenfield bootstrap producing a populated canvas of brand-tokenized governed components on Day 1
-FR77: Epic 2 — Default platform-shipped Green Zone component library covering all FR76 starter-template components (Day-1 library so the gallery works without tenant developer setup)
+FR77: Epic 2 — Default platform-shipped Green Zone component library (Story 2.10) covering all FR76 starter-template components
+FR78: Epic 5 — Auth-customer cross-session stitching for identity-stitched event streams powering Horizon 2 CLV (Story 5.11)
+FR79: Epic 5 — CDP source-adapter ingest pattern (RudderStack / Segment / Snowplow) — Phase 2 (Story 5.12)
+FR80: Epic 8 — Experiment-outcome event emission to customer-configured CDP destinations (Story 8.19)
+FR81: Epic 6 — EMQ-aware Pixel + CAPI integration playbook + native CAPI fallback for non-CDP tenants (Story 6.10)
+FR82: Epic 8 — Tenant Intelligence Score repositioned as primary moat-narrative surface (Story 8.1 enhanced)
 
 ---
 
@@ -360,11 +375,13 @@ _(Active collection pipeline + canvas-anchored UI surfaces. The Postgres behavio
 
 **Sequencing precision (resolves prior prose ↔ story-location contradiction):** Story 5.1 ships the active collection pipeline — storefront snippet, `/api/events` endpoint with ClickHouse ingestion, batching. Once Story 5.1 ships and a tenant has completed Epic 4 Story 4.1 (CT project connection), behavioral events flow automatically with no manual activation. Story 5.1 ships **before** Stories 5.3 onward (UI surfaces), so behavioral data accumulates silently before any operator-visible analytics UI lands — the "moat starts accumulating before UI" claim refers to within-Epic-5 sequencing, not to Epic 1 ↔ Epic 5 ordering.
 
+**CDP co-exist posture (added per 2026-05-12 Golden Path research):** Epic 5 also owns the platform's behavioral-data co-exist contract with the customer's Customer Data Platform. Story 5.11 (FR78) ships auth-customer cross-session stitching using `Customer.externalId` + first-party HMAC cookie — this powers Horizon 2 CLV (FR55) for the authenticated cohort regardless of CDP presence. Anonymous + cross-device stitching is explicitly out-of-scope and delegated to the customer's CDP. Story 5.12 (FR79, Phase 2) extends the ingest pipeline to accept behavioral events from RudderStack / Twilio Segment / Snowplow as a CDP source-adapter, validating against the same Zod schema as the platform's own SDK.
+
 The behavioral data layer is dissolved into the canvas surface: heatmap overlay toggleable on the canvas, engagement score badges on sections, drop-off rate annotations on hover. There is no separate ACI analytics dashboard — all behavioral insights are surfaced contextually where operators are already working.
 
 Dual-track consent: aggregate behavioral consent (ACI collection) and identity-linked personalization consent (CLV-enhanced rendering via consumer CLV tier) are separate, legally distinct consent layers managed in the IT Admin dashboard. Full GDPR compliance: consent-aware collection, right-to-erasure, configurable data retention, PCI boundary enforcement. Behavioral event pipeline feeds the AI Experience Engine recommendation model.
 
-**FRs covered:** FR21, FR22, FR23, FR24, FR25, FR26, FR27, FR28, FR47, FR48, FR49
+**FRs covered:** FR21, FR22, FR23, FR24, FR25, FR26, FR27, FR28, FR47, FR48, FR49, FR78, FR79
 
 ---
 
@@ -373,7 +390,9 @@ _(Epic 6 skeleton ships with Epic 1 as procurement gate — SSO + data residency
 
 Enterprise IT Admins can fully provision the platform: SAML 2.0/OIDC SSO, SCIM 2.0 automated user lifecycle, multi-brand access boundaries, EU/US data residency, DPA generation, and a usage dashboard covering sessions, AI completions, experiments run, recommendations applied, and PRs generated against subscription tier limits. The dual-consent model (aggregate behavioral + identity-linked personalization) is configurable per tenant with full audit visibility.
 
-**FRs covered:** FR40 (full SAML/OIDC), FR41, FR42 (full management UI), FR43, FR44, FR45, FR46
+**Ad-platform integration playbook (added per 2026-05-12 Golden Path research):** Epic 6 also owns the documented integration playbook for hybrid Pixel + Conversions API integration with Meta, Google, and TikTok ad platforms (FR81, Story 6.10). Event Match Quality (EMQ) optimization is delegated to the customer's CDP partner; the platform ships docs + reference implementations in MVP and a native CAPI fallback in Phase 2 for tenants without a CDP (the consolidation-motion fallback path).
+
+**FRs covered:** FR40 (full SAML/OIDC), FR41, FR42 (full management UI), FR43, FR44, FR45, FR46, FR81
 
 ---
 
@@ -401,7 +420,9 @@ The continuous optimization layer that activates once a storefront is live and b
 
 **Commerce Intelligence Drawer — Optimize Mode:** The unified right drawer switches to Optimize mode automatically when the active page has sufficient behavioral data (FR65), surfacing contextual recommendations without requiring operators to navigate to a separate section.
 
-**FRs covered:** FR52, FR53, FR54, FR55, FR56, FR57, FR58, FR59, FR60, FR61, FR62, FR64, FR65 (Optimize mode)
+**Co-exist posture + moat reframe (added per 2026-05-12 Golden Path research):** Epic 8 emits experiment-outcome events back to the customer's CDP for downstream attribution and BI (FR80, Story 8.19) — RudderStack and Twilio Segment as Phase 1 destinations plus generic webhook. The Tenant Intelligence Score (FR61) is repositioned as the **primary moat-narrative surface** (FR82, Story 8.1 enhanced) with explicit "your data is compounding" framing. First 10 Experiments Free (FR62) is reframed from launch tactic to permanent moat-accumulation accelerator — this epic is the platform's primary long-term defensible position against CDP vendors (Twilio Segment AI June 2025, Snowplow Signals May 2025) encroaching on the decisioning layer over the 12–24 month time-bounded competitive window.
+
+**FRs covered:** FR52, FR53, FR54, FR55, FR56, FR57, FR58, FR59, FR60, FR61, FR62, FR64, FR65 (Optimize mode), FR80, FR82
 
 ---
 
@@ -463,12 +484,14 @@ _(Research epic — evaluate, select, and integrate a composable POS partner tha
 
 ## Revised Priority Sequencing
 
+_Updated 2026-05-12 per Golden Path market research: Epic 8 elevated from P3 to P2.5 (between Entry Hook and Compounding Moat). Rationale: tenant-intelligence accumulation is the platform's primary long-term moat against CDP-vendor encroachment on the decisioning layer (Twilio Segment AI June 2025; Snowplow Signals May 2025) over the 12–24 month time-bounded competitive window. The longer Epic 8 runs in production, the deeper the moat — making speed-to-market for Epic 8 MVP more strategically important than originally sequenced._
+
 | Priority | Epic(s) | Rationale |
 |----------|---------|-----------|
 | **P0 — Parallel Foundation** | Epic 1 + Epic 5 infrastructure + Epic 6 skeleton | CT activation + behavioral collection (moat starts) + procurement gate — simultaneous |
 | **P1 — Core Value** | Epic 2 + Epic 3 | Governed component library + editor — what operators come for |
 | **P2 — Entry Hook** | Epic 4 | AI Site Builder + Migrator — Frontastic path first (highest-urgency ICP) |
-| **P3 — Moat Activation** | Epic 8 MVP | Manual experiments + Horizon 1 + Unified Drawer Optimize mode + 10 free experiments |
-| **P4 — Compounding Moat** | Epic 8 full | Horizon 2 CLV, auto-hypotheses, PR generation, campaign workspace, progressive rollout |
-| **P5 — Enterprise Scale** | Epic 6 full | SCIM, multi-brand governance hub, usage dashboard with Experience Engine metrics |
-| **P6 — Physical Retail (Research → Build)** | Epic 9 | Partner selection + POC (M1-3 of research track); CT-native integration layer after partner selected; extends ACI moat to in-store behavioral signals |
+| **P2.5 — Moat Activation [ELEVATED 2026-05-12]** | Epic 8 MVP + FR78 auth-stitching (Story 5.11) + FR80 outcome emission (Story 8.19) + FR82 moat surfacing (Story 8.1 enhanced) | Manual experiments + Horizon 1 + Unified Drawer Optimize mode + 10 free experiments + auth-customer CLV + outcome events flowing to customer's CDP. **Tenant intelligence accumulation begins here — primary long-term moat.** First lighthouse customer needs Epic 8 in production to start compounding. |
+| **P3 — Compounding Moat** | Epic 8 full + FR79 CDP source-adapters (Story 5.12) | Horizon 2 CLV, auto-hypotheses, PR generation, campaign workspace, progressive rollout, plus CDP source-adapter ingest (RudderStack / Segment / Snowplow) for high-maturity-tenant Integration sales motion |
+| **P4 — Enterprise Scale** | Epic 6 full + FR81 native CAPI fallback (Story 6.10 Phase 2) | SCIM, multi-brand governance hub, usage dashboard with Experience Engine metrics; native CAPI emission for non-CDP tenants |
+| **P5 — Physical Retail (Research → Build)** | Epic 9 | Partner selection + POC (M1-3 of research track); CT-native integration layer after partner selected; extends ACI moat to in-store behavioral signals |

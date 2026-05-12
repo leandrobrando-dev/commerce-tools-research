@@ -6,7 +6,7 @@ author: Mary (Business Analyst)
 purpose: Pre-conversation prep + structured questions for a product-strategy discussion with commercetools' CPO. Outcomes pursued: (1) precisely scope what commercetools will build vs partner for in AI / operator-tooling / experimentation; (2) test the MC Custom Application architecture as the canonical extension pattern; (3) understand customer-feedback themes that drive their roadmap; (4) probe Agentic Jumpstart's downstream evolution; (5) clarify the storefront-authoring boundary specifically.
 related_artifacts:
   - _bmad-output/planning-artifacts/research/market-golden-path-architecture-cdp-positioning-research-2026-05-12.md
-  - _bmad-output/planning-artifacts/commercetools-ceo-strategic-conversation-questionnaire-2026-05-12.md
+  - _bmad-output/planning-artifacts/questionnaires/commercetools-ceo-strategic-conversation-questionnaire-2026-05-12.md
   - _bmad-output/planning-artifacts/architecture.md
   - _bmad-output/planning-artifacts/prd.md
 suggested_format: "60–75 minute working session, virtual preferred (architecture-level questions benefit from screen-sharing). Technical conversation; expect deep dives. Off-the-record framing welcome."

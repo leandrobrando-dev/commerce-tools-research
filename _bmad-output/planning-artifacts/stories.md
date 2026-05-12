@@ -1244,6 +1244,52 @@ status: "complete"
 
 ---
 
+### Story 5.11: Auth-Customer Cross-Session Stitching
+
+**As a** platform analyst measuring CLV (Horizon 2)
+**I want** behavioral events stitched across sessions for authenticated commercetools customers using `Customer.externalId` plus a first-party HMAC-hashed cookie
+**So that** Horizon 2 CLV and repeat-purchase metrics work for the auth-customer cohort regardless of whether the tenant has a CDP — closing the cold-start CLV gap for non-CDP tenants without competing with the CDP's identity graph
+
+**Acceptance Criteria:**
+1. On every authenticated request to a connected storefront (`Customer.id` resolved via commercetools session), the platform issues a first-party cookie `__aci_uid` whose value is `HMAC-SHA256(Customer.externalId, TENANT_STITCH_SECRET)` truncated to 32 chars; cookie is `Secure`, `HttpOnly`, `SameSite=Lax`, with a 13-month expiry to align with FR28's behavioral retention default; rotation happens on `TENANT_STITCH_SECRET` rotation, not on session change.
+2. The behavioral event ingestion pipeline (Story 5.1) computes a derived `user_hash` field for every event in the auth-customer cohort by reading the `__aci_uid` cookie from the request; events without the cookie continue to use `session_id` only and are tagged `cohort: "anonymous"`; events with the cookie are tagged `cohort: "auth"`.
+3. ClickHouse `behavioral_events` table gains a `user_hash` column (nullable, ordered by `(tenant_id, user_hash, timestamp)` for efficient per-user range scans); a Prisma migration adds the column to the Postgres mirror; Story 5.1's ingest endpoint is updated to populate it.
+4. Horizon 2 CLV measurement (FR55, Story 8.5) reads from `behavioral_events` joined on `user_hash` with the commercetools Order API (via Subscriptions) to compute per-user CLV deltas across the auth-customer cohort; CLV is **not** computed for the anonymous cohort (out-of-scope per FR78 — delegated to CDP partner if present).
+5. The Tenant Intelligence Score (FR61, FR82) surfaces auth-cohort CLV cohort size as a top-level metric in the operator UI; operators can see "X% of your traffic is identifiable for CLV measurement" and a recommended action ("connect a CDP for anonymous-cohort identity resolution") if anonymous traffic is dominant.
+6. Cross-tenant isolation: `TENANT_STITCH_SECRET` is per-tenant (one secret per tenant in `securedConfiguration`); `user_hash` values are mathematically non-comparable across tenants. A test asserts that the same `Customer.externalId` produces different `user_hash` values for two different tenants.
+7. GDPR right-to-erasure (FR48) is extended: when a tenant submits an erasure request for a `Customer.id`, the platform deletes all `behavioral_events` rows where `user_hash` matches the `HMAC-SHA256(externalId, TENANT_STITCH_SECRET)` of that customer; the operation is logged in the audit table.
+8. Documentation: a public docs page explicitly describes the scope split — *what stitching the platform does (auth-customer cross-session) vs. what it delegates to the CDP (anonymous + cross-device)* — so customers can make an informed decision about CDP partnership.
+
+**Dependencies:** Story 5.1 (event ingestion pipeline), Story 4.1 (commercetools Customer Subscriptions), Prisma migration for `user_hash` column, `TENANT_STITCH_SECRET` per-tenant
+**FRs Covered:** FR78
+**Complexity:** L
+
+---
+
+### Story 5.12: CDP Source-Adapter Ingest **[PHASE 2 — Post-MVP]**
+
+> **Phase status:** Not in MVP. Targeted for Epic 5 Phase 2 alongside Epic 8 phase 2 (Compounding Moat priority sequencing P3). **Rationale:** the consolidation sales motion (Legacy-Trapped Enterprise + B2B2C Hybrid segments) is served by the platform's own SDK in MVP; CDP source-adapter ingest serves the integration sales motion (Digital-Native B2B Scale-up + AI-Forward Innovator + Multi-Brand B2C + Unified Commerce Leader) which lights up after P2 Entry Hook lighthouse customers prove the integration motion. Phase 2 ordering is recommended as: RudderStack first (warehouse-first, dev-led, easiest partner motion), then Twilio Segment (largest installed base, most likely to be encountered), then Snowplow (open-source, AI-Forward Innovator overlap).
+
+**As a** tenant operator running a CDP-mature stack (RudderStack, Twilio Segment, or Snowplow)
+**I want** to configure my CDP to send behavioral events to the platform as an additional destination, instead of (or alongside) installing the platform's own SDK
+**So that** my existing tracking architecture continues to own the event pipeline while the platform's experience-and-decisioning layer receives the same behavioral signals
+
+**Acceptance Criteria:**
+1. The platform exposes a documented HTTP ingest endpoint `/api/cdp-events/{vendor}` that accepts JSON payloads conforming to the same Zod schema as the platform's own SDK (`event_type`, `session_id`, `component_id`, `page_path`, `metadata`); supported vendors at Phase 2: `rudderstack`, `segment`, `snowplow`.
+2. Each vendor adapter normalizes the vendor's native event shape to the platform's canonical schema: RudderStack's track/identify/page calls; Twilio Segment's analytics.track / identify / page; Snowplow's self-describing event schemas. The adapter rejects malformed events with HTTP 400 + a structured error code that the CDP can surface in its delivery dashboard.
+3. Ingested events are written to the same ClickHouse `behavioral_events` table as the platform's own SDK; the `source` column is populated as `cdp:rudderstack`, `cdp:segment`, or `cdp:snowplow` for downstream observability and per-source analytics.
+4. Authentication uses a per-tenant API key passed in the `Authorization: Bearer` header; keys are issued via the IT Admin dashboard (extends FR40 SSO surface), rotated via a single click, and audit-logged on every issuance and rotation. CDP-side configuration documentation links to the key-management UI.
+5. Rate limiting is enforced per tenant: 100 K events/second with burst tolerance of 200 K (Upstash Ratelimit SDK, consistent with NFR16); excess returns HTTP 429 with `Retry-After` header so the CDP can back off gracefully.
+6. Identity stitching: if the CDP-emitted event includes a `userId` field (CDP-resolved identity), the adapter computes `user_hash = HMAC-SHA256(userId, TENANT_STITCH_SECRET)` and uses it consistently with FR78's auth-cohort tagging. If the CDP cannot provide a stable identity, events fall back to `session_id` only and are tagged `cohort: "anonymous"`.
+7. Backfill / replay support: the endpoint accepts a `?replay=true` query param that allows the CDP to re-deliver historical events; replayed events are deduplicated by `(tenant_id, session_id, event_type, timestamp)` composite key; duplicates are logged but not double-counted.
+8. End-to-end integration tests: each vendor's adapter has a Playwright integration test that emits events via the vendor's official SDK against a test tenant, verifies ingestion + normalization + ClickHouse write within the 500 ms p99 latency budget per NFR16.
+
+**Dependencies:** Story 5.1 (own-SDK ingest endpoint must exist as the architectural baseline), Story 5.11 (auth-customer stitching pattern), Story 6.4 (multi-brand access boundaries inform per-tenant API key issuance), Upstash Ratelimit SDK
+**FRs Covered:** FR79
+**Complexity:** L
+
+---
+
 ## Epic 6: Enterprise Administration & Compliance
 
 ### Story 6.1: SAML 2.0 / OIDC Enterprise SSO Configuration
@@ -1432,6 +1478,40 @@ status: "complete"
 **Dependencies:** Story 1.7, Story 6.1, Story 6.5, Story 6.6, Resend configured, Inngest configured
 **FRs Covered:** FR40, FR41, FR42, FR43, FR44, FR45, FR46
 **Complexity:** M
+
+---
+
+### Story 6.10: Ad-Platform Integration Playbook (Pixel + Conversions API) **[MVP — DOCS; PHASE 2 — NATIVE FALLBACK]**
+
+> **Phased:** Phase 1 (MVP) ships **documentation and reference implementations** only — the platform itself does NOT own EMQ scoring or Match Quality optimization (delegated to the customer's CDP partner per FR81). Phase 2 (post-MVP, gated on Consolidation-motion validation per market research) ships native CAPI emission for tenants without a CDP.
+>
+> **Rationale:** Ad-platform Event Match Quality is a documented 15–38 % CPA lever (CMO-visible). Most customers in our ICP delegate EMQ optimization to their CDP layer; for the minority running without a CDP (Consolidation-motion targets, Legacy-Trapped Enterprise segment), a native CAPI fallback closes the gap without forcing CDP procurement.
+
+**As an** IT Admin or Marketing Ops lead
+**I want** a documented, reference-implemented integration path for hybrid Pixel + Conversions API with Meta, Google Ads, and TikTok — and (Phase 2) a native CAPI emission option if I don't run a CDP
+**So that** my paid-media Event Match Quality scores remain healthy without me needing to either run a full CDP or integrate the platform with my ad accounts manually
+
+**Acceptance Criteria (Phase 1 — MVP, docs + reference implementations):**
+
+1. The platform ships three integration playbooks at `docs/integrations/ad-platforms/{meta,google,tiktok}.md` covering: Pixel installation pattern, CAPI server-side companion via the customer's CDP, expected EMQ score range, parameter coverage matrix (email / phone / IP / UA / fbp / fbc / first-name / last-name), and troubleshooting for common Match Quality regressions.
+2. Each playbook includes a **reference implementation** (TypeScript snippet) showing how to wire commercetools Subscriptions → CDP → ad-platform CAPI for the order-conversion event; the snippet works against RudderStack and Twilio Segment (Phase 2 destinations from Story 5.12) and is testable end-to-end against a stub ad-platform endpoint.
+3. The IT Admin dashboard (extending Story 6.9 onboarding) gains an "Ad Platform Integrations" section listing Meta / Google / TikTok with status indicators: `not configured` / `configured via CDP` / `configured via native CAPI (Phase 2)`; the section deep-links to each playbook.
+4. The Tenant Intelligence Score (FR82, Story 8.1 enhanced) surfaces ad-platform Match Quality as a contributing signal *only when the tenant has connected their ad accounts* (read-only OAuth grant); otherwise the section displays a "connect your ad accounts to see Match Quality trends" CTA.
+5. Documentation includes the **explicit scope boundary**: *"The platform does not own EMQ scoring; we delegate to your CDP layer. If you don't run a CDP, see Phase 2 for the native CAPI fallback."* — this language is reviewed by the platform's marketing and product-counsel teams to ensure it survives RFP scrutiny.
+
+**Acceptance Criteria (Phase 2 — Native CAPI fallback, Consolidation-motion gated):**
+
+6. A Phase-2-flagged feature ships native CAPI emission for tenants who do not have a CDP connected: an Inngest cron `ad-platforms/capi.emit` triggered on `commercetools.order.created` Subscriptions emits hashed-PII Conversion API events to Meta, Google, and TikTok directly from the platform's edge runtime; events conform to each ad platform's current Conversions API schema (Meta CAPI v18+, Google Enhanced Conversions, TikTok Events API v2+).
+7. PII hashing uses SHA-256 per ad-platform spec; raw PII is never written to logs or persisted; encryption-at-rest and TLS 1.3 in transit per NFR7/NFR8.
+8. The IT Admin dashboard's "Ad Platform Integrations" section gains a "Connect (no CDP needed)" path that walks through OAuth grant + initial event-fire test for each platform; first-event-emitted is recorded in the audit log with `actionType: 'CAPI_FIRST_FIRE'`.
+9. EMQ score telemetry: a daily Inngest cron `ad-platforms/emq.sync` polls each connected ad platform's Match Quality API, records the score in `ad_platform_emq_history` Postgres table, and surfaces the trend in the IT Admin dashboard alongside the connection status.
+10. Phase 2 scope is explicitly **opt-in**: tenants without OAuth grants continue with Phase 1 documentation-only mode; the platform never auto-emits to ad platforms without explicit operator configuration.
+
+**Dependencies (Phase 1):** Story 6.9 onboarding flow, Story 5.1 ingest for Match Quality telemetry surface, Resend for the docs-portal launch announcement
+**Dependencies (Phase 2):** Story 4.1 CT project connection, Story 5.1 + 5.2 (consent), Story 6.9 OAuth flow scaffold, Inngest 4.2.6, ad-platform OAuth credentials in `securedConfiguration`
+**FRs Covered:** FR81
+**Complexity:** M (Phase 1 docs); L (Phase 2 native fallback)
+
 ## Epic 8: AI Experience Engine
 
 ### Story 8.1: Tenant Intelligence Score & Data Ramp Onboarding
@@ -1449,8 +1529,12 @@ status: "complete"
 6. `intelligence/score.recalculate` writes a score history row to `intelligence_score_history` (`tenant_id`, `composite_score`, sub-scores, `calculated_at`) so score trends can be charted over time.
 7. CASL `manage:intelligenceScore` ability (admin only) allows resetting the score history for testing; all score reads are row-level-security scoped to `tenant_id`.
 
-**Dependencies:** Epic 5 ClickHouse behavioral data pipeline live; Inngest 4.2.6
-**FRs Covered:** FR61
+8. **[FR82 — Moat-narrative surface, added 2026-05-12]** The MC nav rail score badge is the canonical moat-narrative surface for the platform: clicking it opens a panel showing five compounding signals — `sessions_collected`, `experiments_completed`, `clv_cohort_size` (auth-customer cohort per FR78), `prediction_accuracy_score`, and `tried_and_retired_library_size` (failure taxonomy per FR60). Above the metric grid, an explicit headline reads "Your data is compounding — N experiments since activation, M outcomes learned." The panel includes a contextual hint linking First 10 Experiments Free (FR62) as a permanent moat-accelerator, not a launch-only tactic. Copy is reviewed by product-marketing for stakeholder consistency with the revised PRD differentiation language.
+9. **[FR82 cont.]** Score deltas over the last 30 days are surfaced as a sparkline in the panel (`+12 sessions/day`, `+3 experiments/week`, `+147 CLV-cohort customers`); the sparkline is rendered with `recharts` LineChart against `intelligence_score_history` data; a 30-day comparison chip indicates trend direction (↑ green / → grey / ↓ amber).
+10. **[FR82 cont.]** When a competitor signal is detected (e.g., low `prediction_accuracy_score` paired with a tenant who has connected an external CDP via Story 5.12), an inline note suggests "Your CDP and our intelligence layer compound together — neither is replaceable without losing the model" — reinforcing the co-exist posture and the moat narrative simultaneously.
+
+**Dependencies:** Epic 5 ClickHouse behavioral data pipeline live; Inngest 4.2.6; Story 5.11 for `clv_cohort_size` (auth-customer cohort)
+**FRs Covered:** FR61, FR82
 **Complexity:** L
 
 ---
@@ -1802,3 +1886,26 @@ status: "complete"
 **Dependencies:** Story 8.3 (automated hypotheses with OpenRouter confidence scores); Story 8.6 (Recommendation Panel); Story 8.7 (ConfidenceCard)
 **FRs Covered:** FR56, FR60
 **Complexity:** S
+
+---
+
+### Story 8.19: Experiment-Outcome Event Emission to Customer's CDP
+
+**As a** commerce operator running experiments on the platform
+**I want** each experiment's outcome events — variant ID, exposure count, conversion delta, statistical confidence, rollout state, Horizon-1 + Horizon-2 measurements — automatically emitted back to my company's existing CDP destination (RudderStack, Twilio Segment, or generic webhook)
+**So that** experiment outcomes appear in my data warehouse, ad-platform attribution, and BI dashboards without manual ETL — the platform's intelligence layer cleanly co-exists with my data layer instead of replacing it
+
+**Acceptance Criteria:**
+1. The IT Admin dashboard adds an "Experiment Outcome Destinations" section under the existing Story 6.7 usage dashboard surface; supported destinations at MVP: `rudderstack`, `segment`, `webhook` (generic). Per-destination configuration includes: API key (stored in `securedConfiguration`), event-mapping schema overrides, enable/disable toggle, and a "Send test event" button that emits a synthetic outcome event to the destination and verifies HTTP 200 + delivery acknowledgement.
+2. Experiment lifecycle events trigger Inngest emission: `experiment/started`, `experiment/horizon1.measured` (CTR, CVR, AOV — Story 8.4), `experiment/horizon2.measured` (CLV delta, repeat purchase, AOV change at 90 days — Story 8.5), `experiment/rolled-out` (5/25/50/100 % gates), `experiment/rolled-back` (with failure-taxonomy classification per Story 8.13), `experiment/promoted-to-permanent`. Each event maps to a structured payload via Zod `ExperimentOutcomeSchema` (fields: `experimentId`, `tenantId`, `variantId`, `eventType`, `metricsSnapshot`, `confidenceInterval`, `rolloutPct`, `emittedAt`, `correlationId`).
+3. An Inngest function `experiment/outcome.emit` consumes the lifecycle events and fans out to each enabled destination using vendor-specific SDKs: `@rudderstack/rudder-sdk-node` for RudderStack, `@segment/analytics-node` for Segment, and a plain `fetch` POST for the generic webhook destination; emissions are retried up to 5 times with exponential back-off on 5xx; permanent failures (4xx or repeated 5xx) are logged to `experiment_emission_errors` Postgres table and surfaced in the IT Admin dashboard.
+4. Idempotency: every emitted event carries a `correlationId` (UUID + experiment phase + emission attempt); destinations receive deduplicated events even on retry; the Inngest function tracks `emitted_event_log` to skip duplicate emissions on Inngest replays.
+5. PII boundary: experiment-outcome events do **not** contain raw PII; user-level fields are HMAC-hashed (`user_hash` per FR78 / Story 5.11) so the CDP can join on its own identity graph without the platform exposing customer identifiers; this is enforced by a Zod schema test that fails on payloads containing PII fields.
+6. Per-destination event mapping overrides: customers can configure per-event-type mapping rules to align the platform's canonical schema with their CDP's expected schema (e.g., a Segment customer may rename `experimentId` to `experiment_id` and add custom traits); mapping rules are stored as Custom Objects keyed by destination and validated on save.
+7. Dashboard surfaces emission status per destination: events emitted (last 24 h), success rate, p99 emission latency, last error message. CASL `read:experimentEmission` ability gates dashboard access; `manage:experimentEmission` ability gates destination configuration.
+8. Once at least one destination is configured and an experiment has emitted ≥ 10 successful events, the Tenant Intelligence Score panel (FR82, Story 8.1) gains a "✓ Outcomes flowing to your warehouse" indicator confirming the data-layer co-exist contract is operational.
+9. Documentation includes the **explicit framing**: *"Experiment outcomes are yours — they flow to your CDP and warehouse on every emission. The platform owns the experiment surface and the tenant-intelligence model; your data infrastructure owns the data."* Used to support the co-exist sales narrative.
+
+**Dependencies:** Story 8.4 (Horizon 1 measurement), Story 8.5 (Horizon 2 CLV measurement), Story 8.9 (progressive rollout state machine), Story 8.10 (rollback alerts), Story 8.13 (failure taxonomy), Story 5.11 (`user_hash` for PII boundary), Inngest 4.2.6 with retry, Upstash Ratelimit
+**FRs Covered:** FR80
+**Complexity:** L
