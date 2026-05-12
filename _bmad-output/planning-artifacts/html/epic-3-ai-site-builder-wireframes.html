@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Epic 3 Phase 3B — AI Site Builder Wireframes</title>
+<style>
+  :root {
+    --mc-blue: #0066cc;
+    --mc-blue-wash: rgba(0, 102, 204, 0.08);
+    --mc-ai-tint: rgba(88, 28, 255, 0.08);
+    --mc-ai-accent: #5b21b6;
+    --mc-bg: #f5f7fa;
+    --mc-surface: #ffffff;
+    --mc-border: #e4e7eb;
+    --mc-border-strong: #cbd2d9;
+    --mc-text: #1f2933;
+    --mc-text-muted: #6b7280;
+    --mc-text-faint: #9aa5b1;
+    --mc-success: #16a34a;
+    --mc-success-bg: #ecfdf5;
+    --mc-warning: #d97706;
+    --mc-warning-bg: #fef3c7;
+    --mc-error: #dc2626;
+    --mc-error-bg: #fee2e2;
+    --mc-locked: #9aa5b1;
+    --mc-locked-bg: #f3f4f6;
+    --radius-sm: 4px;
+    --radius-md: 6px;
+    --radius-lg: 8px;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 2px 6px rgba(0,0,0,0.06);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 13px;
+    line-height: 1.5;
+    background: var(--mc-bg);
+    color: var(--mc-text);
+  }
+
+  code, .mono { font-family: 'SF Mono', 'Monaco', 'Consolas', monospace; font-size: 12px; }
+
+  /* ---------- Document header ---------- */
+  .doc-header {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: white;
+    padding: 24px 40px;
+  }
+  .doc-header h1 { font-size: 22px; font-weight: 600; margin-bottom: 6px; }
+  .doc-header p { font-size: 13px; opacity: 0.85; max-width: 900px; }
+  .doc-header .meta {
+    margin-top: 12px; display: flex; gap: 20px; font-size: 12px; opacity: 0.7;
+  }
+
+  /* ---------- Section intro ---------- */
+  .section-intro {
+    background: white;
+    border: 1px solid var(--mc-border);
+    border-left: 3px solid var(--mc-ai-accent);
+    border-radius: var(--radius-md);
+    padding: 16px 20px;
+    margin: 32px 40px 28px;
+    max-width: 1100px;
+  }
+  .section-intro h2 { font-size: 16px; margin-bottom: 6px; color: var(--mc-ai-accent); }
+  .section-intro p { color: var(--mc-text-muted); font-size: 13px; }
+  .section-intro .frs {
+    margin-top: 10px; display: flex; gap: 6px; flex-wrap: wrap;
+  }
+  .fr-chip {
+    background: var(--mc-blue-wash);
+    color: var(--mc-blue);
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 500;
+    font-family: 'SF Mono', 'Monaco', monospace;
+  }
+
+  .screens-wrap { padding: 0 40px 80px; }
+
+  /* ---------- Screen card ---------- */
+  .screen {
+    background: white;
+    border: 1px solid var(--mc-border);
+    border-radius: var(--radius-lg);
+    margin-bottom: 32px;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+  }
+  .screen-header {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--mc-border);
+    background: #fafbfc;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .screen-header h3 { font-size: 14px; font-weight: 600; }
+  .screen-header .tag {
+    font-family: 'SF Mono', monospace;
+    font-size: 11px;
+    color: var(--mc-text-muted);
+    background: white;
+    border: 1px solid var(--mc-border);
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+  .screen-body { padding: 24px; display: grid; grid-template-columns: 1fr 280px; gap: 24px; }
+  .screen-body.single { grid-template-columns: 1fr; }
+  .screen-annotations {
+    background: #fafbfc;
+    border: 1px solid var(--mc-border);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    font-size: 12px;
+  }
+  .screen-annotations h4 {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--mc-text-muted);
+    margin-bottom: 10px;
+  }
+  .screen-annotations ul { list-style: none; padding: 0; }
+  .screen-annotations li {
+    padding: 6px 0;
+    border-bottom: 1px dashed var(--mc-border);
+    color: var(--mc-text);
+    font-size: 12px;
+    line-height: 1.45;
+  }
+  .screen-annotations li:last-child { border-bottom: none; }
+  .screen-annotations li strong { color: var(--mc-blue); font-weight: 600; }
+
+  /* ---------- Editor frame (simulates Merchant Center shell) ---------- */
+  .editor-frame {
+    border: 1px solid var(--mc-border-strong);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background: var(--mc-bg);
+    display: grid;
+    grid-template-rows: 40px 36px 1fr;
+    height: 560px;
+    font-size: 12px;
+  }
+  .editor-frame.tall { height: 640px; }
+  .editor-topbar {
+    background: #1f2933;
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    gap: 20px;
+    font-size: 12px;
+  }
+  .editor-topbar .logo { font-weight: 600; letter-spacing: 0.3px; }
+  .editor-topbar .crumbs { opacity: 0.7; }
+  .editor-topbar .crumbs strong { color: white; opacity: 1; }
+  .editor-topbar .spacer { flex: 1; }
+  .editor-topbar .user {
+    width: 24px; height: 24px; border-radius: 50%;
+    background: var(--mc-blue); display: inline-flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 600;
+  }
+
+  .context-bar {
+    background: white;
+    border-bottom: 1px solid var(--mc-border);
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    gap: 8px;
+  }
+  .chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+    border: 1px solid var(--mc-border);
+    background: white;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .chip:hover { border-color: var(--mc-blue); color: var(--mc-blue); }
+  .chip.active { background: var(--mc-blue-wash); border-color: var(--mc-blue); color: var(--mc-blue); }
+  .chip.draft { background: var(--mc-warning-bg); border-color: var(--mc-warning); color: var(--mc-warning); }
+  .chip.live { background: var(--mc-success-bg); border-color: var(--mc-success); color: var(--mc-success); }
+  .chip.ai { background: var(--mc-ai-tint); border-color: var(--mc-ai-accent); color: var(--mc-ai-accent); }
+  .chip .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  .context-bar .spacer { flex: 1; }
+  .context-bar .viewport-toggle {
+    display: flex; gap: 0; border: 1px solid var(--mc-border); border-radius: var(--radius-sm); overflow: hidden;
+  }
+  .context-bar .viewport-toggle button {
+    background: white; border: none; padding: 4px 10px; font-size: 11px; cursor: pointer;
+    color: var(--mc-text-muted); border-right: 1px solid var(--mc-border);
+  }
+  .context-bar .viewport-toggle button:last-child { border-right: none; }
+  .context-bar .viewport-toggle button.active { background: var(--mc-blue-wash); color: var(--mc-blue); font-weight: 500; }
+  .publish-btn {
+    background: var(--mc-blue); color: white; border: none;
+    padding: 5px 14px; border-radius: var(--radius-sm); font-size: 12px; font-weight: 500; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .publish-btn:hover { background: #0052a3; }
+  .publish-btn.disabled { background: var(--mc-border); color: var(--mc-text-faint); cursor: not-allowed; }
+
+  .editor-main { display: grid; grid-template-columns: 56px 1fr 320px; height: 100%; overflow: hidden; }
+  .nav-rail {
+    background: #fafbfc;
+    border-right: 1px solid var(--mc-border);
+    display: flex; flex-direction: column; align-items: center; padding: 12px 0; gap: 4px;
+  }
+  .nav-rail .nav-item {
+    width: 40px; height: 40px; border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; color: var(--mc-text-muted); cursor: pointer;
+    position: relative;
+  }
+  .nav-rail .nav-item:hover { background: white; color: var(--mc-blue); }
+  .nav-rail .nav-item.active { background: var(--mc-blue-wash); color: var(--mc-blue); }
+  .nav-rail .nav-item .label {
+    display: none; position: absolute; left: 48px; background: #1f2933; color: white;
+    padding: 4px 8px; border-radius: var(--radius-sm); font-size: 11px; white-space: nowrap;
+  }
+  .nav-rail .nav-item:hover .label { display: block; }
+
+  .canvas-wrap {
+    overflow: auto;
+    background:
+      linear-gradient(45deg, #f0f2f5 25%, transparent 25%),
+      linear-gradient(-45deg, #f0f2f5 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, #f0f2f5 75%),
+      linear-gradient(-45deg, transparent 75%, #f0f2f5 75%);
+    background-size: 16px 16px;
+    background-position: 0 0, 0 8px, 8px -8px, -8px 0;
+    padding: 20px;
+  }
+  .canvas {
+    background: white;
+    border: 1px solid var(--mc-border-strong);
+    border-radius: var(--radius-sm);
+    min-height: 100%;
+    padding: 16px;
+    display: flex; flex-direction: column; gap: 8px;
+    box-shadow: var(--shadow-md);
+  }
+  .canvas-section {
+    border: 1px dashed var(--mc-border-strong);
+    border-radius: var(--radius-sm);
+    padding: 14px;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.15s;
+    background: white;
+  }
+  .canvas-section:hover { border-color: var(--mc-blue); border-style: solid; }
+  .canvas-section.selected {
+    border: 2px solid var(--mc-blue);
+    box-shadow: 0 0 0 3px var(--mc-blue-wash);
+  }
+  .canvas-section.ai-inferred {
+    border: 2px dashed var(--mc-ai-accent);
+    background: var(--mc-ai-tint);
+  }
+  .canvas-section.ai-pending {
+    border: 2px dashed var(--mc-ai-accent);
+    background: repeating-linear-gradient(45deg, var(--mc-ai-tint), var(--mc-ai-tint) 8px, rgba(88,28,255,0.03) 8px, rgba(88,28,255,0.03) 16px);
+  }
+  .canvas-section.red-zone {
+    border-style: solid;
+    border-color: var(--mc-locked);
+    background: var(--mc-locked-bg);
+    cursor: not-allowed;
+  }
+  .canvas-section.red-zone:hover { border-color: var(--mc-locked); }
+  .canvas-section .sec-label {
+    position: absolute; top: -9px; left: 10px;
+    background: white; padding: 0 6px; font-size: 10px; color: var(--mc-text-muted);
+    font-family: 'SF Mono', monospace;
+  }
+  .canvas-section.selected .sec-label { color: var(--mc-blue); font-weight: 600; }
+  .canvas-section.red-zone .sec-label { color: var(--mc-locked); }
+  .canvas-section.ai-inferred .sec-label,
+  .canvas-section.ai-pending .sec-label { color: var(--mc-ai-accent); font-weight: 600; background: var(--mc-ai-tint); }
+  .canvas-section .sec-body {
+    display: flex; gap: 12px; align-items: center;
+  }
+  .canvas-section .placeholder {
+    height: 48px; background: #f0f2f5; border-radius: var(--radius-sm); flex: 1;
+    display: flex; align-items: center; justify-content: center; color: var(--mc-text-faint); font-size: 11px;
+  }
+  .canvas-section .ai-badge {
+    position: absolute; top: 8px; right: 10px;
+    background: var(--mc-ai-tint); color: var(--mc-ai-accent);
+    font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 10px;
+    display: inline-flex; align-items: center; gap: 3px;
+  }
+
+  /* ---------- Right sidebar / Commerce Intelligence Drawer ---------- */
+  .side-panel {
+    background: white;
+    border-left: 1px solid var(--mc-border);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+
+  .btn-primary, .btn-ghost, .btn-danger, .btn-ai {
+    padding: 6px 12px; border-radius: var(--radius-sm); font-size: 11px; font-weight: 500;
+    cursor: pointer; border: 1px solid transparent;
+  }
+  .btn-primary { background: var(--mc-blue); color: white; }
+  .btn-ai { background: var(--mc-ai-accent); color: white; }
+  .btn-ghost { background: white; color: var(--mc-text-muted); border-color: var(--mc-border); }
+  .btn-danger { background: white; color: var(--mc-error); border-color: var(--mc-border); }
+
+  /* ---------- Commerce Intelligence Drawer (AI panel) ---------- */
+  .ai-panel { display: flex; flex-direction: column; height: 100%; }
+  .ai-panel-header {
+    padding: 12px 14px;
+    background: var(--mc-ai-tint);
+    border-bottom: 1px solid var(--mc-border);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .ai-panel-header .ai-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--mc-ai-accent); }
+  .ai-panel-header h4 { font-size: 12px; color: var(--mc-ai-accent); font-weight: 600; }
+  .ai-panel-header .mode-pill {
+    font-size: 10px; font-weight: 600; color: var(--mc-ai-accent);
+    background: white; border: 1px solid var(--mc-ai-accent);
+    padding: 1px 7px; border-radius: 10px;
+  }
+
+  .ai-convo { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+  .ai-msg {
+    padding: 8px 10px; border-radius: var(--radius-md); font-size: 12px; line-height: 1.45;
+  }
+  .ai-msg.user {
+    background: var(--mc-blue-wash); color: var(--mc-text); align-self: flex-end; max-width: 85%;
+  }
+  .ai-msg.ai {
+    background: var(--mc-ai-tint); color: var(--mc-text); align-self: flex-start; max-width: 92%;
+    border-left: 2px solid var(--mc-ai-accent);
+  }
+  .ai-msg.system {
+    background: #fafbfc; color: var(--mc-text-muted); border: 1px dashed var(--mc-border);
+    font-size: 11px; font-style: italic; align-self: center; max-width: 100%;
+  }
+
+  .ai-reasoning-card {
+    background: white; border: 1px solid var(--mc-ai-accent); border-radius: var(--radius-md);
+    padding: 12px; font-size: 12px; margin-top: 4px;
+  }
+  .ai-reasoning-card h5 {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.4px;
+    color: var(--mc-ai-accent); margin-bottom: 8px; font-weight: 600;
+  }
+  .ai-reasoning-card ul { list-style: none; padding: 0; font-size: 11px; }
+  .ai-reasoning-card li { padding: 3px 0; color: var(--mc-text-muted); }
+  .ai-reasoning-card li::before { content: "→ "; color: var(--mc-ai-accent); }
+  .ai-reasoning-card .evidence {
+    margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--mc-border);
+    font-size: 11px; color: var(--mc-text-muted);
+  }
+  .ai-reasoning-card .evidence strong { color: var(--mc-ai-accent); }
+  .ai-reasoning-actions { display: flex; gap: 6px; margin-top: 10px; }
+
+  .ai-input {
+    border-top: 1px solid var(--mc-border); padding: 10px;
+    display: flex; gap: 6px; background: white;
+  }
+  .ai-input input {
+    flex: 1; padding: 6px 8px; border: 1px solid var(--mc-border);
+    border-radius: var(--radius-sm); font-size: 12px;
+  }
+
+  /* ---------- Behavioral import card ---------- */
+  .import-source-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 12px;
+  }
+  .import-source {
+    padding: 12px; border: 1px solid var(--mc-border); border-radius: var(--radius-sm);
+    text-align: center; font-size: 11px; cursor: pointer;
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    background: white;
+  }
+  .import-source:hover { border-color: var(--mc-blue); }
+  .import-source.connected { border-color: var(--mc-success); background: var(--mc-success-bg); }
+  .import-source .src-logo {
+    width: 28px; height: 28px; border-radius: var(--radius-sm);
+    background: #f0f2f5; color: var(--mc-text); font-size: 12px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  /* ---------- Progress streaming bar (AI) ---------- */
+  .streaming-progress {
+    background: var(--mc-ai-tint); border: 1px solid var(--mc-ai-accent);
+    border-radius: var(--radius-md); padding: 12px 14px;
+    display: flex; align-items: center; gap: 10px;
+    font-size: 12px; color: var(--mc-ai-accent);
+  }
+  .streaming-progress .pulse {
+    width: 8px; height: 8px; border-radius: 50%; background: var(--mc-ai-accent);
+    animation: pulse 1.4s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(1.2); }
+  }
+  .streaming-progress .stream-bar {
+    flex: 1; height: 4px; background: white; border-radius: 2px; overflow: hidden;
+  }
+  .streaming-progress .stream-bar .fill {
+    height: 100%; width: 65%; background: var(--mc-ai-accent); border-radius: 2px;
+  }
+
+  /* ---------- Legend ---------- */
+  .legend {
+    margin-top: 12px; display: flex; gap: 16px; font-size: 11px; color: var(--mc-text-muted);
+    padding: 10px 14px; background: #fafbfc; border: 1px solid var(--mc-border); border-radius: var(--radius-md);
+    flex-wrap: wrap;
+  }
+  .legend-item { display: inline-flex; align-items: center; gap: 6px; }
+  .legend-swatch { width: 14px; height: 14px; border-radius: 3px; display: inline-block; }
+  .legend-swatch.green-zone { background: white; border: 1px dashed var(--mc-border-strong); }
+  .legend-swatch.ai-tint { background: var(--mc-ai-tint); border: 1px dashed var(--mc-ai-accent); }
+  .legend-swatch.ai-solid { background: var(--mc-ai-tint); border: 1px solid var(--mc-ai-accent); }
+  .legend-swatch.red-zone { background: var(--mc-locked-bg); border: 1px solid var(--mc-locked); }
+  .legend-swatch.draft { background: var(--mc-warning-bg); border: 1px solid var(--mc-warning); }
+
+  /* ---------- Footer ---------- */
+  .doc-footer {
+    background: white; border-top: 1px solid var(--mc-border);
+    padding: 20px 40px; font-size: 12px; color: var(--mc-text-muted); text-align: center;
+  }
+
+  /* ============================================================ */
+  /* ---------- AI Prominence Amplification (2026-05-12) ---------- */
+  /* Stronger visual treatment for the AI Site Builder surface.    */
+  /* ============================================================ */
+
+  .ai-panel-header {
+    background: linear-gradient(135deg, rgba(88, 28, 255, 0.14), rgba(88, 28, 255, 0.04));
+    border-bottom: 2px solid var(--mc-ai-accent);
+    box-shadow: 0 2px 8px rgba(88, 28, 255, 0.12);
+    padding: 14px 16px;
+  }
+  .ai-panel-header h4 {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+  }
+  .ai-panel-header .mode-pill {
+    font-weight: 700;
+    box-shadow: 0 1px 2px rgba(88, 28, 255, 0.25);
+  }
+  .ai-panel-header .ai-dot {
+    width: 10px;
+    height: 10px;
+    box-shadow: 0 0 8px rgba(88, 28, 255, 0.6);
+    animation: ai-pulse 2s infinite ease-in-out;
+  }
+  @keyframes ai-pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.3); opacity: 0.65; }
+  }
+
+  .canvas-section.ai-inferred {
+    border-style: solid;
+    box-shadow: 0 0 0 3px rgba(88, 28, 255, 0.10), 0 2px 12px rgba(88, 28, 255, 0.14);
+  }
+  .canvas-section.ai-pending {
+    box-shadow: 0 0 0 3px rgba(88, 28, 255, 0.08), 0 2px 8px rgba(88, 28, 255, 0.10);
+  }
+
+  .canvas-section .ai-badge {
+    background: var(--mc-ai-accent);
+    color: white;
+    box-shadow: 0 2px 4px rgba(88, 28, 255, 0.30);
+    font-weight: 700;
+  }
+
+  .chip.ai {
+    background: var(--mc-ai-accent);
+    color: white;
+    border-color: var(--mc-ai-accent);
+    box-shadow: 0 0 0 0 rgba(88, 28, 255, 0.40);
+    animation: ai-chip-pulse 2.4s infinite;
+    font-weight: 600;
+  }
+  @keyframes ai-chip-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(88, 28, 255, 0.40); }
+    50%      { box-shadow: 0 0 0 5px rgba(88, 28, 255, 0); }
+  }
+  .chip.ai .dot { background: white; }
+
+  .ai-reasoning-card {
+    border-width: 2px;
+    box-shadow: 0 1px 4px rgba(88, 28, 255, 0.08);
+  }
+  .ai-reasoning-card h5 {
+    font-weight: 700;
+    letter-spacing: 0.6px;
+  }
+
+  .ai-msg.ai {
+    border-left-width: 3px;
+    background: linear-gradient(135deg, rgba(88, 28, 255, 0.10), rgba(88, 28, 255, 0.04));
+  }
+
+  .btn-ai {
+    background: var(--mc-ai-accent);
+    color: white;
+    font-weight: 600;
+    box-shadow: 0 1px 3px rgba(88, 28, 255, 0.25);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .btn-ai:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(88, 28, 255, 0.35);
+  }
+
+  .streaming-progress {
+    border-width: 2px;
+    box-shadow: 0 0 0 3px rgba(88, 28, 255, 0.06);
+  }
+  .streaming-progress .pulse {
+    box-shadow: 0 0 8px rgba(88, 28, 255, 0.6);
+  }
+
+</style>
+</head>
+<body>
+
+<div class="doc-header">
+  <h1>Epic 3 Phase 3B — AI Site Builder Wireframes</h1>
+  <p>The Commerce Intelligence Drawer in <strong>Create mode</strong>. The AI does not generate storefronts from a blank canvas — it observes what the operator is already editing on a populated canvas (from FR76 starter gallery, FR34–39 migration, or prior published state), infers intent from the last few actions, and offers to <em>complete</em> remaining sections using the tenant's governed Green Zone component library. Every completion passes through a reasoning brief the operator must approve before any pixel on the canvas changes. Optimize mode of the same drawer lives in Epic 8 (AI Experience Engine).</p>
+  <div class="meta">
+    <span>Author: Sally (UX)</span>
+    <span>Date: 2026-05-07 · split into Epic 3 file 2026-05-12</span>
+    <span>Status: Draft for review</span>
+    <span>Epic: 3 (Phase 3B) · Stories 3.15, 3.16a/b/c, 3.17, 3.18, 3.19, 3.20</span>
+    <span>Persona: Business Operator</span>
+  </div>
+</div>
+
+<div class="section-intro">
+  <h2>Commerce Intelligence Drawer — Create mode</h2>
+  <p>Three screens covering the warm-start completion flow: <strong>1A</strong> AI inference offer when the operator has made enough edits to signal intent; <strong>1B</strong> streaming generation with per-section accept/regenerate/modify/reject; <strong>1C</strong> empty-state framing with optional historical behavioral import to pre-warm the engine.</p>
+  <div class="frs">
+    <span class="fr-chip">FR7</span><span class="fr-chip">FR8</span><span class="fr-chip">FR9</span>
+    <span class="fr-chip">FR10</span><span class="fr-chip">FR11</span><span class="fr-chip">FR12</span>
+    <span class="fr-chip">FR33</span><span class="fr-chip">FR63</span><span class="fr-chip">FR65</span>
+  </div>
+</div>
+
+<div class="screens-wrap">
+
+  <!-- ============ SCREEN 1A — AI inference offer on partially-edited canvas ============ -->
+  <div class="screen">
+    <div class="screen-header">
+      <h3>1A — Inference offer: AI observes edits and proposes completion</h3>
+      <span class="tag">StorefrontCanvas (partial edit) + CID (Create mode — offer state)</span>
+    </div>
+    <div class="screen-body">
+      <div class="editor-frame">
+        <div class="editor-topbar">
+          <span class="logo">commercetools</span>
+          <span class="crumbs">Northwind › Storefront › <strong>Summer 2026 landing</strong> <em style="opacity:0.6;">(new)</em></span>
+          <span class="spacer"></span>
+          <span style="font-size:11px; opacity:0.6;">⌘K</span>
+          <span class="user">LP</span>
+        </div>
+        <div class="context-bar">
+          <span class="chip active"><span class="dot"></span> B2C</span>
+          <span class="chip">en-GB ▾</span>
+          <span class="chip">Guest ▾</span>
+          <span class="chip draft"><span class="dot"></span> 2 drafts</span>
+          <span class="chip ai"><span class="dot"></span> AI observing</span>
+          <span class="spacer"></span>
+          <div class="viewport-toggle">
+            <button class="active">🖥 Desktop</button>
+            <button>📱 Tablet</button>
+            <button>📱 Mobile</button>
+          </div>
+          <button class="publish-btn">Publish ▾</button>
+        </div>
+        <div class="editor-main">
+          <div class="nav-rail">
+            <div class="nav-item">🏠<span class="label">Workspace</span></div>
+            <div class="nav-item active">📄<span class="label">Pages</span></div>
+            <div class="nav-item">🧩<span class="label">Components</span></div>
+            <div class="nav-item">🌿<span class="label">Branches</span></div>
+            <div class="nav-item">📊<span class="label">Heatmap</span></div>
+            <div class="nav-item">📜<span class="label">Audit</span></div>
+          </div>
+          <div class="canvas-wrap">
+            <div class="canvas">
+              <div class="canvas-section selected">
+                <span class="sec-label">HeroBanner ✎ edited</span>
+                <div class="sec-body">
+                  <div class="placeholder" style="background: var(--mc-blue-wash); color: var(--mc-blue);">Summer Collection 2026 — Linen, Light, Lived-in · Shop now</div>
+                </div>
+              </div>
+              <div class="canvas-section">
+                <span class="sec-label">CategoryTiles ✎ edited</span>
+                <div class="sec-body">
+                  <div class="placeholder" style="height: 64px;">
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; width: 100%; padding: 0 8px;">
+                      <div style="background: var(--mc-blue-wash); border: 1px solid var(--mc-blue); height: 52px; border-radius: 3px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--mc-blue);">Linen</div>
+                      <div style="background: var(--mc-blue-wash); border: 1px solid var(--mc-blue); height: 52px; border-radius: 3px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--mc-blue);">Swimwear</div>
+                      <div style="background: var(--mc-blue-wash); border: 1px solid var(--mc-blue); height: 52px; border-radius: 3px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--mc-blue);">Sun Accessories</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="canvas-section ai-inferred" style="margin-top: 8px;">
+                <span class="sec-label">+ AI suggests: continue with 4 more sections</span>
+                <span class="ai-badge">✨ AI offer</span>
+                <div class="sec-body">
+                  <div style="padding: 8px 12px; color: var(--mc-ai-accent); font-size: 11px; font-weight: 500;">
+                    Based on your Hero + CategoryTiles pattern, I can complete the remaining seasonal landing sections from your governed library. <strong>Review the brief on the right →</strong>
+                  </div>
+                </div>
+              </div>
+              <div style="text-align: center; font-size: 11px; color: var(--mc-text-faint); padding: 6px 0;">
+                · · · empty page footer region · · ·
+              </div>
+            </div>
+          </div>
+          <div class="side-panel ai-panel">
+            <div class="ai-panel-header">
+              <span class="ai-dot"></span>
+              <h4>Commerce Intelligence</h4>
+              <span class="mode-pill">Create</span>
+              <span class="spacer" style="flex:1;"></span>
+              <span style="font-size: 10px; color: var(--mc-text-muted); cursor: pointer;">✕</span>
+            </div>
+            <div class="ai-convo">
+              <div class="ai-msg system">AI is observing your edits. Nothing changes on the canvas until you approve.</div>
+              <div class="ai-msg ai">
+                I noticed you built a seasonal hero and three category tiles — the shape of a summer collection landing. I can complete the rest from your governed library.
+              </div>
+              <div class="ai-reasoning-card">
+                <h5>🧠 What I inferred from your behavior</h5>
+                <ul>
+                  <li>Last 8 edits: hero headline, subheadline, 3 category tile selections</li>
+                  <li>Page template chosen: "Seasonal collection" (your library)</li>
+                  <li>Locale focus: en-GB only — matches draft scope</li>
+                  <li>Visual pattern: product-first, editorial tone</li>
+                </ul>
+                <div class="evidence">
+                  <strong>Confidence:</strong> High (87%) — pattern matches 14 previous seasonal landings you've published, all clearing Horizon 1 CTR baseline.
+                </div>
+              </div>
+              <div class="ai-reasoning-card" style="border-color: var(--mc-blue);">
+                <h5 style="color: var(--mc-blue);">📋 Completion brief — 4 sections I'll add</h5>
+                <ul>
+                  <li><code>FeaturedProductGrid</code> — 8 tiles, filtered to "Summer 2026" collection</li>
+                  <li><code>EditorialImageBlock</code> — full-bleed lifestyle image (placeholder, you upload)</li>
+                  <li><code>TestimonialsCarousel</code> — 3 reviews filtered to "Summer" tag, rating ≥ 4.5</li>
+                  <li><code>NewsletterSignup</code> — standard footer with "summer-2026" list tag</li>
+                </ul>
+                <div class="evidence">
+                  <strong>Governance scope:</strong> All 4 components are Green Zone in your published library. <strong>No Red Zone touched.</strong> <em>(FR8, FR33)</em>
+                </div>
+                <div class="ai-reasoning-actions">
+                  <button class="btn-ai">✓ Approve all 4</button>
+                  <button class="btn-ghost">Edit brief</button>
+                  <button class="btn-ghost">Review one-by-one</button>
+                </div>
+              </div>
+            </div>
+            <div class="ai-input">
+              <input placeholder="Refine the brief or ask a question...">
+              <button class="btn-ai">↑</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-annotations">
+        <h4>Design Notes</h4>
+        <ul>
+          <li><strong>AI never generates first</strong> — it watches. This is inference-and-completion, not blank-canvas generation. Operator makes 2-3 edits, AI offers to finish. <em>(FR7)</em></li>
+          <li><strong>"AI observing" chip in context bar</strong> — the operator always knows whether the AI is idle, watching, or generating. Transparency beats surprise.</li>
+          <li><strong>Inference card is evidence-forward</strong> — "last 8 edits", "14 previous landings", 87% confidence. "Your data shows" language, never "the AI thinks." <em>(FR9)</em></li>
+          <li><strong>Completion brief lists exact components</strong> — each one named from the governed library (FR8). Operator sees what will land before it lands.</li>
+          <li><strong>Three approval modes</strong> — Approve all / Edit brief / Review one-by-one. The last respects operators who trust iteratively. <em>(FR10)</em></li>
+          <li><strong>Canvas placeholder shows AI offer inline</strong> — the operator sees where the proposed sections will go, not just a sidebar summary.</li>
+        </ul>
+      </div>
+    </div>
+    <div style="padding: 0 24px 20px;">
+      <div class="legend">
+        <span class="legend-item"><span class="legend-swatch green-zone"></span> Green Zone</span>
+        <span class="legend-item"><span class="legend-swatch ai-tint"></span> AI-inferred (pending approval)</span>
+        <span class="legend-item"><span class="legend-swatch ai-solid"></span> AI interaction surface</span>
+        <span class="legend-item"><span class="legend-swatch draft"></span> Draft</span>
+        <span class="legend-item"><span class="legend-swatch red-zone"></span> Red Zone</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 1B — Streaming generation + per-section review ============ -->
+  <div class="screen">
+    <div class="screen-header">
+      <h3>1B — Streaming generation: review-one-by-one mode</h3>
+      <span class="tag">StorefrontCanvas (AI streaming) + per-section accept/modify/reject</span>
+    </div>
+    <div class="screen-body">
+      <div class="editor-frame tall">
+        <div class="editor-topbar">
+          <span class="logo">commercetools</span>
+          <span class="crumbs">Northwind › Storefront › <strong>Summer 2026 landing</strong></span>
+          <span class="spacer"></span>
+          <span class="user">LP</span>
+        </div>
+        <div class="context-bar">
+          <span class="chip active"><span class="dot"></span> B2C</span>
+          <span class="chip">en-GB ▾</span>
+          <span class="chip draft"><span class="dot"></span> 2 drafts</span>
+          <span class="chip ai"><span class="dot"></span> AI generating · 2 of 4</span>
+          <span class="spacer"></span>
+          <div class="viewport-toggle"><button class="active">🖥</button><button>📱</button><button>📱</button></div>
+          <button class="publish-btn disabled">Publish ▾</button>
+        </div>
+        <div class="editor-main">
+          <div class="nav-rail">
+            <div class="nav-item">🏠</div>
+            <div class="nav-item active">📄</div>
+            <div class="nav-item">🧩</div>
+            <div class="nav-item">🌿</div>
+            <div class="nav-item">📊</div>
+          </div>
+          <div class="canvas-wrap">
+            <div class="canvas">
+              <div class="canvas-section">
+                <span class="sec-label">HeroBanner ✎</span>
+                <div class="sec-body"><div class="placeholder">Summer Collection 2026 — Linen, Light, Lived-in</div></div>
+              </div>
+              <div class="canvas-section">
+                <span class="sec-label">CategoryTiles ✎</span>
+                <div class="sec-body"><div class="placeholder">3 tiles — Linen · Swimwear · Sun Accessories</div></div>
+              </div>
+              <!-- Section just generated, awaiting per-section review -->
+              <div class="canvas-section ai-inferred">
+                <span class="sec-label">FeaturedProductGrid · proposed (1 of 4)</span>
+                <span class="ai-badge">✨ Review</span>
+                <div class="sec-body">
+                  <div class="placeholder" style="height: 72px; background: var(--mc-ai-tint); color: var(--mc-ai-accent);">
+                    <div style="display: grid; grid-template-columns: repeat(8, 1fr); gap: 4px; width: 100%; padding: 0 8px;">
+                      <div style="background: white; border: 1px solid var(--mc-ai-accent); height: 56px; border-radius: 3px;"></div>
+                      <div style="background: white; border: 1px solid var(--mc-ai-accent); height: 56px; border-radius: 3px;"></div>
+                      <div style="background: white; border: 1px solid var(--mc-ai-accent); height: 56px; border-radius: 3px;"></div>
+                      <div style="background: white; border: 1px solid var(--mc-ai-accent); height: 56px; border-radius: 3px;"></div>
+                      <div style="background: white; border: 1px solid var(--mc-ai-accent); height: 56px; border-radius: 3px;"></div>
+                      <div style="background: white; border: 1px solid var(--mc-ai-accent); height: 56px; border-radius: 3px;"></div>
+                      <div style="background: white; border: 1px solid var(--mc-ai-accent); height: 56px; border-radius: 3px;"></div>
+                      <div style="background: white; border: 1px solid var(--mc-ai-accent); height: 56px; border-radius: 3px;"></div>
+                    </div>
+                  </div>
+                </div>
+                <div style="display: flex; gap: 6px; margin-top: 10px; padding: 6px 0 0; border-top: 1px dashed var(--mc-ai-accent);">
+                  <button class="btn-ai" style="font-size: 10px; padding: 4px 10px;">✓ Accept</button>
+                  <button class="btn-ghost" style="font-size: 10px; padding: 4px 10px;">↻ Regenerate</button>
+                  <button class="btn-ghost" style="font-size: 10px; padding: 4px 10px;">✎ Modify</button>
+                  <button class="btn-danger" style="font-size: 10px; padding: 4px 10px;">✕ Reject</button>
+                </div>
+              </div>
+              <!-- Section currently streaming -->
+              <div class="canvas-section ai-pending">
+                <span class="sec-label">EditorialImageBlock · generating (2 of 4)</span>
+                <span class="ai-badge">⏳ Streaming</span>
+                <div class="sec-body">
+                  <div class="streaming-progress">
+                    <span class="pulse"></span>
+                    <span>Picking component variant · mapping token overrides...</span>
+                    <div class="stream-bar"><div class="fill"></div></div>
+                    <span style="font-size: 10px; color: var(--mc-text-muted);">12s</span>
+                  </div>
+                </div>
+              </div>
+              <!-- Pending sections -->
+              <div class="canvas-section" style="opacity: 0.45; border-style: dashed;">
+                <span class="sec-label">TestimonialsCarousel · queued (3 of 4)</span>
+                <div class="sec-body"><div class="placeholder">Awaiting previous section approval...</div></div>
+              </div>
+              <div class="canvas-section" style="opacity: 0.45; border-style: dashed;">
+                <span class="sec-label">NewsletterSignup · queued (4 of 4)</span>
+                <div class="sec-body"><div class="placeholder">Awaiting previous section approval...</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="side-panel ai-panel">
+            <div class="ai-panel-header">
+              <span class="ai-dot"></span>
+              <h4>Commerce Intelligence</h4>
+              <span class="mode-pill">Create</span>
+              <span class="spacer" style="flex:1;"></span>
+              <span style="font-size: 10px; color: var(--mc-text-muted); cursor: pointer;">⏸ Pause</span>
+            </div>
+            <div class="ai-convo">
+              <div class="ai-msg system">Review-one-by-one mode · 1 of 4 complete · you control the pace</div>
+
+              <div style="display: flex; flex-direction: column; gap: 8px; padding: 4px 0;">
+                <div style="display: flex; align-items: center; gap: 8px; font-size: 11px; padding: 6px 10px; background: var(--mc-success-bg); border: 1px solid var(--mc-success); border-radius: var(--radius-sm); color: var(--mc-success);">
+                  <span style="font-weight: 600;">✓</span>
+                  <span style="flex:1;"><strong>FeaturedProductGrid</strong> · 8 tiles · "Summer 2026"</span>
+                  <span style="font-size: 10px;">Accepted</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px; font-size: 11px; padding: 6px 10px; background: var(--mc-ai-tint); border: 1px solid var(--mc-ai-accent); border-radius: var(--radius-sm); color: var(--mc-ai-accent);">
+                  <span class="pulse" style="background: var(--mc-ai-accent); width: 6px; height: 6px;"></span>
+                  <span style="flex:1;"><strong>EditorialImageBlock</strong> · full-bleed lifestyle</span>
+                  <span style="font-size: 10px;">Generating...</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px; font-size: 11px; padding: 6px 10px; background: #fafbfc; border: 1px solid var(--mc-border); border-radius: var(--radius-sm); color: var(--mc-text-muted);">
+                  <span>◯</span>
+                  <span style="flex:1;"><strong>TestimonialsCarousel</strong> · 3 reviews · rating ≥ 4.5</span>
+                  <span style="font-size: 10px;">Queued</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px; font-size: 11px; padding: 6px 10px; background: #fafbfc; border: 1px solid var(--mc-border); border-radius: var(--radius-sm); color: var(--mc-text-muted);">
+                  <span>◯</span>
+                  <span style="flex:1;"><strong>NewsletterSignup</strong> · summer-2026 list</span>
+                  <span style="font-size: 10px;">Queued</span>
+                </div>
+              </div>
+
+              <div class="ai-msg ai" style="margin-top: 4px;">
+                Next up: <strong>EditorialImageBlock</strong>. I'll leave the image placeholder empty so you can upload your own. I'm not generating images — just scaffolding the slot.
+              </div>
+            </div>
+            <div class="ai-input">
+              <input placeholder="Interrupt, refine, or stop generation...">
+              <button class="btn-ai">↑</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-annotations">
+        <h4>Design Notes</h4>
+        <ul>
+          <li><strong>Streaming progress after 2s</strong> — first 2 seconds feel instant; anything longer gets the streaming-progress bar, per NFR2 (30s end-to-end with 2s streaming threshold). <em>(FR12)</em></li>
+          <li><strong>Per-section accept/regenerate/modify/reject</strong> — operators retain full control at component granularity, not just at the bulk-brief level. <em>(FR10)</em></li>
+          <li><strong>Queued sections visible but dimmed</strong> — operator sees the full plan but only the current section is actionable. Pacing is honest.</li>
+          <li><strong>Sidebar shows the full queue state</strong> — Accepted / Generating / Queued. Side panel and canvas stay in sync, neither is the source of truth alone.</li>
+          <li><strong>AI explicitly disclaims image generation</strong> — "I'm not generating images — just scaffolding the slot." Protects brand teams from unexpected asset generation.</li>
+          <li><strong>Pause button in panel header</strong> — operator can stop the stream mid-flight. Accepted sections stay; queued sections discard cleanly.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 1C — Empty state + historical behavioral import ============ -->
+  <div class="screen">
+    <div class="screen-header">
+      <h3>1C — Create mode empty state: pre-warm with historical behavioral import</h3>
+      <span class="tag">First-run experience — FR63 historical import CTA</span>
+    </div>
+    <div class="screen-body">
+      <div class="editor-frame">
+        <div class="editor-topbar">
+          <span class="logo">commercetools</span>
+          <span class="crumbs">Northwind › Storefront › <strong>Untitled page</strong></span>
+          <span class="spacer"></span>
+          <span class="user">LP</span>
+        </div>
+        <div class="context-bar">
+          <span class="chip active"><span class="dot"></span> B2C</span>
+          <span class="chip">en-GB ▾</span>
+          <span class="chip">Guest ▾</span>
+          <span class="chip"><span class="dot"></span> No drafts</span>
+          <span class="spacer"></span>
+          <div class="viewport-toggle"><button class="active">🖥</button><button>📱</button><button>📱</button></div>
+          <button class="publish-btn disabled">Publish ▾</button>
+        </div>
+        <div class="editor-main">
+          <div class="nav-rail">
+            <div class="nav-item">🏠</div>
+            <div class="nav-item active">📄</div>
+            <div class="nav-item">🧩</div>
+            <div class="nav-item">🌿</div>
+          </div>
+          <div class="canvas-wrap">
+            <div class="canvas" style="align-items: center; justify-content: center; padding: 40px 32px;">
+              <div style="text-align: center; max-width: 420px;">
+                <div style="font-size: 38px; opacity: 0.5; margin-bottom: 14px;">📄</div>
+                <div style="font-size: 14px; font-weight: 600; margin-bottom: 6px;">Start by editing a section</div>
+                <div style="font-size: 12px; color: var(--mc-text-muted); line-height: 1.5;">
+                  The AI works by watching your edits, not guessing from scratch. Drop in a section from your library and start editing — after a few edits, I'll offer to complete the rest.
+                </div>
+                <div style="display: flex; gap: 8px; justify-content: center; margin-top: 18px;">
+                  <button class="btn-primary" style="font-size: 12px;">+ Insert from library</button>
+                  <button class="btn-ghost" style="font-size: 12px;">📋 Start from template</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="side-panel ai-panel">
+            <div class="ai-panel-header">
+              <span class="ai-dot"></span>
+              <h4>Commerce Intelligence</h4>
+              <span class="mode-pill">Create</span>
+            </div>
+            <div class="ai-convo" style="padding: 16px;">
+              <div class="ai-msg ai" style="max-width: 100%;">
+                I get smarter the more you use the platform. Right now, I know your component library but nothing about how your customers behave. Want a head start?
+              </div>
+
+              <div class="ai-reasoning-card" style="border-color: var(--mc-ai-accent);">
+                <h5>📥 Pre-warm me with historical data</h5>
+                <div style="font-size: 11px; color: var(--mc-text-muted); margin-bottom: 10px; line-height: 1.45;">
+                  Import your last 6–12 months of visitor behavior from your current analytics. I'll use it to calibrate inference confidence from Day 1 — no 90-day wait.
+                </div>
+                <div class="import-source-grid">
+                  <div class="import-source connected">
+                    <div class="src-logo" style="background: #f9ab00; color: white;">GA</div>
+                    <div><strong>GA4</strong></div>
+                    <div style="font-size: 10px; color: var(--mc-success);">✓ Connected</div>
+                  </div>
+                  <div class="import-source">
+                    <div class="src-logo" style="background: #fb2c55; color: white;">HJ</div>
+                    <div><strong>Hotjar</strong></div>
+                    <div style="font-size: 10px; color: var(--mc-text-faint);">Connect</div>
+                  </div>
+                  <div class="import-source">
+                    <div class="src-logo" style="background: #7856ff; color: white;">MX</div>
+                    <div><strong>Mixpanel</strong></div>
+                    <div style="font-size: 10px; color: var(--mc-text-faint);">Connect</div>
+                  </div>
+                  <div class="import-source">
+                    <div class="src-logo" style="background: #0052cc; color: white;">Fr</div>
+                    <div><strong>Frontastic</strong></div>
+                    <div style="font-size: 10px; color: var(--mc-text-faint);">Connect</div>
+                  </div>
+                </div>
+                <div class="evidence">
+                  <strong>From GA4 last 90 days:</strong> 241k sessions · en-GB / DE / FR · top pages: /summer, /new-in, /sale. I'll map these to your component library and rank sections by observed engagement.
+                </div>
+                <div class="ai-reasoning-actions">
+                  <button class="btn-ai">Import & calibrate</button>
+                  <button class="btn-ghost">Skip · start cold</button>
+                </div>
+              </div>
+
+              <div class="ai-msg system" style="margin-top: 8px;">
+                Import is read-only, anonymized on ingest, and runs once. You can delete imported data any time in IT Admin → Data & Consent.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-annotations">
+        <h4>Design Notes</h4>
+        <ul>
+          <li><strong>No blank-canvas generation</strong> — the empty state teaches the model: "start by editing a section, AI completes." Frames inference-and-completion as the mental model. <em>(FR7)</em></li>
+          <li><strong>Historical import is an offer, not a demand</strong> — operators can "Skip · start cold." FR63 keeps the moat warming option optional.</li>
+          <li><strong>Four import sources named explicitly</strong> — GA4, Hotjar, Mixpanel, Frontastic analytics — matches the Story 1.9 text and operator-familiar tools.</li>
+          <li><strong>Evidence preview before import commits</strong> — "241k sessions, top pages named" — operator sees what will be pulled before clicking import.</li>
+          <li><strong>Privacy disclaimer inline</strong> — "read-only, anonymized, one-time, deletable" addresses the common blocker before it's raised.</li>
+          <li><strong>Pre-warm framing — not "training"</strong> — "calibrate inference confidence from Day 1" is the promise; avoids the implied "we train a model on your data" trust hit.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="doc-footer">
+  Wireframes are intentionally low-fidelity — dashed borders and placeholder content indicate where customer-brand content or migrated source structure will render. Final visual styling inherits commercetools Merchant Center design tokens. AI-authored surfaces use the violet-wash treatment exclusively; Red Zone stays muted neutral, draft stays amber, live stays green.
+</div>
+
+</body>
+</html>

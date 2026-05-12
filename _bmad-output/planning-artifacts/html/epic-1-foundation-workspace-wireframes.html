@@ -1371,6 +1371,7 @@
             <div class="nav-item">🌿</div>
             <div class="nav-item">📊</div>
             <div class="nav-item">📜</div>
+            <div class="nav-item">⚙</div>
           </div>
           <div style="padding: 24px 32px; overflow-y: auto; background: var(--mc-bg);">
 
@@ -1582,7 +1583,7 @@
 <div id="tab-pages" class="tab-content">
   <div class="tab-intro">
     <h2>3 — Pages Manager</h2>
-    <p>The list/grid surface operators land on when they click into "Pages" from the nav rail. Every storefront page — live, draft, or staged — with its status, last-edited metadata, engagement signal, and B2X context scope. Filtering is built around the B2X × locale × customer-group axes operators already navigate in the editor context bar. Includes a grid view, a table view, and the "New page" flow. Governance is visible throughout (which pages reference Red Zone components, who last touched them).</p>
+    <p>The list/grid surface operators land on when they click into "Pages" from the nav rail. Every storefront page — live, draft, or staged — with its status, last-edited metadata, engagement signal, and B2X context scope. Filtering is built around the B2X × locale × customer-group axes operators already navigate in the editor context bar. Three viewports — <strong>Grid</strong> (visual scanning), <strong>Table</strong> (bulk operations), <strong>Tree</strong> (hierarchical navigation + B2X variant relationships) — plus the "New page" flow. Governance is visible throughout (which pages reference Red Zone components, who last touched them).</p>
     <div class="frs">
       <span class="fr-chip">FR1</span><span class="fr-chip">FR5</span><span class="fr-chip">FR15</span>
       <span class="fr-chip">FR22</span><span class="fr-chip">FR42</span>
@@ -1612,6 +1613,7 @@
           <div class="viewport-toggle">
             <button class="active">▦ Grid</button>
             <button>☰ Table</button>
+            <button>🌳 Tree</button>
           </div>
           <button class="publish-btn" style="padding: 5px 14px;">+ New page</button>
         </div>
@@ -1836,7 +1838,7 @@
             <div style="margin-top: 16px; padding: 24px; border: 2px dashed var(--mc-border-strong); border-radius: var(--radius-md); text-align: center; color: var(--mc-text-muted); background: white; cursor: pointer;">
               <div style="font-size: 24px; margin-bottom: 6px;">+</div>
               <div style="font-size: 13px; font-weight: 500; color: var(--mc-text);">Create a new page</div>
-              <div style="font-size: 11px;">Blank canvas · from template · AI-scaffolded from existing page (Epic 4)</div>
+              <div style="font-size: 11px;">Blank canvas · from template (Epic 3 Phase 3A · Story 3.0) · AI-scaffolded from existing page (Epic 1 Phase 1B/1C — Migration)</div>
             </div>
           </div>
         </div>
@@ -1850,7 +1852,7 @@
           <li><strong>B2X context avatars on non-B2C cards</strong> — B2B (violet) and Dealer (red) mini-avatars sit in the preview top-left so operators never mistake which context a card represents. <em>(FR5)</em></li>
           <li><strong>Red Zone count is surfaced per page</strong> — "🔒 3" tells operators which pages depend on platform-managed components before they start editing. <em>(FR15)</em></li>
           <li><strong>Filter sidebar mirrors the editor context bar</strong> — same B2X × locale × status axes. Zero conceptual translation between surfaces.</li>
-          <li><strong>"Create new page" tile is the empty final cell</strong> — inline CTA instead of a modal. Hints at template + AI paths (Epic 4).</li>
+          <li><strong>"Create new page" tile is the empty final cell</strong> — inline CTA instead of a modal. Hints at template path (Epic 3 Phase 3A · Story 3.0) and AI-scaffold path (Epic 1 Phase 1B/1C — Migration).</li>
         </ul>
       </div>
     </div>
@@ -1880,6 +1882,7 @@
           <div class="viewport-toggle">
             <button>▦ Grid</button>
             <button class="active">☰ Table</button>
+            <button>🌳 Tree</button>
           </div>
           <button class="publish-btn" style="padding: 5px 14px;">+ New page</button>
         </div>
@@ -1891,6 +1894,7 @@
             <div class="nav-item">🌿</div>
             <div class="nav-item">📊</div>
             <div class="nav-item">📜</div>
+            <div class="nav-item">⚙</div>
           </div>
           <div style="overflow-y: auto; background: white;">
 
@@ -2077,10 +2081,328 @@
     </div>
   </div>
 
-  <!-- ============ SCREEN 3C — New Page flow ============ -->
+  <!-- ============ SCREEN 3C — Pages Manager: Tree view ============ -->
   <div class="screen">
     <div class="screen-header">
-      <h3>3C — New page: blank, template, or AI-scaffolded (entry to Epic 4)</h3>
+      <h3>3C — Pages Manager: tree view with hierarchical structure + B2X variant relationships</h3>
+      <span class="tag">PagesManager (tree) — surface campaigns, categories, B2X variants under each logical page</span>
+    </div>
+    <div class="screen-body">
+      <div class="editor-frame" style="height: 660px;">
+        <div class="editor-topbar">
+          <span class="logo">commercetools</span>
+          <span class="crumbs">Tutorial › Storefront › <strong>Pages</strong></span>
+          <span class="spacer"></span>
+          <span style="font-size: 11px; opacity: 0.6;">⌘K</span>
+          <span class="user">SM</span>
+        </div>
+        <div class="context-bar">
+          <span class="chip active"><span class="dot"></span> All contexts</span>
+          <span class="chip">All locales</span>
+          <span class="chip">All statuses</span>
+          <span class="spacer"></span>
+          <button class="btn-ghost" style="font-size: 11px; padding: 4px 10px;">↕ Expand all</button>
+          <div class="viewport-toggle">
+            <button>▦ Grid</button>
+            <button>☰ Table</button>
+            <button class="active">🌳 Tree</button>
+          </div>
+          <button class="publish-btn" style="padding: 5px 14px;">+ New page</button>
+        </div>
+        <div class="editor-main" style="grid-template-columns: 56px 1fr;">
+          <div class="nav-rail">
+            <div class="nav-item">🏠</div>
+            <div class="nav-item active">📄</div>
+            <div class="nav-item">🧩</div>
+            <div class="nav-item">🌿</div>
+            <div class="nav-item">📊</div>
+            <div class="nav-item">📜</div>
+            <div class="nav-item">⚙</div>
+          </div>
+          <div style="background: white; overflow-y: auto;">
+
+            <!-- Tree header strip -->
+            <div style="padding: 12px 18px; border-bottom: 1px solid var(--mc-border); display: flex; align-items: center; gap: 10px; background: #fafbfc;">
+              <input class="prop-input" placeholder="🔍 Search the tree..." style="flex: 1; max-width: 320px; font-size: 12px;">
+              <span style="color: var(--mc-text-muted); font-size: 11px;">14 pages · 3 contexts · 4 locales</span>
+              <span class="spacer" style="flex: 1;"></span>
+              <span style="font-size: 11px; color: var(--mc-text-muted);">Drag to reorder · right-click for actions · ⌘+click to multi-select</span>
+            </div>
+
+            <div style="padding: 8px 18px;">
+
+              <!-- ============================== Group: Storefront Pages ============================== -->
+              <div style="display: flex; align-items: center; gap: 10px; padding: 10px 0 10px 0; font-size: 13px; font-weight: 600; cursor: pointer;">
+                <span style="font-size: 11px; color: var(--mc-text-muted); width: 14px;">▼</span>
+                <span style="font-size: 16px;">🏪</span>
+                <span style="color: var(--mc-text);">Storefront Pages</span>
+                <span style="color: var(--mc-text-muted); font-size: 11px; font-weight: normal;">9 pages · 3 contexts</span>
+              </div>
+
+              <!-- ↳ Subgroup: Home & top-level (3) -->
+              <div style="padding-left: 38px;">
+                <div style="display: flex; align-items: center; gap: 10px; padding: 7px 0; font-size: 12px; font-weight: 500; cursor: pointer; color: var(--mc-text-muted);">
+                  <span style="font-size: 11px; width: 14px;">▼</span>
+                  <span>📂</span>
+                  <span>Home &amp; top-level</span>
+                  <span style="font-size: 11px;">(3)</span>
+                </div>
+
+                <!-- Page row WITH B2X variants -->
+                <div style="padding-left: 28px;">
+                  <div style="display: flex; align-items: center; gap: 10px; padding: 7px 8px; font-size: 12px; cursor: pointer; border-radius: 4px;">
+                    <span style="font-size: 11px; width: 14px; color: var(--mc-text-muted);">▼</span>
+                    <span style="font-size: 14px;">🏠</span>
+                    <span style="font-weight: 500; color: var(--mc-text);">Home</span>
+                    <span style="color: var(--mc-text-muted); font-size: 11px;">/</span>
+                    <span class="spacer" style="flex: 1;"></span>
+                    <span style="font-size: 10px; color: var(--mc-text-muted);">3 variants · 2 locales</span>
+                  </div>
+
+                  <!-- B2X variants of Home -->
+                  <div style="padding-left: 32px; border-left: 1px dashed var(--mc-border); margin-left: 10px;">
+                    <div style="display: flex; align-items: center; gap: 10px; padding: 5px 8px; font-size: 12px; cursor: pointer; border-radius: 4px;">
+                      <span style="color: var(--mc-text-muted); font-size: 11px;">↳</span>
+                      <span class="chip" style="background: var(--mc-blue-wash); border-color: var(--mc-blue); color: var(--mc-blue); font-size: 10px;"><span class="dot"></span> B2C</span>
+                      <span class="chip" style="font-size: 10px; padding: 2px 7px;">en-GB</span>
+                      <span class="chip" style="font-size: 10px; padding: 2px 7px;">de-DE</span>
+                      <span class="spacer" style="flex: 1;"></span>
+                      <span class="chip live" style="font-size: 10px;"><span class="dot"></span> Live</span>
+                      <span style="font-size: 11px; color: var(--mc-success); font-weight: 600; min-width: 32px; text-align: right;">0.84</span>
+                      <span style="color: var(--mc-text-muted); cursor: pointer; font-size: 14px;">⋯</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px; padding: 5px 8px; font-size: 12px; cursor: pointer; border-radius: 4px;">
+                      <span style="color: var(--mc-text-muted); font-size: 11px;">↳</span>
+                      <span class="chip" style="background: var(--mc-ai-tint); border-color: var(--mc-ai-accent); color: var(--mc-ai-accent); font-size: 10px;"><span class="dot"></span> B2B</span>
+                      <span class="chip" style="font-size: 10px; padding: 2px 7px;">en-GB</span>
+                      <span class="spacer" style="flex: 1;"></span>
+                      <span class="chip live" style="font-size: 10px;"><span class="dot"></span> Live</span>
+                      <span style="font-size: 11px; color: var(--mc-success); font-weight: 600; min-width: 32px; text-align: right;">0.79</span>
+                      <span style="color: var(--mc-text-muted); cursor: pointer; font-size: 14px;">⋯</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px; padding: 5px 8px; font-size: 12px; cursor: pointer; border-radius: 4px;">
+                      <span style="color: var(--mc-text-muted); font-size: 11px;">↳</span>
+                      <span class="chip" style="background: rgba(220, 38, 38, 0.08); border-color: var(--mc-error); color: var(--mc-error); font-size: 10px;"><span class="dot"></span> Dealer</span>
+                      <span class="chip" style="font-size: 10px; padding: 2px 7px;">en-GB</span>
+                      <span class="spacer" style="flex: 1;"></span>
+                      <span class="chip live" style="font-size: 10px;"><span class="dot"></span> Live</span>
+                      <span style="font-size: 11px; color: var(--mc-warning); font-weight: 600; min-width: 32px; text-align: right;">0.62</span>
+                      <span style="color: var(--mc-text-muted); cursor: pointer; font-size: 14px;">⋯</span>
+                    </div>
+                  </div>
+
+                  <!-- Red-Zone page rows -->
+                  <div style="display: flex; align-items: center; gap: 10px; padding: 7px 8px; font-size: 12px; cursor: not-allowed; border-radius: 4px; opacity: 0.7;">
+                    <span style="font-size: 11px; width: 14px; color: var(--mc-locked);">▶</span>
+                    <span style="font-size: 14px;">🛒</span>
+                    <span style="font-weight: 500; color: var(--mc-text);">Cart drawer</span>
+                    <span style="color: var(--mc-text-muted); font-size: 11px;">/cart</span>
+                    <span class="chip" style="background: var(--mc-locked-bg); border-color: var(--mc-locked); color: var(--mc-locked); font-size: 10px;">🔒 Red Zone — Platform-managed</span>
+                    <span class="spacer" style="flex: 1;"></span>
+                    <span class="chip live" style="font-size: 10px;"><span class="dot"></span> Live</span>
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 10px; padding: 7px 8px; font-size: 12px; cursor: not-allowed; border-radius: 4px; opacity: 0.7;">
+                    <span style="font-size: 11px; width: 14px; color: var(--mc-locked);">▶</span>
+                    <span style="font-size: 14px;">💳</span>
+                    <span style="font-weight: 500; color: var(--mc-text);">Checkout</span>
+                    <span style="color: var(--mc-text-muted); font-size: 11px;">/checkout</span>
+                    <span class="chip" style="background: var(--mc-locked-bg); border-color: var(--mc-locked); color: var(--mc-locked); font-size: 10px;">🔒 Red Zone — PCI-scoped</span>
+                    <span class="spacer" style="flex: 1;"></span>
+                    <span class="chip live" style="font-size: 10px;"><span class="dot"></span> Live</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- ↳ Subgroup: Categories (4) -->
+              <div style="padding-left: 38px;">
+                <div style="display: flex; align-items: center; gap: 10px; padding: 7px 0; font-size: 12px; font-weight: 500; cursor: pointer; color: var(--mc-text-muted);">
+                  <span style="font-size: 11px; width: 14px;">▼</span>
+                  <span>📂</span>
+                  <span>Categories</span>
+                  <span style="font-size: 11px;">(4)</span>
+                </div>
+                <div style="padding-left: 28px;">
+                  <div style="display: flex; align-items: center; gap: 10px; padding: 6px 8px; font-size: 12px; cursor: pointer; border-radius: 4px;">
+                    <span style="font-size: 11px; width: 14px; color: var(--mc-text-faint);">·</span>
+                    <span style="font-size: 14px;">🌿</span>
+                    <span style="color: var(--mc-text);">Linen</span>
+                    <span style="color: var(--mc-text-muted); font-size: 11px;">/c/linen</span>
+                    <span class="chip" style="background: var(--mc-blue-wash); border-color: var(--mc-blue); color: var(--mc-blue); font-size: 10px;">B2C</span>
+                    <span class="spacer" style="flex: 1;"></span>
+                    <span class="chip live" style="font-size: 10px;"><span class="dot"></span> Live</span>
+                    <span style="font-size: 11px; color: var(--mc-warning); font-weight: 600; min-width: 32px; text-align: right;">0.68</span>
+                    <span style="color: var(--mc-text-muted); cursor: pointer; font-size: 14px;">⋯</span>
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 10px; padding: 6px 8px; font-size: 12px; cursor: pointer; border-radius: 4px;">
+                    <span style="font-size: 11px; width: 14px; color: var(--mc-text-faint);">·</span>
+                    <span style="font-size: 14px;">🩱</span>
+                    <span style="color: var(--mc-text);">Swimwear</span>
+                    <span style="color: var(--mc-text-muted); font-size: 11px;">/c/swimwear</span>
+                    <span class="chip" style="background: var(--mc-blue-wash); border-color: var(--mc-blue); color: var(--mc-blue); font-size: 10px;">B2C</span>
+                    <span class="spacer" style="flex: 1;"></span>
+                    <span class="chip live" style="font-size: 10px;"><span class="dot"></span> Live</span>
+                    <span style="font-size: 11px; color: var(--mc-success); font-weight: 600; min-width: 32px; text-align: right;">0.71</span>
+                    <span style="color: var(--mc-text-muted); cursor: pointer; font-size: 14px;">⋯</span>
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 10px; padding: 6px 8px; font-size: 12px; cursor: pointer; border-radius: 4px;">
+                    <span style="font-size: 11px; width: 14px; color: var(--mc-text-faint);">·</span>
+                    <span style="font-size: 14px;">☀</span>
+                    <span style="color: var(--mc-text);">Sun Accessories</span>
+                    <span style="color: var(--mc-text-muted); font-size: 11px;">/c/sun-accessories</span>
+                    <span class="chip" style="background: var(--mc-blue-wash); border-color: var(--mc-blue); color: var(--mc-blue); font-size: 10px;">B2C</span>
+                    <span class="spacer" style="flex: 1;"></span>
+                    <span class="chip draft" style="font-size: 10px;"><span class="dot"></span> Draft</span>
+                    <span style="font-size: 11px; color: var(--mc-text-muted); min-width: 32px; text-align: right;">—</span>
+                    <span style="color: var(--mc-text-muted); cursor: pointer; font-size: 14px;">⋯</span>
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 10px; padding: 6px 8px; font-size: 12px; cursor: pointer; border-radius: 4px;">
+                    <span style="font-size: 11px; width: 14px; color: var(--mc-text-faint);">·</span>
+                    <span style="font-size: 14px;">🛍</span>
+                    <span style="color: var(--mc-text);">New Arrivals</span>
+                    <span style="color: var(--mc-text-muted); font-size: 11px;">/c/new-arrivals</span>
+                    <span class="chip" style="background: var(--mc-blue-wash); border-color: var(--mc-blue); color: var(--mc-blue); font-size: 10px;">B2C</span>
+                    <span class="spacer" style="flex: 1;"></span>
+                    <span class="chip live" style="font-size: 10px;"><span class="dot"></span> Live</span>
+                    <span style="font-size: 11px; color: var(--mc-warning); font-weight: 600; min-width: 32px; text-align: right;">0.58</span>
+                    <span style="color: var(--mc-text-muted); cursor: pointer; font-size: 14px;">⋯</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- ↳ Subgroup: B2B Account Portal (collapsed) -->
+              <div style="padding-left: 38px;">
+                <div style="display: flex; align-items: center; gap: 10px; padding: 7px 0; font-size: 12px; font-weight: 500; cursor: pointer; color: var(--mc-text-muted);">
+                  <span style="font-size: 11px; width: 14px;">▶</span>
+                  <span>📂</span>
+                  <span>B2B Account Portal</span>
+                  <span style="font-size: 11px;">(2 — Account Dashboard, Approval Queue)</span>
+                  <span class="spacer" style="flex: 1;"></span>
+                  <span class="chip" style="background: var(--mc-ai-tint); border-color: var(--mc-ai-accent); color: var(--mc-ai-accent); font-size: 10px;">B2B</span>
+                </div>
+              </div>
+
+              <!-- ============================== Group: Campaign Pages ============================== -->
+              <div style="display: flex; align-items: center; gap: 10px; padding: 14px 0 10px 0; font-size: 13px; font-weight: 600; cursor: pointer; border-top: 1px dashed var(--mc-border); margin-top: 8px;">
+                <span style="font-size: 11px; color: var(--mc-text-muted); width: 14px;">▼</span>
+                <span style="font-size: 16px;">🎯</span>
+                <span style="color: var(--mc-text);">Campaign Pages</span>
+                <span style="color: var(--mc-text-muted); font-size: 11px; font-weight: normal;">3 pages · 2 live, 1 draft</span>
+              </div>
+              <div style="padding-left: 38px;">
+                <div style="display: flex; align-items: center; gap: 10px; padding: 6px 8px; font-size: 12px; cursor: pointer; border-radius: 4px;">
+                  <span style="font-size: 11px; width: 14px; color: var(--mc-text-faint);">·</span>
+                  <span style="font-size: 14px;">🌸</span>
+                  <span style="color: var(--mc-text);">Spring Edit</span>
+                  <span style="color: var(--mc-text-muted); font-size: 11px;">/campaigns/spring-2026</span>
+                  <span class="chip" style="background: var(--mc-blue-wash); border-color: var(--mc-blue); color: var(--mc-blue); font-size: 10px;">B2C</span>
+                  <span class="chip" style="font-size: 10px; padding: 2px 7px;">en-GB</span>
+                  <span class="chip" style="font-size: 10px; padding: 2px 7px;">de-DE</span>
+                  <span class="chip" style="font-size: 10px; padding: 2px 7px;">fr-FR</span>
+                  <span class="spacer" style="flex: 1;"></span>
+                  <span class="chip live" style="font-size: 10px;"><span class="dot"></span> Live</span>
+                  <span style="font-size: 11px; color: var(--mc-success); font-weight: 600; min-width: 32px; text-align: right;">0.82</span>
+                  <span style="color: var(--mc-text-muted); cursor: pointer; font-size: 14px;">⋯</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 10px; padding: 6px 8px; font-size: 12px; cursor: pointer; border-radius: 4px;">
+                  <span style="font-size: 11px; width: 14px; color: var(--mc-text-faint);">·</span>
+                  <span style="font-size: 14px;">🛍</span>
+                  <span style="color: var(--mc-text);">Mid-season Sale</span>
+                  <span style="color: var(--mc-text-muted); font-size: 11px;">/campaigns/mid-season</span>
+                  <span class="chip" style="background: var(--mc-blue-wash); border-color: var(--mc-blue); color: var(--mc-blue); font-size: 10px;">B2C</span>
+                  <span class="chip" style="font-size: 10px; padding: 2px 7px;">en-GB</span>
+                  <span class="spacer" style="flex: 1;"></span>
+                  <span class="chip live" style="font-size: 10px;"><span class="dot"></span> Live</span>
+                  <span style="font-size: 11px; color: var(--mc-success); font-weight: 600; min-width: 32px; text-align: right;">0.74</span>
+                  <span style="color: var(--mc-text-muted); cursor: pointer; font-size: 14px;">⋯</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 10px; padding: 6px 8px; font-size: 12px; cursor: pointer; border-radius: 4px; background: rgba(217, 119, 6, 0.04);">
+                  <span style="font-size: 11px; width: 14px; color: var(--mc-text-faint);">·</span>
+                  <span style="font-size: 14px;">💝</span>
+                  <span style="color: var(--mc-text); font-weight: 500;">Valentine's Day landing</span>
+                  <span style="color: var(--mc-text-muted); font-size: 11px;">/campaigns/valentines-2026</span>
+                  <span class="chip" style="background: var(--mc-blue-wash); border-color: var(--mc-blue); color: var(--mc-blue); font-size: 10px;">B2C</span>
+                  <span class="chip" style="font-size: 10px; padding: 2px 7px;">en-GB</span>
+                  <span class="spacer" style="flex: 1;"></span>
+                  <span class="chip draft" style="font-size: 10px;"><span class="dot"></span> Draft</span>
+                  <span style="font-size: 11px; color: var(--mc-text-muted); min-width: 32px; text-align: right;">—</span>
+                  <span style="color: var(--mc-text-muted); cursor: pointer; font-size: 14px;">⋯</span>
+                </div>
+              </div>
+
+              <!-- ============================== Group: Drafts ============================== -->
+              <div style="display: flex; align-items: center; gap: 10px; padding: 14px 0 10px 0; font-size: 13px; font-weight: 600; cursor: pointer; border-top: 1px dashed var(--mc-border); margin-top: 8px;">
+                <span style="font-size: 11px; color: var(--mc-text-muted); width: 14px;">▼</span>
+                <span style="font-size: 16px;">📝</span>
+                <span style="color: var(--mc-text);">Drafts</span>
+                <span style="color: var(--mc-text-muted); font-size: 11px; font-weight: normal;">3 in flight · sorted by last edit</span>
+              </div>
+              <div style="padding-left: 38px;">
+                <div style="display: flex; align-items: center; gap: 10px; padding: 6px 8px; font-size: 12px; cursor: pointer; border-radius: 4px;">
+                  <span style="font-size: 11px; width: 14px; color: var(--mc-text-faint);">·</span>
+                  <span style="font-size: 14px;">🛍</span>
+                  <span style="color: var(--mc-text);">Black Friday hero swap</span>
+                  <span class="chip" style="background: var(--mc-blue-wash); border-color: var(--mc-blue); color: var(--mc-blue); font-size: 10px;">B2C</span>
+                  <span class="spacer" style="flex: 1;"></span>
+                  <span style="font-size: 11px; color: var(--mc-text-muted);">SM · 2h ago</span>
+                  <span class="chip draft" style="font-size: 10px;"><span class="dot"></span> Draft</span>
+                  <span style="color: var(--mc-text-muted); cursor: pointer; font-size: 14px;">⋯</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 10px; padding: 6px 8px; font-size: 12px; cursor: pointer; border-radius: 4px;">
+                  <span style="font-size: 11px; width: 14px; color: var(--mc-text-faint);">·</span>
+                  <span style="font-size: 14px;">🛒</span>
+                  <span style="color: var(--mc-text);">New Arrivals refresh</span>
+                  <span class="chip" style="background: var(--mc-blue-wash); border-color: var(--mc-blue); color: var(--mc-blue); font-size: 10px;">B2C</span>
+                  <span class="spacer" style="flex: 1;"></span>
+                  <span style="font-size: 11px; color: var(--mc-text-muted);">JT · 1d ago</span>
+                  <span class="chip draft" style="font-size: 10px;"><span class="dot"></span> Draft</span>
+                  <span style="color: var(--mc-text-muted); cursor: pointer; font-size: 14px;">⋯</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 10px; padding: 6px 8px; font-size: 12px; cursor: pointer; border-radius: 4px;">
+                  <span style="font-size: 11px; width: 14px; color: var(--mc-text-faint);">·</span>
+                  <span style="font-size: 14px;">📱</span>
+                  <span style="color: var(--mc-text);">Mobile crisis fix</span>
+                  <span class="chip" style="background: var(--mc-blue-wash); border-color: var(--mc-blue); color: var(--mc-blue); font-size: 10px;">B2C</span>
+                  <span class="spacer" style="flex: 1;"></span>
+                  <span style="font-size: 11px; color: var(--mc-text-muted);">SM · 3d ago</span>
+                  <span class="chip" style="font-size: 10px; background: var(--mc-ai-tint); border-color: var(--mc-ai-accent); color: var(--mc-ai-accent);"><span class="dot"></span> Staged</span>
+                  <span style="color: var(--mc-text-muted); cursor: pointer; font-size: 14px;">⋯</span>
+                </div>
+              </div>
+
+              <!-- Archive (collapsed) -->
+              <div style="display: flex; align-items: center; gap: 10px; padding: 14px 0 12px 0; font-size: 13px; font-weight: 600; cursor: pointer; color: var(--mc-text-muted); border-top: 1px dashed var(--mc-border); margin-top: 8px;">
+                <span style="font-size: 11px; width: 14px;">▶</span>
+                <span style="font-size: 16px;">🗄</span>
+                <span>Archive</span>
+                <span style="font-size: 11px; font-weight: normal;">(12 — superseded campaigns, removed pages)</span>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-annotations">
+        <h4>Design Notes</h4>
+        <ul>
+          <li><strong>Tree's unique value: surfaces relationships grid + table can't</strong> — campaigns as folders, B2X variants nested under one logical page, drafts grouped by recency. The grid shows individual cards, the table shows rows; the tree shows <em>structure</em>.</li>
+          <li><strong>One logical page → multiple B2X renders</strong> — Home is one node; expand it to see B2C / B2B / Dealer variants as siblings. Each variant has its own status, locale set, engagement score. Operators can compare variants at a glance, or pick one to edit. <em>(FR5)</em></li>
+          <li><strong>Red Zone pages are visibly locked at the tree level</strong> — Cart drawer + Checkout shown as un-expandable rows with 🔒 chip + not-allowed cursor + opacity 0.7. Operator never confuses "I can edit this" with "platform manages this." <em>(FR15, FR49)</em></li>
+          <li><strong>Drag-to-reorder + drag-to-reparent</strong> — operators can promote a draft into a Campaign folder, reorder pages within Categories, or move a Campaign into Archive. Helper text in header bar names the affordance explicitly.</li>
+          <li><strong>Right-click context menu</strong> — Edit / Duplicate / Move to campaign / Add B2X variant / Stage / Publish / Archive. Same actions as table view but anchored to hierarchy position.</li>
+          <li><strong>Group headers carry counts + summary</strong> — "9 pages · 3 contexts" / "3 in flight · sorted by last edit" / "12 — superseded campaigns, removed pages". The headers themselves answer the operator's first question before they expand.</li>
+          <li><strong>Drafts as a top-level folder</strong> — surfaces "what's in flight?" answer at depth 0. Compare vs grid (drafts mixed in by status filter) and table (drafts as rows): tree promotes drafts to a structural concept.</li>
+          <li><strong>Engagement score still color-coded inline</strong> — green ≥0.70, amber 0.50–0.69, muted "—" for non-live. Same threshold language as grid + table. Visual consistency across viewports.</li>
+          <li><strong>"Drag to reorder · right-click for actions · ⌘+click multi-select"</strong> helper text in the header strip — discoverable without docs. Power affordances surfaced for the operator who wants them.</li>
+          <li><strong>Archive as a collapsed sibling</strong> — kept visible (not hidden in a settings page) so operators can rescue archived pages. Counts stay honest.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 3D — New Page flow ============ -->
+  <div class="screen">
+    <div class="screen-header">
+      <h3>3D — New page: blank, template, or AI-scaffolded (entry to Epic 1 Phase 1B/1C Migration + Epic 3 Phase 3A starter gallery)</h3>
       <span class="tag">NewPageModal — three paths, governance baked in from the start</span>
     </div>
     <div class="screen-body">
@@ -2095,7 +2417,7 @@
           <span class="chip active"><span class="dot"></span> All contexts</span>
           <span class="chip">en-GB</span>
           <span class="spacer"></span>
-          <div class="viewport-toggle"><button class="active">▦ Grid</button><button>☰ Table</button></div>
+          <div class="viewport-toggle"><button class="active">▦ Grid</button><button>☰ Table</button><button>🌳 Tree</button></div>
           <button class="publish-btn" style="padding: 5px 14px;">+ New page</button>
         </div>
         <div class="editor-main" style="grid-template-columns: 56px 1fr; filter: blur(1px); opacity: 0.6;">
@@ -2131,7 +2453,7 @@
 
                 <div style="border: 1px solid var(--mc-ai-accent); background: var(--mc-ai-tint); border-radius: var(--radius-md); padding: 14px; cursor: pointer;">
                   <div style="font-size: 20px; margin-bottom: 8px;">✨</div>
-                  <div style="font-size: 13px; font-weight: 600; margin-bottom: 4px; color: var(--mc-ai-accent);">AI-scaffold from existing <span style="font-size: 10px; color: var(--mc-text-muted); font-weight: normal;">Epic 4</span></div>
+                  <div style="font-size: 13px; font-weight: 600; margin-bottom: 4px; color: var(--mc-ai-accent);">AI-scaffold from existing <span style="font-size: 10px; color: var(--mc-text-muted); font-weight: normal;">Epic 1 Phase 1B/1C</span></div>
                   <div style="font-size: 11px; color: var(--mc-text-muted); line-height: 1.5;">Paste a URL or upload HTML — AI maps it to your library components and scaffolds a page.</div>
                 </div>
               </div>
@@ -2187,7 +2509,7 @@
       <div class="screen-annotations">
         <h4>Design Notes</h4>
         <ul>
-          <li><strong>Three starting paths, honestly labeled</strong> — blank / template / AI-scaffold. AI path is marked "Epic 4" so operators see what's available now vs. later, without hiding it.</li>
+          <li><strong>Three starting paths, honestly labeled</strong> — blank / template (Epic 3 Phase 3A · Story 3.0) / AI-scaffold (Epic 1 Phase 1B/1C — Migration). Phase tags on each path so operators see what's available now vs. later, without hiding it.</li>
           <li><strong>B2X context is a first-class choice, not an afterthought</strong> — operators commit to scope before they start drafting. Prevents accidental cross-context pollution. <em>(FR5)</em></li>
           <li><strong>Locale chips are additive</strong> — "+ de-DE" shows future locales as discoverable one-click options, not a dropdown.</li>
           <li><strong>Governance preamble in the dashed-border box</strong> — reinforces that Red Zone enforcement and a11y warnings apply from the first save, not just at publish. <em>(FR15, FR51)</em></li>
