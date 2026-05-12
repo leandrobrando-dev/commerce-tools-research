@@ -351,26 +351,92 @@ status: "complete"
 
 ---
 
+### Story 2.10: Platform-Shipped Default Component Library
+
+**As a** new platform tenant
+**I want** a platform-maintained default Green Zone component library that auto-installs at provisioning and covers every component referenced by the FR76 starter-template gallery
+**So that** I can use the editor and starter gallery on Day 1 without waiting for my developer team to define a custom component library
+
+**Acceptance Criteria:**
+1. The platform repository ships a TypeScript-defined manifest of default Green Zone components covering at minimum: `HeroBanner`, `ProductGrid`, `CategoryNav`, `PromoStrip`, `FooterNav`, `AccountPortalLink` (B2B), `DealerTierBadge` (dealer portal), `TextBlock`, `ImageBlock`, `VideoBlock`, `LocaleSwitcher`, `CtaButton` — sufficient to render every page type referenced by all four FR76 starter templates (`single-brand-b2c`, `multi-locale-b2c`, `b2b-with-account-portal`, `b2x-multi-context`).
+2. Each default component conforms to the Story 2.1 component schema and ships with: a typed prop schema (Zod), a default React implementation rendered through the platform's component runtime, governance metadata (Green Zone with field-level edit permissions following Story 2.3 conventions, with `Red Zone` reserved for any embedded commerce logic such as price display), and at least one snapshot test plus one Storybook entry.
+3. All default components meet WCAG 2.1 AA per Story 2.8 conventions; the CI pipeline runs axe-core scans against rendered Storybook stories of every default component on every PR — the build fails on any AA violation before merge to main.
+4. The default library is published to a platform-managed CT Custom Object (`container: "platform-default-library"`, `key: "v{semver}"`) by an Inngest function `library/publish-default` triggered from the release pipeline; published versions are immutable (the function refuses to overwrite an existing key) and accompanied by a release-notes artifact (`key: "v{semver}-release-notes"`).
+5. Tenant provisioning (Epic 6 onboarding flow / Story 6.9) auto-installs the latest published default library version by writing tenant-scoped `container: "component-library"`, `key: "published"` Custom Objects sourced from the platform default; installation is recorded in the audit log with `actionType: 'DEFAULT_LIBRARY_INSTALLED'`, `defaultLibraryVersion`, and `tenantHash` (HMAC).
+6. Tenants extend the default library by adding components via the Story 2.1 Developer Console; tenant additions are merged into the same `component-library:published` Custom Object via version-safe (`version` field) writes; the merge enforces append-only semantics on default components — no tenant addition can override, replace, or remove a default component (collisions surface as a developer console error pointing to the namespacing convention `tenant.{tenantHash}.{componentName}`).
+7. Tenants can upgrade their installed default library version via a "Library Updates" panel in the Developer Console; upgrade is gated by CASL `can('upgrade', 'PlatformLibrary')`, uses a forward-merge strategy that preserves tenant-added components and any existing canvas state, and is dry-run-previewable (the panel shows what changes before commit); upgrades and dry-runs are recorded in the audit log.
+8. The default library is the authoritative source for all FR76 starter-template component references; Story 3.0's coverage validation (its AC3) reads the tenant's published library — which is guaranteed to include the default after AC5 — so a missing component in a tenant's library can only indicate a corrupted install, never a missing platform ship.
+9. The default library exports a TypeScript type definition file (`@platform/default-library-types`) consumed by Story 3.0's gallery and any downstream code path that needs to type-check template payloads against the default component shape; the type file regenerates automatically on every default-library publish.
+
+**Dependencies:** Story 1.2 (PostgreSQL with RLS), Story 2.1 (component schema), Story 2.3 (field-level edit permissions), Story 2.4 (publish & versioning pipeline), Story 2.8 (WCAG 2.1 AA component pattern), Inngest 4.2.6, CT Custom Objects API, Storybook + axe-core CI integration
+**FRs Covered:** FR77
+**Complexity:** L
+
+---
+
 ## Epic 3: Storefront Editor & Publishing
 
-### Story 3.1: StorefrontCanvas Foundation
+### Story 3.0: Starter Template Gallery
+
+**As a** new platform operator opening the editor for the first time
+**I want** to select a starter template from a curated gallery (single-brand B2C, multi-locale B2C, B2B with account portal, B2X multi-context) and have it populate my canvas with brand-tokenized governed components
+**So that** I have a non-empty Day-1 canvas to edit and publish from — without needing to migrate an existing storefront or wait for my developer team to define a custom component library
+
+**Acceptance Criteria:**
+1. On first canvas open for a tenant — detected via absence of any `storefront-draft:*` and `storefront-published:*` CT Custom Objects scoped to the tenant — a full-canvas modal renders the starter template gallery; the gallery is also accessible later via a "Start from template" action in the editor's empty state and via the page-create menu.
+2. The gallery displays at least four starter templates as cards (`single-brand-b2c`, `multi-locale-b2c`, `b2b-with-account-portal`, `b2x-multi-context`); each card shows template name, short description, preview thumbnail (rendered from a Cloudflare Images CDN URL), included page count, and B2X context coverage chips. Templates are sourced from CT Custom Objects (`container: "platform-starter-templates"`, `key: "{templateId}"`) so platform engineering can publish or update templates without an application redeploy.
+3. Each starter template payload references components only from the platform-shipped default Green Zone library (FR77); on selection, the application validates that every `componentTypeId` referenced by the template exists in the tenant's currently published library (default library plus any tenant additions). Any missing components surface as an inline warning listing the unresolved IDs and block the "Apply template" action until resolved.
+4. Selecting a template opens a "Customize" step: operator enters brand tokens (primary colour, accent colour, typography scale, logo upload via Cloudflare R2 with a 5 MB max and `image/svg+xml`/`image/png`/`image/jpeg` MIME allowlist) and confirms which B2X contexts to instantiate (defaults to all contexts the template supports). Brand tokens validate client-side: WCAG AA contrast (≥4.5:1) between primary colour and the template's default body text colour, and ≥3:1 for non-text UI; failed checks surface inline with remediation hints and block confirmation.
+5. On confirmation, the application writes the templated canvas state to CT Custom Objects as the initial draft for each `(pageId, contextKey)` tuple defined by the template; brand tokens are persisted to `container: "tenant-brand-tokens"`, `key: "default"` and merged into component prop defaults at write time so the canvas renders on-brand from first paint. An Inngest event `template/instantiated` is fired with `{ templateId, tenantHash, pageCount, contextKeys, instantiatedAt }` for analytics; `tenantHash` is HMAC-derived (never raw tenant id).
+6. Template instantiation is wrapped in a single coordinated transaction: the audit-log Prisma row is created in a `$transaction` block, and CT Custom Object writes use the `version` field for optimistic concurrency. On any failure mid-flight, all writes that succeeded are reverted (Custom Objects rolled back via stored prior version, audit row deleted) and the operator sees an error card with a "Try again" CTA; no half-instantiated state is ever observable on canvas re-open.
+7. CASL `can('manage', 'StarterTemplate')` guards both the gallery render and the instantiation mutation; the server-side route handler validates the same rule independently before performing any CT Custom Object write. The instantiation event is recorded in the `PublishAuditLog` Prisma table with `actionType: 'TEMPLATE_INSTANTIATED'`, `templateId`, `tenantHash`, `userHash` (HMAC), `instantiatedAt`, and a `diffJson` capturing the page count and context coverage.
+8. After successful instantiation, the editor transitions directly to the standard `StorefrontCanvas` (Story 3.1a) with the first page of the template selected and the property sidebar closed; a one-time toast "Welcome — your starter is ready, edit anything to make it yours" appears and auto-dismisses after 5 s. The `aria-live="polite"` region announces "Starter template applied — N pages ready" for screen-reader users.
+9. The gallery modal traps focus while open, is dismissible via Escape (which routes the operator to a clear empty-state explaining how to re-open the gallery), and meets WCAG 2.1 AA — axe-core scans of the modal in CI must show zero violations gating deployment.
+
+**Dependencies:** Story 1.1 (MC Custom Application Scaffold), Story 1.2 (PostgreSQL with RLS), Story 1.3 (CASL RBAC), Epic 2 default platform library (FR77 — platform-shipped default Green Zone components must be published before Story 3.0 can resolve template payloads), CT Custom Objects API, Cloudflare R2 + Images CDN (logo upload + preview thumbnails), Inngest 4.2.6, `PublishAuditLog` Prisma migration
+**FRs Covered:** FR76 (full coverage), FR77 (consumption + coverage check at instantiation time — FR77's library-shipping work belongs to a separate Epic 2 story)
+**Complexity:** L
+
+---
+
+### Story 3.1a: StorefrontCanvas Foundation — Render & Governance Overlay
 
 **As a** storefront operator
-**I want** a canvas that renders my live storefront with Green/Red Zone component overlays and full keyboard navigation
-**So that** I can visually identify editable vs. platform-managed sections and navigate the editor efficiently without relying on a mouse
+**I want** a canvas that renders my live storefront with Green/Red Zone component overlays
+**So that** I can visually identify editable vs. platform-managed sections of the page
 
 **Acceptance Criteria:**
 1. Canvas fetches the current page layout from CT Custom Objects via `useMcQuery` and renders each section as a `ComponentSlot`; the `mcAccessToken` HttpOnly cookie is forwarded automatically by ApplicationShell — no manual auth header.
 2. Green Zone slots (where `useFlagVariation('greenZoneEnabled')` returns `true`) render a dashed border on hover with a visible section label; Red Zone slots render a muted lock icon and a "platform-managed" tooltip via a `GovernanceBadge` component.
-3. `Tab` key cycles focus through all `ComponentSlot` elements in DOM order; pressing `Enter` on a focused slot opens the property sidebar and shifts focus to the first editable field inside it; pressing `Escape` returns focus to the originating slot.
-4. An ARIA live region (`aria-live="polite"`) announces slot state changes (e.g., "Hero Banner selected", "AI generating content") so screen-reader users receive real-time feedback without visual inspection.
-5. Canvas reflects four explicit states — `idle`, `element-selected`, `ai-generating`, and `read-only` — with `data-canvas-state` attribute updated on the root element; in `read-only` state all slot overlays are suppressed and interaction is disabled.
-6. AI-modified slots display an "AI tint" badge (amber outline + sparkle icon) until the operator explicitly saves or discards the AI suggestion; badge state is stored transiently in component local state, not persisted to CT Custom Objects.
-7. Canvas passes WCAG 2.1 AA audit (axe-core zero violations) for all four states; colour-contrast ratios for dashed borders and lock icons meet the 3:1 non-text contrast requirement.
+3. Canvas reflects four explicit states — `idle`, `element-selected`, `ai-generating`, and `read-only` — with `data-canvas-state` attribute updated on the root element; in `read-only` state all slot overlays are suppressed and interaction is disabled.
+4. AI-modified slots display an "AI tint" badge (amber outline + sparkle icon) until the operator explicitly saves or discards the AI suggestion; badge state is stored transiently in component local state, not persisted to CT Custom Objects.
+5. When no draft or published CT Custom Object exists for the current `(pageId, contextKey)`, the canvas renders a "Start from template" empty state that deep-links to Story 3.0's gallery.
+6. Mouse-driven hover and click interactions on `ComponentSlot` elements work correctly across the four canvas states — keyboard, ARIA, and full WCAG audit are explicitly out of scope for this story (owned by Story 3.1b).
 
-**Dependencies:** FlopFlip feature flags deployed, CT Custom Objects component schema (Epic 2)
-**FRs Covered:** FR1, FR2, FR15, FR16
-**Complexity:** XL
+**Dependencies:** Story 3.0 (provides initial CT Custom Object draft state for greenfield tenants), FlopFlip feature flags deployed, CT Custom Objects component schema (Epic 2)
+**FRs Covered:** FR1 (partial — render), FR15 (Red Zone overlay only; full enforcement in Story 3.10), FR16 (state machine groundwork)
+**Complexity:** L
+
+---
+
+### Story 3.1b: StorefrontCanvas Keyboard Navigation, ARIA, and Accessibility Audit
+
+**As a** storefront operator using a keyboard or assistive technology
+**I want** full keyboard navigation, ARIA live announcements, and WCAG 2.1 AA compliance on the canvas
+**So that** I can navigate and operate the editor without a mouse and the platform meets enterprise accessibility requirements
+
+**Acceptance Criteria:**
+1. `Tab` key cycles focus through all `ComponentSlot` elements in DOM order; pressing `Enter` on a focused slot opens the property sidebar and shifts focus to the first editable field inside it; pressing `Escape` returns focus to the originating slot.
+2. An ARIA live region (`aria-live="polite"`) announces slot state changes (e.g., "Hero Banner selected", "AI generating content") so screen-reader users receive real-time feedback without visual inspection.
+3. The canvas root element exposes appropriate ARIA roles — `role="region"` with `aria-label="Storefront canvas"` — and the section list is a `role="list"` with each slot as `role="listitem"`.
+4. Focus trap is correctly engaged on overlay components (property sidebar, dialogs) and released on dismissal; focus is never lost — a focus restoration test passes for every overlay open/close cycle.
+5. Canvas passes WCAG 2.1 AA audit (axe-core zero violations) across all four canvas states (`idle`, `element-selected`, `ai-generating`, `read-only`); colour-contrast ratios for dashed borders and lock icons meet the 3:1 non-text contrast requirement.
+6. Reduced-motion preference (`prefers-reduced-motion: reduce`) suppresses all canvas animations, the AI tint pulse, and skeleton-pulse states; an accessibility CI test verifies this with simulated user-agent settings.
+7. VoiceOver (macOS Safari) and NVDA (Windows Chrome) screen-reader smoke tests are included in the manual QA suite for this story; results recorded in the test report.
+
+**Dependencies:** Story 3.1a (canvas + slot rendering must exist for keyboard navigation to traverse it), axe-core v4 in CI
+**FRs Covered:** FR1 (full — render + navigation), FR15 (governance enforcement — Red Zone tooltip is keyboard-reachable), FR16 (full state-machine + accessibility)
+**Complexity:** M
 
 ---
 
@@ -389,7 +455,7 @@ status: "complete"
 6. All add/reorder/remove operations are blocked when the canvas is in `read-only` state or the operator lacks the `storefront:write` CASL permission; the UI surfaces a contextual tooltip explaining the restriction.
 7. CASL guard `can('reorder', 'ComponentSlot')` is evaluated client-side before rendering drag handles; server-side CT Custom Objects mutation endpoint enforces the same CASL rule to prevent API-level bypass.
 
-**Dependencies:** Story 3.1
+**Dependencies:** Story 3.1a
 **FRs Covered:** FR2, FR3
 **Complexity:** L
 
@@ -410,7 +476,7 @@ status: "complete"
 6. The sidebar panel transition manages focus correctly: opening shifts focus to the first interactive field; closing returns focus to the originating `ComponentSlot` element per WCAG 2.4.3.
 7. All sidebar interactions are unavailable in `read-only` canvas state; the sidebar renders in display mode showing current values without form controls.
 
-**Dependencies:** Story 3.1, Epic 2 component schemas
+**Dependencies:** Story 3.1a, Epic 2 component schemas
 **FRs Covered:** FR3
 **Complexity:** L
 
@@ -431,7 +497,7 @@ status: "complete"
 6. The ContextSwitcher dropdown shows a per-context status badge (Live / Draft) for all contexts that have been edited.
 7. When the operator attempts to navigate away from the MC application, ApplicationShell's navigation guard triggers a "Save draft?" modal if the active context has unpublished changes.
 
-**Dependencies:** Story 3.1, CT Custom Objects draft schema
+**Dependencies:** Story 3.1a, CT Custom Objects draft schema
 **FRs Covered:** FR1, FR3, FR4, FR5
 **Complexity:** L
 
@@ -451,7 +517,7 @@ status: "complete"
 5. The preview frame renders the storefront using the current draft state from CT Custom Objects (not the live published version), labelled with a "DRAFT PREVIEW" watermark banner.
 6. Keyboard shortcuts `⌘Shift+D` / `⌘Shift+T` / `⌘Shift+M` cycle through Desktop / Tablet / Mobile; the ARIA live region announces the active device.
 
-**Dependencies:** Story 3.1, Story 3.4
+**Dependencies:** Story 3.1a, Story 3.4
 **FRs Covered:** FR4
 **Complexity:** M
 
@@ -491,13 +557,21 @@ status: "complete"
 5. Touch targets for all interactive elements meet the WCAG 2.5.5 minimum 44×44 CSS pixel touch target size.
 6. Performance: the mobile editor renders initial paint within 2.5 s on a Moto G Power–class device (simulated via Lighthouse throttling); no layout shift caused by bottom-sheet transitions (CLS < 0.1).
 
-**Dependencies:** Story 3.1, Story 3.2, Story 3.3
+**Dependencies:** Story 3.1a, Story 3.2, Story 3.3
 **FRs Covered:** FR6
 **Complexity:** M
 
 ---
 
-### Story 3.8: Real-time Collaboration
+### Story 3.8: Real-time Collaboration **[SIMPLIFIED FOR MVP — Phase 2 for full Liveblocks scope]**
+
+> **MVP scope reduction:** Ship a **lightweight presence + last-write-wins conflict toast** for MVP. Defer the full Liveblocks-based real-time co-editing (shared state, slot locks, room-scoped websocket auth, conflict resolution) to Phase 2.
+>
+> **MVP scope:** Periodic poll (every 30 s) of a Postgres `editor_sessions` table to surface "[Name] is also editing this page" banner; on save, the server detects last-write-wins conflicts via `updated_at` timestamp comparison and shows a "Conflict — [Name]'s changes were saved first; review and re-apply" toast. No websocket, no per-slot avatars, no shared cursor.
+>
+> **Phase 2 scope:** Full Liveblocks 3.18 integration — original ACs below describe the Phase 2 build.
+>
+> **Rationale:** Real-time collaborative editing is not PRD-mandated (no FR requires it; the "10× concurrent operator sessions" NFR15 is about scale, not co-editing). Liveblocks is a meaningful infrastructure choice — websocket auth proxy, room scoping per `(pageId, contextKey)`, presence + storage hooks, graceful degradation — and the AC list below is one story's worth on its own. The simplified MVP delivers the user-facing safety (don't overwrite a colleague) at a fraction of the cost and unblocks Stories 3.10–3.14 from any Liveblocks dependency. Revisit Phase 2 timing when operator interviews surface true co-editing demand.
 
 **As a** storefront operator
 **I want** to see which of my colleagues are currently editing which sections of a page, and receive notifications when edits conflict
@@ -512,13 +586,15 @@ status: "complete"
 6. On Liveblocks connection error or websocket disconnect, the editor falls back gracefully to single-user mode with a non-blocking banner "Real-time collaboration unavailable — working offline"; all local edits remain functional.
 7. The `/api/liveblocks-auth` endpoint validates the `mcAccessToken` cookie and returns HTTP 403 if the CASL `storefront:read` check fails.
 
-**Dependencies:** Story 3.1, Liveblocks 3.18 project provisioned
+**Dependencies:** Story 3.1a, Liveblocks 3.18 project provisioned
 **FRs Covered:** FR3
 **Complexity:** L
 
 ---
 
-### Story 3.9: Storefront Branches
+### Story 3.9: Storefront Branches **[DEFERRED — Post-MVP]**
+
+> **Deferral status:** Not in MVP. Re-evaluate for Phase 2 after operator usage data confirms demand. **Rationale:** This capability is not PRD-mandated (no FR requires Git-model branching of canvas state). Three-way diff + merge + branch lifecycle is a multi-week build with non-trivial UX. The MVP success criterion is "operators publish without filing tickets" — branching is an iteration safety mechanism, not a Day-1 publish enabler. Operators can already iterate safely via the staging environment (Story 3.11) and undo (Story 3.2 AC5). Revisit when post-launch operator interviews surface a concrete need (e.g., "I want to A/B layout variants without the experiment platform overhead" — which Epic 8 may already satisfy).
 
 **As a** storefront operator
 **I want** to create named branches of a page's canvas state, switch between them, merge a branch into the main draft, and delete branches I no longer need
@@ -533,7 +609,7 @@ status: "complete"
 6. "Delete branch" is available only when status is "Merged"; deleting an "Ahead" branch shows a warning modal; the Prisma delete cascades via RLS-enforced tenant isolation.
 7. Branch operations are recorded in the audit log Prisma table with `actionType`, `branchId`, `pageId`, and `userHash` (HMAC, never raw userId).
 
-**Dependencies:** Story 3.1, Story 3.4, Prisma `StorefrontBranch` migration
+**Dependencies:** Story 3.1a, Story 3.4, Prisma `StorefrontBranch` migration
 **FRs Covered:** FR1, FR2, FR3
 **Complexity:** L
 
@@ -676,7 +752,7 @@ status: "complete"
 3. When the drawer is open, a focus trap (using `focus-trap-react` or equivalent) confines keyboard navigation inside the drawer; pressing Escape closes it and returns focus to the last focused element on the canvas.
 4. The drawer initialises an Inngest client connection on open; the Inngest function `site-builder/ai-completion-job` is registered in the Inngest 4.2.6 app and its event subscription established so the drawer can receive streamed events.
 5. The drawer shell renders three distinct zones: a header with title "Commerce Intelligence" and the ⌘/ hint, a scrollable body (reserved for `AIReasoningCard` output), and a sticky footer with Approve/Cancel CTAs (disabled until a completion candidate is ready).
-6. Opening the drawer in Create mode does not trigger any AI inference call on its own; inference is triggered only by observed canvas edit sequences (Story 4.3); the drawer shows an idle state with instructional copy until inference begins.
+6. Opening the drawer in Create mode does not trigger any AI inference call on its own; inference is triggered only by observed canvas edit sequences (Stories 4.3a–4.3c); the drawer shows an idle state with instructional copy until inference begins.
 7. An ARIA `role="dialog"` with `aria-label="Commerce Intelligence"` and `aria-modal="true"` is applied to the drawer root; a visually hidden `aria-live="polite"` region is rendered inside for status announcements.
 
 **Dependencies:** Story 4.1, Inngest 4.2.6 app bootstrap
@@ -685,24 +761,67 @@ status: "complete"
 
 ---
 
-### Story 4.3: AI Intent Inference Engine
+### Story 4.3a: Canvas Edit Observation Hook & Inngest Event Firing
 
 **As a** platform operator making edits on the canvas in Create mode
-**I want** the system to observe my edit sequence, infer my completion intent, and propose a governed component sequence as a candidate
-**So that** I do not have to manually specify what sections to add — the AI completes my intent from partial work
+**I want** the platform to observe my edit sequence and emit a structured event when a meaningful edit threshold is crossed
+**So that** the AI inference pipeline has a clean trigger signal without polling or noisy per-keystroke firing
 
 **Acceptance Criteria:**
 1. An edit-observation hook (`useCanvasEditObserver`) subscribes to the canvas state manager's action stream; it records a timestamped edit-event log (`{ componentId, action, timestamp, sectionIndex }`) in a React ref, debounced at 800 ms to avoid noise from rapid consecutive edits.
-2. After three or more distinct edit events are recorded, the hook fires the Inngest event `site-builder/intent-observed` with payload `{ editLog, pageType, existingComponentIds, projectKey }`, triggering the `site-builder/ai-completion-job` Inngest function.
-3. The `site-builder/ai-completion-job` Inngest function calls OpenRouter via `@openrouter/ai-sdk-provider` using `createOpenRouter({ apiKey })` and `openrouter('anthropic/claude-3.5-sonnet')`; the system prompt enforces: "You may only suggest components from the following published library: {componentLibraryJson}".
-4. The inference prompt includes the full edit log, the current page skeleton (component IDs and slot positions), and the published component library JSON fetched from CT Custom Object `container: "component-library"`, `key: "published"`; suggestions referencing components absent from this list cause the function to return a `GOVERNED_REJECTION` event.
-5. Streaming begins within 2 seconds of the Inngest function receiving the event; a 30-second hard timeout is enforced via `step.sleep` abort — if the OpenRouter stream has not resolved, the function emits a `TIMEOUT` event and the drawer shows a graceful error state.
-6. The inferred candidate is a structured JSON object `{ suggestedComponents: [{ componentTypeId, slotIndex, defaultProps }], confidence: number, reasoning: string }` validated against a Zod schema before passing downstream; invalid shapes are rejected and the operator shown "Could not generate a suggestion".
-7. Inference results are never applied to the canvas without operator approval (Story 4.4); the raw candidate is held in React state in the drawer and discarded on drawer close or Cancel action.
+2. The hook tracks "distinct edit events" — multiple edits to the same component within a 5 s window count as one event; only structurally different actions (add, remove, reorder, prop-change-to-different-component) increment the distinct-event counter.
+3. After three or more distinct edit events are recorded within a session, the hook fires the Inngest event `site-builder/intent-observed` exactly once per inference cycle with payload `{ editLog, pageType, existingComponentIds, projectKey, contextKey, sessionId }`; subsequent edits in the same cycle do not re-fire until the candidate is resolved (approved/rejected/timeout) or the session resets.
+4. The hook exposes a manual override — "Trigger AI completion now" command-palette action — that bypasses the three-event threshold and fires the same Inngest event immediately, useful for operators on slower edit cadences.
+5. Edit-event logs are scoped to the current canvas session in memory only; closing or refreshing the editor clears the log; no edit observation is persisted to CT Custom Objects or Postgres (privacy + smaller blast radius).
+6. The hook is unit-tested with a deterministic action-stream simulator; tests cover the 800 ms debounce, the 5 s same-component window, the three-event threshold, and the "fires exactly once per cycle" invariant.
+7. The hook is feature-flagged via `useFlagVariation('aiSiteBuilderEnabled')`; when flagged off, the hook unsubscribes from the action stream and is a no-op — no event fires regardless of edit volume.
 
-**Dependencies:** Story 4.2, published component library CT Custom Object, OpenRouter API key
-**FRs Covered:** FR7, FR8
-**Complexity:** XL
+**Dependencies:** Story 4.2 (Drawer infrastructure), Story 3.1a (canvas state manager exists), Inngest 4.2.6
+**FRs Covered:** FR7 (edit-observation portion)
+**Complexity:** M
+
+---
+
+### Story 4.3b: AI Inference Engine — OpenRouter Integration with Library-Governed Prompt
+
+**As a** platform receiving an `intent-observed` event
+**I want** an Inngest function that calls OpenRouter with a strictly library-governed system prompt and produces a structured candidate
+**So that** AI suggestions are constrained to approved components by construction, not by post-hoc validation
+
+**Acceptance Criteria:**
+1. An Inngest function `site-builder/ai-completion-job` listens for `site-builder/intent-observed` events; on receipt it fetches the published component library JSON from CT Custom Object `container: "component-library"`, `key: "published"` (the result includes both default-library components per FR77 and any tenant additions).
+2. The function calls OpenRouter via `@openrouter/ai-sdk-provider` using `createOpenRouter({ apiKey })` and `openrouter('anthropic/claude-3.5-sonnet')` (model id loaded from `securedConfiguration` so the production model is upgradable without code change).
+3. The system prompt strictly enforces: *"You may only suggest components from the following published library — any suggestion outside this list will be discarded: {componentLibraryJson}"*; the prompt also includes the page type, existing component IDs and slot positions, and the operator's edit log.
+4. The function uses OpenRouter structured-output mode (JSON-mode with response schema) to constrain the LLM output to `{ suggestedComponents: [{ componentTypeId, slotIndex, defaultProps }], confidence: number, reasoning: string }`; invalid shapes returned by the LLM cause an automatic single retry with a "your last response was invalid; respond strictly with the schema" follow-up, then a final `MALFORMED_RESPONSE` error if still invalid.
+5. Suggestions referencing `componentTypeId` values absent from the fetched library are filtered out before the candidate is emitted; if filtering removes all suggestions, the function emits a `GOVERNED_REJECTION` event that surfaces in the drawer as "no in-library completion available — try editing more sections to clarify intent".
+6. The function logs each inference call (prompt hash, model id, token counts, latency, rejection count) to the audit log Prisma table with `actionType: 'AI_INFERENCE_INVOKED'` and `tenantHash`, never raw tenant id; the actual prompt and response bodies are NOT logged (PII / IP avoidance).
+7. The function is rate-limited per tenant (max 60 inferences per hour) via Upstash Ratelimit SDK; tenants exceeding the limit see a "Slow down — too many AI requests in the last hour" inline message in the drawer with the reset time.
+
+**Dependencies:** Story 4.3a (`intent-observed` event source), Story 4.2 (drawer to receive results), published component library CT Custom Object (FR77 default + tenant additions), OpenRouter API key in `securedConfiguration`, Upstash Ratelimit SDK
+**FRs Covered:** FR7 (inference portion), FR8 (governed library scoping)
+**Complexity:** L
+
+---
+
+### Story 4.3c: Streaming Pipeline, Zod Validation, and Drawer Wiring
+
+**As a** platform operator waiting for an AI completion
+**I want** the candidate to stream into the drawer with strict schema validation, a hard timeout, and clean cancellation
+**So that** I see results progressively, malformed candidates are caught before reaching the UI, and runaway calls are bounded
+
+**Acceptance Criteria:**
+1. The `site-builder/ai-completion-job` Inngest function streams partial candidate JSON to the drawer via Inngest's `step.sendEvent` mechanism — the drawer subscribes to `site-builder/candidate-progress` events and renders intermediate state in the `AIReasoningCard` (covered by Story 4.4) as text streams in.
+2. Streaming begins within 2 seconds of the Inngest function receiving the event; if the first OpenRouter token has arrived earlier, it is buffered to maintain consistent perceived latency.
+3. A 30-second hard timeout is enforced via `Promise.race` between OpenRouter stream resolution and `step.sleep('30s')` abort; on timeout, the function emits a `TIMEOUT` event, the drawer shows a graceful error state with "Try again" and "Cancel" CTAs, and the streaming canvas skeleton (Story 4.7) is removed.
+4. The completed candidate JSON is validated against a strict Zod schema (`SuggestedCompletionSchema`) before emission to the drawer; the schema includes shape constraints, range constraints (`confidence` between 0 and 1, `slotIndex` ≥ 0), and length caps (`reasoning` ≤ 2000 chars, `suggestedComponents` ≤ 12 entries). Validation failures emit a `MALFORMED_RESPONSE` event handled identically to timeouts in the drawer.
+5. Drawer cancellation (operator clicks Cancel or closes the drawer) sends a `site-builder/cancel-inference` event consumed by the Inngest function; the function aborts the OpenRouter stream cleanly within 1 s, releases the rate-limit token (per Story 4.3b AC7), and stops emitting progress events.
+6. Inference results are never applied to the canvas without operator approval (covered by Story 4.4); the raw candidate is held in React state in the drawer and discarded on drawer close, Cancel action, or successful Apply.
+7. End-to-end happy-path test: an operator triggers inference, streaming starts within 2 s, candidate streams in, Zod validation passes, candidate is rendered in `AIReasoningCard` — full path covered by a Playwright integration test against a stubbed OpenRouter endpoint.
+8. End-to-end timeout test: an operator triggers inference against a stubbed slow endpoint, the 30 s timeout fires, drawer shows error state, retry succeeds — covered by a Playwright integration test.
+
+**Dependencies:** Story 4.3a, Story 4.3b, Story 4.4 (`AIReasoningCard` is the streaming target — but 4.3c can ship against a stub card and 4.4 enhances it), Inngest 4.2.6 with `step.sendEvent`, Zod
+**FRs Covered:** FR7 (streaming + cancellation portion), FR12 (streaming progress feedback wired into the drawer)
+**Complexity:** M
 
 ---
 
@@ -721,7 +840,7 @@ status: "complete"
 6. Keyboard navigation: Approve is mapped to Enter when the card has focus, Cancel to Escape; all interactions are announced via the drawer's `aria-live="polite"` region.
 7. The `AIReasoningCard` variant (used for streaming progress) and `ConfidenceCard` (used for final approval) are separate named exports from a shared `ai-cards` module; they share a base layout but differ in action surface and data shape.
 
-**Dependencies:** Story 4.3, Inngest candidate event
+**Dependencies:** Story 4.3c (drawer subscribes to streaming candidate events from 4.3c; 4.3a + 4.3b are transitive dependencies), Inngest candidate event
 **FRs Covered:** FR9
 **Complexity:** L
 
@@ -784,7 +903,7 @@ status: "complete"
 6. If the browser tab loses focus during streaming, the operation continues in the background; on tab refocus, the UI reconciles with the current Inngest event state.
 7. All skeleton and progress elements have `aria-hidden="true"` to avoid polluting the accessibility tree; only the `aria-live` region conveys state to assistive technologies.
 
-**Dependencies:** Story 4.2, Story 4.3
+**Dependencies:** Story 4.2, Story 4.3a (edit observation provides skeleton overlay trigger), Story 4.3c (streaming wiring carries the progress events)
 **FRs Covered:** FR12
 **Complexity:** M
 
@@ -889,7 +1008,7 @@ status: "complete"
 6. On publish, the application writes the finalised mapping back to the migration CT Custom Object (with `status: "published"`) and merges all Green Zone components into the published component library Custom Object using a version-safe update; a Neon database migration is generated for any new component schema fields.
 7. The published mapping triggers a webhook event `migration.mapping.published` that the Neon branch CI pipeline can consume to run automated schema validation tests.
 
-**Dependencies:** Story 4.9 or 4.10 or 4.11 (any migration path), published component library CT Custom Object, Neon branch database
+**Dependencies:** Test-fixture migration mapping JSON at `tests/fixtures/migration-mapping-{frontastic|nextjs|monolith}.json` (committed to the platform repo and used as the development driver — Story 4.12 builds against fixture data and is **not blocked by any migration path landing**). End-to-end production validation requires at least one of Story 4.9 / 4.10 / 4.11 to be wired through; Stories 4.9 / 4.10 / 4.11 declare a forward dependency on Story 4.12 because they hand off their generated mapping to the review UI for publish. Also depends on: published component library CT Custom Object, Neon branch database.
 **FRs Covered:** FR36
 **Complexity:** L
 

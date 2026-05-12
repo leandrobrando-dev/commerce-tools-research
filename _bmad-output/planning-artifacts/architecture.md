@@ -21,6 +21,24 @@ date: '2026-05-04'
 
 _This document builds collaboratively through step-by-step discovery. Sections are appended as we work through each architectural decision together._
 
+> ## ⚠️ Pivot Notice — Read Before Implementing
+>
+> This document was completed 2026-05-04. On 2026-05-05 the platform pivoted to ship as a **commercetools Connect-packaged MC Custom Application** living natively inside the Merchant Center shell, not as a standalone Next.js + Clerk SaaS as originally scoped.
+>
+> **For implementation, treat `epics.md` (lastRevision 2026-05-05 onward) as the authoritative tech-stack source for the editor layer.** The architectural pivot is summarized in **ADR-003: MC Custom Application Pivot** (added below; numbered to avoid collision with the standalone strategy ADR-002 about Amplitude/Statsig positioning). Sections marked **[SUPERSEDED]** in this document remain for historical context but should NOT drive implementation. Specifically:
+>
+> | Decision | Original (this doc) | Authoritative now (epics.md / ADR-002) |
+> |---|---|---|
+> | Auth (editor layer) | Clerk Core 3 | MC session auth via `@commercetools-frontend/application-shell` v27 (`mcAccessToken` HttpOnly cookie). Clerk is scoped to the **storefront layer only** (consumer-facing identity, not the editor). |
+> | API contract (editor layer) | tRPC 11.16 | `useMcQuery` / `useMcMutation` from ApplicationShell. tRPC is scoped to the **internal storefront backend only** (not the editor layer). |
+> | Starter template | `create-next-app` (App Router) | `@commercetools-frontend/create-mc-app --template starter-typescript`; `yarn mc-scripts start` for local dev on `localhost:3001`. |
+> | Feature flags | (unspecified) | FlopFlip via `useFlagVariation()` (built into ApplicationShell). |
+> | Editor↔storefront config bridge | (unspecified) | CT Custom Objects (`/custom-objects` API) — canonical persistence layer. |
+> | Connect packaging | (n/a) | `connect.yaml` defines `merchant-center-custom-application` + `service`/`event` component types; `standardConfiguration` and `securedConfiguration` for env vars. |
+> | Node.js target | 18+ | 22+ (Node 20 deprecated April 2026). |
+>
+> Where this document and `epics.md` conflict, **`epics.md` wins**. Re-baselining this architecture document to fully integrate the MC Custom Application pivot is tracked as a follow-up.
+
 ## Project Context Analysis
 
 ### Requirements Overview
@@ -31,9 +49,9 @@ The PRD establishes a comprehensive capability contract organized into key areas
 
 **User & Team Management:** Multi-tenant account creation, workspace management, RBAC with 6 distinct roles (Business Operator, Editor, Reviewer, Analytics Manager, Integration Manager, Admin), inherited permissions model, audit logging for compliance.
 
-**Storefront Creation & Editing:** Visual storefront editor with drag-and-drop interface, template library, B2X rendering (supporting B2C, B2B, and dealer portal contexts simultaneously), storefront duplication for variants, publish workflow with approval gates.
+**Storefront Creation & Editing:** Visual storefront editor with drag-and-drop interface, **starter template gallery (FR76 — single-brand B2C, multi-locale B2C, B2B with account portal, B2X multi-context — owns greenfield bootstrap to a populated canvas)** backed by a platform-shipped default Green Zone component library (FR77), B2X rendering (supporting B2C, B2B, and dealer portal contexts simultaneously), storefront duplication for variants, publish workflow with approval gates.
 
-**AI-Assisted Generation:** Natural language → storefront generation ("describe your storefront, AI generates governed draft"), component-level AI suggestions, AI confidence indicators, edit and regenerate workflows, brand governance enforcement on AI outputs.
+**AI-Assisted Generation:** **[REVISED 2026-05-12]** Warm-start completion model — operator edits on a populated canvas → AI infers intent from observed edits → AI offers governed completion for remaining sections (FR7). Cold-start "describe your storefront → AI generates draft" is **deliberately out of scope**; bootstrap to a populated canvas is owned by FR76 (starter gallery), FR34–FR39 (migration), or prior published state. Component-level AI suggestions, AI confidence indicators, edit and regenerate workflows, brand governance enforcement on AI outputs all apply to the warm-start flow.
 
 **Component Governance:** Component library with base/variant architecture, Green Zone (AI can compose freely) vs Red Zone (platform-protected commerce logic - inventory, pricing, checkout), component configuration UI, component versioning.
 
@@ -142,7 +160,9 @@ Full-Stack SaaS Platform - Frontend editor, backend APIs, edge rendering, real-t
 
 **Selection Rationale: Next.js offers the best match for your architecture requirements.**
 
-### Selected Starter: Next.js (create-next-app with App Router)
+### Selected Starter: Next.js (create-next-app with App Router) **[SUPERSEDED — see Pivot Notice and ADR-002]**
+
+> **Authoritative starter for the editor layer is now `@commercetools-frontend/create-mc-app --template starter-typescript`.** The Next.js / `create-next-app` selection below remains relevant for the **storefront-rendering layer** (consumer-facing storefronts deployed to Vercel Edge), but the **editor MC Custom Application is scaffolded with `create-mc-app`**, runs on `yarn mc-scripts start` at `localhost:3001`, and inherits ApplicationShell's auth, query, and feature-flag plumbing. See `epics.md` Story 1.1 for the canonical scaffold story.
 
 **Rationale for Selection:**
 
@@ -214,12 +234,17 @@ npx create-next-app@latest commercetools-next-gen-frontend --typescript --tailwi
 
 ### Decision Priority Analysis
 
-**Critical Decisions (Block Implementation):**
-- PostgreSQL 18.3 via Neon — multi-tenant RLS strategy must be established before any data model work
-- Clerk Core 3 — tenant context and RBAC must be wired before any protected route is built
-- tRPC 11.16 + REST boundary — API contract must be established before frontend/backend split
+**Critical Decisions (Block Implementation):** **[Authoritative list updated 2026-05-12 to reflect MC Custom Application pivot — see Pivot Notice]**
+- **MC Custom Application scaffold via Connect packaging** — `@commercetools-frontend/application-shell` v27 + `connect.yaml` + `entryPointUriPath` + `standardConfiguration`/`securedConfiguration` must be in place before any editor code lands
+- **MC session auth (editor) + Clerk (storefront)** — `mcAccessToken` HttpOnly cookie via ApplicationShell governs editor access; Clerk Core 3 is scoped to consumer storefront identity only
+- **`useMcQuery` / `useMcMutation` (editor) + tRPC 11.16 (storefront backend)** — editor queries flow through ApplicationShell; tRPC is the contract for the internal storefront-rendering backend only
+- PostgreSQL 18.3 via Neon — multi-tenant RLS strategy must be established before any data model work; `tenant_id` on every table including the behavioral events table from Epic 1
+- **CASL 6.x wired to ApplicationShell `oAuthScopes`** — fine-grained authorization layered on top of MC session auth (no parallel custom RBAC)
+- **FlopFlip via `useFlagVariation()`** for Green/Red Zone enforcement and feature flagging — built into ApplicationShell, no custom flag infrastructure
+- **CT Custom Objects (`/custom-objects` API)** — canonical persistence layer for editor → storefront configuration bridge; never store editor state in Postgres-only tables that the storefront can't reach
 - Liveblocks 3.18 + Command pattern — collaborative editor architecture must be defined before editor stories begin
-- Inngest 4.2.6 — async job infrastructure must exist before AI generation or catalog sync stories
+- Inngest 4.2.6 — async job infrastructure must exist before AI completion or catalog sync stories
+- Node.js 22+ runtime target (Node 20 deprecated April 2026)
 
 **Important Decisions (Shape Architecture):**
 - CASL 6.x authorization layer — fine-grained permissions affect every resource endpoint
@@ -270,6 +295,51 @@ Context is encoded as a `?ctx=b2c|b2b|dealer` search parameter on preview URLs. 
 
 ---
 
+### ADR-003: MC Custom Application Pivot
+
+**Status:** Accepted
+**Date:** 2026-05-05 (decision); ADR documented 2026-05-12
+
+**Context:**
+The original architecture (this document, sections written 2026-05-04) targeted a standalone Next.js + Clerk SaaS application. After commercetools platform research and the brainstorming session of 2026-05-05, the decision was made to ship the platform as a **commercetools Connect-packaged Merchant Center Custom Application** living natively inside the MC shell.
+
+The driver: enterprise commercetools customers are already inside Merchant Center daily. Shipping as an MC Custom Application removes a separate-tool tax (no parallel SSO, no parallel billing, no parallel deployment), inherits the MC design system, and enables a single-marketplace activation rather than a multi-vendor procurement.
+
+**Decision: MC Custom Application — Connect-packaged, ApplicationShell-rooted**
+
+The editor ships as an MC Custom Application. The standalone Next.js + Clerk + tRPC stack from the original architecture is retained only for the **storefront-rendering layer** (consumer-facing storefronts deployed to Vercel Edge), not the editor.
+
+**Mechanism:**
+1. Editor scaffolded with `@commercetools-frontend/create-mc-app --template starter-typescript`; local dev `yarn mc-scripts start` on `localhost:3001`
+2. `@commercetools-frontend/application-shell` v27 is the mandatory root wrapper; it auto-provides Apollo Client, Redux, React Router, React Intl, FlopFlip feature flags, and MC session auth — these MUST NOT be reimplemented
+3. Auth at the editor: `mcAccessToken` HttpOnly cookie via ApplicationShell. Clerk is scoped to the storefront layer only (consumer identity, not editor)
+4. API contract within the editor: `useMcQuery` / `useMcMutation` from ApplicationShell. tRPC scoped to internal storefront backend only
+5. Feature flags / Green-Red Zone toggles: FlopFlip via `useFlagVariation()` (built into ApplicationShell)
+6. Configuration persistence (editor → storefront): CT Custom Objects (`/custom-objects` API) — canonical bridge
+7. Connect packaging: `connect.yaml` declares `merchant-center-custom-application` + `service`/`event` component types; `standardConfiguration` and `securedConfiguration` for env vars
+8. `entryPointUriPath` defined once as an env constant — must match exactly between `custom-application-config.mjs` and Merchant Center UI or infinite reload results
+9. Testing: `@commercetools-frontend/jest-preset-mc-app` + `renderAppWithRedux` from `application-shell/test-utils` — plain RTL `render()` omits MC permission context
+10. Node.js target: 22+ (Node 20 deprecated April 2026)
+
+**Consequences:**
+- ✅ Single-marketplace activation — install via CT Marketplace, zero separate procurement
+- ✅ Native MC SSO — operators do not authenticate twice; SAML/OIDC handled by MC session
+- ✅ MC design tokens inherited automatically — chrome consistency without custom theming
+- ✅ ApplicationShell-provided plumbing eliminates ~3-4 weeks of foundation work (Apollo, Redux, i18n, feature flags) for the editor layer
+- ⚠️ Editor cannot use Vercel Edge runtime — MC Custom Apps run inside the MC shell environment
+- ⚠️ Two-layer auth (MC session for editor + Clerk for storefront consumers) requires strict separation; mixing them creates session-invalidation race conditions
+- ⚠️ Heavy dependency on commercetools SDK and ApplicationShell version pinning — version drift in `@commercetools-frontend/*` packages requires careful coordination
+
+**Rejected alternatives:**
+- *Standalone Next.js + Clerk SaaS (original architecture):* Forces operators to authenticate, navigate, and deploy in two places (CT Merchant Center for catalog, this product for storefront). Increases sales-cycle friction. Forfeits MC design-system inheritance and native SSO. Higher TCO for both vendor and customer.
+- *MC iframe embed of standalone app:* Half-measure — looks integrated but breaks SSO, design tokens, and CT API session reuse. Worst of both worlds.
+
+**Implementation handoff:**
+- Editor: see `epics.md` Stories 1.1, 1.3, 1.4 for scaffold, RBAC wiring, and MC session auth
+- Storefront layer: original architecture (this document, Frontend Architecture and Infrastructure & Deployment sections) remains authoritative for the consumer-facing rendering layer
+
+---
+
 ### Data Architecture
 
 #### Primary Database: PostgreSQL 18.3 via Neon
@@ -304,15 +374,25 @@ Context is encoded as a `?ctx=b2c|b2b|dealer` search parameter on preview URLs. 
 
 ### Authentication & Security
 
-#### Authentication: Clerk Core 3
+#### Authentication: Two-Layer Model **[REVISED 2026-05-12 per Pivot Notice]**
 
-- Native organization/workspace hierarchy maps to multi-tenant workspace model
-- Built-in RBAC: up to 10 custom roles (6 required: Business Operator, Editor, Reviewer, Analytics Manager, Integration Manager, Admin)
-- Built-in audit logging (SOC 2 certified) — satisfies compliance audit trail requirement
-- GDPR tooling: data residency options, erasure support
-- Session management: JWT short-lived tokens (15min) + HttpOnly refresh cookies
-- **Known issue:** Clerk middleware fails on Vercel Edge Runtime — use `export const runtime = 'nodejs'` in middleware
-- **Pricing:** Free to 10k MAU; $0.02/MAU beyond — evaluate Enterprise tier at scale
+The platform spans two auth layers with deliberately different identity sources:
+
+**Editor layer (operators inside Merchant Center) — MC session auth via ApplicationShell:**
+- `@commercetools-frontend/application-shell` v27 owns the auth contract — operators authenticate against the MC session and receive an `mcAccessToken` HttpOnly cookie automatically forwarded on every `useMcQuery`/`useMcMutation` call
+- No custom session management, no JWT issuance — ApplicationShell handles token refresh and SSO redirect against the customer's configured MC SSO (SAML 2.0 / OIDC / Okta)
+- Roles map to `oAuthScopes` enforced by CASL 6.x; the 6 platform roles (IT Admin, Storefront Developer, Brand Publisher, Brand Editor, ACI Analyst, Cross-brand Admin — see PRD RBAC matrix) all trace to MC oAuth scopes
+- Connect packaging via `connect.yaml` declares required scopes; tenant provisioning grants them at install time
+
+**Storefront layer (consumer-facing storefronts) — Clerk Core 3:**
+- Clerk Core 3 manages consumer identity (B2B buyers, B2C shoppers, dealer portal users) on the rendered storefront
+- Native organization/workspace hierarchy maps to multi-tenant consumer accounts (B2B account model, dealer hierarchy)
+- Built-in audit logging (SOC 2 certified) — applies to consumer-side actions only
+- Session management on the consumer side: JWT short-lived tokens (15 min) + HttpOnly refresh cookies
+- **Known issue:** Clerk middleware fails on Vercel Edge Runtime — use `export const runtime = 'nodejs'` in middleware on consumer routes
+- **Pricing:** Free to 10k MAU; $0.02/MAU beyond — applies to consumer MAU, not operator licenses
+
+**Hard rule:** Clerk MUST NOT appear in the editor MC Custom Application bundle. ApplicationShell + MC session auth is the only editor identity source. Mixing the two layers creates session-invalidation race conditions.
 
 #### Authorization: CASL 6.x
 

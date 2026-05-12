@@ -23,7 +23,7 @@ classification:
 
 ## Executive Summary
 
-commercetools Next-Gen Frontend is the first AI-native, composable storefront platform natively integrated with commercetools, closing the critical ecosystem gap that forces enterprise customers to assemble $350K–$1M/yr in disconnected external tools. Business operators — marketing managers and merchandisers — build, iterate, and publish governed storefront experiences without developer dependency, using an AI-assisted creation flow (describe → AI generates governed draft → operator refines → publish). A single storefront renders correctly for B2C consumers, B2B buyers, and dealer portals from one backend (B2X).
+commercetools Next-Gen Frontend is the first AI-native, composable storefront platform natively integrated with commercetools, closing the critical ecosystem gap that forces enterprise customers to assemble $350K–$1M/yr in disconnected external tools. Business operators — marketing managers and merchandisers — build, iterate, and publish governed storefront experiences without developer dependency. New tenants start from a curated starter-template gallery (single-brand B2C, multi-locale B2C, B2B with account portal, B2X multi-context) that lands a populated canvas on Day 1; from any populated canvas the AI infers operator intent from observed edits and offers governed completions for the remaining sections — operator approves, refines, publishes. A single storefront renders correctly for B2C consumers, B2B buyers, and dealer portals from one backend (B2X).
 
 **GTM sequencing: B2C first, B2B next.** The AI Experience Engine's hero capability is fast, measured experimentation. Fast experimentation requires traffic volume and short purchase cycles — which high-traffic B2C storefronts have and B2B workflows do not. Horizon-1 signal gates (CTR, CVR) clear in 3–5 days on B2C traffic; progressive rollout gates become a tight, disciplined loop; the engine's value is demonstrable before the sales cycle ends. The same engine, extended into B2B, inherits the hardened infrastructure that B2C traffic has already stress-tested, and reads commerce context — contract price, account tier, approval queue — that external tools (Amplitude+Statsig included) cannot see. This ordering is reflected in the User Journeys, Functional Requirements, and Phased Development plan below.
 
@@ -42,7 +42,7 @@ Three compounding differentiators no competitor can replicate without rebuilding
 
 1. **Native intelligence loop** — ACI behavioral data flows directly from the live storefront into the editor recommendations and autonomous optimization rules. No ETL, no third-party handoffs, no data lag.
 2. **Green/Red Zone governance** — AI composes freely from a developer-governed component library (Green Zone) while platform-protected commerce logic (Red Zone) remains inviolable. Operators get creative freedom without breaking the commerce contract.
-3. **Describe-to-storefront creation** — Operators describe intent in natural language; AI generates a fully governed, on-brand draft instantly. The Lovable-inspired flow for enterprise: not a toy, a professional publishing tool with guardrails baked in.
+3. **Bootstrap-then-complete creation** — New tenants land on a populated canvas via a starter-template gallery (no blank-page problem); from there, the AI observes operator edits, infers completion intent, and proposes governed completions for the remaining sections. The Lovable-inspired flow for enterprise, with the cold-start risk engineered out: not a toy, a professional publishing tool with guardrails baked in.
 
 **Why Now:** Large language models reached production-grade reliability for structured generation (the "Lovable moment" arrived for enterprise). Composable commerce achieved mainstream adoption. Enterprise buyers hit peak TCO fatigue from fragmented tool stacks. The conditions for a native, AI-first first-party frontend have never been better aligned.
 
@@ -595,7 +595,9 @@ The AI creation flow is in MVP, but manual canvas editing is the safety net. If 
 
 ### AI-Assisted Creation
 
-- **FR7:** Business Operators can describe a storefront intent in natural language and receive a governed AI-generated draft
+The AI Site Builder operates as a **completion model, not a generation model**: operators bring intent through their edits on a populated canvas, and the AI offers governed completions for the remaining sections. This deliberately avoids the blank-canvas / cold-start risk that makes pure describe-to-generate flows unreliable for enterprise commerce. Bootstrap of the populated canvas — for greenfield tenants who have not yet migrated — is owned by FR76 (starter template gallery) and FR77 (default platform library); the AI completion flow (FR7–FR12) layers on top of any populated canvas.
+
+- **FR7:** Business Operators editing a populated canvas can have the AI infer their completion intent from observed edits (minimum three distinct edit events) and offer a governed completion for the remaining sections, drawn from the tenant's approved Green Zone component library. The canvas is populated either by a starter template (FR76), a migration (FR34–FR39), or prior published state. Cold-start describe-to-storefront from a blank canvas is **not** supported in MVP — bootstrap is owned by FR76/FR77.
 - **FR8:** The platform generates AI drafts composed exclusively from the tenant's approved Green Zone component library
 - **FR9:** Business Operators can view AI reasoning and component selection intent before the draft is applied to the canvas
 - **FR10:** Business Operators can accept, modify, or reject individual AI-generated component placements
@@ -650,6 +652,13 @@ The AI creation flow is in MVP, but manual canvas editing is the safety net. If 
 - **FR44:** IT Admins can select EU or US data residency region at tenant provisioning
 - **FR45:** IT Admins can generate and download a Data Processing Agreement within the platform
 - **FR46:** The platform provides IT Admins with a usage dashboard showing sessions consumed, AI generations used, and connected storefronts against tier limits
+
+### Site Initialization & Starter Templates
+
+This section closes the cold-start gap created by FR7's warm-start completion model. New (greenfield) tenants need a path to a populated canvas before the AI completion flow becomes useful. FR76 and FR77 own that path.
+
+- **FR76:** Business Operators can instantiate a full-site starter from a curated, brand-tokenizable template gallery during tenant onboarding. The gallery ships with at least four starter shapes — single-brand B2C, multi-locale B2C, B2B with account portal, and B2X multi-context — each producing a populated canvas of governed Green Zone components ready for operator edits and subsequent AI completion (FR7).
+- **FR77:** The platform ships a default, platform-maintained Green Zone component library covering the components required by all FR76 starter templates, so a new tenant has Day-1 component coverage before defining their own developer-governed library (Epic 2 / FR29). Tenants can extend or replace the default library at any time without losing canvas state.
 
 ### Compliance & Data Privacy
 

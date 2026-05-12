@@ -110,6 +110,13 @@ FR73: Store Associates can surface AI Experience Engine product recommendations 
 FR74: POS promotion slots and upsell sections are operator-configurable as Green Zone components; pricing rules, discounts, and tax calculations remain Red Zone (enforced by CT Pricing API + partner fiscal engine)
 FR75: The platform supports an offline transaction queue for network-resilient POS operations — queued transactions sync automatically when connectivity is restored (handled by partner SDK)
 
+### New Functional Requirements — Site Initialization & Starter Templates (Epic 3 + Epic 2)
+
+These close the cold-start gap created by FR7's warm-start completion model. New (greenfield) tenants need a path to a populated canvas before AI completion becomes useful; FR76 and FR77 own that path.
+
+FR76: Business Operators can instantiate a full-site starter from a curated, brand-tokenizable template gallery during tenant onboarding. The gallery ships with at least four starter shapes — single-brand B2C, multi-locale B2C, B2B with account portal, B2X multi-context — each producing a populated canvas of governed Green Zone components ready for operator edits and subsequent AI completion (FR7).
+FR77: The platform ships a default, platform-maintained Green Zone component library covering the components required by all FR76 starter templates, so a new tenant has Day-1 component coverage before defining their own developer-governed library (FR29). Tenants can extend or replace the default library at any time without losing canvas state.
+
 ---
 
 ### NonFunctional Requirements
@@ -288,50 +295,72 @@ FR72: Epic 9 — In-store behavioral signals ingested into ACI ClickHouse pipeli
 FR73: Epic 9 — AI Experience Engine recommendations surfaced in assisted-selling flow
 FR74: Epic 9 — POS Green Zone (promotion slots) vs Red Zone (pricing/tax) governance
 FR75: Epic 9 — Offline transaction queue + auto-sync (partner SDK)
+FR76: Epic 3 — Starter Template Gallery (Story 3.0) — greenfield bootstrap producing a populated canvas of brand-tokenized governed components on Day 1
+FR77: Epic 2 — Default platform-shipped Green Zone component library covering all FR76 starter-template components (Day-1 library so the gallery works without tenant developer setup)
 
 ---
 
 ## Epic List
 
-### Epic 1: Platform Foundation & Operator Workspace
-The running MC Custom Application exists — IT Admins and operators can sign in via MC session auth, navigate the platform within the Merchant Center shell, and manage their workspace. Establishes: MC Custom Application scaffold (Create-mc-app TypeScript template), Connect packaging (`connect.yaml`), multi-tenant PostgreSQL schema with RLS + behavioral events table (collecting from day 1), CASL RBAC wired to ApplicationShell `oAuthScopes`, MC session auth (no Clerk at editor layer), CI/CD pipeline with Neon branch-per-PR, base observability, and Epic 6 skeleton (SSO + data residency selection as procurement gate).
+### Epic 1: Foundation — Platform Scaffold & Operator Workspace
+_(Foundation epic — most stories are infrastructure that must exist before any user-feature work. User-facing value is intentionally limited to operator sign-in and platform navigation. Stories 1.4 and 1.7 are the only operator-visible deliverables.)_
 
-**The behavioral events table is included in Epic 1 migration.** Behavioral collection infrastructure starts at project connection — the moat begins accumulating before any operator UI is built.
+The running MC Custom Application exists — IT Admins and operators can sign in via MC session auth, navigate the platform within the Merchant Center shell, and manage their workspace. Establishes: MC Custom Application scaffold (Create-mc-app TypeScript template), Connect packaging (`connect.yaml`), multi-tenant PostgreSQL schema with RLS, the **Postgres `behavioral_events` table** (defined in Story 1.2 AC4 as the destination for behavioral data once active collection ships in Epic 5), CASL RBAC wired to ApplicationShell `oAuthScopes`, MC session auth (no Clerk at editor layer), CI/CD pipeline with Neon branch-per-PR, base observability, and Epic 6 skeleton (SSO + data residency selection as procurement gate).
+
+**Clarified scope on behavioral data:** Epic 1 ships the **Postgres behavioral events schema only** (Story 1.2 AC4). The active collection pipeline (storefront snippet, `/api/events` ingestion endpoint, ClickHouse `behavioral_events` table, batching) ships in Epic 5 Story 5.1. The "moat begins accumulating" claim is realised once **both** Epic 5 Story 5.1 and Epic 4 Story 4.1 (CT project connection) have shipped — collection then starts immediately on project connection without manual activation, and silently accumulates data **before any analytics UI surface (Story 5.3 onward) ships**. The original prose conflated schema-creation timing with active-ingestion timing; this clarification resolves it.
 
 **FRs covered:** FR40 (basic MC session auth), FR42 (basic role assignment)
-**Foundation deliverables:** Connect packaging, ApplicationShell integration, behavioral events schema, Epic 6 procurement skeleton
+**Foundation deliverables:** Connect packaging, ApplicationShell integration, Postgres behavioral events schema (no active collection — that lives in Epic 5), Epic 6 procurement skeleton
 
 ---
 
 ### Epic 2: Governed Component Library
 Storefront Developers can define, configure, and publish a governed component library — designating every component as Green Zone (operator-editable) or Red Zone (platform-protected), with field-level edit permissions. The component schema supports CLV-variant fields (`clv_tier` dimension) enabling CLV-aware component rendering without runtime logic. Component behavioral provenance is tracked per component — CTR lift, CLV impact, experiment win rate — visible in the Developer Console. Developers can simulate operator access to verify governance boundaries before publishing. All platform components meet WCAG 2.1 AA by default.
 
-**FRs covered:** FR13, FR14, FR29, FR30, FR31, FR32, FR50
+**Day-1 default library:** This epic also ships the platform-maintained **default Green Zone library** (FR77) covering every component referenced by the Epic 3 starter-template gallery (FR76). New tenants inherit this library at provisioning so the editor and starter gallery are functional from Day 1, before any tenant developer setup. Tenants can extend or replace the default library at any time without losing canvas state.
+
+**FRs covered:** FR13, FR14, FR29, FR30, FR31, FR32, FR50, FR77
 
 ---
 
 ### Epic 3: Storefront Editor & Publishing
-Business Operators can visually build and edit storefronts on a live canvas — adding, reordering, and editing Green Zone components — and publish with full governance validation and atomic deployment. The canvas operates in three dimensions: business context (B2C/B2B/dealer) × locale × consumer identity cohort. Behavioral analytics are dissolved into the canvas surface — heatmap overlay toggleable, engagement score badges on sections, drop-off annotations on hover; no separate analytics dashboard. Storefront branches (Git-model variants) allow operators to create isolated page variants for safe experimentation. Includes real-time collaboration (Liveblocks), multi-viewport preview, immutable publish audit log, and accessibility warnings before publish.
+**Greenfield bootstrap is owned by this epic.** New tenants land on a curated **starter-template gallery** (single-brand B2C, multi-locale B2C, B2B with account portal, B2X multi-context) that produces a populated canvas of brand-tokenized governed components on Day 1 — no blank-canvas, no waiting on Epic 2 developer setup. From the populated canvas, Business Operators visually build and edit storefronts on a live canvas — adding, reordering, and editing Green Zone components — and publish with full governance validation and atomic deployment. The canvas operates in three dimensions: business context (B2C/B2B/dealer) × locale × consumer identity cohort. Behavioral analytics are dissolved into the canvas surface — heatmap overlay toggleable, engagement score badges on sections, drop-off annotations on hover; no separate analytics dashboard. Storefront branches (Git-model variants) allow operators to create isolated page variants for safe experimentation. Includes real-time collaboration (Liveblocks), multi-viewport preview, immutable publish audit log, and accessibility warnings before publish.
 
-**FRs covered:** FR1, FR2, FR3, FR4, FR5, FR6, FR15, FR16, FR17, FR18, FR19, FR20, FR33, FR51
+The starter gallery (FR76) hands off cleanly to Epic 4's AI Site Builder (FR7 warm-start completion model) — once a template has populated the canvas, operator edits trigger AI completion offers without the cold-start risk of pure describe-to-generate.
+
+**FRs covered:** FR1, FR2, FR3, FR4, FR5, FR6, FR15, FR16, FR17, FR18, FR19, FR20, FR33, FR51, FR76
 
 ---
 
 ### Epic 4: AI Core Site Builder & Migrator
 _(Combines former Epic 4 and Epic 7 — "get to live fast" epic)_
 
+**Greenfield bootstrap dependency:** Epic 4's Site Builder uses a warm-start completion model (FR7 — observe operator edits on a populated canvas → infer intent → offer governed completion). Greenfield tenants reach a populated canvas via the Epic 3 starter-template gallery (FR76, Story 3.0); brownfield tenants reach it via the Migrator paths below. Epic 4 does **not** ship a cold-start describe-to-storefront flow — that path is deliberately closed by FR76's gallery, which engineers out the blank-canvas risk.
+
 **Site Builder:** The Commerce Intelligence Drawer operates in Create mode — AI observes operator edits on the canvas, infers intent from behavior, and offers to complete remaining sections using the governed component library. This is an inference-and-completion model, not a blank-canvas generation model. Operators approve a completion brief before any canvas change is applied. Historical behavioral data from GA4, Hotjar, Mixpanel, or Frontastic analytics can be imported during onboarding to pre-warm the AI Experience Engine before native data accumulates.
 
 **Migrator:** Existing commercetools customers can migrate their storefronts via three paths: (1) **Frontastic path** — near-native tastic schema compatibility, component mapping mostly automated; (2) **Custom Next.js path** — AI analyzes the codebase, maps components to governed schema, scaffolds Green/Red Zone boundaries from existing page structure; (3) **Monolith path** — full migration with Core Web Vitals baseline measurement as the before/after ROI proof. Core Web Vitals baseline is available as a pre-sales tool without full platform activation. All migrated pages validated before go-live with a readiness report.
+
+**Slicing strategy (resolves prior circular dependency on Stories 4.9/4.10/4.11 ↔ 4.12):** Story 4.12 (unified migration review UI) is **fixture-driven in development** — it loads test mapping JSON from `tests/fixtures/migration-mapping-{frontastic|nextjs|monolith}.json` and is therefore unblocked by any specific migration path landing. Migration paths 4.9 / 4.10 / 4.11 each have a forward dependency on 4.12 (they hand off generated mappings to the review UI for publish), but they no longer block 4.12's development. Per Priority Sequencing P2, the Frontastic path (4.9) ships first as the Migrator MVP; 4.10 and 4.11 ship in Epic 4 phase 2.
+
+**LLM-quality compounding risk:** Epic 4 leans on OpenRouter LLM calls in five distinct stories — 4.3b (Site Builder inference), 4.9 (Frontastic semantic component matching), 4.10 (Custom Next.js codebase extraction), 4.11 (Monolith canvas generation), and 4.12 (field-mapping schema validation hints). Failure modes compound: an LLM regression upstream affects multiple operator-visible features simultaneously. **Mitigations:**
+- **Pinned model id loaded from `securedConfiguration`** so production model upgrades are deliberate (Story 4.3b AC2 already specifies this — the same pattern applies to 4.9, 4.10, 4.11, 4.12)
+- **Structured-output mode (JSON schema) on every LLM call** — output validity validated by Zod before reaching the user (4.3b AC4 sets the precedent — repeat across 4.9–4.12)
+- **Per-tenant rate limits via Upstash** (4.3b AC7) extended to all five LLM-using stories, with a single shared rate budget per tenant per hour
+- **Golden-fixture regression suite** — every LLM-using story ships with a fixture set of expected inputs → expected output shapes, run on every PR; LLM provider changes that alter output shape break CI before reaching prod
+- **Manual operator-approval gating at every output surface** (Story 4.4 ConfidenceCard for Site Builder, Story 4.12 review UI for migrations) — no LLM output ever auto-applies; human-in-the-loop is the structural backstop
+- **Operator-facing language treats AI output as suggestion** — "your data shows" / "I'll do this if you approve" — never "the AI recommends" or "applying changes" without explicit Approve. This is already the established product language and applies to every LLM-derived surface.
 
 **FRs covered:** FR7, FR8, FR9, FR10, FR11, FR12, FR34, FR35, FR36, FR37, FR38, FR39, FR63, FR65 (Create mode)
 
 ---
 
 ### Epic 5: Behavioral Data Infrastructure
-_(Elevated to foundation layer — behavioral collection starts at Epic 1 project connection)_
+_(Active collection pipeline + canvas-anchored UI surfaces. The Postgres behavioral events table is created upstream in Epic 1 Story 1.2; this epic ships the storefront snippet, ingestion endpoint, ClickHouse pipeline, and the canvas-anchored UI that consumes it.)_
 
-Behavioral collection infrastructure is activated when a customer connects their CT project — the moat begins accumulating silently before any analytics UI is built. The behavioral data layer is dissolved into the canvas surface: heatmap overlay toggleable on the canvas, engagement score badges on sections, drop-off rate annotations on hover. There is no separate ACI analytics dashboard — all behavioral insights are surfaced contextually where operators are already working.
+**Sequencing precision (resolves prior prose ↔ story-location contradiction):** Story 5.1 ships the active collection pipeline — storefront snippet, `/api/events` endpoint with ClickHouse ingestion, batching. Once Story 5.1 ships and a tenant has completed Epic 4 Story 4.1 (CT project connection), behavioral events flow automatically with no manual activation. Story 5.1 ships **before** Stories 5.3 onward (UI surfaces), so behavioral data accumulates silently before any operator-visible analytics UI lands — the "moat starts accumulating before UI" claim refers to within-Epic-5 sequencing, not to Epic 1 ↔ Epic 5 ordering.
+
+The behavioral data layer is dissolved into the canvas surface: heatmap overlay toggleable on the canvas, engagement score badges on sections, drop-off rate annotations on hover. There is no separate ACI analytics dashboard — all behavioral insights are surfaced contextually where operators are already working.
 
 Dual-track consent: aggregate behavioral consent (ACI collection) and identity-linked personalization consent (CLV-enhanced rendering via consumer CLV tier) are separate, legally distinct consent layers managed in the IT Admin dashboard. Full GDPR compliance: consent-aware collection, right-to-erasure, configurable data retention, PCI boundary enforcement. Behavioral event pipeline feeds the AI Experience Engine recommendation model.
 
@@ -376,7 +405,12 @@ The continuous optimization layer that activates once a storefront is live and b
 
 ---
 
-### Epic 9: Physical Retail POS — Partnership-Accelerated
+### Epic 9: Physical Retail POS — Partnership-Accelerated **[RESEARCH EPIC — STORIES PENDING PARTNER ADR]**
+
+> **Status:** Research-only. **No implementation stories exist for Epic 9 yet** — they will be authored after the Partner Selection ADR completes (research deliverables listed below). FR66–FR75 are scoped requirements but not yet decomposed into stories. **Do not include Epic 9 in any sprint commitment until the partner ADR is published and the Story 9.x set is added to `stories.md`.** Sprint planning exclusion applies to all of Epic 9.
+>
+> **Research deliverables before story authoring (M1–M3):** vendor evaluation scorecard, POC integration with the selected vendor's SDK, fiscal compliance coverage map, CT Custom Object schema design for POS, ACI behavioral event schema extensions for in-store events, and the Partner Selection ADR. Once these complete, an Epic 9 story authoring pass will produce 8–12 stories covering the CT-native integration layer (POS UI in MC shell, inventory reservation propagation, CT Order API bridge, CASL StoreAssociate role, ACI in-store event adapter, AI assisted-selling surface, POS Green/Red Zone governance).
+
 _(Research epic — evaluate, select, and integrate a composable POS partner that owns fiscal compliance and hardware certification. We build the CT-native integration layer on top.)_
 
 **The Problem:** Enterprise retailers running commercetools online need a unified commerce story across digital and physical channels. Building a POS from scratch — fiscal printer protocols, jurisdiction-specific receipt formats, card terminal PCI certification, offline queue — is 18+ months of non-differentiating infrastructure work. A composable POS partner collapses that timeline to an integration layer.
